@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --enkaji-red: #8b2635;
+  --enkaji-ochre: #d2691e;
+  --enkaji-brown: #8b4513;
+  --enkaji-green: #228b22;
+  --enkaji-cream: #f5f5dc;
+  --enkaji-gold: #daa520;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .enkaji-pattern {
+    background-image: radial-gradient(circle at 25% 25%, #8b2635 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, #d2691e 2px, transparent 2px);
+    background-size: 20px 20px;
+  }
+
+  .tribal-border {
+    border-image: repeating-linear-gradient(45deg, #8b2635, #8b2635 10px, #d2691e 10px, #d2691e 20px) 1;
+  }
+}
+
+.font-playfair {
+  font-family: var(--font-playfair);
+}
