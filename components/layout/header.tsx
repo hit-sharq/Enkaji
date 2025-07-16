@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,19 +15,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Search, ShoppingCart, Menu, Globe, Heart } from "lucide-react"
+import { Search, ShoppingCart, Menu, Heart, User, Package, Settings, LogOut, Store, Shield } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
-import { UserButton, useUser } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [isAdmin, setIsAdmin] = useState(false)
   const { items } = useCart()
-  const { isSignedIn } = useUser()
+  const { isSignedIn, user } = useUser()
   const router = useRouter()
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
+
+  // Check if user is admin
+  useEffect(() => {
+    if (user?.emailAddresses?.[0]?.emailAddress) {
+      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",") || []
+      setIsAdmin(adminEmails.includes(user.emailAddresses[0].emailAddress))
+    }
+  }, [user])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,12 +52,12 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Globe className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+              <Store className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-gray-900">KenyaTrade</span>
-              <span className="text-xs text-gray-500 -mt-1">B2B Marketplace</span>
+              <span className="text-xl font-bold text-gray-900">Enkaji</span>
+              <span className="text-xs text-gray-500 -mt-1">Masai Marketplace</span>
             </div>
           </Link>
 
@@ -59,10 +68,10 @@ export function Header() {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, suppliers, or categories..."
-                className="pl-10 pr-4 h-10 w-full border-gray-300 focus:border-blue-500"
+                placeholder="Search authentic Masai crafts and products..."
+                className="pl-10 pr-4 h-10 w-full border-gray-300 focus:border-orange-500"
               />
-              <Button type="submit" size="sm" className="absolute right-1 top-1 h-8 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" size="sm" className="absolute right-1 top-1 h-8 bg-orange-600 hover:bg-orange-700">
                 Search
               </Button>
             </div>
@@ -70,24 +79,32 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
+            <Link href="/shop" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+              Shop
+            </Link>
+
+            <Link href="/artisans" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+              Artisans
+            </Link>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-gray-700 hover:text-blue-600 font-medium">
+                <Button variant="ghost" className="text-gray-700 hover:text-orange-600 font-medium">
                   Categories
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/electronics">Electronics</Link>
+                  <Link href="/categories/jewelry-accessories">Jewelry & Accessories</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/fashion-apparel">Fashion & Apparel</Link>
+                  <Link href="/categories/traditional-clothing">Traditional Clothing</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/agriculture-farming">Agriculture</Link>
+                  <Link href="/categories/home-decor">Home Decor</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/construction-materials">Construction</Link>
+                  <Link href="/categories/art-sculptures">Art & Sculptures</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -96,31 +113,9 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link href="/suppliers" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-              Suppliers
+            <Link href="/about" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+              About
             </Link>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-gray-700 hover:text-blue-600 font-medium">
-                  Services
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/services/logistics">Logistics & Shipping</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/services/financing">Trade Financing</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/services/verification">Supplier Verification</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/services/insurance">Trade Insurance</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Cart */}
             <Link href="/cart" className="relative">
@@ -143,14 +138,62 @@ export function Header() {
 
             {/* User Menu */}
             {isSignedIn ? (
-              <UserButton
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8",
-                  },
-                }}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <User className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex items-center">
+                      <User className="w-4 h-4 mr-2" />
+                      My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/orders" className="flex items-center">
+                      <Package className="w-4 h-4 mr-2" />
+                      My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/favorites" className="flex items-center">
+                      <Heart className="w-4 h-4 mr-2" />
+                      Favorites
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center text-blue-600">
+                          <Shield className="w-4 h-4 mr-2" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link href="/artisan/register" className="flex items-center">
+                      <Store className="w-4 h-4 mr-2" />
+                      Become an Artisan
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="flex items-center">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
                 <Link href="/sign-in">
@@ -159,7 +202,7 @@ export function Header() {
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
                     Join Now
                   </Button>
                 </Link>
@@ -202,52 +245,72 @@ export function Header() {
                   {/* Mobile Navigation */}
                   <nav className="flex flex-col space-y-4">
                     <Link
+                      href="/shop"
+                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Shop
+                    </Link>
+                    <Link
+                      href="/artisans"
+                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Artisans
+                    </Link>
+                    <Link
                       href="/categories"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       Categories
                     </Link>
                     <Link
-                      href="/suppliers"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                      href="/about"
+                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
-                      Suppliers
+                      About
                     </Link>
-                    <Link
-                      href="/services"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Services
-                    </Link>
-                    <Link
-                      href="/dashboard"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      My Account
-                    </Link>
-                    <Link
-                      href="/orders"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      My Orders
-                    </Link>
-                    <Link
-                      href="/favorites"
-                      className="text-gray-700 hover:text-blue-600 font-medium py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Favorites
-                    </Link>
+                    {isSignedIn && (
+                      <>
+                        <Link
+                          href="/dashboard"
+                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          My Account
+                        </Link>
+                        <Link
+                          href="/orders"
+                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          My Orders
+                        </Link>
+                        <Link
+                          href="/favorites"
+                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Favorites
+                        </Link>
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            className="text-blue-600 hover:text-blue-700 font-medium py-2"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Admin Panel
+                          </Link>
+                        )}
+                      </>
+                    )}
                   </nav>
 
                   <div className="border-t pt-4">
-                    <Link href="/sign-up?type=supplier">
-                      <Button className="w-full mb-3 bg-blue-600 hover:bg-blue-700">Become a Supplier</Button>
+                    <Link href="/artisan/register">
+                      <Button className="w-full mb-3 bg-orange-600 hover:bg-orange-700">Become an Artisan</Button>
                     </Link>
                     {!isSignedIn && (
                       <Link href="/sign-in">

@@ -2,21 +2,21 @@ import { SignIn } from "@clerk/nextjs"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Globe, ArrowLeft } from "lucide-react"
+import { Store, ArrowLeft } from "lucide-react"
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Globe className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+              <Store className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-gray-900">KenyaTrade</span>
-              <span className="text-sm text-gray-500 -mt-1">B2B Marketplace</span>
+              <span className="text-2xl font-bold text-gray-900">Enkaji</span>
+              <span className="text-sm text-gray-500 -mt-1">Masai Marketplace</span>
             </div>
           </Link>
 
@@ -36,10 +36,10 @@ export default function SignInPage() {
                   headerSubtitle: "hidden",
                   socialButtonsBlockButton: "bg-white border border-gray-300 hover:bg-gray-50",
                   socialButtonsBlockButtonText: "text-gray-700 font-medium",
-                  formButtonPrimary: "bg-blue-600 hover:bg-blue-700 text-white",
-                  footerActionLink: "text-blue-600 hover:text-blue-700",
-                  identityPreviewEditButton: "text-blue-600 hover:text-blue-700",
-                  formFieldInput: "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+                  formButtonPrimary: "bg-orange-600 hover:bg-orange-700 text-white",
+                  footerActionLink: "text-orange-600 hover:text-orange-700",
+                  identityPreviewEditButton: "text-orange-600 hover:text-orange-700",
+                  formFieldInput: "border-gray-300 focus:border-orange-500 focus:ring-orange-500",
                   formFieldLabel: "text-gray-700 font-medium",
                   dividerLine: "bg-gray-200",
                   dividerText: "text-gray-500",
@@ -53,33 +53,30 @@ export default function SignInPage() {
 
         {/* Additional Options */}
         <div className="mt-8 space-y-4">
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-orange-50 border-orange-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-blue-900">New to KenyaTrade?</h3>
-                  <p className="text-sm text-blue-700">Join thousands of businesses</p>
+                  <h3 className="font-semibold text-orange-900">New to Enkaji?</h3>
+                  <p className="text-sm text-orange-700">Join our community of artisans and buyers</p>
                 </div>
                 <Link href="/sign-up">
-                  <Button className="bg-blue-600 hover:bg-blue-700">Sign Up</Button>
+                  <Button className="bg-orange-600 hover:bg-orange-700">Sign Up</Button>
                 </Link>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-green-50 border-green-200">
+          <Card className="bg-red-50 border-red-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-green-900">Want to Sell?</h3>
-                  <p className="text-sm text-green-700">Become a verified supplier</p>
+                  <h3 className="font-semibold text-red-900">Are you an Artisan?</h3>
+                  <p className="text-sm text-red-700">Showcase your authentic Masai crafts</p>
                 </div>
-                <Link href="/sign-up?type=supplier">
-                  <Button
-                    variant="outline"
-                    className="border-green-600 text-green-600 hover:bg-green-50 bg-transparent"
-                  >
-                    Join as Supplier
+                <Link href="/artisan/register">
+                  <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 bg-transparent">
+                    Join as Artisan
                   </Button>
                 </Link>
               </div>

@@ -41,6 +41,8 @@ model ArtisanProfile {
   bio         String?
   location    String?
   phoneNumber String?
+  specialties String?
+  experience  String?
   isApproved  Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
