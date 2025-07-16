@@ -1,13 +1,11 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/home/hero-section"
 import { FeaturedProducts } from "@/components/home/featured-products"
 import { MissionSection } from "@/components/home/mission-section"
 import { TestimonialsSection } from "@/components/home/testimonials-section"
 import { NewsletterSection } from "@/components/home/newsletter-section"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
-import { CategoriesSection } from "@/components/home/categories-section"
-import { StatsSection } from "@/components/home/stats-section"
 
 export default function HomePage() {
   return (
@@ -15,9 +13,7 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <CategoriesSection />
         <FeaturedProducts />
-        <StatsSection />
         <MissionSection />
         <TestimonialsSection />
         <NewsletterSection />
