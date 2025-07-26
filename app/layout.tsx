@@ -18,34 +18,34 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "KenyaTrade - Kenya's Leading B2B Marketplace",
+  title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
   description:
-    "Connect with thousands of verified suppliers across Kenya. Source products, compare prices, and grow your business on East Africa's most trusted B2B platform.",
-  keywords: "Kenya B2B marketplace, suppliers, wholesale, trade, business, sourcing, KenyaTrade",
-  authors: [{ name: "KenyaTrade Team" }],
-  creator: "KenyaTrade",
-  publisher: "KenyaTrade",
+    "Connect with thousands of verified artisans and businesses across Kenya. Source products, compare prices, and grow your business on East Africa's most trusted B2B platform.",
+  keywords: "Kenya B2B marketplace, artisans, wholesale, trade, business, sourcing, Enkaji Trade Kenya",
+  authors: [{ name: "Enkaji Trade Kenya Team" }],
+  creator: "Enkaji Trade Kenya",
+  publisher: "Enkaji Trade Kenya",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://kenyatrade.com"),
+  metadataBase: new URL("https://enkajitradekenya.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "KenyaTrade - Kenya's Leading B2B Marketplace",
+    title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
     description:
-      "Connect with thousands of verified suppliers across Kenya. Source products, compare prices, and grow your business.",
-    url: "https://kenyatrade.com",
-    siteName: "KenyaTrade",
+      "Connect with thousands of verified artisans and businesses across Kenya. Source products, compare prices, and grow your business.",
+    url: "https://enkajitradekenya.com",
+    siteName: "Enkaji Trade Kenya",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "KenyaTrade B2B Marketplace",
+        alt: "Enkaji Trade Kenya B2B Marketplace",
       },
     ],
     locale: "en_KE",
@@ -53,10 +53,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "KenyaTrade - Kenya's Leading B2B Marketplace",
-    description: "Connect with thousands of verified suppliers across Kenya.",
+    title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
+    description: "Connect with thousands of verified artisans and businesses across Kenya.",
     images: ["/og-image.jpg"],
-    creator: "@kenyatrade",
+    creator: "@enkajitradekenya",
   },
   robots: {
     index: true,
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   verification: {
     google: "your-google-verification-code",
   },
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({

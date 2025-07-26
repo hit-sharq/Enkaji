@@ -18,10 +18,13 @@ interface ProductCardProps {
     category: {
       name: string
     }
-    artisan: {
+    seller: {
       firstName: string | null
       lastName: string | null
       imageUrl: string | null
+      sellerProfile?: {
+        businessName: string | null
+      } | null
     }
     _count?: {
       reviews: number
@@ -96,7 +99,10 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   }
 
-  const artisanName = `${product.artisan.firstName || ""} ${product.artisan.lastName || ""}`.trim()
+  const sellerName =
+    product.seller.sellerProfile?.businessName ||
+    `${product.seller.firstName || ""} ${product.seller.lastName || ""}`.trim() ||
+    "Unknown Seller"
 
   return (
     <Card className="group hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -118,16 +124,16 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : ""}`} />
         </Button>
-        <Badge className="absolute top-2 left-2 bg-red-800 text-white">{product.category.name}</Badge>
+        <Badge className="absolute top-2 left-2 bg-orange-600 text-white">{product.category.name}</Badge>
       </div>
 
       <CardContent className="p-4">
         <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-lg mb-2 hover:text-red-800 transition-colors line-clamp-2">
+          <h3 className="font-semibold text-lg mb-2 hover:text-orange-600 transition-colors line-clamp-2">
             {product.name}
           </h3>
         </Link>
-        <p className="text-sm text-gray-600 mb-2">by {artisanName || "Unknown Artisan"}</p>
+        <p className="text-sm text-gray-600 mb-2">by {sellerName}</p>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
@@ -136,14 +142,14 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
           <span className="text-sm text-gray-500">({product._count?.reviews || 0})</span>
         </div>
-        <p className="text-xl font-bold text-red-800">${product.price.toFixed(2)}</p>
+        <p className="text-xl font-bold text-orange-600">KSh {product.price.toLocaleString()}</p>
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
         <Button
           onClick={handleAddToCart}
           disabled={isLoading}
-          className="w-full bg-red-800 hover:bg-red-900 text-white"
+          className="w-full bg-orange-600 hover:bg-orange-700 text-white"
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
           {isLoading ? "Adding..." : "Add to Cart"}

@@ -26,28 +26,32 @@ model User {
   favorites  Favorite[]
   reviews    Review[]
   cartItems  CartItem[]
+  rfqRequests RFQRequest[]
+  bulkOrdersSent BulkOrderRequest[] @relation("BulkOrderBuyer")
 
-  // Artisan relations
-  artisanProfile ArtisanProfile?
-  products       Product[]
+  // Seller relations
+  sellerProfile SellerProfile?
+  products      Product[]
+  rfqQuotes     RFQQuote[]
+  bulkOrdersReceived BulkOrderRequest[] @relation("BulkOrderSeller")
 
   @@map("users")
 }
 
-model ArtisanProfile {
+model SellerProfile {
   id          String  @id @default(cuid())
   userId      String  @unique
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio         String?
+  businessName String?
+  description String?
   location    String?
   phoneNumber String?
-  specialties String?
-  experience  String?
-  isApproved  Boolean @default(false)
+  website     String?
+  businessType String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("artisan_profiles")
+  @@map("seller_profiles")
 }
 
 model Category {
@@ -69,8 +73,8 @@ model Product {
   images      String[]
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
-  artisanId   String
-  artisan     User     @relation(fields: [artisanId], references: [id])
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -79,6 +83,7 @@ model Product {
   favorites  Favorite[]
   reviews    Review[]
   cartItems  CartItem[]
+  bulkOrderRequests BulkOrderRequest[]
 
   @@map("products")
 }
@@ -176,9 +181,75 @@ model Newsletter {
   @@map("newsletter")
 }
 
+model BulkOrderRequest {
+  id        String   @id @default(cuid())
+  buyerId   String
+  buyer     User     @relation("BulkOrderBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    User     @relation("BulkOrderSeller", fields: [sellerId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+  unitPrice Float
+  totalPrice Float
+  message   String?
+  status    BulkOrderStatus @default(PENDING)
+  response  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("bulk_order_requests")
+}
+
+model RFQRequest {
+  id             String    @id @default(cuid())
+  buyerId        String
+  buyer          User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  category       String
+  budget         String?
+  deadline       DateTime?
+  additionalInfo String?
+  status         RFQStatus @default(OPEN)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  items  RFQItem[]
+  quotes RFQQuote[]
+
+  @@map("rfq_requests")
+}
+
+model RFQItem {
+  id            String     @id @default(cuid())
+  rfqId         String
+  rfq           RFQRequest @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  productName   String
+  quantity      Int
+  specifications String?
+  createdAt     DateTime   @default(now())
+
+  @@map("rfq_items")
+}
+
+model RFQQuote {
+  id          String     @id @default(cuid())
+  rfqId       String
+  rfq         RFQRequest @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  sellerId    String
+  seller      User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  totalPrice  Float
+  deliveryTime String
+  message     String?
+  status      QuoteStatus @default(PENDING)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("rfq_quotes")
+}
+
 enum UserRole {
   BUYER
-  ARTISAN
+  SELLER
   ADMIN
 }
 
@@ -193,4 +264,24 @@ enum OrderStatus {
 enum PaymentMethod {
   STRIPE
   MPESA
+}
+
+enum BulkOrderStatus {
+  PENDING
+  QUOTED
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+enum RFQStatus {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }

@@ -56,8 +56,8 @@ export function Header() {
               <Store className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-gray-900">Enkaji</span>
-              <span className="text-xs text-gray-500 -mt-1">Masai Marketplace</span>
+              <span className="text-xl font-bold text-gray-900">Enkaji Trade Kenya</span>
+              <span className="text-xs text-gray-500 -mt-1">Kenya's B2B Marketplace</span>
             </div>
           </Link>
 
@@ -68,7 +68,7 @@ export function Header() {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search authentic Masai crafts and products..."
+                placeholder="Search products, sellers, and businesses across Kenya..."
                 className="pl-10 pr-4 h-10 w-full border-gray-300 focus:border-orange-500"
               />
               <Button type="submit" size="sm" className="absolute right-1 top-1 h-8 bg-orange-600 hover:bg-orange-700">
@@ -83,8 +83,8 @@ export function Header() {
               Shop
             </Link>
 
-            <Link href="/artisans" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
-              Artisans
+            <Link href="/sellers" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+              Sellers
             </Link>
 
             <DropdownMenu>
@@ -95,16 +95,22 @@ export function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/jewelry-accessories">Jewelry & Accessories</Link>
+                  <Link href="/categories/electronics">Electronics & Technology</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/traditional-clothing">Traditional Clothing</Link>
+                  <Link href="/categories/fashion-apparel">Fashion & Apparel</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/home-decor">Home Decor</Link>
+                  <Link href="/categories/home-garden">Home & Garden</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/art-sculptures">Art & Sculptures</Link>
+                  <Link href="/categories/agriculture">Agriculture & Food</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/construction">Construction Materials</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/automotive">Automotive</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -176,9 +182,9 @@ export function Header() {
                     </>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/artisan/register" className="flex items-center">
+                    <Link href="/sell" className="flex items-center">
                       <Store className="w-4 h-4 mr-2" />
-                      Become an Artisan
+                      Start Selling
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -252,11 +258,11 @@ export function Header() {
                       Shop
                     </Link>
                     <Link
-                      href="/artisans"
+                      href="/sellers"
                       className="text-gray-700 hover:text-orange-600 font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
-                      Artisans
+                      Sellers
                     </Link>
                     <Link
                       href="/categories"
@@ -309,8 +315,8 @@ export function Header() {
                   </nav>
 
                   <div className="border-t pt-4">
-                    <Link href="/artisan/register">
-                      <Button className="w-full mb-3 bg-orange-600 hover:bg-orange-700">Become an Artisan</Button>
+                    <Link href="/sell">
+                      <Button className="w-full mb-3 bg-orange-600 hover:bg-orange-700">Start Selling</Button>
                     </Link>
                     {!isSignedIn && (
                       <Link href="/sign-in">

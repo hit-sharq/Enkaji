@@ -41,8 +41,8 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-4xl mx-auto leading-relaxed">
-              Connect with thousands of verified suppliers across Kenya. Source products, compare prices, and grow your
-              business on East Africa's most trusted B2B platform.
+              Connect with thousands of verified sellers and businesses across all 47 counties of Kenya. Source
+              products, compare prices, and grow your business on East Africa's most trusted B2B platform.
             </p>
 
             {/* Search Bar */}
@@ -53,7 +53,7 @@ export function HeroSection() {
                   <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search for products, suppliers, or categories..."
+                    placeholder="Search for products, sellers, businesses, or categories across Kenya..."
                     className="flex-1 pl-14 pr-4 h-14 text-lg border-0 bg-transparent text-gray-900 placeholder:text-gray-500 focus:ring-0"
                   />
                   <Button
@@ -73,17 +73,17 @@ export function HeroSection() {
                   size="lg"
                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg rounded-full shadow-lg"
                 >
-                  Start Sourcing
+                  Start Shopping
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/sign-up?type=supplier">
+              <Link href="/sell">
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg rounded-full bg-transparent"
                 >
-                  Become a Supplier
+                  Start Selling
                 </Button>
               </Link>
             </div>
@@ -91,19 +91,19 @@ export function HeroSection() {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">500K+</div>
+                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">1M+</div>
                 <div className="text-blue-200 text-sm md:text-base">Products Listed</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">25K+</div>
-                <div className="text-blue-200 text-sm md:text-base">Verified Suppliers</div>
+                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">50K+</div>
+                <div className="text-blue-200 text-sm md:text-base">Active Sellers</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">47</div>
                 <div className="text-blue-200 text-sm md:text-base">Counties Covered</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">KSh 2B+</div>
+                <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">KSh 10B+</div>
                 <div className="text-blue-200 text-sm md:text-base">Trade Volume</div>
               </div>
             </div>
@@ -115,7 +115,7 @@ export function HeroSection() {
               <Shield className="w-8 h-8 text-green-400" />
               <div>
                 <div className="font-semibold">Trade Assurance</div>
-                <div className="text-sm text-blue-200">100% Secure Payments</div>
+                <div className="text-sm text-blue-200">100% Secure Transactions</div>
               </div>
             </div>
             <div className="flex items-center justify-center space-x-3 bg-white/10 backdrop-blur rounded-lg p-4">
@@ -129,7 +129,7 @@ export function HeroSection() {
               <TrendingUp className="w-8 h-8 text-yellow-400" />
               <div>
                 <div className="font-semibold">Growing Fast</div>
-                <div className="text-sm text-blue-200">Join 100K+ Users</div>
+                <div className="text-sm text-blue-200">Join 200K+ Users</div>
               </div>
             </div>
           </div>

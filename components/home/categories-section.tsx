@@ -43,6 +43,7 @@ const categoryIcons: Record<string, any> = {
   "textiles-fabrics": Palette,
   "footwear-leather": Shirt,
   "jewelry-accessories": Heart,
+  agriculture: Wheat,
   "agriculture-farming": Wheat,
   "food-beverages": Wheat,
   "livestock-feed": Wheat,
@@ -71,6 +72,12 @@ const categoryIcons: Record<string, any> = {
   "generators-power": Zap,
   "security-safety": Shield,
   "arts-crafts": Palette,
+  "traditional-crafts": Palette,
+  "wood-carvings": Wrench,
+  "pottery-ceramics": Palette,
+  metalwork: Factory,
+  "leather-goods": Shirt,
+  "baskets-weaving": Palette,
 }
 
 export function CategoriesSection() {
@@ -125,7 +132,8 @@ export function CategoriesSection() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover millions of products across all major categories from verified Kenyan suppliers
+            Discover millions of products across all major business categories from verified Kenyan artisans and
+            businesses
           </p>
         </div>
 
