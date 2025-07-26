@@ -1,30 +1,20 @@
-import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { type NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    const featured = searchParams.get("featured")
+    const limit = searchParams.get("limit")
     const category = searchParams.get("category")
-    const minPrice = searchParams.get("minPrice")
-    const maxPrice = searchParams.get("maxPrice")
     const search = searchParams.get("search")
-    const page = Number.parseInt(searchParams.get("page") || "1")
-    const limit = Number.parseInt(searchParams.get("limit") || "12")
 
     const where: any = {
       isActive: true,
     }
 
     if (category) {
-      where.category = {
-        slug: category,
-      }
-    }
-
-    if (minPrice || maxPrice) {
-      where.price = {}
-      if (minPrice) where.price.gte = Number.parseFloat(minPrice)
-      if (maxPrice) where.price.lte = Number.parseFloat(maxPrice)
+      where.categoryId = category
     }
 
     if (search) {
@@ -34,71 +24,59 @@ export async function GET(request: Request) {
       ]
     }
 
-    const [products, total] = await Promise.all([
-      db.product.findMany({
-        where,
-        include: {
-          category: true,
-          artisan: {
-            select: {
-              firstName: true,
-              lastName: true,
-              imageUrl: true,
-            },
-          },
-          _count: {
-            select: {
-              reviews: true,
-            },
+    if (featured === "true") {
+      where.isFeatured = true
+    }
+
+    const products = await prisma.product.findMany({
+      where,
+      include: {
+        category: true,
+        seller: {
+          select: {
+            firstName: true,
+            lastName: true,
+            imageUrl: true,
           },
         },
-        orderBy: { createdAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      db.product.count({ where }),
-    ])
-
-    return NextResponse.json({
-      products,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit ? Number.parseInt(limit) : undefined,
     })
+
+    return NextResponse.json(products)
   } catch (error) {
     console.error("Error fetching products:", error)
     return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 })
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { getCurrentUser } = await import("@/lib/auth")
-    const user = await getCurrentUser()
-
-    if (!user || (user.role !== "ARTISAN" && user.role !== "ADMIN")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const body = await request.json()
-    const { name, description, price, stock, images, categoryId } = body
+    const { name, description, price, categoryId, images, sellerId, isFeatured = false, isActive = true } = body
 
-    const product = await db.product.create({
+    const product = await prisma.product.create({
       data: {
         name,
         description,
         price: Number.parseFloat(price),
-        stock: Number.parseInt(stock),
-        images,
         categoryId,
-        artisanId: user.id,
+        images,
+        sellerId,
+        isFeatured,
+        isActive,
       },
       include: {
         category: true,
-        artisan: {
+        seller: {
           select: {
             firstName: true,
             lastName: true,

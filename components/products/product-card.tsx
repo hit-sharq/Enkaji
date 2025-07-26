@@ -1,159 +1,96 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Heart, ShoppingCart, Star } from "lucide-react"
-import { useState } from "react"
-import { useToast } from "@/hooks/use-toast"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Star, ShoppingCart, Heart } from "lucide-react"
 
-interface ProductCardProps {
-  product: {
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  images: string[]
+  category: {
     id: string
     name: string
-    price: number
-    images: string[]
-    category: {
-      name: string
-    }
-    seller: {
-      firstName: string | null
-      lastName: string | null
-      imageUrl: string | null
-      sellerProfile?: {
-        businessName: string | null
-      } | null
-    }
-    _count?: {
-      reviews: number
-    }
+  }
+  seller: {
+    firstName: string
+    lastName: string
+    imageUrl: string | null
+  }
+  _count: {
+    reviews: number
   }
 }
 
+interface ProductCardProps {
+  product: Product
+}
+
 export function ProductCard({ product }: ProductCardProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
-  const { toast } = useToast()
-
-  const handleAddToCart = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: 1,
-        }),
-      })
-
-      if (response.ok) {
-        toast({
-          title: "Added to cart",
-          description: `${product.name} has been added to your cart.`,
-        })
-      } else {
-        throw new Error("Failed to add to cart")
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Please sign in to add items to cart.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleToggleFavorite = async () => {
-    try {
-      const response = await fetch("/api/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: product.id,
-        }),
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setIsFavorite(data.isFavorite)
-        toast({
-          title: data.isFavorite ? "Added to favorites" : "Removed from favorites",
-          description: data.message,
-        })
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Please sign in to manage favorites.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const sellerName =
-    product.seller.sellerProfile?.businessName ||
-    `${product.seller.firstName || ""} ${product.seller.lastName || ""}`.trim() ||
-    "Unknown Seller"
+  const sellerName = `${product.seller.firstName} ${product.seller.lastName}`
+  const sellerInitials = `${product.seller.firstName[0]}${product.seller.lastName[0]}`
 
   return (
-    <Card className="group hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      <div className="relative">
-        <Link href={`/products/${product.id}`}>
+    <Card className="group hover:shadow-lg transition-shadow duration-200">
+      <CardContent className="p-0">
+        <div className="relative aspect-square overflow-hidden rounded-t-lg">
           <Image
             src={product.images[0] || "/placeholder.svg?height=300&width=300"}
             alt={product.name}
-            width={300}
-            height={300}
-            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-200"
           />
-        </Link>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={`absolute top-2 right-2 bg-white/80 hover:bg-white ${isFavorite ? "text-red-500" : ""}`}
-          onClick={handleToggleFavorite}
-        >
-          <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : ""}`} />
-        </Button>
-        <Badge className="absolute top-2 left-2 bg-orange-600 text-white">{product.category.name}</Badge>
-      </div>
-
-      <CardContent className="p-4">
-        <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-lg mb-2 hover:text-orange-600 transition-colors line-clamp-2">
-            {product.name}
-          </h3>
-        </Link>
-        <p className="text-sm text-gray-600 mb-2">by {sellerName}</p>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-            ))}
+          <div className="absolute top-2 right-2 space-y-2">
+            <Button
+              size="icon"
+              variant="secondary"
+              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Heart className="h-4 w-4" />
+            </Button>
           </div>
-          <span className="text-sm text-gray-500">({product._count?.reviews || 0})</span>
+          <div className="absolute top-2 left-2">
+            <Badge variant="secondary">{product.category.name}</Badge>
+          </div>
         </div>
-        <p className="text-xl font-bold text-orange-600">KSh {product.price.toLocaleString()}</p>
+
+        <div className="p-4 space-y-3">
+          <div>
+            <h3 className="font-semibold text-lg line-clamp-1">{product.name}</h3>
+            <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="text-2xl font-bold text-primary">KES {product.price.toLocaleString()}</div>
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm text-gray-600">({product._count.reviews})</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={product.seller.imageUrl || undefined} />
+              <AvatarFallback className="text-xs">{sellerInitials}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-gray-600">by {sellerName}</span>
+          </div>
+        </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
-        <Button
-          onClick={handleAddToCart}
-          disabled={isLoading}
-          className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-        >
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          {isLoading ? "Adding..." : "Add to Cart"}
-        </Button>
+      <CardFooter className="p-4 pt-0 space-y-2">
+        <div className="flex gap-2 w-full">
+          <Button asChild className="flex-1">
+            <Link href={`/products/${product.id}`}>View Details</Link>
+          </Button>
+          <Button size="icon" variant="outline">
+            <ShoppingCart className="h-4 w-4" />
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   )

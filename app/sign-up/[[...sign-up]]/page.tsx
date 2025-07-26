@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { SignUp } from "@clerk/nextjs"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import { Store, ArrowLeft, User, Palette } from "lucide-react"
+import { Store, ArrowLeft, ShoppingCart, Package } from "lucide-react"
 
 export default function SignUpPage() {
   return (
@@ -15,13 +15,13 @@ export default function SignUpPage() {
               <Store className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-gray-900">Enkaji</span>
-              <span className="text-sm text-gray-500 -mt-1">Masai Marketplace</span>
+              <span className="text-2xl font-bold text-gray-900">Enkaji Trade Kenya</span>
+              <span className="text-sm text-gray-500 -mt-1">Kenya's B2B Marketplace</span>
             </div>
           </Link>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Join Enkaji</h1>
-          <p className="text-gray-600">Connect with authentic Masai artisans and discover unique crafts</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Join Enkaji Trade Kenya</h1>
+          <p className="text-gray-600">Connect with businesses across Kenya and grow your trade</p>
         </div>
 
         {/* Sign Up Component */}
@@ -56,14 +56,15 @@ export default function SignUpPage() {
           <Card className="bg-orange-50 border-orange-200">
             <CardContent className="p-4">
               <div className="flex items-start space-x-3">
-                <User className="w-5 h-5 text-orange-600 mt-0.5" />
+                <ShoppingCart className="w-5 h-5 text-orange-600 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-orange-900 mb-2">As a Buyer:</h3>
                   <ul className="space-y-1 text-sm text-orange-700">
-                    <li>• Discover authentic Masai crafts</li>
-                    <li>• Support local artisans directly</li>
-                    <li>• Secure payment & shipping</li>
-                    <li>• Quality guaranteed products</li>
+                    <li>• Access thousands of Kenyan products</li>
+                    <li>• Connect directly with sellers</li>
+                    <li>• Secure payment & delivery</li>
+                    <li>• Bulk ordering discounts</li>
+                    <li>• Request custom quotations</li>
                   </ul>
                 </div>
               </div>
@@ -73,22 +74,23 @@ export default function SignUpPage() {
           <Card className="bg-red-50 border-red-200">
             <CardContent className="p-4">
               <div className="flex items-start space-x-3">
-                <Palette className="w-5 h-5 text-red-600 mt-0.5" />
+                <Package className="w-5 h-5 text-red-600 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-red-900 mb-2">As an Artisan:</h3>
+                  <h3 className="font-semibold text-red-900 mb-2">As a Seller:</h3>
                   <ul className="space-y-1 text-sm text-red-700">
-                    <li>• Showcase your traditional crafts</li>
-                    <li>• Reach customers worldwide</li>
-                    <li>• Fair pricing for your work</li>
-                    <li>• Preserve Masai culture</li>
+                    <li>• Reach customers nationwide</li>
+                    <li>• List unlimited products</li>
+                    <li>• Manage orders efficiently</li>
+                    <li>• Accept bulk orders & RFQs</li>
+                    <li>• Grow your business online</li>
                   </ul>
-                  <Link href="/artisan/register" className="inline-block mt-2">
+                  <Link href="/sell" className="inline-block mt-2">
                     <Button
                       size="sm"
                       variant="outline"
                       className="border-red-600 text-red-600 hover:bg-red-50 bg-transparent"
                     >
-                      Register as Artisan
+                      Start Selling Now
                     </Button>
                   </Link>
                 </div>

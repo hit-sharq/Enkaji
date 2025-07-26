@@ -15,13 +15,13 @@ export default function SignInPage() {
               <Store className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-gray-900">Enkaji</span>
-              <span className="text-sm text-gray-500 -mt-1">Masai Marketplace</span>
+              <span className="text-2xl font-bold text-gray-900">Enkaji Trade Kenya</span>
+              <span className="text-sm text-gray-500 -mt-1">Kenya's B2B Marketplace</span>
             </div>
           </Link>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your account to continue</p>
+          <p className="text-gray-600">Sign in to your account to continue trading</p>
         </div>
 
         {/* Sign In Component */}
@@ -57,8 +57,8 @@ export default function SignInPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-orange-900">New to Enkaji?</h3>
-                  <p className="text-sm text-orange-700">Join our community of artisans and buyers</p>
+                  <h3 className="font-semibold text-orange-900">New to Enkaji Trade Kenya?</h3>
+                  <p className="text-sm text-orange-700">Join Kenya's leading B2B marketplace</p>
                 </div>
                 <Link href="/sign-up">
                   <Button className="bg-orange-600 hover:bg-orange-700">Sign Up</Button>
@@ -71,12 +71,12 @@ export default function SignInPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-red-900">Are you an Artisan?</h3>
-                  <p className="text-sm text-red-700">Showcase your authentic Masai crafts</p>
+                  <h3 className="font-semibold text-red-900">Want to Start Selling?</h3>
+                  <p className="text-sm text-red-700">Reach customers across Kenya and beyond</p>
                 </div>
-                <Link href="/artisan/register">
+                <Link href="/sell">
                   <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 bg-transparent">
-                    Join as Artisan
+                    Start Selling
                   </Button>
                 </Link>
               </div>
