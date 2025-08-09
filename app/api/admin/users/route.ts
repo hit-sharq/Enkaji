@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server"
+import { requireAdmin } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { requireRole } from "@/lib/auth"
 
 export async function GET() {
   try {
-    await requireRole("ADMIN")
+    await requireAdmin()
 
     const users = await db.user.findMany({
       include: {
-        artisanProfile: true,
+        sellerProfile: true,
         _count: {
           select: {
             orders: true,

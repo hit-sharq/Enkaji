@@ -42,3 +42,25 @@ export async function requireRole(role: "BUYER" | "SELLER" | "ADMIN") {
 
   return user
 }
+
+export async function isUserAdmin(clerkId: string): Promise<boolean> {
+  const adminIds = process.env.ADMIN_IDS?.split(",") || []
+  return adminIds.includes(clerkId)
+}
+
+export async function requireAdmin() {
+  const { userId } = auth()
+
+  if (!userId) {
+    throw new Error("Authentication required")
+  }
+
+  const isAdmin = await isUserAdmin(userId)
+
+  if (!isAdmin) {
+    throw new Error("Admin access required")
+  }
+
+  const user = await getCurrentUser()
+  return user
+}

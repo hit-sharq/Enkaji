@@ -1,60 +1,28 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth"
+import { auth } from "@clerk/nextjs/server"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, AlertTriangle } from "lucide-react"
-
-async function isUserAdmin(userEmail: string): Promise<boolean> {
-  const adminEmails = process.env.ADMIN_EMAILS?.split(",") || []
-  return adminEmails.includes(userEmail)
-}
+import { isUserAdmin } from "@/lib/auth"
 
 export default async function AdminPage() {
-  const user = await getCurrentUser()
+  const { userId } = auth()
 
-  if (!user) {
+  if (!userId) {
     redirect("/sign-in")
   }
 
-  const userIsAdmin = await isUserAdmin(user.email)
+  const isAdmin = await isUserAdmin(userId)
 
-  if (!userIsAdmin) {
-    return (
-      <div className="min-h-screen">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Card className="max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <CardTitle className="text-red-600">Access Denied</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-gray-600 mb-4">You don't have permission to access the admin panel.</p>
-              <p className="text-sm text-gray-500">If you believe this is an error, please contact support.</p>
-            </CardContent>
-          </Card>
-        </main>
-        <Footer />
-      </div>
-    )
+  if (!isAdmin) {
+    redirect("/dashboard")
   }
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center space-x-2 mb-8">
-          <Shield className="w-8 h-8 text-blue-600" />
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
-            <p className="text-gray-600">Manage Enkaji marketplace</p>
-          </div>
-        </div>
-        <AdminDashboard user={user} />
-      </main>
-      <Footer />
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+        <p className="text-gray-600">Manage users, products, and monitor platform performance</p>
+      </div>
+      <AdminDashboard user={{ id: userId }} />
     </div>
   )
 }

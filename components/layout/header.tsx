@@ -4,9 +4,11 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useUser, UserButton } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,29 +16,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Search, ShoppingCart, Menu, Heart, User, Package, Settings, LogOut, Store, Shield } from "lucide-react"
+import { Menu, Search, ShoppingCart, Heart, User, Store, Shield, Package, Settings, LogOut } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
-import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 
 export function Header() {
+  const { user, isLoaded } = useUser()
+  const { items } = useCart()
+  const [isAdmin, setIsAdmin] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [isAdmin, setIsAdmin] = useState(false)
-  const { items } = useCart()
-  const { isSignedIn, user } = useUser()
   const router = useRouter()
 
-  const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
-
-  // Check if user is admin
   useEffect(() => {
-    if (user?.emailAddresses?.[0]?.emailAddress) {
-      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",") || []
-      setIsAdmin(adminEmails.includes(user.emailAddresses[0].emailAddress))
+    if (user?.id) {
+      const adminIds = process.env.NEXT_PUBLIC_ADMIN_IDS?.split(",") || []
+      setIsAdmin(adminIds.includes(user.id))
     }
   }, [user])
+
+  const cartItemsCount = items.reduce((total, item) => total + item.quantity, 0)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,7 +46,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -143,7 +142,7 @@ export function Header() {
             </Link>
 
             {/* User Menu */}
-            {isSignedIn ? (
+            {isLoaded && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -278,7 +277,7 @@ export function Header() {
                     >
                       About
                     </Link>
-                    {isSignedIn && (
+                    {isLoaded && user && (
                       <>
                         <Link
                           href="/dashboard"
@@ -318,12 +317,16 @@ export function Header() {
                     <Link href="/sell">
                       <Button className="w-full mb-3 bg-orange-600 hover:bg-orange-700">Start Selling</Button>
                     </Link>
-                    {!isSignedIn && (
+                    {!isLoaded || !user ? (
                       <Link href="/sign-in">
                         <Button variant="outline" className="w-full bg-transparent">
                           Sign In
                         </Button>
                       </Link>
+                    ) : (
+                      <div className="flex justify-center">
+                        <UserButton afterSignOutUrl="/" />
+                      </div>
                     )}
                   </div>
                 </div>
