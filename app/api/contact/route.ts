@@ -1,31 +1,75 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
+import { contactSchema } from "@/lib/validation"
+import { handleApiError } from "@/lib/errors"
+import { apiRateLimit } from "@/lib/rate-limit"
+import { prisma } from "@/lib/db"
+import { requireAdmin } from "@/lib/auth"
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { name, email, subject, message } = await request.json()
+    // Rate limiting for contact form
+    const rateLimitResult = apiRateLimit(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+          },
+        },
+      )
+    }
 
-    // Here you would typically:
-    // 1. Save to database
-    // 2. Send email notification
-    // 3. Integrate with your preferred email service (Resend, SendGrid, etc.)
+    const body = await request.json()
+    const { name, email, subject, message } = contactSchema.parse(body)
+
+    // Save contact message to database
+    const contactMessage = await prisma.contactMessage.create({
+      data: {
+        name,
+        email,
+        subject,
+        message,
+        status: "UNREAD",
+      },
+    })
+
+    // TODO: Send email notification to admin
+    // await sendContactNotification({ name, email, subject, message })
 
     console.log("Contact form submission:", {
+      id: contactMessage.id,
       name,
       email,
       subject,
-      message,
       timestamp: new Date().toISOString(),
     })
 
-    // For now, we'll just log and return success
-    // In production, integrate with your email service
-
     return NextResponse.json({
       success: true,
-      message: "Message received successfully",
+      message: "Message sent successfully. We'll get back to you soon!",
+      id: contactMessage.id,
     })
   } catch (error) {
-    console.error("Error processing contact form:", error)
-    return NextResponse.json({ error: "Failed to process message" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
+  }
+}
+
+export async function GET() {
+  try {
+    // This endpoint is for admin use only
+    await requireAdmin()
+
+    const messages = await prisma.contactMessage.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50, // Limit to recent 50 messages
+    })
+
+    return NextResponse.json(messages)
+  } catch (error) {
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }

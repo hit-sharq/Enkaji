@@ -1,21 +1,32 @@
-import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { type NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
+import { handleApiError, AuthenticationError, ValidationError, NotFoundError } from "@/lib/errors"
+import { z } from "zod"
+
+const addToCartSchema = z.object({
+  productId: z.string().uuid("Invalid product ID"),
+  quantity: z.number().int().min(1, "Quantity must be at least 1").max(100, "Maximum quantity is 100"),
+})
 
 export async function GET() {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      throw new AuthenticationError()
     }
 
-    const cartItems = await db.cartItem.findMany({
+    const cartItems = await prisma.cartItem.findMany({
       where: { userId: user.id },
       include: {
         product: {
           include: {
-            category: true,
-            artisan: {
+            category: {
+              select: {
+                name: true,
+              },
+            },
+            seller: {
               select: {
                 firstName: true,
                 lastName: true,
@@ -26,25 +37,68 @@ export async function GET() {
       },
     })
 
-    const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+    // Filter out inactive products
+    const activeCartItems = cartItems.filter((item) => item.product.isActive)
 
-    return NextResponse.json({ items: cartItems, total })
+    // Remove inactive products from cart
+    const inactiveItems = cartItems.filter((item) => !item.product.isActive)
+    if (inactiveItems.length > 0) {
+      await prisma.cartItem.deleteMany({
+        where: {
+          id: {
+            in: inactiveItems.map((item) => item.id),
+          },
+        },
+      })
+    }
+
+    const total = activeCartItems.reduce((sum, item) => {
+      return sum + item.product.price * item.quantity
+    }, 0)
+
+    const itemCount = activeCartItems.reduce((sum, item) => sum + item.quantity, 0)
+
+    return NextResponse.json({
+      items: activeCartItems,
+      total,
+      itemCount,
+      currency: "KES",
+    })
   } catch (error) {
-    console.error("Error fetching cart:", error)
-    return NextResponse.json({ error: "Failed to fetch cart" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      throw new AuthenticationError()
     }
 
-    const { productId, quantity = 1 } = await request.json()
+    const body = await request.json()
+    const { productId, quantity } = addToCartSchema.parse(body)
 
-    const existingItem = await db.cartItem.findUnique({
+    // Check if product exists and is active
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    })
+
+    if (!product) {
+      throw new NotFoundError("Product not found")
+    }
+
+    if (!product.isActive) {
+      throw new ValidationError("Product is not available")
+    }
+
+    if (product.stock < quantity) {
+      throw new ValidationError(`Only ${product.stock} items available in stock`)
+    }
+
+    // Check if item already exists in cart
+    const existingItem = await prisma.cartItem.findUnique({
       where: {
         userId_productId: {
           userId: user.id,
@@ -55,29 +109,50 @@ export async function POST(request: Request) {
 
     let cartItem
     if (existingItem) {
-      cartItem = await db.cartItem.update({
+      const newQuantity = existingItem.quantity + quantity
+
+      if (newQuantity > product.stock) {
+        throw new ValidationError(`Cannot add more items. Only ${product.stock} available in stock`)
+      }
+
+      cartItem = await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + quantity },
+        data: { quantity: newQuantity },
         include: {
-          product: true,
+          product: {
+            select: {
+              name: true,
+              price: true,
+              images: true,
+            },
+          },
         },
       })
     } else {
-      cartItem = await db.cartItem.create({
+      cartItem = await prisma.cartItem.create({
         data: {
           userId: user.id,
           productId,
           quantity,
         },
         include: {
-          product: true,
+          product: {
+            select: {
+              name: true,
+              price: true,
+              images: true,
+            },
+          },
         },
       })
     }
 
-    return NextResponse.json(cartItem)
+    return NextResponse.json({
+      message: "Item added to cart successfully",
+      cartItem,
+    })
   } catch (error) {
-    console.error("Error adding to cart:", error)
-    return NextResponse.json({ error: "Failed to add to cart" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }

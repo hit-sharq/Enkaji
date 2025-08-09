@@ -1,29 +1,72 @@
-import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { type NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
+import { newsletterSchema } from "@/lib/validation"
+import { handleApiError, ConflictError } from "@/lib/error"
+import { apiRateLimit } from "@/lib/rate-limit"
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    // Rate limiting
+    const rateLimitResult = apiRateLimit(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+    }
+
+    const body = await request.json()
+    const { email } = newsletterSchema.parse(body)
+
+    // Check if already subscribed
+    const existingSubscription = await prisma.newsletter.findUnique({
+      where: { email },
+    })
+
+    if (existingSubscription) {
+      throw new ConflictError("Email is already subscribed to our newsletter")
+    }
+
+    // Create new subscription
+    await prisma.newsletter.create({
+      data: {
+        email,
+      },
+    })
+
+    // TODO: Send welcome email
+    // await sendWelcomeEmail(email)
+
+    return NextResponse.json({
+      message: "Successfully subscribed to newsletter",
+    })
+  } catch (error) {
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const email = searchParams.get("email")
+    const token = searchParams.get("token")
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
 
-    const existingSubscription = await db.newsletter.findUnique({
+    // TODO: Verify unsubscribe token for security
+    // if (!token || !verifyUnsubscribeToken(email, token)) {
+    //   return NextResponse.json({ error: "Invalid unsubscribe link" }, { status: 400 })
+    // }
+
+    await prisma.newsletter.delete({
       where: { email },
     })
 
-    if (existingSubscription) {
-      return NextResponse.json({ message: "Already subscribed" }, { status: 200 })
-    }
-
-    await db.newsletter.create({
-      data: { email },
+    return NextResponse.json({
+      message: "Successfully unsubscribed from newsletter",
     })
-
-    return NextResponse.json({ message: "Successfully subscribed" })
   } catch (error) {
-    console.error("Error subscribing to newsletter:", error)
-    return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }

@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { type NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
+import { orderSchema } from "@/lib/validation"
+import { handleApiError, AuthenticationError, ValidationError } from "@/lib/errors"
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -11,22 +13,20 @@ export async function GET() {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      throw new AuthenticationError()
     }
 
-    const orders = await db.order.findMany({
+    const orders = await prisma.order.findMany({
       where: { userId: user.id },
       include: {
         orderItems: {
           include: {
             product: {
-              include: {
-                artisan: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                  },
-                },
+              select: {
+                id: true,
+                name: true,
+                images: true,
+                price: true,
               },
             },
           },
@@ -37,95 +37,139 @@ export async function GET() {
 
     return NextResponse.json(orders)
   } catch (error) {
-    console.error("Error fetching orders:", error)
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      throw new AuthenticationError()
     }
 
-    const { shippingAddress, paymentMethod } = await request.json()
+    const body = await request.json()
+    const { shippingAddress, paymentMethod } = orderSchema.parse(body)
 
-    // Get cart items
-    const cartItems = await db.cartItem.findMany({
+    // Get cart items with product details
+    const cartItems = await prisma.cartItem.findMany({
       where: { userId: user.id },
-      include: { product: true },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            stock: true,
+            isActive: true,
+          },
+        },
+      },
     })
 
     if (cartItems.length === 0) {
-      return NextResponse.json({ error: "Cart is empty" }, { status: 400 })
+      throw new ValidationError("Cart is empty")
     }
 
-    const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+    // Validate stock and active status
+    for (const item of cartItems) {
+      if (!item.product.isActive) {
+        throw new ValidationError(`Product ${item.product.name} is no longer available`)
+      }
+      if (item.product.stock < item.quantity) {
+        throw new ValidationError(`Insufficient stock for ${item.product.name}`)
+      }
+    }
+
+    const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+    const shippingCost = subtotal > 5000 ? 0 : 500 // Free shipping over 5000 KES
+    const total = subtotal + shippingCost
 
     let paymentId = null
+    let clientSecret = null
 
     if (paymentMethod === "STRIPE") {
-      // Create Stripe payment intent
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(total * 100), // Convert to cents
-        currency: "usd",
-        metadata: {
-          userId: user.id,
-        },
-      })
-      paymentId = paymentIntent.id
+      try {
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(total * 100), // Convert to cents
+          currency: "kes",
+          metadata: {
+            userId: user.id,
+            orderType: "product_purchase",
+          },
+        })
+        paymentId = paymentIntent.id
+        clientSecret = paymentIntent.client_secret
+      } catch (stripeError) {
+        console.error("Stripe error:", stripeError)
+        throw new ValidationError("Payment processing failed")
+      }
     }
 
-    // Create order
-    const order = await db.order.create({
-      data: {
-        userId: user.id,
-        total,
-        shippingAddress,
-        paymentMethod,
-        paymentId,
-        orderItems: {
-          create: cartItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.product.price,
-          })),
-        },
-      },
-      include: {
-        orderItems: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    })
-
-    // Clear cart
-    await db.cartItem.deleteMany({
-      where: { userId: user.id },
-    })
-
-    // Update product stock
-    for (const item of cartItems) {
-      await db.product.update({
-        where: { id: item.productId },
+    // Create order in transaction
+    const order = await prisma.$transaction(async (tx) => {
+      // Create the order
+      const newOrder = await tx.order.create({
         data: {
-          stock: {
-            decrement: item.quantity,
+          userId: user.id,
+          total,
+          subtotal,
+          shippingCost,
+          shippingAddress: JSON.stringify(shippingAddress),
+          paymentMethod,
+          paymentId,
+          status: paymentMethod === "CASH_ON_DELIVERY" ? "CONFIRMED" : "PENDING",
+          orderItems: {
+            create: cartItems.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.product.price,
+              total: item.product.price * item.quantity,
+            })),
+          },
+        },
+        include: {
+          orderItems: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                  images: true,
+                },
+              },
+            },
           },
         },
       })
-    }
+
+      // Update product stock
+      for (const item of cartItems) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        })
+      }
+
+      // Clear cart
+      await tx.cartItem.deleteMany({
+        where: { userId: user.id },
+      })
+
+      return newOrder
+    })
 
     return NextResponse.json({
       order,
-      clientSecret:
-        paymentMethod === "STRIPE" ? (await stripe.paymentIntents.retrieve(paymentId!)).client_secret : null,
+      clientSecret,
+      message: "Order created successfully",
     })
   } catch (error) {
-    console.error("Error creating order:", error)
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }

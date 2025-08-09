@@ -1,13 +1,24 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { getCurrentUser } from "@/lib/auth"
+import { productSchema } from "@/lib/validation"
+import { handleApiError, ValidationError, AuthenticationError } from "@/lib/errors"
+import { apiRateLimit } from "@/lib/rate-limit"
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const featured = searchParams.get("featured")
-    const limit = searchParams.get("limit")
+    const page = Number.parseInt(searchParams.get("page") || "1")
+    const limit = Math.min(Number.parseInt(searchParams.get("limit") || "12"), 50) // Max 50 items per page
     const category = searchParams.get("category")
     const search = searchParams.get("search")
+    const minPrice = searchParams.get("minPrice")
+    const maxPrice = searchParams.get("maxPrice")
+    const featured = searchParams.get("featured")
+    const sortBy = searchParams.get("sortBy") || "createdAt"
+    const sortOrder = searchParams.get("sortOrder") || "desc"
+
+    const skip = (page - 1) * limit
 
     const where: any = {
       isActive: true,
@@ -24,55 +35,113 @@ export async function GET(request: NextRequest) {
       ]
     }
 
+    if (minPrice || maxPrice) {
+      where.price = {}
+      if (minPrice) where.price.gte = Number.parseFloat(minPrice)
+      if (maxPrice) where.price.lte = Number.parseFloat(maxPrice)
+    }
+
     if (featured === "true") {
       where.isFeatured = true
     }
 
-    const products = await prisma.product.findMany({
-      where,
-      include: {
-        category: true,
-        seller: {
-          select: {
-            firstName: true,
-            lastName: true,
-            imageUrl: true,
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+          seller: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          _count: {
+            select: {
+              favorites: true,
+              reviews: true,
+            },
           },
         },
-        _count: {
-          select: {
-            reviews: true,
-          },
+        orderBy: {
+          [sortBy]: sortOrder as "asc" | "desc",
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: limit ? Number.parseInt(limit) : undefined,
-    })
+        skip,
+        take: limit,
+      }),
+      prisma.product.count({ where }),
+    ])
 
-    return NextResponse.json(products)
+    const totalPages = Math.ceil(total / limit)
+
+    return NextResponse.json({
+      products,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    })
   } catch (error) {
-    console.error("Error fetching products:", error)
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const rateLimitResult = apiRateLimit(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetTime?.toString() || "",
+          },
+        },
+      )
+    }
+
+    const user = await getCurrentUser()
+    if (!user) {
+      throw new AuthenticationError()
+    }
+
+    if (user.role !== "SELLER" && user.role !== "ARTISAN") {
+      throw new ValidationError("Only sellers and artisans can create products")
+    }
+
     const body = await request.json()
-    const { name, description, price, categoryId, images, sellerId, isFeatured = false, isActive = true } = body
+    const validatedData = productSchema.parse(body)
+
+    // Check if category exists
+    const category = await prisma.category.findUnique({
+      where: { id: validatedData.categoryId },
+    })
+
+    if (!category) {
+      throw new ValidationError("Invalid category")
+    }
 
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
-        price: Number.parseFloat(price),
-        categoryId,
-        images,
-        sellerId,
-        isFeatured,
-        isActive,
+        ...validatedData,
+        sellerId: user.id,
+        artisanId: user.role === "ARTISAN" ? user.id : undefined,
+        isActive: false, // Requires admin approval
       },
       include: {
         category: true,
@@ -80,15 +149,14 @@ export async function POST(request: NextRequest) {
           select: {
             firstName: true,
             lastName: true,
-            imageUrl: true,
           },
         },
       },
     })
 
-    return NextResponse.json(product)
+    return NextResponse.json(product, { status: 201 })
   } catch (error) {
-    console.error("Error creating product:", error)
-    return NextResponse.json({ error: "Failed to create product" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
