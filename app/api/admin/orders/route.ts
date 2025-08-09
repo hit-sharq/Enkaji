@@ -8,14 +8,14 @@ export async function GET() {
 
     const orders = await db.order.findMany({
       include: {
-        buyer: {
+        user: {
           select: {
             firstName: true,
             lastName: true,
             email: true,
           },
         },
-        items: {
+        orderItems: {
           include: {
             product: {
               select: {
