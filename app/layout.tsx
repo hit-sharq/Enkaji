@@ -1,28 +1,20 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
-import { CartProvider } from "@/components/providers/cart-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { CartProvider } from "@/components/providers/cart-provider"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-})
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
+  title: "Enkaji Trade Kenya - Kenya's B2B Marketplace",
   description:
-    "Connect with thousands of verified artisans and businesses across Kenya. Source products, compare prices, and grow your business on East Africa's most trusted B2B platform.",
-  keywords: "Kenya B2B marketplace, artisans, wholesale, trade, business, sourcing, Enkaji Trade Kenya",
-  authors: [{ name: "Enkaji Trade Kenya Team" }],
+    "Connect with businesses across Kenya. Buy and sell products, find suppliers, and grow your business with Kenya's leading B2B marketplace.",
+  keywords: "Kenya, B2B, marketplace, trade, business, suppliers, products, wholesale",
+  authors: [{ name: "Enkaji Trade Kenya" }],
   creator: "Enkaji Trade Kenya",
   publisher: "Enkaji Trade Kenya",
   formatDetection: {
@@ -30,33 +22,19 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://enkajitradekenya.com"),
-  alternates: {
-    canonical: "/",
-  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
-    title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
-    description:
-      "Connect with thousands of verified artisans and businesses across Kenya. Source products, compare prices, and grow your business.",
-    url: "https://enkajitradekenya.com",
+    title: "Enkaji Trade Kenya - Kenya's B2B Marketplace",
+    description: "Connect with businesses across Kenya. Buy and sell products, find suppliers, and grow your business.",
+    url: "/",
     siteName: "Enkaji Trade Kenya",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Enkaji Trade Kenya B2B Marketplace",
-      },
-    ],
     locale: "en_KE",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
-    description: "Connect with thousands of verified artisans and businesses across Kenya.",
-    images: ["/og-image.jpg"],
-    creator: "@enkajitradekenya",
+    title: "Enkaji Trade Kenya - Kenya's B2B Marketplace",
+    description: "Connect with businesses across Kenya. Buy and sell products, find suppliers, and grow your business.",
   },
   robots: {
     index: true,
@@ -69,10 +47,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
-  },
-  generator: "v0.dev",
 }
 
 export default function RootLayout({
@@ -81,9 +55,25 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: undefined,
+        variables: {
+          colorPrimary: "#ea580c", // orange-600
+          colorBackground: "#ffffff",
+          colorInputBackground: "#ffffff",
+          colorInputText: "#374151", // gray-700
+        },
+        elements: {
+          formButtonPrimary: "bg-orange-600 hover:bg-orange-700 text-white normal-case",
+          card: "shadow-lg",
+          headerTitle: "text-gray-900",
+          headerSubtitle: "text-gray-600",
+        },
+      }}
+    >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+        <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
             <CartProvider>
               {children}

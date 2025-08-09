@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 import { productSchema } from "@/lib/validation"
-import { handleApiError, ValidationError, AuthenticationError } from "@/lib/errors"
+import { handleApiError, ValidationError, AuthenticationError } from "@/lib/error"
 import { apiRateLimit } from "@/lib/rate-limit"
 
 export async function GET(request: NextRequest) {
@@ -120,8 +120,8 @@ export async function POST(request: NextRequest) {
       throw new AuthenticationError()
     }
 
-    if (user.role !== "SELLER" && user.role !== "ARTISAN") {
-      throw new ValidationError("Only sellers and artisans can create products")
+    if (user.role !== "SELLER") {
+      throw new ValidationError("Only sellers can create products")
     }
 
     const body = await request.json()
@@ -140,7 +140,6 @@ export async function POST(request: NextRequest) {
       data: {
         ...validatedData,
         sellerId: user.id,
-        artisanId: user.role === "ARTISAN" ? user.id : undefined,
         isActive: false, // Requires admin approval
       },
       include: {
