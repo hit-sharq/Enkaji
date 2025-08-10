@@ -1,6 +1,9 @@
 "use client"
-import { db } from "@/lib/db"
+
+import type React from "react"
+import { useState, useEffect } from "react"
 import { ProductCard } from "@/components/products/product-card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Filter } from "lucide-react"
@@ -31,7 +34,21 @@ interface Category {
   name: string
 }
 
-async function getCategories() {
+async function getProducts(params?: { search?: string; category?: string; limit?: number }) {
+  const searchParams = new URLSearchParams()
+
+  if (params?.search) searchParams.set("search", params.search)
+  if (params?.category) searchParams.set("category", params.category)
+  if (params?.limit) searchParams.set("limit", params.limit.toString())
+
+  const response = await fetch(`/api/products?${searchParams.toString()}`)
+  if (!response.ok) {
+    throw new Error("Failed to fetch products")
+  }
+  return response.json()
+}
+
+async function getCategories(): Promise<Category[]> {
   const response = await fetch("/api/categories")
   if (!response.ok) {
     throw new Error("Failed to fetch categories")
@@ -39,59 +56,93 @@ async function getCategories() {
   return response.json()
 }
 
-export async function ProductGrid({
-  searchParams,
-}: {
+interface ProductGridProps {
   searchParams: { [key: string]: string | string[] | undefined }
-}) {
-  const categorySlug = typeof searchParams.category === "string" ? searchParams.category : undefined
-  const searchQuery = typeof searchParams.search === "string" ? searchParams.search : undefined
+}
 
-  const products = await db.product.findMany({
-    where: {
-      isActive: true,
-      name: searchQuery ? { contains: searchQuery } : undefined,
-      category: categorySlug ? { slug: categorySlug } : undefined,
-    },
-    include: {
-      category: true,
-      seller: {
-        select: {
-          firstName: true,
-          lastName: true,
-          imageUrl: true,
-        },
-      },
-      _count: {
-        select: { reviews: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 24,
-  })
+export function ProductGrid({ searchParams }: ProductGridProps) {
+  const searchQuery = typeof searchParams.search === 'string' ? searchParams.search : ""
+  const categoryQuery = typeof searchParams.category === 'string' ? searchParams.category : "all"
+  
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState(searchQuery)
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryQuery)
+  const [currentPage, setCurrentPage] = useState(1)
+  const productsPerPage = 12
 
-  const categories = await getCategories()
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true)
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts({
+            search: searchQuery || undefined,
+            category: categoryQuery === "all" ? undefined : categoryQuery,
+          }),
+          getCategories(),
+        ])
+        setProducts(Array.isArray(productsData) ? productsData : [])
+        setCategories(Array.isArray(categoriesData) ? (categoriesData as Category[]) : [])
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [searchQuery, categoryQuery])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+  }
+
+  const filteredProducts = Array.isArray(products) ? products : []
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
+  const startIndex = (currentPage - 1) * productsPerPage
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage)
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
-      {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <form className="flex-1 flex gap-2">
+        <form onSubmit={handleSearch} className="flex-1 flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input placeholder="Search products..." value={searchQuery || ""} className="pl-10" readOnly />
+            <Input
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
           </div>
+          <Button type="submit">Search</Button>
         </form>
 
         <div className="flex gap-2">
-          <Select value={categorySlug || "all"} onValueChange={() => {}}>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-48">
               <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((category) => (
+              {categories.map((category: Category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
                 </SelectItem>
@@ -101,33 +152,47 @@ export async function ProductGrid({
         </div>
       </div>
 
-      {/* Products Grid */}
-      {products.length === 0 ? (
+      {paginatedProducts.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No products found</p>
           <p className="text-gray-400">Try adjusting your search or filters</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={{
-                id: p.id,
-                name: p.name,
-                description: p.description,
-                price: p.price,
-                images: p.images,
-                category: { id: p.category.id, name: p.category.name },
-                seller: {
-                  firstName: p.seller.firstName || "",
-                  lastName: p.seller.lastName || "",
-                  imageUrl: p.seller.imageUrl,
-                },
-                _count: { reviews: p._count.reviews },
-              }}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {paginatedProducts.map((product) => (
+            <ProductCard key={product.id} product={product as any} />
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-8">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <Button
+              key={page}
+              variant={currentPage === page ? "default" : "outline"}
+              onClick={() => setCurrentPage(page)}
+              className="w-10"
+            >
+              {page}
+            </Button>
+          ))}
+
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
         </div>
       )}
     </div>

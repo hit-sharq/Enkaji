@@ -18,8 +18,17 @@ export default async function NewProductPage() {
     redirect("/")
   }
 
-  if (user.role === "SELLER" && !user.sellerProfile?.isVerified) {
-    redirect("/dashboard")
+  // Fetch full profile to verify seller status
+  let isVerified = true
+  if (user.role === "SELLER") {
+    const fullUser = await db.user.findUnique({
+      where: { id: user.id },
+      include: { sellerProfile: true },
+    })
+    isVerified = !!fullUser?.sellerProfile?.isVerified
+    if (!isVerified) {
+      redirect("/dashboard")
+    }
   }
 
   const categories = await getCategories()

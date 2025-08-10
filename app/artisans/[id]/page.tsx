@@ -43,7 +43,33 @@ export default async function ArtisanProfilePage({ params }: { params: { id: str
     <div className="min-h-screen">
       <Header />
       <main>
-        <ArtisanProfile artisan={artisan} />
+        {/* Cast is safe based on the query include */}
+        <ArtisanProfile
+          artisan={{
+            id: artisan.id,
+            firstName: artisan.firstName,
+            lastName: artisan.lastName,
+            imageUrl: artisan.imageUrl,
+            sellerProfile: artisan.sellerProfile
+              ? {
+                  description: artisan.sellerProfile.description,
+                  location: artisan.sellerProfile.location,
+                  isVerified: artisan.sellerProfile.isVerified,
+                  businessName: artisan.sellerProfile.businessName,
+                  website: artisan.sellerProfile.website,
+                  phoneNumber: artisan.sellerProfile.phoneNumber,
+                }
+              : null,
+            products: artisan.products.map((p) => ({
+              id: p.id,
+              name: p.name,
+              price: p.price,
+              images: p.images,
+              category: { name: p.category.name },
+              _count: { reviews: p._count.reviews },
+            })),
+          }}
+        />
       </main>
       <Footer />
       <WhatsAppButton />

@@ -18,15 +18,18 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
             id: true,
             firstName: true,
             lastName: true,
+            imageUrl: true,
             sellerProfile: {
               select: {
                 businessName: true,
                 isVerified: true,
                 location: true,
-                bio: true,
+                description: true,
+                phoneNumber: true,
+                website: true,
+                businessType: true,
               },
             },
-            imageUrl: true,
           },
         },
         reviews: {
@@ -65,7 +68,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
 
     return NextResponse.json({
       ...product,
-      averageRating: avgRating._avg.rating || 0,
+      averageRating: avgRating._avg?.rating || 0,
     })
   } catch (error) {
     const { error: errorMessage, statusCode } = handleApiError(error)

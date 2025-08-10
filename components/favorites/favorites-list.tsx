@@ -1,9 +1,15 @@
 import { db } from "@/lib/db"
 import { ProductCard } from "@/components/products/product-card"
 
-export default async function FavoritesList() {
-  // In a real app, use the current user id (auth). For now, fetch a sample.
+interface FavoritesListProps {
+  userId: string
+}
+
+export default async function FavoritesList({ userId }: FavoritesListProps) {
   const favorites = await db.favorite.findMany({
+    where: {
+      userId: userId,
+    },
     include: {
       product: {
         include: {
@@ -15,7 +21,6 @@ export default async function FavoritesList() {
         },
       },
     },
-    take: 24,
   })
 
   if (favorites.length === 0) {

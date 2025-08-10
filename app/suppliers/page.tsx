@@ -44,7 +44,6 @@ export default async function SuppliersPage() {
       <Header />
 
       <main>
-        {/* Hero Section */}
         <section className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
@@ -54,7 +53,6 @@ export default async function SuppliersPage() {
                 reliability.
               </p>
 
-              {/* Search and Filters */}
               <div className="bg-white rounded-lg p-6 shadow-lg">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="md:col-span-2">
@@ -81,7 +79,6 @@ export default async function SuppliersPage() {
           </div>
         </section>
 
-        {/* Suppliers Grid */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
@@ -106,15 +103,14 @@ export default async function SuppliersPage() {
                 <Link key={supplier.id} href={`/suppliers/${supplier.id}`}>
                   <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full">
                     <CardContent className="p-6">
-                      {/* Supplier Header */}
                       <div className="flex items-start space-x-4 mb-4">
                         <div className="relative">
                           <Image
-                            src={supplier.imageUrl || "/placeholder.svg?height=60&width=60&query=avatar"}
+                            src={supplier.imageUrl || "/placeholder.svg?height=60&width=60&query=supplier-profile"}
                             alt={`${supplier.firstName ?? ""} ${supplier.lastName ?? ""}`}
                             width={60}
                             height={60}
-                            className="rounded-full object-cover"
+                            className="rounded-full"
                           />
                           <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                             <Verified className="w-4 h-4 text-white" />
@@ -122,7 +118,7 @@ export default async function SuppliersPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-gray-900 truncate">
-                            {supplier.firstName} {supplier.lastName}
+                            {(supplier.firstName ?? "") + " " + (supplier.lastName ?? "")}
                           </h3>
                           <div className="flex items-center text-sm text-gray-500 mt-1">
                             <MapPin className="w-4 h-4 mr-1" />
@@ -139,7 +135,6 @@ export default async function SuppliersPage() {
                         </div>
                       </div>
 
-                      {/* Supplier Stats */}
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div className="text-center p-3 bg-blue-50 rounded-lg">
                           <div className="flex items-center justify-center mb-1">
@@ -157,12 +152,10 @@ export default async function SuppliersPage() {
                         </div>
                       </div>
 
-                      {/* Bio */}
-                      {supplier.sellerProfile?.bio && (
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{supplier.sellerProfile.bio}</p>
+                      {supplier.sellerProfile?.description && (
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{supplier.sellerProfile.description}</p>
                       )}
 
-                      {/* Sample Products */}
                       {supplier.products.length > 0 && (
                         <div className="mb-4">
                           <h4 className="text-sm font-medium text-gray-700 mb-2">Sample Products:</h4>
@@ -176,7 +169,6 @@ export default async function SuppliersPage() {
                         </div>
                       )}
 
-                      {/* Badges */}
                       <div className="flex flex-wrap gap-2">
                         <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                           <Verified className="w-3 h-3 mr-1" />
@@ -204,7 +196,6 @@ export default async function SuppliersPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="py-16 bg-blue-50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">

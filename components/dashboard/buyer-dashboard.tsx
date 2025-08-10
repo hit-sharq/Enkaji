@@ -35,7 +35,7 @@ async function getBuyerStats(userId: string) {
         product: {
           include: {
             category: true,
-            artisan: {
+            seller: {
               select: {
                 firstName: true,
                 lastName: true,
@@ -59,10 +59,13 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-4">Buyer Dashboard</h1>
-      <p className="text-gray-600">Welcome back! Explore products and manage your orders.</p>
+      <div className="mb-8">
+        <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-2">
+          Welcome back, {user.firstName || "Friend"}!
+        </h1>
+        <p className="text-gray-600">Manage your orders, favorites, and profile</p>
+      </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardContent className="p-6">
@@ -114,7 +117,6 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Orders */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Orders</CardTitle>
@@ -152,7 +154,6 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
           </CardContent>
         </Card>
 
-        {/* Favorites */}
         <Card>
           <CardHeader>
             <CardTitle>Your Favorites</CardTitle>
@@ -164,9 +165,9 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                   <div key={favorite.id} className="flex items-center space-x-4 p-4 border rounded-lg">
                     <div className="w-16 h-16 bg-gray-200 rounded-md"></div>
                     <div className="flex-1">
-                      <p className="font-medium">{favorite.product.name}</p>
+                      <p className="font-medium">{(favorite as any).product.name}</p>
                       <p className="text-sm text-gray-600">
-                        ${favorite.product.price.toFixed(2)} • {favorite.product.category.name}
+                        ${(favorite as any).product.price.toFixed(2)} • {(favorite as any).product.category.name}
                       </p>
                     </div>
                   </div>
