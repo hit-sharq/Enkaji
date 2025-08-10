@@ -23,7 +23,14 @@ export default async function SellPage() {
               products today.
             </p>
           </div>
-          <SellerRegistrationForm user={user} />
+          <SellerRegistrationForm
+            user={{
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName ?? null,
+              lastName: user.lastName ?? null,
+            }}
+          />
         </div>
       </main>
       <Footer />

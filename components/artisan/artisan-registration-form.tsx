@@ -17,8 +17,8 @@ interface ArtisanRegistrationFormProps {
   user: {
     id: string
     email: string
-    firstName?: string
-    lastName?: string
+    firstName: string | null
+    lastName: string | null
   }
 }
 
@@ -38,7 +38,8 @@ export function ArtisanRegistrationForm({ user }: ArtisanRegistrationFormProps) 
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/artisan/register", {
+      const response = await fetch("/api/seller/register", {
+        // Use seller register since SELLER is the creator role
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,11 +87,11 @@ export function ArtisanRegistrationForm({ user }: ArtisanRegistrationFormProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={user.firstName || ""} disabled className="bg-gray-50" />
+              <Input id="firstName" value={user.firstName ?? ""} disabled className="bg-gray-50" />
             </div>
             <div>
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={user.lastName || ""} disabled className="bg-gray-50" />
+              <Input id="lastName" value={user.lastName ?? ""} disabled className="bg-gray-50" />
             </div>
           </div>
 

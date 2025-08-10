@@ -33,9 +33,6 @@ export async function POST(request: Request) {
       },
     })
 
-    // TODO: Notify relevant artisans based on category
-    // await notifyArtisansForRFQ(rfq)
-
     return NextResponse.json({
       success: true,
       message: "RFQ submitted successfully",
@@ -55,16 +52,15 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url)
-    const type = searchParams.get("type") // "my-rfqs" or "available" (for artisans)
+    const type = searchParams.get("type") // "my-rfqs" or "available" (for sellers)
 
     const where: any = {}
 
     if (type === "my-rfqs") {
       where.buyerId = user.id
-    } else if (type === "available" && user.role === "ARTISAN") {
-      // Show RFQs that match artisan's categories/expertise
+    } else if (type === "available" && user.role === "SELLER") {
       where.status = "OPEN"
-      // TODO: Add category matching based on artisan's specialties
+      // TODO: Add category matching based on seller's specialties
     } else {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }

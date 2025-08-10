@@ -20,12 +20,12 @@ interface ProductDetailsProps {
     category: {
       name: string
     }
-    artisan: {
+    seller: {
       id: string
       firstName: string | null
       lastName: string | null
       imageUrl: string | null
-      artisanProfile: {
+      sellerProfile: {
         bio: string | null
         location: string | null
       } | null
@@ -87,7 +87,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
   }
 
-  const artisanName = `${product.artisan.firstName || ""} ${product.artisan.lastName || ""}`.trim()
+  const sellerName = `${product.seller.firstName || ""} ${product.seller.lastName || ""}`.trim()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -96,7 +96,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <div className="space-y-4">
           <div className="aspect-square overflow-hidden rounded-lg">
             <Image
-              src={product.images[selectedImage] || "/placeholder.svg?height=600&width=600"}
+              src={product.images[selectedImage] || "/placeholder.svg?height=600&width=600&query=product%20image"}
               alt={product.name}
               width={600}
               height={600}
@@ -114,7 +114,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   }`}
                 >
                   <Image
-                    src={image || "/placeholder.svg?height=80&width=80"}
+                    src={image || "/placeholder.svg?height=80&width=80&query=product%20thumb"}
                     alt={`${product.name} ${index + 1}`}
                     width={80}
                     height={80}
@@ -146,8 +146,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 {product.avgRating.toFixed(1)} ({product._count.reviews} reviews)
               </span>
             </div>
-            <p className="text-3xl font-bold text-red-800 mb-4">${product.price.toFixed(2)}</p>
-            <p className="text-gray-600 leading-relaxed">{product.description}</p>
+            <p className="text-3xl font-bold text-red-800">KES {product.price.toLocaleString()}</p>
+            <p className="text-gray-600 leading-relaxed mt-4">{product.description}</p>
           </div>
 
           <Separator />
@@ -196,15 +196,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           <Separator />
 
-          {/* Artisan Info */}
+          {/* Seller Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
-                  {product.artisan.imageUrl ? (
+                  {product.seller.imageUrl ? (
                     <Image
-                      src={product.artisan.imageUrl || "/placeholder.svg"}
-                      alt={artisanName}
+                      src={product.seller.imageUrl || "/placeholder.svg?height=48&width=48&query=avatar"}
+                      alt={sellerName}
                       width={48}
                       height={48}
                       className="w-full h-full object-cover"
@@ -216,14 +216,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold">{artisanName || "Unknown Artisan"}</h3>
-                  <p className="text-sm text-gray-600">{product.artisan.artisanProfile?.location || "Kenya"}</p>
+                  <h3 className="font-semibold">{sellerName || "Unknown Artisan"}</h3>
+                  <p className="text-sm text-gray-600">{product.seller.sellerProfile?.location || "Kenya"}</p>
                 </div>
               </CardTitle>
             </CardHeader>
-            {product.artisan.artisanProfile?.bio && (
+            {product.seller.sellerProfile?.bio && (
               <CardContent>
-                <p className="text-gray-600">{product.artisan.artisanProfile.bio}</p>
+                <p className="text-gray-600">{product.seller.sellerProfile.bio}</p>
               </CardContent>
             )}
           </Card>
@@ -243,7 +243,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
                       {review.user.imageUrl ? (
                         <Image
-                          src={review.user.imageUrl || "/placeholder.svg"}
+                          src={review.user.imageUrl || "/placeholder.svg?height=40&width=40&query=avatar"}
                           alt="Reviewer"
                           width={40}
                           height={40}

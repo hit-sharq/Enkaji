@@ -12,16 +12,16 @@ interface ArtisanDashboardProps {
     lastName: string | null
     email: string
     imageUrl: string | null
-    artisanProfile: {
-      isApproved: boolean
+    sellerProfile: {
+      isVerified: boolean
     } | null
   }
 }
 
-async function getArtisanStats(userId: string) {
+async function getSellerStats(userId: string) {
   const [products, orders, totalRevenue] = await Promise.all([
     db.product.findMany({
-      where: { artisanId: userId },
+      where: { sellerId: userId },
       include: {
         category: true,
         _count: {
@@ -38,7 +38,7 @@ async function getArtisanStats(userId: string) {
         orderItems: {
           some: {
             product: {
-              artisanId: userId,
+              sellerId: userId,
             },
           },
         },
@@ -47,7 +47,7 @@ async function getArtisanStats(userId: string) {
         orderItems: {
           where: {
             product: {
-              artisanId: userId,
+              sellerId: userId,
             },
           },
           include: {
@@ -61,7 +61,7 @@ async function getArtisanStats(userId: string) {
     db.orderItem.aggregate({
       where: {
         product: {
-          artisanId: userId,
+          sellerId: userId,
         },
       },
       _sum: {
@@ -73,22 +73,22 @@ async function getArtisanStats(userId: string) {
   return {
     products,
     orders,
-    totalRevenue: totalRevenue._sum.price || 0,
+    totalRevenue: (totalRevenue._sum?.price as number | null) ?? 0,
   }
 }
 
 export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
-  const { products, orders, totalRevenue } = await getArtisanStats(user.id)
+  const { products, orders, totalRevenue } = await getSellerStats(user.id)
 
-  if (!user.artisanProfile?.isApproved) {
+  if (!user.sellerProfile?.isVerified) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-8 text-center">
-            <h2 className="font-playfair text-2xl font-bold mb-4">Artisan Application Pending</h2>
+            <h2 className="font-playfair text-2xl font-bold mb-4">Seller Verification Pending</h2>
             <p className="text-gray-600 mb-6">
-              Your artisan application is currently under review. You'll be notified once it's approved and you can
-              start listing your products.
+              Your seller profile is currently under review. You'll be notified once it's approved and you can start
+              listing your products.
             </p>
             <Badge variant="secondary" className="mb-4">
               Pending Approval
@@ -145,7 +145,7 @@ export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">${totalRevenue.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-900">KES {totalRevenue.toLocaleString()}</p>
               </div>
               <DollarSign className="w-8 h-8 text-red-800" />
             </div>
@@ -179,7 +179,7 @@ export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
                     <div>
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-gray-600">
-                        ${product.price.toFixed(2)} • {product.category.name}
+                        KES {product.price.toLocaleString()} • {product.category.name}
                       </p>
                       <p className="text-xs text-gray-500">{product._count.orderItems} sales</p>
                     </div>
@@ -221,7 +221,7 @@ export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
                     <div>
                       <p className="font-medium">Order #{order.id.slice(-8)}</p>
                       <p className="text-sm text-gray-600">
-                        {order.orderItems.length} items • ${order.total.toFixed(2)}
+                        {order.orderItems.length} items • KES {order.total.toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>

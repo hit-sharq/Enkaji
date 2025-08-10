@@ -11,7 +11,8 @@ export default async function ArtisanRegisterPage() {
     redirect("/sign-in")
   }
 
-  if (user.role === "ARTISAN") {
+  // Sellers are the creators in this schema
+  if (user.role === "SELLER") {
     redirect("/dashboard")
   }
 
@@ -26,7 +27,14 @@ export default async function ArtisanRegisterPage() {
               Join our community of skilled Masai artisans and share your authentic crafts with the world.
             </p>
           </div>
-          <ArtisanRegistrationForm user={user} />
+          <ArtisanRegistrationForm
+            user={{
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName ?? null,
+              lastName: user.lastName ?? null,
+            }}
+          />
         </div>
       </main>
       <Footer />

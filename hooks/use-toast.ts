@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast as sonnerToast } from "sonner"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -162,7 +163,13 @@ function toast({ ...props }: Toast) {
   }
 }
 
-function useToast() {
+type ToastOptions = {
+  title?: string
+  description?: string
+  variant?: "default" | "destructive"
+}
+
+export function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -177,9 +184,13 @@ function useToast() {
 
   return {
     ...state,
-    toast,
+    toast: ({ title, description, variant }: ToastOptions) => {
+      if (variant === "destructive") {
+        sonnerToast.error(title || "Error", { description })
+      } else {
+        sonnerToast.success(title || "Success", { description })
+      }
+    },
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
-
-export { useToast, toast }

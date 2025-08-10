@@ -7,13 +7,13 @@ import { db } from "@/lib/db"
 async function getArtisans() {
   return await db.user.findMany({
     where: {
-      role: "ARTISAN",
-      artisanProfile: {
-        isApproved: true,
+      role: "SELLER",
+      sellerProfile: {
+        isVerified: true,
       },
     },
     include: {
-      artisanProfile: true,
+      sellerProfile: true,
       products: {
         where: { isActive: true },
         take: 3,
@@ -45,7 +45,7 @@ export default async function ArtisansPage() {
           </p>
         </div>
 
-        <ArtisanGrid artisans={artisans} />
+        <ArtisanGrid artisans={artisans as any} />
       </main>
       <Footer />
       <WhatsAppButton />

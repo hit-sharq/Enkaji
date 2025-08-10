@@ -1,83 +1,36 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Slider } from "@/components/ui/slider"
-import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 
-const categories = ["Jewelry", "Textiles", "Wood Carvings", "Traditional Items", "Home Decor", "Accessories"]
-
-export function ShopFilters() {
-  const [priceRange, setPriceRange] = useState([0, 200])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, category])
-    } else {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
-    }
+type Category = {
+  id: string
+  name: string
+  _count?: {
+    products: number
   }
+}
 
+export function ShopFilters({ categories }: { categories: Category[] }) {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Categories</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {categories.map((category) => (
-            <div key={category} className="flex items-center space-x-2">
-              <Checkbox
-                id={category}
-                checked={selectedCategories.includes(category)}
-                onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
-              />
-              <label htmlFor={category} className="text-sm font-medium">
-                {category}
-              </label>
-            </div>
+    <Card>
+      <CardContent className="p-4 space-y-3">
+        <h3 className="font-semibold mb-2">Categories</h3>
+        <div className="space-y-2">
+          {categories.map((cat) => (
+            <label key={cat.id} className="flex items-center gap-2">
+              <Checkbox />
+              <Label className="flex-1 cursor-pointer">
+                {cat.name}
+                {typeof cat._count?.products === "number" && (
+                  <span className="text-gray-500 ml-2 text-xs">({cat._count.products})</span>
+                )}
+              </Label>
+            </label>
           ))}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Price Range</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <Slider value={priceRange} onValueChange={setPriceRange} max={200} step={5} className="w-full" />
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Availability</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Checkbox id="in-stock" />
-            <label htmlFor="in-stock" className="text-sm font-medium">
-              In Stock
-            </label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="pre-order" />
-            <label htmlFor="pre-order" className="text-sm font-medium">
-              Pre-order
-            </label>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Button className="w-full bg-red-800 hover:bg-red-900">Apply Filters</Button>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

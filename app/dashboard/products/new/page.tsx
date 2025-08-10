@@ -14,11 +14,11 @@ async function getCategories() {
 export default async function NewProductPage() {
   const user = await getCurrentUser()
 
-  if (!user || (user.role !== "ARTISAN" && user.role !== "ADMIN")) {
+  if (!user || (user.role !== "SELLER" && user.role !== "ADMIN")) {
     redirect("/")
   }
 
-  if (user.role === "ARTISAN" && !user.artisanProfile?.isApproved) {
+  if (user.role === "SELLER" && !user.sellerProfile?.isVerified) {
     redirect("/dashboard")
   }
 

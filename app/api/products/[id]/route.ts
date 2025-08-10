@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { productSchema } from "@/lib/validation"
 import { handleApiError, NotFoundError, AuthorizationError } from "@/lib/errors"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const product = await prisma.product.findUnique({
       where: {
@@ -22,22 +22,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
               select: {
                 businessName: true,
                 isVerified: true,
-              },
-            },
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            artisanProfile: {
-              select: {
+                location: true,
                 bio: true,
-                specialties: true,
-                isApproved: true,
               },
             },
+            imageUrl: true,
           },
         },
         reviews: {
@@ -46,6 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
               select: {
                 firstName: true,
                 lastName: true,
+                imageUrl: true,
               },
             },
           },
@@ -115,6 +105,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           select: {
             firstName: true,
             lastName: true,
+            imageUrl: true,
+            sellerProfile: true,
           },
         },
       },
@@ -127,7 +119,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await getCurrentUser()
     if (!user) {

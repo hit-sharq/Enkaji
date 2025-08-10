@@ -4,15 +4,17 @@ import { MapPin, Package } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
+interface SellerProfile {
+  bio: string | null
+  location: string | null
+}
+
 interface Artisan {
   id: string
   firstName: string | null
   lastName: string | null
   imageUrl: string | null
-  artisanProfile: {
-    bio: string | null
-    location: string | null
-  } | null
+  sellerProfile: SellerProfile | null
   products: Array<{
     id: string
     name: string
@@ -44,8 +46,8 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
         <Card key={artisan.id} className="overflow-hidden hover:shadow-lg transition-shadow">
           <div className="aspect-square relative overflow-hidden">
             <Image
-              src={artisan.imageUrl || "/placeholder-user.jpg"}
-              alt={`${artisan.firstName} ${artisan.lastName}`}
+              src={artisan.imageUrl || "/placeholder.svg?height=600&width=600&query=profile%20photo"}
+              alt={`${artisan.firstName ?? ""} ${artisan.lastName ?? ""}`}
               fill
               className="object-cover"
             />
@@ -56,10 +58,10 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
                 {artisan.firstName} {artisan.lastName}
               </h3>
 
-              {artisan.artisanProfile?.location && (
+              {artisan.sellerProfile?.location && (
                 <div className="flex items-center text-gray-600 mb-2">
                   <MapPin className="w-4 h-4 mr-1" />
-                  <span className="text-sm">{artisan.artisanProfile.location}</span>
+                  <span className="text-sm">{artisan.sellerProfile.location}</span>
                 </div>
               )}
 
@@ -68,12 +70,11 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
                 <span className="text-sm">{artisan._count.products} products</span>
               </div>
 
-              {artisan.artisanProfile?.bio && (
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4">{artisan.artisanProfile.bio}</p>
+              {artisan.sellerProfile?.bio && (
+                <p className="text-gray-600 text-sm line-clamp-3 mb-4">{artisan.sellerProfile.bio}</p>
               )}
             </div>
 
-            {/* Featured Products */}
             {artisan.products.length > 0 && (
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-900 mb-2">Featured Products</h4>
@@ -81,7 +82,7 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
                   {artisan.products.slice(0, 3).map((product) => (
                     <div key={product.id} className="aspect-square relative overflow-hidden rounded">
                       <Image
-                        src={product.images[0] || "/placeholder.jpg"}
+                        src={product.images[0] || "/placeholder.svg?height=120&width=120&query=product%20image"}
                         alt={product.name}
                         fill
                         className="object-cover"

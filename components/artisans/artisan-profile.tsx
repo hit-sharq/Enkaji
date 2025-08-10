@@ -11,9 +11,10 @@ interface ArtisanProfileProps {
     lastName: string | null
     imageUrl: string | null
     createdAt: Date
-    artisanProfile: {
+    sellerProfile: {
       bio: string | null
       location: string | null
+      isVerified?: boolean | null
     } | null
     products: Array<{
       id: string
@@ -27,6 +28,11 @@ interface ArtisanProfileProps {
       _count: {
         reviews: number
       }
+      seller?: {
+        firstName: string | null
+        lastName: string | null
+        imageUrl: string | null
+      } | null
     }>
   }
 }
@@ -41,8 +47,8 @@ export function ArtisanProfile({ artisan }: ArtisanProfileProps) {
             <CardContent className="p-6 text-center">
               <div className="aspect-square relative overflow-hidden rounded-full mx-auto mb-4 w-48 h-48">
                 <Image
-                  src={artisan.imageUrl || "/placeholder-user.jpg"}
-                  alt={`${artisan.firstName} ${artisan.lastName}`}
+                  src={artisan.imageUrl || "/placeholder.svg?height=192&width=192&query=profile%20photo"}
+                  alt={`${artisan.firstName ?? ""} ${artisan.lastName ?? ""}`}
                   fill
                   className="object-cover"
                 />
@@ -51,10 +57,10 @@ export function ArtisanProfile({ artisan }: ArtisanProfileProps) {
                 {artisan.firstName} {artisan.lastName}
               </h1>
 
-              {artisan.artisanProfile?.location && (
+              {artisan.sellerProfile?.location && (
                 <div className="flex items-center justify-center text-gray-600 mb-2">
                   <MapPin className="w-4 h-4 mr-1" />
-                  <span>{artisan.artisanProfile.location}</span>
+                  <span>{artisan.sellerProfile.location}</span>
                 </div>
               )}
 
@@ -68,7 +74,9 @@ export function ArtisanProfile({ artisan }: ArtisanProfileProps) {
                 <span>Joined {new Date(artisan.createdAt).toLocaleDateString()}</span>
               </div>
 
-              <Badge className="bg-green-100 text-green-800">Verified Artisan</Badge>
+              <Badge className="bg-green-100 text-green-800">
+                {artisan.sellerProfile?.isVerified ? "Verified Artisan" : "Community Artisan"}
+              </Badge>
             </CardContent>
           </Card>
         </div>
@@ -77,8 +85,8 @@ export function ArtisanProfile({ artisan }: ArtisanProfileProps) {
           <Card>
             <CardContent className="p-6">
               <h2 className="font-playfair text-2xl font-bold text-gray-900 mb-4">About {artisan.firstName}</h2>
-              {artisan.artisanProfile?.bio ? (
-                <p className="text-gray-700 leading-relaxed">{artisan.artisanProfile.bio}</p>
+              {artisan.sellerProfile?.bio ? (
+                <p className="text-gray-700 leading-relaxed">{artisan.sellerProfile.bio}</p>
               ) : (
                 <p className="text-gray-500 italic">This artisan hasn't added a bio yet.</p>
               )}
@@ -97,14 +105,18 @@ export function ArtisanProfile({ artisan }: ArtisanProfileProps) {
               <ProductCard
                 key={product.id}
                 product={{
-                  ...product,
-                  artisan: {
-                    firstName: artisan.firstName,
-                    lastName: artisan.lastName,
+                  id: product.id,
+                  name: product.name,
+                  description: product.description,
+                  price: product.price,
+                  images: product.images,
+                  category: { id: "", name: product.category.name },
+                  seller: {
+                    firstName: artisan.firstName ?? "",
+                    lastName: artisan.lastName ?? "",
                     imageUrl: artisan.imageUrl,
                   },
-                  avgRating: 0, // You might want to calculate this
-                  reviewCount: product._count.reviews,
+                  _count: { reviews: product._count.reviews },
                 }}
               />
             ))}

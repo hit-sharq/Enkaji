@@ -10,13 +10,13 @@ async function getProduct(id: string) {
     where: { id },
     include: {
       category: true,
-      artisan: {
+      seller: {
         select: {
           id: true,
           firstName: true,
           lastName: true,
           imageUrl: true,
-          artisanProfile: true,
+          sellerProfile: true,
         },
       },
       reviews: {
@@ -41,10 +41,9 @@ async function getProduct(id: string) {
 
   if (!product) return null
 
-  // Calculate average rating
   const avgRating =
     product.reviews.length > 0
-      ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length
+      ? product.reviews.reduce((sum: number, review) => sum + review.rating, 0) / product.reviews.length
       : 0
 
   return {
@@ -64,7 +63,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     <div className="min-h-screen">
       <Header />
       <main>
-        <ProductDetails product={product} />
+        <ProductDetails product={product as any} />
       </main>
       <Footer />
       <WhatsAppButton />

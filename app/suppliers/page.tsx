@@ -13,13 +13,13 @@ import Image from "next/image"
 export default async function SuppliersPage() {
   const suppliers = await db.user.findMany({
     where: {
-      role: "ARTISAN",
-      artisanProfile: {
-        isApproved: true,
+      role: "SELLER",
+      sellerProfile: {
+        isVerified: true,
       },
     },
     include: {
-      artisanProfile: true,
+      sellerProfile: true,
       products: {
         where: {
           isActive: true,
@@ -110,11 +110,11 @@ export default async function SuppliersPage() {
                       <div className="flex items-start space-x-4 mb-4">
                         <div className="relative">
                           <Image
-                            src={supplier.imageUrl || "/placeholder.svg"}
-                            alt={`${supplier.firstName} ${supplier.lastName}`}
+                            src={supplier.imageUrl || "/placeholder.svg?height=60&width=60&query=avatar"}
+                            alt={`${supplier.firstName ?? ""} ${supplier.lastName ?? ""}`}
                             width={60}
                             height={60}
-                            className="rounded-full"
+                            className="rounded-full object-cover"
                           />
                           <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                             <Verified className="w-4 h-4 text-white" />
@@ -126,7 +126,7 @@ export default async function SuppliersPage() {
                           </h3>
                           <div className="flex items-center text-sm text-gray-500 mt-1">
                             <MapPin className="w-4 h-4 mr-1" />
-                            {supplier.artisanProfile?.location || "Kenya"}
+                            {supplier.sellerProfile?.location || "Kenya"}
                           </div>
                           <div className="flex items-center mt-2">
                             <div className="flex items-center">
@@ -158,8 +158,8 @@ export default async function SuppliersPage() {
                       </div>
 
                       {/* Bio */}
-                      {supplier.artisanProfile?.bio && (
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{supplier.artisanProfile.bio}</p>
+                      {supplier.sellerProfile?.bio && (
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{supplier.sellerProfile.bio}</p>
                       )}
 
                       {/* Sample Products */}

@@ -6,8 +6,29 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 
+type CartItem = {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  image?: string | null
+}
+
 export function CartItems() {
-  const { items, updateQuantity, removeItem } = useCart()
+  const { state, dispatch } = useCart() as {
+    state: { items: CartItem[] }
+    dispatch: (action: any) => void
+  }
+
+  const items = state.items || []
+
+  const updateQuantity = (id: string, quantity: number) => {
+    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
+  }
+
+  const removeItem = (id: string) => {
+    dispatch({ type: "REMOVE_ITEM", payload: { id } })
+  }
 
   if (items.length === 0) {
     return (
@@ -27,7 +48,7 @@ export function CartItems() {
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <Image
-                src={item.image || "/placeholder.svg"}
+                src={item.image || "/placeholder.svg?height=80&width=80&query=cart%20item"}
                 alt={item.name}
                 width={80}
                 height={80}
@@ -36,11 +57,15 @@ export function CartItems() {
 
               <div className="flex-1">
                 <h3 className="font-semibold text-lg">{item.name}</h3>
-                <p className="text-red-800 font-bold">${item.price.toFixed(2)}</p>
+                <p className="text-red-800 font-bold">KES {item.price.toLocaleString()}</p>
               </div>
 
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                >
                   <Minus className="w-4 h-4" />
                 </Button>
                 <span className="w-8 text-center">{item.quantity}</span>

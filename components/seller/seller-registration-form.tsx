@@ -18,8 +18,8 @@ interface SellerRegistrationFormProps {
   user: {
     id: string
     email: string
-    firstName?: string
-    lastName?: string
+    firstName: string | null
+    lastName: string | null
   }
 }
 
@@ -95,11 +95,11 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={user.firstName || ""} disabled className="bg-gray-50" />
+              <Input id="firstName" value={user.firstName ?? ""} disabled className="bg-gray-50" />
             </div>
             <div>
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={user.lastName || ""} disabled className="bg-gray-50" />
+              <Input id="lastName" value={user.lastName ?? ""} disabled className="bg-gray-50" />
             </div>
           </div>
 
