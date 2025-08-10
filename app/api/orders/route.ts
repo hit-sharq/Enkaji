@@ -6,7 +6,7 @@ import { handleApiError, AuthenticationError, ValidationError } from "@/lib/erro
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2025-06-30.basil",
 })
 
 export async function GET() {
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
           shippingAddress: JSON.stringify(shippingAddress),
           paymentMethod,
           paymentId,
-          status: paymentMethod === "CASH_ON_DELIVERY" ? "CONFIRMED" : "PENDING",
+          status: paymentMethod === "MPESA" ? "CONFIRMED" : "PENDING",
           orderItems: {
             create: cartItems.map((item) => ({
               productId: item.productId,

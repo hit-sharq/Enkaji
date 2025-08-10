@@ -10,7 +10,7 @@ import { CartProvider } from "@/components/providers/cart-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Enkaji Trade Kenya - Kenya's Leading B2B Marketplace",
+  title: "Enkaji Trade Kenya - Kenya's Leading Marketplace",
   description: "Connect with thousands of verified artisans and businesses across Kenya.",
 }
 

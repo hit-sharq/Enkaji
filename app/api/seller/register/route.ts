@@ -1,59 +1,52 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
+import { handleApiError } from "@/lib/errors"
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth()
-
+    const { userId } = await auth()
+    
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const user = await db.user.findUnique({
-      where: { clerkId: userId },
+      where: { clerkId: userId }
     })
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const body = await request.json()
+    if (user.role === "SELLER") {
+      return NextResponse.json({ error: "User is already a seller" }, { status: 400 })
+    }
+
+    const body = await req.json()
     const { businessName, description, location, phoneNumber, website, businessType } = body
 
-    // Create or update seller profile
-    const sellerProfile = await db.sellerProfile.upsert({
-      where: { userId: user.id },
-      update: {
-        businessName,
-        description,
-        location,
-        phoneNumber,
-        website,
-        businessType,
-      },
-      create: {
+    // Update user role to SELLER
+    await db.user.update({
+      where: { id: user.id },
+      data: { role: "SELLER" }
+    })
+
+    // Create seller profile
+    const sellerProfile = await db.sellerProfile.create({
+      data: {
         userId: user.id,
         businessName,
         description,
         location,
         phoneNumber,
         website,
-        businessType,
-      },
+        businessType
+      }
     })
 
-    // Update user role to SELLER if not already
-    if (user.role !== "SELLER") {
-      await db.user.update({
-        where: { id: user.id },
-        data: { role: "SELLER" },
-      })
-    }
-
-    return NextResponse.json({ message: "Seller profile created successfully", profile: sellerProfile })
+    return NextResponse.json({ success: true, sellerProfile })
   } catch (error) {
-    console.error("Error creating seller profile:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return handleApiError(error)
   }
 }

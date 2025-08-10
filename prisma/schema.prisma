@@ -18,6 +18,7 @@ model User {
   lastName  String?
   imageUrl  String?
   role      UserRole @default(BUYER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -48,6 +49,7 @@ model SellerProfile {
   phoneNumber String?
   website     String?
   businessType String?
+  isVerified  Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -76,6 +78,7 @@ model Product {
   sellerId    String
   seller      User     @relation(fields: [sellerId], references: [id])
   isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -84,7 +87,7 @@ model Product {
   reviews    Review[]
   cartItems  CartItem[]
   bulkOrderRequests BulkOrderRequest[]
-
+  
   @@map("products")
 }
 
@@ -264,6 +267,7 @@ enum OrderStatus {
 enum PaymentMethod {
   STRIPE
   MPESA
+  CASH_ON_DELIVERY
 }
 
 enum BulkOrderStatus {

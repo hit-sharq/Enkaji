@@ -9,13 +9,13 @@ async function getArtisan(id: string) {
   return await db.user.findUnique({
     where: {
       id,
-      role: "ARTISAN",
-      artisanProfile: {
-        isApproved: true,
+      role: "SELLER",
+      sellerProfile: {
+        isVerified: true,
       },
     },
     include: {
-      artisanProfile: true,
+      sellerProfile: true,
       products: {
         where: { isActive: true },
         include: {

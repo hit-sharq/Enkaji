@@ -4,7 +4,7 @@ import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
 import { isUserAdmin } from "@/lib/auth"
 
 export default async function AdminPage() {
-  const { userId } = auth()
+  const { userId } = await auth()
 
   if (!userId) {
     redirect("/sign-in")

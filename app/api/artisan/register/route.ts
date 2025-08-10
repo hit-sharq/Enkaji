@@ -1,52 +1,53 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
+import { requireRole } from "@/lib/auth"
+import { handleApiError } from "@/lib/errors"
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth()
-
+    const { userId } = await auth()
+    
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const user = await db.user.findUnique({
-      where: { clerkId: userId },
+      where: { clerkId: userId }
     })
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    if (user.role === "ARTISAN") {
-      return NextResponse.json({ error: "User is already an artisan" }, { status: 400 })
+    if (user.role === "SELLER") {
+      return NextResponse.json({ error: "User is already a seller" }, { status: 400 })
     }
 
-    const body = await request.json()
-    const { bio, location, phoneNumber, specialties, experience } = body
+    const body = await req.json()
+    const { businessName, description, location, phoneNumber, website, businessType } = body
 
-    // Create artisan profile
-    await db.artisanProfile.create({
-      data: {
-        userId: user.id,
-        bio,
-        location,
-        phoneNumber,
-        specialties,
-        experience,
-        isApproved: false, // Requires admin approval
-      },
-    })
-
-    // Update user role to ARTISAN
+    // Update user role to SELLER
     await db.user.update({
       where: { id: user.id },
-      data: { role: "ARTISAN" },
+      data: { role: "SELLER" }
     })
 
-    return NextResponse.json({ message: "Application submitted successfully" })
+    // Create seller profile
+    const sellerProfile = await db.sellerProfile.create({
+      data: {
+        userId: user.id,
+        businessName,
+        description,
+        location,
+        phoneNumber,
+        website,
+        businessType
+      }
+    })
+
+    return NextResponse.json({ success: true, sellerProfile })
   } catch (error) {
-    console.error("Error registering artisan:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return handleApiError(error)
   }
 }

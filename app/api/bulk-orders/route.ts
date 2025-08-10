@@ -11,11 +11,11 @@ export async function POST(request: Request) {
 
     const { productId, quantity, message, unitPrice, totalPrice } = await request.json()
 
-    // Get product and artisan details
+    // Get product and seller details
     const product = await db.product.findUnique({
       where: { id: productId },
       include: {
-        artisan: {
+        seller: {
           select: {
             id: true,
             email: true,
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const bulkOrder = await db.bulkOrderRequest.create({
       data: {
         buyerId: user.id,
-        artisanId: product.artisanId,
+        sellerId: product.sellerId,
         productId,
         quantity,
         unitPrice,
@@ -44,8 +44,8 @@ export async function POST(request: Request) {
       },
     })
 
-    // TODO: Send email notification to artisan
-    // await sendBulkOrderNotification(product.artisan.email, bulkOrder)
+    // TODO: Send email notification to seller
+    // await sendBulkOrderNotification(product.seller.email, bulkOrder)
 
     return NextResponse.json({
       success: true,
@@ -72,8 +72,8 @@ export async function GET(request: Request) {
 
     if (type === "sent") {
       where.buyerId = user.id
-    } else if (type === "received" && user.role === "ARTISAN") {
-      where.artisanId = user.id
+    } else if (type === "received" && user.role === "SELLER") {
+      where.sellerId = user.id
     } else {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
             email: true,
           },
         },
-        artisan: {
+        seller: {
           select: {
             firstName: true,
             lastName: true,

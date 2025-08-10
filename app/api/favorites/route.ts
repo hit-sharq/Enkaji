@@ -15,7 +15,7 @@ export async function GET() {
         product: {
           include: {
             category: true,
-            artisan: {
+            seller: {
               select: {
                 firstName: true,
                 lastName: true,

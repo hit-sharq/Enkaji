@@ -1,25 +1,22 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { requireRole } from "@/lib/auth"
+import { requireAdmin } from "@/lib/auth"
+import { handleApiError } from "@/lib/errors"
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    await requireRole("ADMIN")
+    await requireAdmin()
 
-    const artisanProfile = await db.artisanProfile.update({
-      where: { userId: params.id },
-      data: { isApproved: true },
-    })
-
-    // Update user role to ARTISAN
-    await db.user.update({
+    const user = await db.user.update({
       where: { id: params.id },
-      data: { role: "ARTISAN" },
+      data: { role: "SELLER" }
     })
 
-    return NextResponse.json({ message: "Artisan approved successfully" })
+    return NextResponse.json({ success: true, user })
   } catch (error) {
-    console.error("Error approving artisan:", error)
-    return NextResponse.json({ error: "Failed to approve artisan" }, { status: 500 })
+    return handleApiError(error)
   }
 }
