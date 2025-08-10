@@ -1,14 +1,14 @@
 "use client"
 
-import { createContext, useContext, useReducer, type ReactNode } from "react"
-import { useToast } from "@/hooks/use-toast"
+import type React from "react"
+import { createContext, useContext, useReducer, useEffect } from "react"
 
 interface CartItem {
   id: string
   name: string
   price: number
-  image: string
   quantity: number
+  image?: string
 }
 
 interface CartState {
@@ -21,15 +21,11 @@ type CartAction =
   | { type: "REMOVE_ITEM"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
   | { type: "CLEAR_CART" }
+  | { type: "LOAD_CART"; payload: CartItem[] }
 
 const CartContext = createContext<{
   state: CartState
-  addItem: (item: CartItem) => void
-  removeItem: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => void
-  clearCart: () => void
-  items: CartItem[]
-  total: number
+  dispatch: React.Dispatch<CartAction>
 } | null>(null)
 
 function cartReducer(state: CartState, action: CartAction): CartState {
@@ -76,54 +72,40 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "CLEAR_CART":
       return { items: [], total: 0 }
 
+    case "LOAD_CART": {
+      return {
+        items: action.payload,
+        total: action.payload.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      }
+    }
+
     default:
       return state
   }
 }
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 })
-  const { toast } = useToast()
 
-  const addItem = (item: CartItem) => {
-    dispatch({ type: "ADD_ITEM", payload: item })
-    toast({
-      title: "Added to cart",
-      description: `${item.name} has been added to your cart.`,
-    })
-  }
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart")
+    if (savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart)
+        dispatch({ type: "LOAD_CART", payload: parsedCart })
+      } catch (error) {
+        console.error("Error loading cart from localStorage:", error)
+      }
+    }
+  }, [])
 
-  const removeItem = (id: string) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id })
-    toast({
-      title: "Removed from cart",
-      description: "Item has been removed from your cart.",
-    })
-  }
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(state.items))
+  }, [state.items])
 
-  const updateQuantity = (id: string, quantity: number) => {
-    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
-  }
-
-  const clearCart = () => {
-    dispatch({ type: "CLEAR_CART" })
-  }
-
-  return (
-    <CartContext.Provider
-      value={{
-        state,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        items: state.items,
-        total: state.total,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  )
+  return <CartContext.Provider value={{ state, dispatch }}>{children}</CartContext.Provider>
 }
 
 export function useCart() {

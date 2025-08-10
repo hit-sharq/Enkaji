@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation"
 
 export function Header() {
   const { user, isLoaded } = useUser()
-  const { items } = useCart()
+  const cart = useCart()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -35,7 +35,7 @@ export function Header() {
     }
   }, [user])
 
-  const cartItemsCount = items.reduce((total, item) => total + item.quantity, 0)
+  const cartItemsCount = cart.state.items.reduce((total: number, item: any) => total + item.quantity, 0)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()

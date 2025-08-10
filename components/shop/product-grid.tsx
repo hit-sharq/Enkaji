@@ -98,7 +98,7 @@ export function ProductGrid() {
     // Search is handled by useEffect
   }
 
-  const filteredProducts = products
+  const filteredProducts = Array.isArray(products) ? products : []
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
   const startIndex = (currentPage - 1) * productsPerPage
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage)
