@@ -14,7 +14,7 @@ export default function SignInPage() {
       subtitle="Sign in to continue to Enkaji Trade Kenya"
       footer={
         <>
-          {"Don’t have an account? "}
+          {"Don't have an account? "}
           <Link href="/sign-up" className="font-medium text-orange-600 hover:text-orange-700">
             Create one
           </Link>
@@ -44,7 +44,7 @@ export default function SignInPage() {
           },
         }}
         signUpUrl="/sign-up"
-        afterSignInUrl="/dashboard"
+        forceRedirectUrl="/dashboard"
         fallbackRedirectUrl="/dashboard"
       />
       <div className="text-xs text-muted-foreground">
