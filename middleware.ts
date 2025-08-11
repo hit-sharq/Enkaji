@@ -14,24 +14,31 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/shop(.*)",
   "/products(.*)",
+  "/sellers(.*)",
+  "/categories(.*)",
+  "/about",
+  "/contact",
+  "/blog(.*)",
+  "/artisans(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks(.*)",
 ])
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
-  
+
   // If user is signed in and tries to access sign-in/sign-up, redirect to dashboard
-  if (userId && (req.nextUrl.pathname.startsWith('/sign-in') || req.nextUrl.pathname.startsWith('/sign-up'))) {
-    return NextResponse.redirect(new URL('/dashboard', req.url))
+  if (userId && (req.nextUrl.pathname.startsWith("/sign-in") || req.nextUrl.pathname.startsWith("/sign-up"))) {
+    return NextResponse.redirect(new URL("/dashboard", req.url))
   }
-  
-  // Protect routes as before
+
+  // Protect routes - redirect to sign-in if not authenticated
   if (isProtectedRoute(req) && !userId) {
-    return NextResponse.redirect(new URL('/sign-in', req.url))
+    return NextResponse.redirect(new URL("/sign-in", req.url))
   }
-  
-  // Allow public routes
+
+  // Allow all other routes
   return NextResponse.next()
 })
 

@@ -30,6 +30,7 @@ export function Header() {
 
   useEffect(() => {
     if (user?.id) {
+      // Check if user is admin based on environment variable
       const adminIds = process.env.NEXT_PUBLIC_ADMIN_IDS?.split(",") || []
       setIsAdmin(adminIds.includes(user.id))
     }
@@ -97,19 +98,37 @@ export function Header() {
                   <Link href="/categories/electronics">Electronics & Technology</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link href="/categories/computers-it">Computers & IT</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/mobile-phones">Mobile Phones</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/categories/fashion-apparel">Fashion & Apparel</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/home-garden">Home & Garden</Link>
+                  <Link href="/categories/textiles-fabrics">Textiles & Fabrics</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/agriculture">Agriculture & Food</Link>
+                  <Link href="/categories/home-appliances">Home Appliances</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/construction">Construction Materials</Link>
+                  <Link href="/categories/agriculture-farming">Agriculture & Farming</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/categories/automotive">Automotive</Link>
+                  <Link href="/categories/food-beverages">Food & Beverages</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/construction-materials">Construction Materials</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/automotive-parts">Automotive Parts</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/vehicles-transport">Vehicles & Transport</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories/health-medical">Health & Medical</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
