@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
-import { Upload, X } from "lucide-react"
+import { X, ImageIcon } from "lucide-react"
 
 interface Category {
   id: string
@@ -34,14 +34,52 @@ interface ProductFormProps {
 export function ProductForm({ categories, product }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [images, setImages] = useState<string[]>(product?.images || [])
-  const [imageUrl, setImageUrl] = useState("")
+  const [isUploading, setIsUploading] = useState(false)
+  const [categoryId, setCategoryId] = useState(product?.categoryId || "")
   const { toast } = useToast()
   const router = useRouter()
 
-  const handleAddImage = () => {
-    if (imageUrl && !images.includes(imageUrl)) {
-      setImages([...images, imageUrl])
-      setImageUrl("")
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    setIsUploading(true)
+
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!response.ok) {
+          throw new Error("Upload failed")
+        }
+
+        const data = await response.json()
+        return data.url
+      })
+
+      const uploadedUrls = await Promise.all(uploadPromises)
+      setImages((prev) => [...prev, ...uploadedUrls])
+
+      toast({
+        title: "Images uploaded!",
+        description: `${uploadedUrls.length} image(s) uploaded successfully.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload images. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsUploading(false)
+      // Reset file input
+      e.target.value = ""
     }
   }
 
@@ -62,6 +100,9 @@ export function ProductForm({ categories, product }: ProductFormProps) {
       categoryId: formData.get("categoryId"),
       images,
     }
+    
+    console.log('Form data being sent:', productData)
+    console.log('Category ID from form:', formData.get("categoryId"))
 
     try {
       const url = product ? `/api/products/${product.id}` : "/api/products"
@@ -161,20 +202,38 @@ export function ProductForm({ categories, product }: ProductFormProps) {
           </div>
 
           <div>
-            <Label>Product Images</Label>
+            <Label>Product Images *</Label>
             <div className="space-y-4">
-              <div className="flex space-x-2">
-                <Input
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="Enter image URL"
-                  className="flex-1"
-                />
-                <Button type="button" onClick={handleAddImage} disabled={!imageUrl} variant="outline">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Add
-                </Button>
+              <div className="flex items-center justify-center w-full">
+                <label
+                  htmlFor="image-upload"
+                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <ImageIcon className="w-8 h-8 mb-4 text-gray-500" />
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Click to upload</span> product images
+                    </p>
+                    <p className="text-xs text-gray-500">PNG, JPG, JPEG up to 5MB each</p>
+                  </div>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                </label>
               </div>
+
+              {isUploading && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-800"></div>
+                  <span className="ml-2 text-sm text-gray-600">Uploading images...</span>
+                </div>
+              )}
 
               {images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -203,7 +262,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
           <div className="flex space-x-4">
             <Button
               type="submit"
-              disabled={isSubmitting || images.length === 0}
+              disabled={isSubmitting || images.length === 0 || isUploading}
               className="bg-red-800 hover:bg-red-900"
             >
               {isSubmitting ? "Saving..." : product ? "Update Product" : "Create Product"}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
+import { uploadToCloudinary } from "@/lib/cloudinary"
 
 export async function POST(request: Request) {
   try {
@@ -15,9 +16,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    // In a real app, you would upload to Cloudinary or similar service
-    // For now, we'll return a placeholder URL
-    const imageUrl = `/placeholder.svg?height=400&width=400&text=${encodeURIComponent(file.name)}`
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 })
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "File size must be less than 5MB" }, { status: 400 })
+    }
+
+    const imageUrl = await uploadToCloudinary(file)
 
     return NextResponse.json({ url: imageUrl })
   } catch (error) {

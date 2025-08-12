@@ -12,9 +12,13 @@ export const userRegistrationSchema = z.object({
 export const productSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  price: z.number().positive("Price must be positive"),
-  stock: z.number().int().min(0, "Stock cannot be negative"),
-  categoryId: z.string().uuid("Invalid category ID"),
+  price: z.union([z.string(), z.number()])
+    .transform((val) => typeof val === 'string' ? parseFloat(val) : val)
+    .pipe(z.number().positive("Price must be positive")),
+  stock: z.union([z.string(), z.number()])
+    .transform((val) => typeof val === 'string' ? parseInt(val, 10) : val)
+    .pipe(z.number().int().min(0, "Stock cannot be negative")),
+  categoryId: z.string().min(1, "Category is required"),
   images: z.array(z.string().url()).min(1, "At least one image is required"),
 })
 

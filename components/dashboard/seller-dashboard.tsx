@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2 } from "lucide-react"
+import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2, Loader2 } from "lucide-react"
+import Link from "next/link"
 
 interface User {
   id: string
@@ -24,28 +25,77 @@ interface SellerDashboardProps {
   user: User
 }
 
+interface DashboardData {
+  stats: {
+    totalProducts: number
+    totalOrders: number
+    totalRevenue: number
+    activeListings: number
+  }
+  recentOrders: Array<{
+    id: string
+    product: string
+    customer: string
+    amount: number
+    status: string
+    createdAt: string
+  }>
+  products: Array<{
+    id: string
+    name: string
+    price: number
+    stock: number
+    status: string
+    images: string[]
+    category: string
+  }>
+}
+
 export function SellerDashboard({ user }: SellerDashboardProps) {
   const [activeTab, setActiveTab] = useState("overview")
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Mock data - replace with real data
-  const stats = {
-    totalProducts: 12,
-    totalOrders: 45,
-    totalRevenue: 125000,
-    activeListings: 10,
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch("/api/seller/dashboard")
+        if (response.ok) {
+          const data = await response.json()
+          setDashboardData(data)
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    )
   }
 
-  const recentOrders = [
-    { id: "1", product: "Handwoven Basket", customer: "John Doe", amount: 2500, status: "pending" },
-    { id: "2", product: "Ceramic Vase", customer: "Jane Smith", amount: 4500, status: "completed" },
-    { id: "3", product: "Wooden Sculpture", customer: "Mike Johnson", amount: 8000, status: "processing" },
-  ]
+  if (!dashboardData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Unable to load dashboard</h3>
+          <p className="text-gray-600">Please try refreshing the page.</p>
+        </div>
+      </div>
+    )
+  }
 
-  const products = [
-    { id: "1", name: "Handwoven Basket", price: 2500, stock: 15, status: "active" },
-    { id: "2", name: "Ceramic Vase", price: 4500, stock: 8, status: "active" },
-    { id: "3", name: "Wooden Sculpture", price: 8000, stock: 3, status: "inactive" },
-  ]
+  const { stats, recentOrders, products } = dashboardData
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -85,7 +135,9 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.totalOrders}</div>
-                <p className="text-xs text-muted-foreground">+12% from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  {stats.totalOrders > 0 ? "Orders received" : "No orders yet"}
+                </p>
               </CardContent>
             </Card>
 
@@ -96,7 +148,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">KES {stats.totalRevenue.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">+8% from last month</p>
+                <p className="text-xs text-muted-foreground">From completed orders</p>
               </CardContent>
             </Card>
 
@@ -119,20 +171,26 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <CardDescription>Your latest customer orders</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{order.product}</p>
-                      <p className="text-sm text-gray-600">Customer: {order.customer}</p>
+              {recentOrders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No orders yet. Start by adding products to your store!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {recentOrders.map((order) => (
+                    <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{order.product}</p>
+                        <p className="text-sm text-gray-600">Customer: {order.customer}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">KES {order.amount.toLocaleString()}</p>
+                        <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">KES {order.amount.toLocaleString()}</p>
-                      <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -140,41 +198,65 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
         <TabsContent value="products" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">My Products</h2>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
+            <Link href="/dashboard/products/new">
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            </Link>
           </div>
 
           <Card>
             <CardContent className="p-0">
-              <div className="space-y-4 p-6">
-                {products.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-600">Stock: {product.stock} units</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="font-medium">KES {product.price.toLocaleString()}</p>
-                        <Badge variant={product.status === "active" ? "default" : "secondary"}>{product.status}</Badge>
+              {products.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
+                  <p className="text-gray-600 mb-4">Start selling by adding your first product</p>
+                  <Link href="/dashboard/products/new">
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Your First Product
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4 p-6">
+                  {products.map((product) => (
+                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{product.name}</p>
+                        <p className="text-sm text-gray-600">
+                          Stock: {product.stock} units • {product.category}
+                        </p>
                       </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="font-medium">KES {product.price.toLocaleString()}</p>
+                          <Badge variant={product.status === "active" ? "default" : "secondary"}>
+                            {product.status}
+                          </Badge>
+                        </div>
+                        <div className="flex gap-2">
+                          <Link href={`/products/${product.id}`}>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          <Link href={`/dashboard/products/${product.id}/edit`}>
+                            <Button size="sm" variant="outline">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          <Button size="sm" variant="outline">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -188,25 +270,33 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <CardDescription>Manage your customer orders</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Order #{order.id}</p>
-                      <p className="text-sm text-gray-600">
-                        {order.product} - {order.customer}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="font-medium">KES {order.amount.toLocaleString()}</p>
-                        <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
+              {recentOrders.length === 0 ? (
+                <div className="text-center py-8">
+                  <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
+                  <p className="text-gray-600">Orders will appear here when customers purchase your products</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {recentOrders.map((order) => (
+                    <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Order #{order.id.slice(-8)}</p>
+                        <p className="text-sm text-gray-600">
+                          {order.product} - {order.customer}
+                        </p>
                       </div>
-                      <Button size="sm">View Details</Button>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="font-medium">KES {order.amount.toLocaleString()}</p>
+                          <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
+                        </div>
+                        <Button size="sm">View Details</Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

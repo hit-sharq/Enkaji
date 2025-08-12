@@ -125,6 +125,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    
+    // Debug: Log the received data
+    console.log('Received product data:', body)
+    console.log('Category ID received:', body.categoryId)
+    
     const validatedData = productSchema.parse(body)
 
     // Check if category exists
@@ -133,7 +138,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (!category) {
-      throw new ValidationError("Invalid category")
+      throw new ValidationError(`Invalid category: ${validatedData.categoryId}`)
     }
 
     const product = await prisma.product.create({
