@@ -15,9 +15,9 @@ interface User {
   email: string
   role: string
   sellerProfile?: {
-    businessName?: string
-    businessType?: string
-    description?: string
+    businessName?: string | null
+    businessType?: string | null
+    description?: string | null
   }
 }
 

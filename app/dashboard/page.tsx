@@ -14,16 +14,32 @@ export default async function DashboardPage() {
     redirect("/sign-in")
   }
 
+  // Transform the database user to match component expectations
+  const transformedUser = {
+    id: user.id,
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email,
+    role: user.role,
+    sellerProfile: user.sellerProfile
+      ? {
+          businessName: user.sellerProfile.businessName,
+          businessType: user.sellerProfile.businessType,
+          description: user.sellerProfile.description,
+        }
+      : undefined,
+  }
+
   const renderDashboard = () => {
     switch (user.role) {
       case "ADMIN":
-        return <AdminDashboard user={user} />
+        return <AdminDashboard user={transformedUser} />
       case "SELLER":
-        return <SellerDashboard user={user} />
+        return <SellerDashboard user={transformedUser} />
       case "ARTISAN":
-        return <ArtisanDashboard user={user} />
+        return <ArtisanDashboard user={transformedUser} />
       default:
-        return <BuyerDashboard user={user} />
+        return <BuyerDashboard user={transformedUser} />
     }
   }
 
