@@ -40,16 +40,16 @@ import { useToast } from "@/hooks/use-toast"
 interface User {
   id: string
   email: string
-  firstName: string
-  lastName: string
+  firstName: string | null
+  lastName: string | null
   role: string
   createdAt: string
   isActive: boolean
   sellerProfile?: {
-    businessName: string
-    businessType: string
+    businessName?: string | null
+    businessType?: string | null
     isVerified: boolean
-  }
+  } | null
 }
 
 interface Product {
@@ -89,7 +89,14 @@ interface Order {
 }
 
 interface AdminDashboardProps {
-  user: any
+  user: {
+    id: string
+    firstName: string | null
+    lastName: string | null
+    email: string
+    role: string
+    imageUrl?: string | null
+  }
 }
 
 export function AdminDashboard({ user }: AdminDashboardProps) {

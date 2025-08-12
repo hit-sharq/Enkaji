@@ -2,10 +2,10 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/auth"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
 import { SellerDashboard } from "@/components/dashboard/seller-dashboard"
-import { ArtisanDashboard } from "@/components/dashboard/artisan-dashboard"
 import { BuyerDashboard } from "@/components/dashboard/buyer-dashboard"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { UserRole } from "@prisma/client"
 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
@@ -17,27 +17,27 @@ export default async function DashboardPage() {
   // Transform the database user to match component expectations
   const transformedUser = {
     id: user.id,
-    firstName: user.firstName || "",
-    lastName: user.lastName || "",
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
+    imageUrl: user.imageUrl,
     role: user.role,
     sellerProfile: user.sellerProfile
       ? {
+          isVerified: user.sellerProfile.isVerified,
           businessName: user.sellerProfile.businessName,
           businessType: user.sellerProfile.businessType,
           description: user.sellerProfile.description,
         }
-      : undefined,
+      : null,
   }
 
   const renderDashboard = () => {
     switch (user.role) {
-      case "ADMIN":
+      case UserRole.ADMIN:
         return <AdminDashboard user={transformedUser} />
-      case "SELLER":
+      case UserRole.SELLER:
         return <SellerDashboard user={transformedUser} />
-      case "ARTISAN":
-        return <ArtisanDashboard user={transformedUser} />
       default:
         return <BuyerDashboard user={transformedUser} />
     }

@@ -39,6 +39,8 @@
     "@radix-ui/react-toggle": "latest",
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
+    "@stripe/react-stripe-js": "^3.9.0",
+    "@stripe/stripe-js": "^7.8.0",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",

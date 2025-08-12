@@ -10,15 +10,17 @@ import Link from "next/link"
 
 interface User {
   id: string
-  firstName: string
-  lastName: string
+  firstName: string | null
+  lastName: string | null
   email: string
   role: string
+  imageUrl?: string | null
   sellerProfile?: {
+    isVerified?: boolean
     businessName?: string | null
     businessType?: string | null
     description?: string | null
-  }
+  } | null
 }
 
 interface SellerDashboardProps {
