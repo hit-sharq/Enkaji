@@ -75,14 +75,21 @@ export async function isAdmin() {
 
 export async function isUserAdmin(userId: string) {
   try {
+    // First check if user is admin based on environment variable
+    const adminIds = process.env.ADMIN_IDS?.split(",") || []
+    const isAdminByEnv = adminIds.includes(userId)
+
+    // If they're admin by environment, return true immediately
+    if (isAdminByEnv) {
+      return true
+    }
+
+    // Otherwise check database role
     const user = await db.user.findUnique({
       where: { clerkId: userId },
     })
 
-    if (!user) return false
-
-    const adminIds = process.env.ADMIN_IDS?.split(",") || []
-    return adminIds.includes(user.clerkId) || user.role === "ADMIN"
+    return user?.role === "ADMIN" || false
   } catch (error) {
     console.error("Error checking if user is admin:", error)
     return false

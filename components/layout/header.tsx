@@ -29,11 +29,22 @@ export function Header() {
   const router = useRouter()
 
   useEffect(() => {
-    if (user?.id) {
-      // Check if user is admin based on environment variable
-      const adminIds = process.env.NEXT_PUBLIC_ADMIN_IDS?.split(",") || []
-      setIsAdmin(adminIds.includes(user.id))
+    const checkAdminStatus = async () => {
+      if (user?.id) {
+        try {
+          const response = await fetch("/api/auth/check-admin")
+          const data = await response.json()
+          setIsAdmin(data.isAdmin)
+        } catch (error) {
+          console.error("Error checking admin status:", error)
+          setIsAdmin(false)
+        }
+      } else {
+        setIsAdmin(false)
+      }
     }
+
+    checkAdminStatus()
   }, [user])
 
   const cartItemsCount = cart.state.items.reduce((total: number, item: any) => total + item.quantity, 0)
