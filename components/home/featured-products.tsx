@@ -18,11 +18,11 @@ interface Product {
     name: string
     slug: string
   }
-  artisan: {
+  artisan?: {
     firstName: string
     lastName: string
     imageUrl: string | null
-  }
+  } | null
 }
 
 export function FeaturedProducts() {
@@ -144,7 +144,13 @@ export function FeaturedProducts() {
                     <div>
                       <span className="text-lg font-bold text-gray-900">KSh {product.price.toLocaleString()}</span>
                       <div className="text-xs text-gray-500">
-                        by {product.artisan.firstName} {product.artisan.lastName}
+                        {product.artisan ? (
+                          <>
+                            by {product.artisan.firstName} {product.artisan.lastName}
+                          </>
+                        ) : (
+                          "by Enkaja Supplier"
+                        )}
                       </div>
                     </div>
                   </div>
