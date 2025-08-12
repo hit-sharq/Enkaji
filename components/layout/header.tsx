@@ -32,14 +32,23 @@ export function Header() {
     const checkAdminStatus = async () => {
       if (user?.id) {
         try {
+          console.log("🔍 Admin Debug Info:")
+          console.log("User ID:", user.id)
+          console.log("Checking admin status...")
+
           const response = await fetch("/api/auth/check-admin")
           const data = await response.json()
+
+          console.log("API Response:", data)
+          console.log("Is Admin:", data.isAdmin)
+
           setIsAdmin(data.isAdmin)
         } catch (error) {
-          console.error("Error checking admin status:", error)
+          console.error("❌ Error checking admin status:", error)
           setIsAdmin(false)
         }
       } else {
+        console.log("❌ No user ID found")
         setIsAdmin(false)
       }
     }
@@ -55,6 +64,10 @@ export function Header() {
       router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`)
       setSearchQuery("")
     }
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    console.log("🎯 Header Render - isAdmin:", isAdmin, "User:", user?.id)
   }
 
   return (
