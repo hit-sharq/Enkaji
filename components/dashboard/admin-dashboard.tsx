@@ -125,17 +125,17 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       // Fetch users
       const usersResponse = await fetch("/api/admin/users")
       const usersData = await usersResponse.json()
-      setUsers(usersData)
+      setUsers(Array.isArray(usersData.users) ? usersData.users : [])
 
       // Fetch products
       const productsResponse = await fetch("/api/admin/products")
       const productsData = await productsResponse.json()
-      setProducts(productsData)
+      setProducts(Array.isArray(productsData.products) ? productsData.products : [])
 
       // Fetch orders
       const ordersResponse = await fetch("/api/admin/orders")
       const ordersData = await ordersResponse.json()
-      setOrders(Array.isArray(ordersData) ? ordersData : [])
+      setOrders(Array.isArray(ordersData.orders) ? ordersData.orders : [])
 
       // Calculate stats
       const totalRevenue = ordersData.reduce((sum: number, order: Order) => sum + order.total, 0)
