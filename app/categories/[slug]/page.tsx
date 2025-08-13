@@ -115,7 +115,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         id: product.id,
         name: product.name,
         description: product.description,
-        price: product.price,
+        price: product.price.toNumber(),
         images: product.images || [],
         category: {
           id: product.category.id,

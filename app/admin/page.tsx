@@ -5,6 +5,7 @@ import { isUserAdmin } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { db } from "@/lib/db"
 
 export default async function AdminPage() {
   const { userId } = await auth()
@@ -17,6 +18,23 @@ export default async function AdminPage() {
 
   if (!isAdmin) {
     redirect("/dashboard")
+  }
+
+  // Get the current user with all required fields
+  const currentUser = await db.user.findUnique({
+    where: { clerkId: userId },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      imageUrl: true,
+    },
+  })
+
+  if (!currentUser) {
+    redirect("/sign-in")
   }
 
   return (
@@ -33,7 +51,7 @@ export default async function AdminPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
         <p className="text-gray-600">Manage users, products, and monitor platform performance</p>
       </div>
-      <AdminDashboard user={{ id: userId }} />
+      <AdminDashboard user={currentUser} />
     </div>
   )
 }

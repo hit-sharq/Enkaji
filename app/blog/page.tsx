@@ -1,35 +1,37 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { WhatsAppButton } from "@/components/ui/whatsapp-button"
+import { prisma } from "@/lib/db"
 import { BlogGrid } from "@/components/blog/blog-grid"
-import { db } from "@/lib/db"
-
-async function getBlogPosts() {
-  return await db.blogPost.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    take: 12,
-  })
-}
+import type { BlogPost } from "@/lib/types"
 
 export default async function BlogPage() {
-  const posts = await getBlogPosts()
+  const posts = await prisma.blogPost.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
+    include: {
+      author: {
+        select: {
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+    orderBy: { publishedAt: "desc" },
+  })
+
+  // Convert to match BlogPost interface
+  const blogPosts: BlogPost[] = posts.map(post => ({
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    imageUrl: post.featuredImage,
+    createdAt: post.createdAt,
+  }))
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">Stories from Our Artisans</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover the rich culture, traditions, and stories behind every handmade piece
-          </p>
-        </div>
-
-        <BlogGrid posts={posts} />
-      </main>
-      <Footer />
-      <WhatsAppButton />
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Blog</h1>
+      <BlogGrid posts={blogPosts} />
     </div>
   )
 }

@@ -31,15 +31,12 @@ export async function POST(request: Request) {
     }
 
     // Create bulk order request
-    const bulkOrder = await db.bulkOrderRequest.create({
+    const bulkOrder = await db.bulkOrder.create({
       data: {
-        buyerId: user.id,
-        sellerId: product.sellerId,
-        productId,
-        quantity,
-        unitPrice,
-        totalPrice,
-        message: message || "",
+        userId: user.id,
+        title: `Bulk order for ${product.name}`,
+        description: message || "",
+        totalAmount: totalPrice,
         status: "PENDING",
       },
     })
@@ -71,35 +68,49 @@ export async function GET(request: Request) {
     const where: any = {}
 
     if (type === "sent") {
-      where.buyerId = user.id
+      where.userId = user.id
     } else if (type === "received" && user.role === "SELLER") {
-      where.sellerId = user.id
+      // For received orders, we need to filter by seller through products
+      const userProducts = await db.product.findMany({
+        where: { sellerId: user.id },
+        select: { id: true }
+      })
+      const productIds = userProducts.map(p => p.id)
+      
+      where.items = {
+        some: {
+          productId: {
+            in: productIds
+          }
+        }
+      }
     } else {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }
 
-    const bulkOrders = await db.bulkOrderRequest.findMany({
+    const bulkOrders = await db.bulkOrder.findMany({
       where,
       include: {
-        product: {
-          select: {
-            name: true,
-            images: true,
-            price: true,
-          },
-        },
-        buyer: {
+        user: {
           select: {
             firstName: true,
             lastName: true,
             email: true,
           },
         },
-        seller: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                seller: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
       },

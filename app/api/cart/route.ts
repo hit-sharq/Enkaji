@@ -52,8 +52,9 @@ export async function GET() {
       })
     }
 
+    // Fix the total calculation by converting Decimal to number
     const total = activeCartItems.reduce((sum, item) => {
-      return sum + item.product.price * item.quantity
+      return sum + Number(item.product.price) * item.quantity
     }, 0)
 
     const itemCount = activeCartItems.reduce((sum, item) => sum + item.quantity, 0)
@@ -93,8 +94,9 @@ export async function POST(request: NextRequest) {
       throw new ValidationError("Product is not available")
     }
 
-    if (product.stock < quantity) {
-      throw new ValidationError(`Only ${product.stock} items available in stock`)
+    // Fix stock validation - use inventory instead of stock
+    if (product.inventory < quantity) {
+      throw new ValidationError(`Only ${product.inventory} items available in stock`)
     }
 
     // Check if item already exists in cart
@@ -111,8 +113,9 @@ export async function POST(request: NextRequest) {
     if (existingItem) {
       const newQuantity = existingItem.quantity + quantity
 
-      if (newQuantity > product.stock) {
-        throw new ValidationError(`Cannot add more items. Only ${product.stock} available in stock`)
+      // Fix existing item stock validation
+      if (newQuantity > product.inventory) {
+        throw new ValidationError(`Cannot add more items. Only ${product.inventory} available in stock`)
       }
 
       cartItem = await prisma.cartItem.update({

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         id: params.id,
         OR: [
           { userId: user.id }, // Buyer can see their order
-          { orderItems: { some: { product: { sellerId: user.id } } } }, // Seller can see orders for their products
+          { items: { some: { product: { sellerId: user.id } } } }, // Seller can see orders for their products
         ],
       },
       include: {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             email: true,
           },
         },
-        orderItems: {
+        items: {
           include: {
             product: {
               include: {
@@ -46,7 +46,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             },
           },
         },
-        sellerPayouts: true,
       },
     })
 
@@ -74,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const order = await prisma.order.findFirst({
       where: {
         id: params.id,
-        orderItems: { some: { product: { sellerId: user.id } } },
+        items: { some: { product: { sellerId: user.id } } },
       },
     })
 
@@ -90,7 +89,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         updatedAt: new Date(),
       },
       include: {
-        orderItems: {
+        items: {
           include: {
             product: true,
           },
@@ -118,7 +117,7 @@ async function processSellerPayouts(order: any) {
   // Group order items by seller
   const sellerItems = new Map()
 
-  for (const item of order.orderItems) {
+  for (const item of order.items) {
     const sellerId = item.product.sellerId
     if (!sellerItems.has(sellerId)) {
       sellerItems.set(sellerId, [])
@@ -129,20 +128,23 @@ async function processSellerPayouts(order: any) {
   // Create payout records for each seller
   for (const [sellerId, items] of sellerItems) {
     const grossAmount = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
-    const platformCommission = grossAmount * PLATFORM_COMMISSION_RATE
-    const paymentProcessingFee = grossAmount * PAYMENT_PROCESSING_FEE_RATE + PAYMENT_PROCESSING_FIXED_FEE
-    const netAmount = grossAmount - platformCommission - paymentProcessingFee
+    const platformFee = grossAmount * PLATFORM_COMMISSION_RATE
+    const processingFee = grossAmount * PAYMENT_PROCESSING_FEE_RATE + PAYMENT_PROCESSING_FIXED_FEE
+    const netAmount = grossAmount - platformFee - processingFee
 
     await prisma.sellerPayout.create({
       data: {
         sellerId,
         orderId: order.id,
+        amount: netAmount,
         grossAmount,
-        platformCommission,
-        paymentProcessingFee,
-        netAmount,
+        platformFee,
+        processingFee,
         status: "PENDING",
-        currency: "KES",
+        recipientDetails: {
+          method: "MPESA",
+          phone: "+254700000000" // Placeholder - should get from seller profile
+        }
       },
     })
   }

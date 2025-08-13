@@ -12,15 +12,6 @@ export async function GET() {
 
     const payouts = await prisma.sellerPayout.findMany({
       where: { sellerId: user.id },
-      include: {
-        order: {
-          select: {
-            id: true,
-            createdAt: true,
-            status: true,
-          },
-        },
-      },
       orderBy: { createdAt: "desc" },
     })
 
@@ -28,9 +19,9 @@ export async function GET() {
       where: { sellerId: user.id },
       _sum: {
         grossAmount: true,
-        platformCommission: true,
-        paymentProcessingFee: true,
-        netAmount: true,
+        platformFee: true,
+        processingFee: true,
+        amount: true,
       },
       _count: true,
     })
@@ -41,19 +32,19 @@ export async function GET() {
         status: "PENDING",
       },
       _sum: {
-        netAmount: true,
+        amount: true,
       },
     })
 
     return NextResponse.json({
       payouts,
       stats: {
-        totalEarnings: stats._sum.grossAmount || 0,
-        totalCommissions: stats._sum.platformCommission || 0,
-        totalFees: stats._sum.paymentProcessingFee || 0,
-        totalNet: stats._sum.netAmount || 0,
+        totalEarnings: Number(stats._sum?.grossAmount || 0),
+        totalCommissions: Number(stats._sum?.platformFee || 0),
+        totalFees: Number(stats._sum?.processingFee || 0),
+        totalNet: Number(stats._sum?.amount || 0),
         totalPayouts: stats._count,
-        pendingAmount: pendingPayouts._sum.netAmount || 0,
+        pendingAmount: Number(pendingPayouts._sum?.amount || 0),
       },
     })
   } catch (error) {

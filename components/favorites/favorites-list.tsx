@@ -36,7 +36,7 @@ export default async function FavoritesList({ userId }: FavoritesListProps) {
             id: favorite.product.id,
             name: favorite.product.name,
             description: favorite.product.description,
-            price: favorite.product.price,
+            price: favorite.product.price.toNumber(),
             images: favorite.product.images,
             category: { id: favorite.product.category.id, name: favorite.product.category.name },
             seller: {

@@ -16,8 +16,11 @@ export async function POST(request: NextRequest) {
     const { email } = newsletterSchema.parse(body)
 
     // Check if already subscribed
-    const existingSubscription = await prisma.newsletter.findUnique({
-      where: { email },
+    const existingSubscription = await prisma.contact.findFirst({
+      where: {
+        email,
+        type: "NEWSLETTER",
+      },
     })
 
     if (existingSubscription) {
@@ -25,9 +28,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new subscription
-    await prisma.newsletter.create({
+    await prisma.contact.create({
       data: {
         email,
+        type: "NEWSLETTER",
+        subject: "Newsletter Subscription",
+        message: "Newsletter subscription request",
       },
     })
 
@@ -58,8 +64,11 @@ export async function DELETE(request: NextRequest) {
     //   return NextResponse.json({ error: "Invalid unsubscribe link" }, { status: 400 })
     // }
 
-    await prisma.newsletter.delete({
-      where: { email },
+    await prisma.contact.deleteMany({
+      where: {
+        email,
+        type: "NEWSLETTER",
+      },
     })
 
     return NextResponse.json({

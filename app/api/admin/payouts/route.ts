@@ -21,16 +21,7 @@ export async function GET() {
             },
           },
         },
-        sellerPayouts: {
-          include: {
-            order: {
-              select: {
-                id: true,
-                createdAt: true,
-              },
-            },
-          },
-        },
+        // Remove sellerPayouts as it doesn't exist in the schema
       },
       orderBy: { createdAt: "desc" },
     })
@@ -45,7 +36,7 @@ export async function GET() {
     })
 
     const pendingAmount = await prisma.payoutRequest.aggregate({
-      where: { status: "REQUESTED" },
+      where: { status: "PENDING" }, // Use correct enum value
       _sum: {
         amount: true,
       },
@@ -69,28 +60,28 @@ export async function PATCH(request: NextRequest) {
   try {
     await requireAdmin()
 
-    const { payoutRequestId, status, transactionId, notes } = await request.json()
+    const { payoutRequestId, status, notes } = await request.json()
 
     const payoutRequest = await prisma.payoutRequest.update({
       where: { id: payoutRequestId },
       data: {
         status,
         processedAt: status === "COMPLETED" ? new Date() : null,
-        transactionId,
+        // Remove transactionId as it doesn't exist
         adminNotes: notes,
       },
     })
 
-    // Update related seller payouts
+    // Update related seller payouts - remove payoutRequestId references
     if (status === "COMPLETED") {
       await prisma.sellerPayout.updateMany({
-        where: { payoutRequestId },
-        data: { status: "PAID" },
+        where: { sellerId: payoutRequest.sellerId },
+        data: { status: "COMPLETED" },
       })
     } else if (status === "REJECTED") {
       await prisma.sellerPayout.updateMany({
-        where: { payoutRequestId },
-        data: { status: "PENDING", payoutRequestId: null },
+        where: { sellerId: payoutRequest.sellerId },
+        data: { status: "PENDING" },
       })
     }
 

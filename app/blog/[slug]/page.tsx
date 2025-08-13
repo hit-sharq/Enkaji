@@ -1,50 +1,65 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { WhatsAppButton } from "@/components/ui/whatsapp-button"
-import { Badge } from "@/components/ui/badge"
-import { db } from "@/lib/db"
 import { notFound } from "next/navigation"
 import Image from "next/image"
+import { prisma } from "@/lib/db"
 
-async function getBlogPost(slug: string) {
-  return await db.blogPost.findUnique({
-    where: { slug, published: true },
-  })
+interface BlogPostData {
+  id: string
+  title: string
+  content: string
+  featuredImage: string | null
+  publishedAt: Date | null
+  createdAt: Date
+  author: {
+    firstName: string | null
+    lastName: string | null
+  }
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug)
+  const post = await prisma.blogPost.findUnique({
+    where: { 
+      slug: params.slug,
+      status: "PUBLISHED",
+    },
+    include: {
+      author: {
+        select: {
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  })
 
   if (!post) {
     notFound()
   }
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <article className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <Badge variant="secondary" className="mb-4">
-              {new Date(post.createdAt).toLocaleDateString()}
-            </Badge>
-            <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
-            {post.excerpt && <p className="text-xl text-gray-600 mb-8">{post.excerpt}</p>}
+    <div className="container mx-auto px-4 py-8">
+      <article className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        
+        {post.featuredImage && (
+          <div className="relative w-full h-64 md:h-96 mb-8">
+            <Image
+              src={post.featuredImage}
+              alt={post.title}
+              fill
+              className="object-cover rounded-lg"
+            />
           </div>
-
-          {post.imageUrl && (
-            <div className="aspect-video relative overflow-hidden rounded-lg mb-8">
-              <Image src={post.imageUrl || "/placeholder.svg"} alt={post.title} fill className="object-cover" />
-            </div>
-          )}
-
-          <div className="prose prose-lg max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-          </div>
-        </article>
-      </main>
-      <Footer />
-      <WhatsAppButton />
+        )}
+        
+        <div className="prose prose-lg max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        </div>
+        
+        <div className="mt-8 text-sm text-gray-600">
+          <p>Published on {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</p>
+          <p>By {post.author.firstName} {post.author.lastName}</p>
+        </div>
+      </article>
     </div>
   )
 }

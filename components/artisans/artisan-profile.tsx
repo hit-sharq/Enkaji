@@ -2,36 +2,12 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle2, MapPin } from "lucide-react"
-
-type ProductLite = {
-  id: string
-  name: string
-  price: number
-  images: string[]
-  category: { name: string }
-  _count: { reviews: number }
-}
-
-type SellerProfileLite = {
-  description: string | null
-  location: string | null
-  isVerified: boolean
-  businessName: string | null
-  website: string | null
-  phoneNumber: string | null
-}
+import type { Artisan } from "@/lib/types"
 
 export function ArtisanProfile({
   artisan,
 }: {
-  artisan: {
-    id: string
-    firstName: string | null
-    lastName: string | null
-    imageUrl: string | null
-    sellerProfile: SellerProfileLite | null
-    products: ProductLite[]
-  }
+  artisan: Artisan
 }) {
   const fullName = `${artisan.firstName ?? ""} ${artisan.lastName ?? ""}`.trim()
   const avatar = artisan.imageUrl || "/placeholder.svg?height=96&width=96"

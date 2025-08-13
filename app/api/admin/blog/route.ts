@@ -41,8 +41,9 @@ export async function POST(request: Request) {
         slug,
         content,
         excerpt,
-        imageUrl,
-        published,
+        featuredImage: imageUrl, // Use featuredImage instead of imageUrl
+        status: published ? "PUBLISHED" : "DRAFT", // Use status instead of published
+        authorId: user.id, // Add required authorId field
       },
     })
 

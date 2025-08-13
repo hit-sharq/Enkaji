@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
+import { handleApiError } from "@/lib/errors"
 
 export async function POST(request: Request) {
   try {
@@ -9,38 +10,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { items, category, budget, deadline, additionalInfo } = await request.json()
+    const { title, description, category, quantity, budget, deadline, location } = await request.json()
 
-    // Create RFQ
-    const rfq = await db.rFQRequest.create({
+    const rfq = await prisma.rFQ.create({
       data: {
-        buyerId: user.id,
+        title,
+        description,
         category,
+        quantity,
         budget,
-        deadline: deadline ? new Date(deadline) : null,
-        additionalInfo: additionalInfo || "",
+        deadline,
+        location,
+        userId: user.id,
         status: "OPEN",
-        items: {
-          create: items.map((item: any) => ({
-            productName: item.productName,
-            quantity: item.quantity,
-            specifications: item.specifications || "",
-          })),
-        },
-      },
-      include: {
-        items: true,
       },
     })
 
     return NextResponse.json({
       success: true,
-      message: "RFQ submitted successfully",
-      rfqId: rfq.id,
+      rfq,
     })
   } catch (error) {
     console.error("Error creating RFQ:", error)
-    return NextResponse.json({ error: "Failed to submit RFQ" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to create RFQ" }, { status: 500 })
   }
 }
 
@@ -51,36 +43,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { searchParams } = new URL(request.url)
-    const type = searchParams.get("type") // "my-rfqs" or "available" (for sellers)
-
-    const where: any = {}
-
-    if (type === "my-rfqs") {
-      where.buyerId = user.id
-    } else if (type === "available" && user.role === "SELLER") {
-      where.status = "OPEN"
-      // TODO: Add category matching based on seller's specialties
-    } else {
-      return NextResponse.json({ error: "Invalid request" }, { status: 400 })
-    }
-
-    const rfqs = await db.rFQRequest.findMany({
-      where,
-      include: {
-        items: true,
-        buyer: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        _count: {
-          select: {
-            quotes: true,
-          },
-        },
+    const rfqs = await prisma.rFQ.findMany({
+      where: {
+        userId: user.id,
       },
       orderBy: { createdAt: "desc" },
     })

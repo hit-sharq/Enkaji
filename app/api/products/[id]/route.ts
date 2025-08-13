@@ -25,7 +25,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
                 isVerified: true,
                 location: true,
                 description: true,
-                phoneNumber: true,
+                phone: true,
                 website: true,
                 businessType: true,
               },

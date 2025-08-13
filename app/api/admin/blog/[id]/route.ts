@@ -24,8 +24,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         slug,
         content,
         excerpt,
-        imageUrl,
-        published,
+        featuredImage: imageUrl, // Use featuredImage instead of imageUrl
+        status: published ? "PUBLISHED" : "DRAFT", // Use status instead of published
       },
     })
 

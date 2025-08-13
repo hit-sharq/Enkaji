@@ -1,78 +1,108 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { WhatsAppButton } from "@/components/ui/whatsapp-button"
-import { ArtisanProfile } from "@/components/artisans/artisan-profile"
-import { db } from "@/lib/db"
 import { notFound } from "next/navigation"
+import { prisma } from "@/lib/db"
+import { ArtisanProfile } from "@/components/artisans/artisan-profile"
 
-async function getArtisan(id: string) {
-  return await db.user.findUnique({
-    where: {
-      id,
-      role: "SELLER",
+interface ProductLite {
+  id: string
+  name: string
+  price: number
+  images: string[]
+  category: { name: string }
+  _count: { reviews: number }
+}
+
+interface SellerProfileLite {
+  id: string
+  businessName: string
+  description: string | null
+  location: string
+  phone: string
+  isVerified: boolean
+}
+
+interface Artisan {
+  id: string
+  firstName: string | null
+  lastName: string | null
+  imageUrl: string | null
+  sellerProfile: SellerProfileLite | null
+  products: ProductLite[]
+}
+
+export default async function ArtisanPage({ params }: { params: { id: string } }) {
+  const artisan = await prisma.user.findUnique({
+    where: { id: params.id },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      imageUrl: true,
       sellerProfile: {
-        isVerified: true,
+        select: {
+          id: true,
+          businessName: true,
+          description: true,
+          location: true,
+          phone: true,
+          isVerified: true,
+        },
       },
-    },
-    include: {
-      sellerProfile: true,
       products: {
         where: { isActive: true },
-        include: {
-          category: true,
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          images: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
           _count: {
             select: {
               reviews: true,
             },
           },
         },
-        orderBy: { createdAt: "desc" },
       },
     },
   })
-}
-
-export default async function ArtisanProfilePage({ params }: { params: { id: string } }) {
-  const artisan = await getArtisan(params.id)
 
   if (!artisan) {
     notFound()
   }
 
+  // Convert Decimal to number for price and ensure type compatibility
+  const productsWithNumberPrice = artisan.products.map(product => ({
+    id: product.id,
+    name: product.name,
+    price: Number(product.price),
+    images: product.images,
+    category: { name: product.category.name },
+    _count: { reviews: product._count.reviews },
+  }))
+
+  const artisanData = {
+    id: artisan.id,
+    firstName: artisan.firstName,
+    lastName: artisan.lastName,
+    imageUrl: artisan.imageUrl,
+    sellerProfile: artisan.sellerProfile ? {
+      id: artisan.sellerProfile.id,
+      businessName: artisan.sellerProfile.businessName,
+      description: artisan.sellerProfile.description,
+      location: artisan.sellerProfile.location,
+      isVerified: artisan.sellerProfile.isVerified,
+      website: null,
+      phoneNumber: artisan.sellerProfile.phone,
+    } : null,
+    products: productsWithNumberPrice,
+  }
+
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        {/* Cast is safe based on the query include */}
-        <ArtisanProfile
-          artisan={{
-            id: artisan.id,
-            firstName: artisan.firstName,
-            lastName: artisan.lastName,
-            imageUrl: artisan.imageUrl,
-            sellerProfile: artisan.sellerProfile
-              ? {
-                  description: artisan.sellerProfile.description,
-                  location: artisan.sellerProfile.location,
-                  isVerified: artisan.sellerProfile.isVerified,
-                  businessName: artisan.sellerProfile.businessName,
-                  website: artisan.sellerProfile.website,
-                  phoneNumber: artisan.sellerProfile.phoneNumber,
-                }
-              : null,
-            products: artisan.products.map((p) => ({
-              id: p.id,
-              name: p.name,
-              price: p.price,
-              images: p.images,
-              category: { name: p.category.name },
-              _count: { reviews: p._count.reviews },
-            })),
-          }}
-        />
-      </main>
-      <Footer />
-      <WhatsAppButton />
+    <div className="container mx-auto px-4 py-8">
+      <ArtisanProfile artisan={artisanData} />
     </div>
   )
 }

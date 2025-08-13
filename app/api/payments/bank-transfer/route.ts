@@ -1,91 +1,81 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { getCurrentUser } from "@/lib/auth"
-import { handleApiError, AuthenticationError, ValidationError } from "@/lib/errors"
+import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { getCurrentUser } from "@/lib/auth"
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      throw new AuthenticationError()
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { orderId, bankDetails, amount } = await request.json()
+    const {
+      orderId,
+      bankName,
+      accountNumber,
+      accountName,
+      referenceNumber,
+      amount,
+    } = await request.json()
 
-    if (!bankDetails.accountNumber || !bankDetails.bankName || !bankDetails.accountName) {
-      throw new ValidationError("Complete bank details required")
-    }
-
-    // Create bank transfer payment record
+    // Create bank transfer payment
     const bankTransfer = await prisma.bankTransferPayment.create({
       data: {
-        orderId,
         userId: user.id,
+        orderId,
         amount,
-        bankName: bankDetails.bankName,
-        accountNumber: bankDetails.accountNumber,
-        accountName: bankDetails.accountName,
-        swiftCode: bankDetails.swiftCode,
+        bankName,
+        accountNumber,
+        accountName,
+        referenceNumber,
         status: "PENDING",
-        currency: "KES",
       },
     })
 
-    // Update order status
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status: "PENDING_PAYMENT",
-        paymentMethod: "BANK_TRANSFER",
-        paymentId: bankTransfer.id,
-      },
-    })
+    // Update order payment method
+    if (orderId) {
+      await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          paymentMethod: "BANK_TRANSFER",
+          paymentStatus: "PENDING",
+        },
+      })
+    }
 
     return NextResponse.json({
-      message: "Bank transfer payment initiated",
-      transferDetails: {
-        referenceNumber: bankTransfer.id,
-        amount: amount,
-        currency: "KES",
-        instructions: [
-          "Transfer the exact amount to the provided bank details",
-          "Use the reference number in your transfer description",
-          "Payment will be verified within 24 hours",
-          "Order will be processed after payment confirmation",
-        ],
-      },
+      success: true,
+      bankTransfer,
     })
   } catch (error) {
-    const { error: errorMessage, statusCode } = handleApiError(error)
-    return NextResponse.json({ error: errorMessage }, { status: statusCode })
+    console.error("Error creating bank transfer payment:", error)
+    return NextResponse.json({ error: "Failed to create bank transfer payment" }, { status: 500 })
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      throw new AuthenticationError()
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const transfers = await prisma.bankTransferPayment.findMany({
-      where: { userId: user.id },
-      include: {
-        order: {
-          select: {
-            id: true,
-            total: true,
-            status: true,
-            createdAt: true,
-          },
-        },
-      },
+    const { searchParams } = new URL(request.url)
+    const orderId = searchParams.get("orderId")
+
+    const where: any = { userId: user.id }
+    if (orderId) {
+      where.orderId = orderId
+    }
+
+    const bankTransfers = await prisma.bankTransferPayment.findMany({
+      where,
       orderBy: { createdAt: "desc" },
     })
 
-    return NextResponse.json(transfers)
+    return NextResponse.json(bankTransfers)
   } catch (error) {
-    const { error: errorMessage, statusCode } = handleApiError(error)
-    return NextResponse.json({ error: errorMessage }, { status: statusCode })
+    console.error("Error fetching bank transfers:", error)
+    return NextResponse.json({ error: "Failed to fetch bank transfers" }, { status: 500 })
   }
 }

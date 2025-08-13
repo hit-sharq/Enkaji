@@ -43,7 +43,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
           processingFee: 0, // Already deducted
           status: "PROCESSING",
           method: payoutRequest.method,
-          recipientDetails: payoutRequest.recipientDetails,
+          recipientDetails: payoutRequest.recipientDetails as any, // Type assertion for JsonValue
         },
       })
 

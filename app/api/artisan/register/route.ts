@@ -1,19 +1,18 @@
-import { NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
-import { requireRole } from "@/lib/auth"
 import { handleApiError } from "@/lib/errors"
 
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth()
-    
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const user = await db.user.findUnique({
-      where: { clerkId: userId }
+      where: { clerkId: userId },
     })
 
     if (!user) {
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
     // Update user role to SELLER
     await db.user.update({
       where: { id: user.id },
-      data: { role: "SELLER" }
+      data: { role: "SELLER" },
     })
 
     // Create seller profile
@@ -40,10 +39,10 @@ export async function POST(req: NextRequest) {
         businessName,
         description,
         location,
-        phoneNumber,
+        phone: phoneNumber, // Use phone instead of phoneNumber
         website,
-        businessType
-      }
+        businessType,
+      },
     })
 
     return NextResponse.json({ success: true, sellerProfile })

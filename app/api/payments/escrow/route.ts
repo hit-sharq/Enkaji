@@ -1,162 +1,141 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
-import { handleApiError, AuthenticationError, ValidationError } from "@/lib/errors"
+import { handleApiError } from "@/lib/errors"
+import { EscrowStatus } from "@prisma/client"
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      throw new AuthenticationError()
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { orderId, action } = await request.json()
+    const { orderId, amount } = await request.json()
 
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
+    // Create escrow payment
+    const escrowPayment = await prisma.escrowPayment.create({
+      data: {
+        orderId,
+        buyerId: user.id,
+        amount,
+        status: EscrowStatus.HELD,
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      escrowPayment,
+    })
+  } catch (error) {
+    console.error("Error creating escrow payment:", error)
+    return NextResponse.json({ error: "Failed to create escrow payment" }, { status: 500 })
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const user = await getCurrentUser()
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const orderId = searchParams.get("orderId")
+
+    const where: any = {}
+    if (orderId) {
+      where.orderId = orderId
+    }
+
+    // For buyers, show their escrow payments
+    if (user.role === "BUYER") {
+      where.buyerId = user.id
+    }
+
+    const escrowPayments = await prisma.escrowPayment.findMany({
+      where,
       include: {
-        orderItems: {
+        order: {
           include: {
-            product: {
+            items: {
               include: {
-                seller: true,
+                product: true,
               },
             },
           },
         },
-        escrowPayment: true,
       },
+      orderBy: { createdAt: "desc" },
     })
 
-    if (!order) {
-      throw new ValidationError("Order not found")
-    }
-
-    // Only buyer can release escrow or seller can request release
-    const isBuyer = order.userId === user.id
-    const isSeller = order.orderItems.some((item) => item.product.sellerId === user.id)
-
-    if (!isBuyer && !isSeller) {
-      throw new ValidationError("Unauthorized")
-    }
-
-    switch (action) {
-      case "HOLD":
-        // Create escrow hold (done during order creation)
-        if (!order.escrowPayment) {
-          await prisma.escrowPayment.create({
-            data: {
-              orderId: order.id,
-              amount: order.total,
-              status: "HELD",
-              heldAt: new Date(),
-            },
-          })
-        }
-        break
-
-      case "RELEASE":
-        // Buyer releases payment to seller
-        if (!isBuyer) {
-          throw new ValidationError("Only buyer can release escrow payment")
-        }
-
-        await prisma.escrowPayment.update({
-          where: { orderId: order.id },
-          data: {
-            status: "RELEASED",
-            releasedAt: new Date(),
-          },
-        })
-
-        // Process seller payouts
-        await processSellerPayouts(order)
-        break
-
-      case "REQUEST_RELEASE":
-        // Seller requests payment release
-        if (!isSeller) {
-          throw new ValidationError("Only seller can request payment release")
-        }
-
-        await prisma.escrowPayment.update({
-          where: { orderId: order.id },
-          data: {
-            status: "RELEASE_REQUESTED",
-            releaseRequestedAt: new Date(),
-          },
-        })
-
-        // Send notification to buyer
-        // TODO: Implement notification system
-        break
-
-      case "DISPUTE":
-        // Either party can raise a dispute
-        await prisma.escrowPayment.update({
-          where: { orderId: order.id },
-          data: {
-            status: "DISPUTED",
-            disputedAt: new Date(),
-          },
-        })
-
-        // Create dispute record
-        await prisma.paymentDispute.create({
-          data: {
-            orderId: order.id,
-            raisedBy: user.id,
-            status: "OPEN",
-            description: "Payment dispute raised",
-          },
-        })
-        break
-
-      default:
-        throw new ValidationError("Invalid action")
-    }
-
-    return NextResponse.json({ message: "Escrow action completed successfully" })
+    return NextResponse.json(escrowPayments)
   } catch (error) {
-    const { error: errorMessage, statusCode } = handleApiError(error)
-    return NextResponse.json({ error: errorMessage }, { status: statusCode })
+    console.error("Error fetching escrow payments:", error)
+    return NextResponse.json({ error: "Failed to fetch escrow payments" }, { status: 500 })
   }
 }
 
-async function processSellerPayouts(order: any) {
-  const PLATFORM_COMMISSION_RATE = 0.05 // 5%
-  const PAYMENT_PROCESSING_FEE_RATE = 0.029 // 2.9%
-  const PAYMENT_PROCESSING_FIXED_FEE = 30 // KES 30
-
-  // Group order items by seller
-  const sellerItems = new Map()
-
-  for (const item of order.orderItems) {
-    const sellerId = item.product.sellerId
-    if (!sellerItems.has(sellerId)) {
-      sellerItems.set(sellerId, [])
+export async function PATCH(request: Request) {
+  try {
+    const user = await getCurrentUser()
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
-    sellerItems.get(sellerId).push(item)
-  }
 
-  // Create payout records for each seller
-  for (const [sellerId, items] of sellerItems) {
-    const grossAmount = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
-    const platformCommission = grossAmount * PLATFORM_COMMISSION_RATE
-    const paymentProcessingFee = grossAmount * PAYMENT_PROCESSING_FEE_RATE + PAYMENT_PROCESSING_FIXED_FEE
-    const netAmount = grossAmount - platformCommission - paymentProcessingFee
+    const { escrowPaymentId, action } = await request.json()
 
-    await prisma.sellerPayout.create({
-      data: {
-        sellerId,
-        orderId: order.id,
-        grossAmount,
-        platformCommission,
-        paymentProcessingFee,
-        netAmount,
-        status: "PENDING",
-        currency: "KES",
+    const escrowPayment = await prisma.escrowPayment.findUnique({
+      where: { id: escrowPaymentId },
+      include: {
+        order: {
+          include: {
+            items: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
       },
     })
+
+    if (!escrowPayment) {
+      return NextResponse.json({ error: "Escrow payment not found" }, { status: 404 })
+    }
+
+    // Check if user is seller for this order
+    const isSeller = escrowPayment.order.items.some(
+      (item: any) => item.product.sellerId === user.id
+    )
+
+    if (!isSeller) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+    }
+
+    // Update escrow payment status
+    let updatedStatus: EscrowStatus
+    if (action === "release") {
+      updatedStatus = EscrowStatus.RELEASED
+    } else if (action === "dispute") {
+      updatedStatus = EscrowStatus.DISPUTED
+    } else {
+      return NextResponse.json({ error: "Invalid action" }, { status: 400 })
+    }
+
+    const updatedEscrowPayment = await prisma.escrowPayment.update({
+      where: { id: escrowPaymentId },
+      data: {
+        status: updatedStatus,
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      escrowPayment: updatedEscrowPayment,
+    })
+  } catch (error) {
+    console.error("Error updating escrow payment:", error)
+    return NextResponse.json({ error: "Failed to update escrow payment" }, { status: 500 })
   }
 }

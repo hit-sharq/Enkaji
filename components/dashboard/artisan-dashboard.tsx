@@ -1,248 +1,183 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { db } from "@/lib/db"
-import { Package, DollarSign, Eye, Plus } from "lucide-react"
-import Link from "next/link"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ProductForm } from "@/components/dashboard/product-form"
 
-interface ArtisanDashboardProps {
-  user: {
-    id: string
-    firstName: string | null
-    lastName: string | null
-    email: string
-    imageUrl: string | null
-    sellerProfile: {
-      isVerified: boolean
-    } | null
+interface Product {
+  id: string
+  name: string
+  price: number
+  inventory: number
+  isActive: boolean
+  createdAt: Date
+  images: string[]
+  category: {
+    name: string
   }
 }
 
-async function getSellerStats(userId: string) {
-  const [products, orders, totalRevenue] = await Promise.all([
-    db.product.findMany({
-      where: { sellerId: userId },
-      include: {
-        category: true,
-        _count: {
-          select: {
-            items: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    db.order.findMany({
-      where: {
-        items: {
-          some: {
-            product: {
-              sellerId: userId,
-            },
-          },
-        },
-      },
-      include: {
-        items: {
-          where: {
-            product: {
-              sellerId: userId,
-            },
-          },
-          include: {
-            product: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    db.orderItem.aggregate({
-      where: {
-        product: {
-          sellerId: userId,
-        },
-      },
-      _sum: {
-        price: true,
-      },
-    }),
-  ])
-
-  return {
-    products,
-    orders,
-    totalRevenue: (totalRevenue._sum?.price as number | null) ?? 0,
-  }
+interface Order {
+  id: string
+  orderNumber: string
+  status: string
+  total: number
+  createdAt: Date
+  items: {
+    quantity: number
+    product: {
+      name: string
+    }
+  }[]
 }
 
-export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
-  const { products, orders, totalRevenue } = await getSellerStats(user.id)
+export function ArtisanDashboard() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+    pendingOrders: 0,
+  })
 
-  if (!user.sellerProfile?.isVerified) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto">
-          <CardContent className="p-8 text-center">
-            <h2 className="font-playfair text-2xl font-bold mb-4">Seller Verification Pending</h2>
-            <p className="text-gray-600 mb-6">
-              Your seller profile is currently under review. You'll be notified once it's approved and you can start
-              listing your products.
-            </p>
-            <Badge variant="secondary" className="mb-4">
-              Pending Approval
-            </Badge>
-          </CardContent>
-        </Card>
-      </div>
-    )
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    fetchDashboardData()
+    fetchCategories()
+  }, [])
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch("/api/seller/dashboard")
+      const data = await response.json()
+      setProducts(data.products || [])
+      setOrders(data.orders || [])
+      setStats(data)
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error)
+    }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories")
+      const data = await response.json()
+      setCategories(data || [])
+    } catch (error) {
+      console.error("Error fetching categories:", error)
+    }
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-2">Artisan Dashboard</h1>
-          <p className="text-gray-600">Manage your products and track your sales</p>
-        </div>
-        <Link href="/dashboard/products/new">
-          <Button className="bg-red-800 hover:bg-red-900">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
-          </Button>
-        </Link>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Products</p>
-                <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-              </div>
-              <Package className="w-8 h-8 text-red-800" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
-              </div>
-              <Eye className="w-8 h-8 text-red-800" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">KES {totalRevenue.toLocaleString()}</p>
-              </div>
-              <DollarSign className="w-8 h-8 text-red-800" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Active Products</p>
-                <p className="text-2xl font-bold text-gray-900">{products.filter((p) => p.isActive).length}</p>
-              </div>
-              <Package className="w-8 h-8 text-red-800" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Products */}
+      <h1 className="text-3xl font-bold mb-8">Artisan Dashboard</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader>
-            <CardTitle>Your Products</CardTitle>
+            <CardTitle>Total Products</CardTitle>
           </CardHeader>
           <CardContent>
-            {products.length > 0 ? (
-              <div className="space-y-4">
-                {products.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+            <p className="text-2xl font-bold">{stats.totalProducts}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{stats.totalOrders}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{stats.totalRevenue}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Pending Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{stats.pendingOrders}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="products" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="products" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">Your Products</h2>
+            <ProductForm categories={categories} />
+          </div>
+          
+          <div className="grid gap-4">
+            {products.map((product) => (
+              <Card key={product.id}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-600">
-                        KES {product.price.toLocaleString()} • {product.category.name}
-                      </p>
-                      <p className="text-xs text-gray-500">{product._count.items} sales</p>
+                      <h3 className="font-semibold">{product.name}</h3>
+                      <p className="text-sm text-gray-600">{product.category.name}</p>
+                      <p className="text-lg font-bold">{product.price}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge variant={product.isActive ? "default" : "secondary"}>
                         {product.isActive ? "Active" : "Inactive"}
                       </Badge>
+                      <Button variant="outline" size="sm">
+                        Edit
+                      </Button>
                     </div>
                   </div>
-                ))}
-                <Link href="/dashboard/products">
-                  <Button variant="outline" className="w-full bg-transparent">
-                    Manage All Products
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No products yet</p>
-                <Link href="/dashboard/products/new">
-                  <Button className="mt-4 bg-red-800 hover:bg-red-900">Add Your First Product</Button>
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent Orders */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {orders.length > 0 ? (
-              <div className="space-y-4">
-                {orders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="orders" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Recent Orders</h2>
+          
+          <div className="grid gap-4">
+            {orders.map((order) => (
+              <Card key={order.id}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium">Order #{order.orderNumber || order.id.slice(-8)}</p>
+                      <h3 className="font-semibold">Order #{order.orderNumber}</h3>
                       <p className="text-sm text-gray-600">
-                        {order.items.length} items • KES {order.total.toLocaleString()}
+                        {order.items.map(item => item.product.name).join(", ")}
                       </p>
-                      <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      <p className="text-lg font-bold">{order.total}</p>
                     </div>
-                    <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>{order.status}</Badge>
+                    <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>
+                      {order.status}
+                    </Badge>
                   </div>
-                ))}
-                <Link href="/orders">
-                  <Button variant="outline" className="w-full bg-transparent">
-                    View All Orders
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No orders yet</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

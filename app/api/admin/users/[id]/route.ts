@@ -44,7 +44,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             id: true,
             name: true,
             price: true,
-            status: true,
             createdAt: true,
           },
           orderBy: { createdAt: "desc" },

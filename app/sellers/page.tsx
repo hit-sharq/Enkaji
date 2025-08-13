@@ -1,51 +1,88 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { WhatsAppButton } from "@/components/ui/whatsapp-button"
+import { prisma } from "@/lib/db"
 import { SellerGrid } from "@/components/sellers/seller-grid"
-import { db } from "@/lib/db"
 
-async function getSellers() {
-  return await db.user.findMany({
-    where: {
-      role: "SELLER",
-    },
-    include: {
-      sellerProfile: true,
-      products: {
-        where: { isActive: true },
-        take: 3,
-      },
-      _count: {
-        select: {
-          products: {
-            where: { isActive: true },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  })
+interface Seller {
+  id: string
+  firstName: string | null
+  lastName: string | null
+  imageUrl: string | null
+  sellerProfile: {
+    businessName: string | null
+    description: string | null
+    location: string | null
+    businessType: string | null
+    website: string | null
+  } | null
+  products: {
+    id: string
+    name: string
+    price: number
+    images: string[]
+  }[]
+  _count: {
+    products: number
+  }
 }
 
 export default async function SellersPage() {
-  const sellers = await getSellers()
+  const sellers = await prisma.user.findMany({
+    where: {
+      role: "SELLER",
+      sellerProfile: {
+        isNot: null,
+      },
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      imageUrl: true,
+      sellerProfile: {
+        select: {
+          id: true,
+          businessName: true,
+          description: true,
+          location: true,
+          isVerified: true,
+        },
+      },
+      products: {
+        where: { isActive: true },
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          images: true,
+        },
+      },
+      _count: {
+        select: {
+          products: true,
+        },
+      },
+    },
+  })
+
+  // Convert Decimal to number for price and transform sellerProfile
+  const sellersWithNumberPrice: Seller[] = sellers.map(seller => ({
+    ...seller,
+    products: seller.products.map(product => ({
+      ...product,
+      price: Number(product.price),
+    })),
+    sellerProfile: seller.sellerProfile ? {
+      businessName: seller.sellerProfile.businessName,
+      description: seller.sellerProfile.description,
+      location: seller.sellerProfile.location,
+      businessType: null,
+      website: null,
+    } : null,
+  }))
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">Meet Our Sellers</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover trusted sellers and businesses from across Kenya. From small enterprises to large manufacturers,
-            find the right partner for your business needs.
-          </p>
-        </div>
-
-        <SellerGrid sellers={sellers} />
-      </main>
-      <Footer />
-      <WhatsAppButton />
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Our Sellers</h1>
+      <SellerGrid sellers={sellersWithNumberPrice} />
     </div>
   )
 }
