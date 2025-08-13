@@ -55,7 +55,16 @@ interface DashboardData {
 
 export function SellerDashboard({ user }: SellerDashboardProps) {
   const [activeTab, setActiveTab] = useState("overview")
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
+    stats: {
+      totalProducts: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      activeListings: 0,
+    },
+    recentOrders: [],
+    products: [],
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -124,10 +133,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Products</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalProducts}</div>
-                <p className="text-xs text-muted-foreground">{stats.activeListings} active listings</p>
-              </CardContent>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
+              <p className="text-xs text-muted-foreground">{stats?.activeListings || 0} active listings</p>
+            </CardContent>
             </Card>
 
             <Card>
@@ -135,12 +144,12 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalOrders}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stats.totalOrders > 0 ? "Orders received" : "No orders yet"}
-                </p>
-              </CardContent>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {(stats?.totalOrders || 0) > 0 ? "Orders received" : "No orders yet"}
+              </p>
+            </CardContent>
             </Card>
 
             <Card>
@@ -148,10 +157,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">KES {stats.totalRevenue.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">From completed orders</p>
-              </CardContent>
+            <CardContent>
+              <div className="text-2xl font-bold">KES {(stats?.totalRevenue || 0).toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">From completed orders</p>
+            </CardContent>
             </Card>
 
             <Card>
@@ -159,10 +168,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Active Listings</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.activeListings}</div>
-                <p className="text-xs text-muted-foreground">Out of {stats.totalProducts} total</p>
-              </CardContent>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.activeListings || 0}</div>
+              <p className="text-xs text-muted-foreground">Out of {stats?.totalProducts || 0} total</p>
+            </CardContent>
             </Card>
           </div>
 

@@ -138,16 +138,20 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       setOrders(Array.isArray(ordersData.orders) ? ordersData.orders : [])
 
       // Calculate stats
-      const totalRevenue = ordersData.reduce((sum: number, order: Order) => sum + order.total, 0)
-      const pendingApprovals = usersData.filter(
+      const ordersArray = Array.isArray(ordersData.orders) ? ordersData.orders : []
+      const usersArray = Array.isArray(usersData.users) ? usersData.users : []
+      const productsArray = Array.isArray(productsData.products) ? productsData.products : []
+      
+      const totalRevenue = ordersArray.reduce((sum: number, order: Order) => sum + order.total, 0)
+      const pendingApprovals = usersArray.filter(
         (u: User) => u.role === "SELLER" && u.sellerProfile && !u.sellerProfile.isVerified,
       ).length
 
       setStats({
-        totalUsers: usersData.length,
-        totalSellers: usersData.filter((u: User) => u.role === "SELLER").length,
-        totalProducts: productsData.length,
-        totalOrders: ordersData.length,
+        totalUsers: usersArray.length,
+        totalSellers: usersArray.filter((u: User) => u.role === "SELLER").length,
+        totalProducts: productsArray.length,
+        totalOrders: ordersArray.length,
         totalRevenue,
         pendingApprovals,
       })
