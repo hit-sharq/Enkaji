@@ -23,37 +23,35 @@ export function HeroSection() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-enkaji-cream/80 backdrop-blur-sm px-4 py-2 rounded-full border border-enkaji-gold/30">
               <Globe className="w-4 h-4 text-enkaji-red" />
-              <span className="text-sm font-medium text-enkaji-brown">Connecting Africa to the World</span>
+              <span className="text-sm font-medium text-enkaji-brown">Kenya's Premier B2B Marketplace</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent">
-                  Enkaji
+                  Enkaji Trade Kenya
                 </span>
-                <br />
-                <span className="text-gray-900 dark:text-white">Marketplace</span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg">
-                Discover authentic African crafts, connect with skilled artisans, and support local communities through
-                our vibrant marketplace.
+                Connect with verified suppliers, discover quality products, and grow your business through Kenya's most
+                trusted B2B marketplace platform.
               </p>
             </div>
 
             {/* Stats */}
             <div className="flex gap-8">
               <div className="text-center">
-                <div className="text-2xl font-bold text-enkaji-red">10K+</div>
+                <div className="text-2xl font-bold text-enkaji-red">50K+</div>
                 <div className="text-sm text-gray-600">Products</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-enkaji-ochre">500+</div>
-                <div className="text-sm text-gray-600">Artisans</div>
+                <div className="text-2xl font-bold text-enkaji-ochre">5K+</div>
+                <div className="text-sm text-gray-600">Suppliers</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-enkaji-green">50+</div>
-                <div className="text-sm text-gray-600">Countries</div>
+                <div className="text-2xl font-bold text-enkaji-green">47</div>
+                <div className="text-sm text-gray-600">Counties</div>
               </div>
             </div>
 
@@ -62,7 +60,7 @@ export function HeroSection() {
               <Button asChild size="lg" className="bg-enkaji-red hover:bg-enkaji-red/90 text-white group">
                 <Link href="/shop">
                   <ShoppingBag className="w-5 h-5 mr-2" />
-                  Start Shopping
+                  Find Suppliers
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -74,7 +72,7 @@ export function HeroSection() {
               >
                 <Link href="/sell">
                   <Users className="w-5 h-5 mr-2" />
-                  Become a Seller
+                  Register as Supplier
                 </Link>
               </Button>
             </div>
@@ -85,7 +83,7 @@ export function HeroSection() {
             <div className="relative w-full h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/placeholder.svg?height=500&width=600"
-                alt="African Marketplace"
+                alt="Kenya B2B Marketplace"
                 className="w-full h-full object-cover"
               />
               {/* Overlay Cards */}
@@ -93,8 +91,8 @@ export function HeroSection() {
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-enkaji-green rounded-full"></div>
                   <div>
-                    <div className="text-sm font-medium">Live Orders</div>
-                    <div className="text-xs text-gray-600">234 active</div>
+                    <div className="text-sm font-medium">Active RFQs</div>
+                    <div className="text-xs text-gray-600">1,247 active</div>
                   </div>
                 </div>
               </div>
