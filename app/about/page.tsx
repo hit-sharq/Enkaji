@@ -119,7 +119,7 @@ export default function AboutPage() {
               <div className="order-1 lg:order-2 relative">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <Image
-                    src="/placeholder.svg?height=600&width=800"
+                    src="/image (2).jpg"
                     alt="Modern Kenyan business environment"
                     width={800}
                     height={600}
@@ -282,7 +282,7 @@ export default function AboutPage() {
                 </div>
                 <div className="relative">
                   <Image
-                    src="/placeholder.svg?height=400&width=600"
+                    src="/image (3).jpg"
                     alt="Kenya economic growth visualization"
                     width={600}
                     height={400}
