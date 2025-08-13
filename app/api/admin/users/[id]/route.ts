@@ -12,14 +12,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       case "activate":
         await prisma.user.update({
           where: { id: userId },
-          data: { isActive: true },
+          data: { isVerified: true },
         })
         break
 
       case "deactivate":
         await prisma.user.update({
           where: { id: userId },
-          data: { isActive: false },
+          data: { isVerified: false },
         })
         break
 

@@ -6,9 +6,8 @@ import { handleApiError, AuthenticationError, ValidationError } from "@/lib/erro
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  // Use a stable API version you have access to
   apiVersion: "2024-06-20",
-} as any)
+})
 
 export async function GET() {
   try {
@@ -115,8 +114,6 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user.id,
           total,
-          // Some schemas have shippingCost, include if present
-          // @ts-expect-error: field may exist in your schema
           shippingCost,
           shippingAddress: JSON.stringify(shippingAddress),
           paymentMethod,

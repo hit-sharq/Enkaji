@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,93 +14,133 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  email     String   @unique
-  firstName String?
-  lastName  String?
-  imageUrl  String?
-  role      UserRole @default(BUYER)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Buyer relations
-  orders     Order[]
-  favorites  Favorite[]
-  reviews    Review[]
-  cartItems  CartItem[]
-  rfqRequests RFQRequest[]
-  bulkOrdersSent BulkOrderRequest[] @relation("BulkOrderBuyer")
-
-  // Seller relations
-  sellerProfile SellerProfile?
-  products      Product[]
-  rfqQuotes     RFQQuote[]
-  bulkOrdersReceived BulkOrderRequest[] @relation("BulkOrderSeller")
+  id                String              @id @default(cuid())
+  clerkId           String              @unique
+  email             String              @unique
+  firstName         String?
+  lastName          String?
+  imageUrl          String?
+  role              UserRole            @default(BUYER)
+  isVerified        Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Relations
+  products          Product[]
+  orders            Order[]
+  cartItems         CartItem[]
+  favorites         Favorite[]
+  reviews           Review[]
+  blogPosts         BlogPost[]
+  rfqs              RFQ[]
+  bulkOrders        BulkOrder[]
+  artisanProfile    ArtisanProfile?
+  sellerProfile     SellerProfile?
+  
+  // Payment relations
+  sellerPayouts     SellerPayout[]
+  payoutRequests    PayoutRequest[]
+  sellerSubscription SellerSubscription?
+  escrowPayments    EscrowPayment[]
+  paymentDisputes   PaymentDispute[]
+  bankTransferPayments BankTransferPayment[]
 
   @@map("users")
 }
 
+model ArtisanProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio           String?
+  skills        String[]
+  experience    Int?     // years of experience
+  location      String?
+  phone         String?
+  website       String?
+  socialMedia   Json?    // Store social media links as JSON
+  isApproved    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("artisan_profiles")
+}
+
 model SellerProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName String?
-  description String?
-  location    String?
-  phoneNumber String?
-  website     String?
-  businessType String?
-  isVerified  Boolean @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName  String
+  businessType  String
+  description   String?
+  location      String
+  phone         String
+  website       String?
+  taxId         String?
+  bankDetails   Json?    // Store bank account details as JSON
+  isVerified    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("seller_profiles")
 }
 
 model Category {
-  id       String    @id @default(cuid())
-  name     String    @unique
-  slug     String    @unique
-  products Product[]
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("categories")
 }
 
 model Product {
-  id          String  @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  stock       Int     @default(0)
-  images      String[]
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  sellerId    String
-  seller      User     @relation(fields: [sellerId], references: [id])
-  isActive    Boolean  @default(true)
-  isFeatured  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  orderItems OrderItem[]
-  favorites  Favorite[]
-  reviews    Review[]
-  cartItems  CartItem[]
-  bulkOrderRequests BulkOrderRequest[]
+  id            String      @id @default(cuid())
+  name          String
+  description   String
+  price         Decimal
+  comparePrice  Decimal?
+  sku           String?     @unique
+  inventory     Int         @default(0)
+  images        String[]
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  sellerId      String
+  seller        User        @relation(fields: [sellerId], references: [id])
+  tags          String[]
+  specifications Json?
+  isActive      Boolean     @default(true)
+  isFeatured    Boolean     @default(false)
+  weight        Decimal?
+  dimensions    Json?       // {length, width, height}
+  shippingClass String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   
+  // Relations
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  favorites     Favorite[]
+  reviews       Review[]
+  bulkOrderItems BulkOrderItem[]
+
   @@map("products")
 }
 
 model CartItem {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity  Int    @default(1)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -106,18 +149,35 @@ model CartItem {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
-  status        OrderStatus @default(PENDING)
-  total         Float
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?
+  paymentIntentId String?
+  subtotal        Decimal
+  tax             Decimal       @default(0)
+  shipping        Decimal       @default(0)
+  total           Decimal
+  currency        String        @default("KES")
+  
+  // Shipping details
   shippingAddress Json
-  paymentMethod PaymentMethod
-  paymentId     String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  orderItems OrderItem[]
+  billingAddress  Json?
+  
+  // Tracking
+  trackingNumber  String?
+  estimatedDelivery DateTime?
+  deliveredAt     DateTime?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  // Relations
+  items           OrderItem[]
+  escrowPayment   EscrowPayment?
 
   @@map("orders")
 }
@@ -129,18 +189,18 @@ model OrderItem {
   productId String
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  price     Float
-  createdAt DateTime @default(now())
+  price     Decimal // Price at time of order
+  total     Decimal
 
   @@map("order_items")
 }
 
 model Favorite {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
@@ -148,144 +208,286 @@ model Favorite {
 }
 
 model Review {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  rating    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating    Int      // 1-5 stars
+  title     String?
   comment   String?
+  images    String[]
+  isVerified Boolean @default(false) // Verified purchase
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, productId])
   @@map("reviews")
 }
 
 model BlogPost {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  content   String
-  excerpt   String?
-  imageUrl  String?
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  content     String
+  excerpt     String?
+  featuredImage String?
+  authorId    String
+  author      User        @relation(fields: [authorId], references: [id])
+  status      PostStatus  @default(DRAFT)
+  tags        String[]
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@map("blog_posts")
 }
 
-model Newsletter {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+model RFQ {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  category    String
+  quantity    Int
+  budget      Decimal?
+  deadline    DateTime?
+  location    String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  status      RFQStatus @default(OPEN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  @@map("newsletter")
+  @@map("rfqs")
 }
 
-model BulkOrderRequest {
-  id        String   @id @default(cuid())
-  buyerId   String
-  buyer     User     @relation("BulkOrderBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
-  sellerId  String
-  seller    User     @relation("BulkOrderSeller", fields: [sellerId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity  Int
-  unitPrice Float
-  totalPrice Float
-  message   String?
-  status    BulkOrderStatus @default(PENDING)
-  response  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model BulkOrder {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  status      BulkOrderStatus @default(PENDING)
+  totalAmount Decimal?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  
+  items       BulkOrderItem[]
 
-  @@map("bulk_order_requests")
+  @@map("bulk_orders")
 }
 
-model RFQRequest {
-  id             String    @id @default(cuid())
-  buyerId        String
-  buyer          User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  category       String
-  budget         String?
-  deadline       DateTime?
-  additionalInfo String?
-  status         RFQStatus @default(OPEN)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+model BulkOrderItem {
+  id          String    @id @default(cuid())
+  bulkOrderId String
+  bulkOrder   BulkOrder @relation(fields: [bulkOrderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  quantity    Int
+  unitPrice   Decimal
+  totalPrice  Decimal
 
-  items  RFQItem[]
-  quotes RFQQuote[]
-
-  @@map("rfq_requests")
+  @@map("bulk_order_items")
 }
 
-model RFQItem {
-  id            String     @id @default(cuid())
-  rfqId         String
-  rfq           RFQRequest @relation(fields: [rfqId], references: [id], onDelete: Cascade)
-  productName   String
-  quantity      Int
-  specifications String?
-  createdAt     DateTime   @default(now())
+// Payment-related models
+model SellerPayout {
+  id              String        @id @default(cuid())
+  sellerId        String
+  seller          User          @relation(fields: [sellerId], references: [id])
+  orderId         String?       // Optional: link to specific order
+  amount          Decimal       // Net amount after fees
+  grossAmount     Decimal       // Original sale amount
+  platformFee     Decimal       // Platform commission (5%)
+  processingFee   Decimal       // Payment processing fee
+  status          PayoutStatus  @default(PENDING)
+  method          PayoutMethod  @default(MPESA)
+  recipientDetails Json         // Phone number, bank details, etc.
+  transactionId   String?       // External transaction ID
+  processedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  @@map("rfq_items")
+  @@map("seller_payouts")
 }
 
-model RFQQuote {
-  id          String     @id @default(cuid())
-  rfqId       String
-  rfq         RFQRequest @relation(fields: [rfqId], references: [id], onDelete: Cascade)
-  sellerId    String
-  seller      User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  totalPrice  Float
-  deliveryTime String
-  message     String?
-  status      QuoteStatus @default(PENDING)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+model PayoutRequest {
+  id              String             @id @default(cuid())
+  sellerId        String
+  seller          User               @relation(fields: [sellerId], references: [id])
+  amount          Decimal
+  method          PayoutMethod
+  recipientDetails Json              // Phone number, bank details, etc.
+  status          PayoutRequestStatus @default(PENDING)
+  adminNotes      String?
+  processedAt     DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
-  @@map("rfq_quotes")
+  @@map("payout_requests")
 }
 
+model SellerSubscription {
+  id                String             @id @default(cuid())
+  sellerId          String             @unique
+  seller            User               @relation(fields: [sellerId], references: [id])
+  plan              SubscriptionPlan   @default(BASIC)
+  status            SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  stripeSubscriptionId String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@map("seller_subscriptions")
+}
+
+model EscrowPayment {
+  id              String        @id @default(cuid())
+  orderId         String        @unique
+  order           Order         @relation(fields: [orderId], references: [id])
+  buyerId         String
+  buyer           User          @relation(fields: [buyerId], references: [id])
+  amount          Decimal
+  status          EscrowStatus  @default(HELD)
+  heldAt          DateTime      @default(now())
+  releasedAt      DateTime?
+  refundedAt      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("escrow_payments")
+}
+
+model PaymentDispute {
+  id          String        @id @default(cuid())
+  orderId     String
+  userId      String        // User who initiated dispute
+  user        User          @relation(fields: [userId], references: [id])
+  reason      String
+  description String
+  status      DisputeStatus @default(OPEN)
+  resolution  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("payment_disputes")
+}
+
+model BankTransferPayment {
+  id              String              @id @default(cuid())
+  userId          String
+  user            User                @relation(fields: [userId], references: [id])
+  orderId         String?
+  amount          Decimal
+  bankName        String
+  accountNumber   String
+  accountName     String
+  referenceNumber String
+  status          BankTransferStatus  @default(PENDING)
+  verifiedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("bank_transfer_payments")
+}
+
+// Enums
 enum UserRole {
   BUYER
   SELLER
+  ARTISAN
   ADMIN
 }
 
 enum OrderStatus {
   PENDING
   CONFIRMED
+  PROCESSING
   SHIPPED
   DELIVERED
   CANCELLED
+  REFUNDED
 }
 
-enum PaymentMethod {
-  STRIPE
-  MPESA
-  CASH_ON_DELIVERY
-}
-
-enum BulkOrderStatus {
+enum PaymentStatus {
   PENDING
-  QUOTED
-  ACCEPTED
-  REJECTED
-  COMPLETED
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 enum RFQStatus {
   OPEN
   CLOSED
+  EXPIRED
+}
+
+enum BulkOrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+// Payment enums
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
   CANCELLED
 }
 
-enum QuoteStatus {
+enum PayoutMethod {
+  MPESA
+  BANK_TRANSFER
+  PAYPAL
+}
+
+enum PayoutRequestStatus {
   PENDING
-  ACCEPTED
+  APPROVED
+  REJECTED
+  PROCESSED
+}
+
+enum SubscriptionPlan {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  UNPAID
+}
+
+enum EscrowStatus {
+  HELD
+  RELEASED
+  REFUNDED
+  DISPUTED
+}
+
+enum DisputeStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum BankTransferStatus {
+  PENDING
+  VERIFIED
   REJECTED
 }
