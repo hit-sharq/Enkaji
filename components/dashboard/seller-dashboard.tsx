@@ -28,20 +28,11 @@ interface SellerDashboardProps {
 }
 
 interface DashboardData {
-  stats: {
-    totalProducts: number
-    totalOrders: number
-    totalRevenue: number
-    activeListings: number
-  }
-  recentOrders: Array<{
-    id: string
-    product: string
-    customer: string
-    amount: number
-    status: string
-    createdAt: string
-  }>
+  totalProducts: number
+  totalOrders: number
+  completedOrders: number
+  pendingOrders: number
+  totalRevenue: number
   products: Array<{
     id: string
     name: string
@@ -49,21 +40,41 @@ interface DashboardData {
     stock: number
     status: string
     images: string[]
-    category: string
+    category?: string
+    sellerId: string
+    _count: {
+      orderItems: number
+    }
+  }>
+  orders: Array<{
+    id: string
+    status: string
+    total: number
+    createdAt: string
+    items: Array<{
+      id: string
+      quantity: number
+      price: number
+      total: number
+      product: {
+        id: string
+        name: string
+        sellerId: string
+      }
+    }>
   }>
 }
 
 export function SellerDashboard({ user }: SellerDashboardProps) {
   const [activeTab, setActiveTab] = useState("overview")
   const [dashboardData, setDashboardData] = useState<DashboardData>({
-    stats: {
-      totalProducts: 0,
-      totalOrders: 0,
-      totalRevenue: 0,
-      activeListings: 0,
-    },
-    recentOrders: [],
+    totalProducts: 0,
+    totalOrders: 0,
+    completedOrders: 0,
+    pendingOrders: 0,
+    totalRevenue: 0,
     products: [],
+    orders: [],
   })
   const [isLoading, setIsLoading] = useState(true)
 
@@ -106,8 +117,6 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     )
   }
 
-  const { stats, recentOrders, products } = dashboardData
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -133,10 +142,12 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Products</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
-              <p className="text-xs text-muted-foreground">{stats?.activeListings || 0} active listings</p>
-            </CardContent>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.totalProducts}</div>
+                <p className="text-xs text-muted-foreground">
+                  {dashboardData.products.filter((p) => p.status === "APPROVED").length} active listings
+                </p>
+              </CardContent>
             </Card>
 
             <Card>
@@ -144,12 +155,12 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                {(stats?.totalOrders || 0) > 0 ? "Orders received" : "No orders yet"}
-              </p>
-            </CardContent>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.totalOrders}</div>
+                <p className="text-xs text-muted-foreground">
+                  {dashboardData.totalOrders > 0 ? "Orders received" : "No orders yet"}
+                </p>
+              </CardContent>
             </Card>
 
             <Card>
@@ -157,10 +168,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">KES {(stats?.totalRevenue || 0).toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">From completed orders</p>
-            </CardContent>
+              <CardContent>
+                <div className="text-2xl font-bold">KES {dashboardData.totalRevenue.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">From completed orders</p>
+              </CardContent>
             </Card>
 
             <Card>
@@ -168,10 +179,12 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardTitle className="text-sm font-medium">Active Listings</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.activeListings || 0}</div>
-              <p className="text-xs text-muted-foreground">Out of {stats?.totalProducts || 0} total</p>
-            </CardContent>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {dashboardData.products.filter((p) => p.status === "APPROVED").length}
+                </div>
+                <p className="text-xs text-muted-foreground">Out of {dashboardData.totalProducts} total</p>
+              </CardContent>
             </Card>
           </div>
 
@@ -182,21 +195,25 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <CardDescription>Your latest customer orders</CardDescription>
             </CardHeader>
             <CardContent>
-              {recentOrders.length === 0 ? (
+              {dashboardData.orders.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-600">No orders yet. Start by adding products to your store!</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {recentOrders.map((order) => (
+                  {dashboardData.orders.slice(0, 5).map((order) => (
                     <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
-                        <p className="font-medium">{order.product}</p>
-                        <p className="text-sm text-gray-600">Customer: {order.customer}</p>
+                        <p className="font-medium">Order #{order.id.slice(-8)}</p>
+                        <p className="text-sm text-gray-600">
+                          {order.items.length} item(s) • {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">KES {order.amount.toLocaleString()}</p>
-                        <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
+                        <p className="font-medium">KES {Number(order.total).toLocaleString()}</p>
+                        <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>
+                          {order.status.toLowerCase()}
+                        </Badge>
                       </div>
                     </div>
                   ))}
@@ -219,7 +236,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
 
           <Card>
             <CardContent className="p-0">
-              {products.length === 0 ? (
+              {dashboardData.products.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
@@ -233,19 +250,19 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 </div>
               ) : (
                 <div className="space-y-4 p-6">
-                  {products.map((product) => (
+                  {dashboardData.products.map((product) => (
                     <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-gray-600">
-                          Stock: {product.stock} units • {product.category}
+                          Stock: {product.stock} units • {product.category || "Uncategorized"}
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-medium">KES {product.price.toLocaleString()}</p>
-                          <Badge variant={product.status === "active" ? "default" : "secondary"}>
-                            {product.status}
+                          <p className="font-medium">KES {Number(product.price).toLocaleString()}</p>
+                          <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
+                            {product.status.toLowerCase()}
                           </Badge>
                         </div>
                         <div className="flex gap-2">
@@ -281,7 +298,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <CardDescription>Manage your customer orders</CardDescription>
             </CardHeader>
             <CardContent>
-              {recentOrders.length === 0 ? (
+              {dashboardData.orders.length === 0 ? (
                 <div className="text-center py-8">
                   <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
@@ -289,18 +306,21 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {recentOrders.map((order) => (
+                  {dashboardData.orders.map((order) => (
                     <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">Order #{order.id.slice(-8)}</p>
                         <p className="text-sm text-gray-600">
-                          {order.product} - {order.customer}
+                          {order.items.map((item) => item.product.name).join(", ")} •{" "}
+                          {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-medium">KES {order.amount.toLocaleString()}</p>
-                          <Badge variant={order.status === "completed" ? "default" : "secondary"}>{order.status}</Badge>
+                          <p className="font-medium">KES {Number(order.total).toLocaleString()}</p>
+                          <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>
+                            {order.status.toLowerCase()}
+                          </Badge>
                         </div>
                         <Button size="sm">View Details</Button>
                       </div>
