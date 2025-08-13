@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
 
 :root {
   --background: 0 0% 100%;
@@ -30,6 +31,14 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
+
+  /* Enkaji Brand Colors */
+  --enkaji-red: 139 38% 35%;
+  --enkaji-ochre: 30 75% 47%;
+  --enkaji-brown: 30 55% 31%;
+  --enkaji-green: 120 61% 34%;
+  --enkaji-cream: 60 56% 91%;
+  --enkaji-gold: 43 74% 49%;
 }
 
 .dark {
@@ -87,23 +96,68 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Enkaji Brand Styles */
+  .enkaji-gradient-text {
+    @apply bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
+  }
+
+  .enkaji-gradient-bg {
+    @apply bg-gradient-to-br from-enkaji-red/10 via-enkaji-ochre/5 to-enkaji-brown/10;
+  }
+
+  .enkaji-card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:shadow-enkaji-red/10;
+  }
+
+  .enkaji-button-primary {
+    @apply bg-enkaji-red hover:bg-enkaji-red/90 text-white shadow-lg hover:shadow-xl transition-all duration-200;
+  }
+
+  .enkaji-button-secondary {
+    @apply bg-enkaji-ochre hover:bg-enkaji-ochre/90 text-white shadow-lg hover:shadow-xl transition-all duration-200;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-black/10 backdrop-blur-md border border-black/20;
+  }
+
+  /* Floating animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .float-delayed {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: -2s;
+  }
+
+  /* Pulse glow effect */
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with Enkaji colors */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-enkaji-cream;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  @apply bg-enkaji-ochre rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-enkaji-red;
 }
 
 /* Smooth scrolling */
@@ -111,7 +165,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Animation utilities */
+/* Custom animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -123,13 +177,62 @@ html {
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(139, 38, 53, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(139, 38, 53, 0.8), 0 0 30px rgba(139, 38, 53, 0.6);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out;
 }
 
-/* Focus styles */
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
+/* Focus styles with Enkaji colors */
 .focus-visible\:ring-2:focus-visible {
-  @apply ring-2 ring-blue-500 ring-offset-2;
+  @apply ring-2 ring-enkaji-red ring-offset-2;
 }
 
 /* Button hover effects */
@@ -137,21 +240,48 @@ html {
   @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
 }
 
-/* Card hover effects */
+/* Card hover effects with Enkaji styling */
 .card-hover {
   @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
 }
 
-/* Gradient text */
-.gradient-text {
-  @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+.card-hover:hover {
+  box-shadow: 0 20px 25px -5px rgba(139, 38, 53, 0.1), 0 10px 10px -5px rgba(139, 38, 53, 0.04);
 }
 
-/* Loading spinner */
+/* Loading spinner with Enkaji colors */
 .spinner {
-  @apply animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
+  @apply animate-spin rounded-full border-2 border-enkaji-cream border-t-enkaji-red;
 }
 
+/* Typography */
 .font-playfair {
-  font-family: var(--font-playfair);
+  font-family: "Playfair Display", serif;
+}
+
+/* Utility classes for Enkaji brand */
+.text-enkaji-gradient {
+  @apply bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
+}
+
+.bg-enkaji-gradient {
+  @apply bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown;
+}
+
+.border-enkaji-gradient {
+  border-image: linear-gradient(45deg, #8b2635, #d2691e, #8b4513) 1;
+}
+
+/* Responsive design helpers */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }

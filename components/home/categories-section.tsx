@@ -1,167 +1,115 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import {
-  Smartphone,
-  Shirt,
-  Home,
-  Car,
-  Wrench,
-  Heart,
-  Gamepad2,
-  Book,
-  Wheat,
-  HardHat,
-  Palette,
-  Zap,
-  Monitor,
-  Factory,
-  Truck,
-  Shield,
-  Sun,
-  GraduationCap,
-} from "lucide-react"
-import { useEffect, useState } from "react"
 
-interface Category {
-  id: string
-  name: string
-  slug: string
-  _count: {
-    products: number
-  }
-}
-
-const categoryIcons: Record<string, any> = {
-  electronics: Smartphone,
-  "computers-it": Monitor,
-  "mobile-phones": Smartphone,
-  "home-appliances": Home,
-  "fashion-apparel": Shirt,
-  "textiles-fabrics": Palette,
-  "footwear-leather": Shirt,
-  "jewelry-accessories": Heart,
-  agriculture: Wheat,
-  "agriculture-farming": Wheat,
-  "food-beverages": Wheat,
-  "livestock-feed": Wheat,
-  "seeds-fertilizers": Wheat,
-  "construction-materials": HardHat,
-  "tools-hardware": Wrench,
-  "plumbing-electrical": Zap,
-  "heavy-machinery": Factory,
-  "automotive-parts": Car,
-  "vehicles-transport": Truck,
-  "tires-wheels": Car,
-  "health-medical": Heart,
-  "beauty-personal-care": Heart,
-  pharmaceuticals: Heart,
-  "furniture-decor": Home,
-  "office-supplies": Book,
-  "kitchen-dining": Home,
-  "industrial-equipment": Factory,
-  "chemicals-materials": Factory,
-  "packaging-printing": Factory,
-  "sports-recreation": Gamepad2,
-  "outdoor-camping": Gamepad2,
-  "education-training": GraduationCap,
-  "books-stationery": Book,
-  "solar-renewable": Sun,
-  "generators-power": Zap,
-  "security-safety": Shield,
-  "arts-crafts": Palette,
-  "traditional-crafts": Palette,
-  "wood-carvings": Wrench,
-  "pottery-ceramics": Palette,
-  metalwork: Factory,
-  "leather-goods": Shirt,
-  "baskets-weaving": Palette,
-}
+const categories = [
+  {
+    name: "Fashion & Apparel",
+    description: "Traditional and modern African clothing",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-red to-enkaji-ochre",
+    href: "/categories/fashion-apparel",
+  },
+  {
+    name: "Home & Garden",
+    description: "Handcrafted home decor and furniture",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-ochre to-enkaji-brown",
+    href: "/categories/home-garden",
+  },
+  {
+    name: "Electronics",
+    description: "Modern tech solutions",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-brown to-enkaji-green",
+    href: "/categories/electronics",
+  },
+  {
+    name: "Agriculture",
+    description: "Fresh produce and farming tools",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-green to-enkaji-gold",
+    href: "/categories/agriculture",
+  },
+  {
+    name: "Construction",
+    description: "Building materials and tools",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-gold to-enkaji-red",
+    href: "/categories/construction",
+  },
+  {
+    name: "Automotive",
+    description: "Vehicle parts and accessories",
+    image: "/placeholder.svg?height=300&width=400",
+    color: "from-enkaji-red to-enkaji-brown",
+    href: "/categories/automotive",
+  },
+]
 
 export function CategoriesSection() {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("/api/categories")
-        if (response.ok) {
-          const data = await response.json()
-          setCategories(data.slice(0, 12)) // Show first 12 categories
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCategories()
-  }, [])
-
-  if (loading) {
-    return (
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Loading categories...</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {[...Array(12)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-20 bg-gradient-to-b from-white to-enkaji-cream/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-enkaji-red to-enkaji-ochre bg-clip-text text-transparent">
+              Explore Categories
+            </span>
+          </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover millions of products across all major business categories from verified Kenyan artisans and
-            businesses
+            Discover a world of authentic African products across diverse categories
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {categories.map((category) => {
-            const IconComponent = categoryIcons[category.slug] || Factory
-            return (
-              <Link key={category.id} href={`/categories/${category.slug}`}>
-                <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
-                  <CardContent className="p-6 text-center">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
-                      <IconComponent className="w-8 h-8 text-blue-600" />
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2 text-sm">{category.name}</h3>
-                    <p className="text-xs text-gray-500">{category._count.products} products</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            )
-          })}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {categories.map((category, index) => (
+            <Card
+              key={category.name}
+              className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+            >
+              <div className="relative h-48 overflow-hidden">
+                <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-20`}></div>
+                <img
+                  src={category.image || "/placeholder.svg"}
+                  alt={category.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+              </div>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2 text-gray-900">{category.name}</h3>
+                <p className="text-gray-600 mb-4">{category.description}</p>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="p-0 h-auto text-enkaji-red hover:text-enkaji-red/80 group/btn"
+                >
+                  <Link href={category.href}>
+                    Explore Category
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        <div className="text-center mt-8">
-          <Link href="/categories">
-            <Button variant="outline" className="px-8 py-3 bg-transparent">
+        <div className="text-center mt-12">
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="border-enkaji-red text-enkaji-red hover:bg-enkaji-red hover:text-white bg-transparent"
+          >
+            <Link href="/categories">
               View All Categories
-            </Button>
-          </Link>
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
