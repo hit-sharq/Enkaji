@@ -20,7 +20,7 @@ async function getBuyerStats(userId: string) {
     db.order.findMany({
       where: { userId },
       include: {
-        orderItems: {
+        items: {
           include: {
             product: true,
           },
@@ -127,16 +127,16 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                 {orders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <p className="font-medium">Order #{order.id.slice(-8)}</p>
+                      <p className="font-medium">Order #{order.orderNumber || order.id.slice(-8)}</p>
                       <p className="text-sm text-gray-600">
-                        {order.orderItems.length} items • ${order.total.toFixed(2)}
+                        {order.items.length} items • KES {order.total.toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>{order.status}</Badge>
                   </div>
                 ))}
-                <Link href="/dashboard/orders">
+                <Link href="/orders">
                   <Button variant="outline" className="w-full bg-transparent">
                     View All Orders
                   </Button>
@@ -163,16 +163,26 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
               <div className="space-y-4">
                 {favorites.map((favorite) => (
                   <div key={favorite.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 bg-gray-200 rounded-md"></div>
+                    <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
+                      {favorite.product.images && favorite.product.images.length > 0 ? (
+                        <img
+                          src={favorite.product.images[0] || "/placeholder.svg"}
+                          alt={favorite.product.name}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      ) : (
+                        <Package className="w-8 h-8 text-gray-400" />
+                      )}
+                    </div>
                     <div className="flex-1">
-                      <p className="font-medium">{(favorite as any).product.name}</p>
+                      <p className="font-medium">{favorite.product.name}</p>
                       <p className="text-sm text-gray-600">
-                        ${(favorite as any).product.price.toFixed(2)} • {(favorite as any).product.category.name}
+                        KES {favorite.product.price.toLocaleString()} • {favorite.product.category.name}
                       </p>
                     </div>
                   </div>
                 ))}
-                <Link href="/dashboard/favorites">
+                <Link href="/favorites">
                   <Button variant="outline" className="w-full bg-transparent">
                     View All Favorites
                   </Button>

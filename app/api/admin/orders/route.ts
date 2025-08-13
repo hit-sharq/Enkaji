@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
 import { handleApiError } from "@/lib/errors"
+import { isUserAdmin } from "@/lib/auth"
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,12 +12,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Check if user is admin
-    const user = await db.user.findUnique({
-      where: { clerkId: userId },
-    })
+    // Use the proper admin check that includes environment variable
+    const isAdmin = await isUserAdmin(userId)
 
-    if (!user || user.role !== "ADMIN") {
+    if (!isAdmin) {
       return NextResponse.json({ error: "Admin access required" }, { status: 403 })
     }
 
@@ -34,6 +33,8 @@ export async function GET(req: NextRequest) {
             product: {
               select: {
                 name: true,
+                price: true,
+                images: true,
               },
             },
           },
@@ -60,12 +61,10 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Check if user is admin
-    const user = await db.user.findUnique({
-      where: { clerkId: userId },
-    })
+    // Use the proper admin check that includes environment variable
+    const isAdmin = await isUserAdmin(userId)
 
-    if (!user || user.role !== "ADMIN") {
+    if (!isAdmin) {
       return NextResponse.json({ error: "Admin access required" }, { status: 403 })
     }
 
@@ -75,9 +74,18 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Order ID and status are required" }, { status: 400 })
     }
 
+    // Validate status
+    const validStatuses = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 })
+    }
+
     const updatedOrder = await db.order.update({
       where: { id: orderId },
-      data: { status },
+      data: {
+        status,
+        updatedAt: new Date(),
+      },
       include: {
         user: {
           select: {
@@ -91,10 +99,13 @@ export async function PATCH(req: NextRequest) {
             product: {
               select: {
                 name: true,
+                price: true,
+                images: true,
               },
             },
           },
         },
+        escrowPayment: true,
       },
     })
 

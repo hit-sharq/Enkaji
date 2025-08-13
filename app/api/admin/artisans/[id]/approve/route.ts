@@ -1,21 +1,56 @@
-import { NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { requireAdmin } from "@/lib/auth"
+import { requirePermission } from "@/lib/auth"
 import { handleApiError } from "@/lib/errors"
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    // Check if user has permission to approve artisans
+    await requirePermission("artisans.approve")
 
-    const user = await db.user.update({
-      where: { id: params.id },
-      data: { role: "SELLER" }
+    const userId = params.id
+    const { approved, reason } = await request.json()
+
+    // Update artisan profile
+    const artisanProfile = await db.artisanProfile.update({
+      where: { userId },
+      data: {
+        isApproved: approved,
+        updatedAt: new Date(),
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
     })
 
-    return NextResponse.json({ success: true, user })
+    // Update user role if approved
+    if (approved) {
+      await db.user.update({
+        where: { id: userId },
+        data: { role: "ARTISAN" },
+      })
+    }
+
+    // Create approval log
+    await db.artisanApproval.create({
+      data: {
+        artisanId: userId,
+        approved,
+        reason: reason || (approved ? "Artisan profile approved" : "Artisan profile rejected"),
+        approvedBy: (await requirePermission("artisans.approve")).id,
+      },
+    })
+
+    return NextResponse.json({
+      message: approved ? "Artisan approved successfully" : "Artisan rejected",
+      artisan: artisanProfile,
+    })
   } catch (error) {
     return handleApiError(error)
   }

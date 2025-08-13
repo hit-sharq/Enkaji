@@ -26,7 +26,7 @@ async function getSellerStats(userId: string) {
         category: true,
         _count: {
           select: {
-            orderItems: true,
+            items: true,
           },
         },
       },
@@ -35,7 +35,7 @@ async function getSellerStats(userId: string) {
     }),
     db.order.findMany({
       where: {
-        orderItems: {
+        items: {
           some: {
             product: {
               sellerId: userId,
@@ -44,7 +44,7 @@ async function getSellerStats(userId: string) {
         },
       },
       include: {
-        orderItems: {
+        items: {
           where: {
             product: {
               sellerId: userId,
@@ -181,7 +181,7 @@ export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
                       <p className="text-sm text-gray-600">
                         KES {product.price.toLocaleString()} • {product.category.name}
                       </p>
-                      <p className="text-xs text-gray-500">{product._count.orderItems} sales</p>
+                      <p className="text-xs text-gray-500">{product._count.items} sales</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge variant={product.isActive ? "default" : "secondary"}>
@@ -219,16 +219,16 @@ export async function ArtisanDashboard({ user }: ArtisanDashboardProps) {
                 {orders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <p className="font-medium">Order #{order.id.slice(-8)}</p>
+                      <p className="font-medium">Order #{order.orderNumber || order.id.slice(-8)}</p>
                       <p className="text-sm text-gray-600">
-                        {order.orderItems.length} items • KES {order.total.toLocaleString()}
+                        {order.items.length} items • KES {order.total.toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>{order.status}</Badge>
                   </div>
                 ))}
-                <Link href="/dashboard/orders">
+                <Link href="/orders">
                   <Button variant="outline" className="w-full bg-transparent">
                     View All Orders
                   </Button>

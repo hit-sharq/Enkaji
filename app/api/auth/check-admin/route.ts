@@ -1,25 +1,37 @@
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
-import { isUserAdmin } from "@/lib/auth"
+import { isUserAdmin, getCurrentUser } from "@/lib/auth"
 
 export async function GET() {
   try {
     const { userId } = await auth()
 
     if (!userId) {
-      console.log("No userId found in auth")
-      return NextResponse.json({ isAdmin: false })
+      return NextResponse.json({ isAdmin: false, user: null })
     }
 
-    console.log("Checking admin status for userId:", userId)
-    console.log("ADMIN_IDS env var:", process.env.ADMIN_IDS)
+    // Check if user is admin using both env var and database
+    const isAdmin = await isUserAdmin(userId)
 
-    const adminStatus = await isUserAdmin(userId)
-    console.log("Admin status result:", adminStatus)
+    // Get user details
+    const user = await getCurrentUser()
 
-    return NextResponse.json({ isAdmin: adminStatus })
+    return NextResponse.json({
+      isAdmin,
+      user: user
+        ? {
+            id: user.id,
+            clerkId: user.clerkId,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            imageUrl: user.imageUrl,
+          }
+        : null,
+    })
   } catch (error) {
     console.error("Error checking admin status:", error)
-    return NextResponse.json({ isAdmin: false })
+    return NextResponse.json({ isAdmin: false, user: null })
   }
 }

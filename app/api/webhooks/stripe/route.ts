@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { headers } from "next/headers"
 import Stripe from "stripe"
-import { prisma } from "@/lib/db"
+import { db } from "@/lib/db"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-06-30.basil",
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || ""
@@ -56,11 +56,11 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
     const orderId = paymentIntent.metadata.orderId
 
     if (orderId) {
-      await prisma.order.update({
+      await db.order.update({
         where: { id: orderId },
         data: {
           status: "CONFIRMED",
-          paymentId: paymentIntent.id,
+          paymentStatus: "PAID",
         },
       })
 
@@ -76,10 +76,11 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
     const orderId = paymentIntent.metadata.orderId
 
     if (orderId) {
-      await prisma.order.update({
+      await db.order.update({
         where: { id: orderId },
         data: {
           status: "CANCELLED",
+          paymentStatus: "FAILED",
         },
       })
 

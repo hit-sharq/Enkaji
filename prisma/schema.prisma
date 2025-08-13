@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -44,6 +41,12 @@ model User {
   escrowPayments    EscrowPayment[]
   paymentDisputes   PaymentDispute[]
   bankTransferPayments BankTransferPayment[]
+
+  // Approval relations
+  productApprovals  ProductApproval[]
+  artisanApprovals  ArtisanApproval[]
+  sellerVerifications SellerVerification[]
+  reviewModerations ReviewModeration[]
 
   @@map("users")
 }
@@ -218,6 +221,7 @@ model Review {
   comment   String?
   images    String[]
   isVerified Boolean @default(false) // Verified purchase
+  isFlagged Boolean  @default(false) // Flagged by moderators
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -390,6 +394,55 @@ model BankTransferPayment {
   updatedAt       DateTime            @updatedAt
 
   @@map("bank_transfer_payments")
+}
+
+// Approval tracking models
+model ProductApproval {
+  id          String   @id @default(cuid())
+  productId   String
+  approved    Boolean
+  reason      String?
+  approvedBy  String
+  approver    User     @relation(fields: [approvedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("product_approvals")
+}
+
+model ArtisanApproval {
+  id          String   @id @default(cuid())
+  artisanId   String
+  approved    Boolean
+  reason      String?
+  approvedBy  String
+  approver    User     @relation(fields: [approvedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("artisan_approvals")
+}
+
+model SellerVerification {
+  id          String   @id @default(cuid())
+  sellerId    String
+  verified    Boolean
+  reason      String?
+  verifiedBy  String
+  verifier    User     @relation(fields: [verifiedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("seller_verifications")
+}
+
+model ReviewModeration {
+  id          String   @id @default(cuid())
+  reviewId    String
+  action      String   // 'approve', 'reject', 'flag'
+  reason      String?
+  moderatedBy String
+  moderator   User     @relation(fields: [moderatedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("review_moderations")
 }
 
 // Enums

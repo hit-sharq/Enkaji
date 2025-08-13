@@ -1,21 +1,49 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { db } from "@/lib/db"
+import { requirePermission } from "@/lib/auth"
+import { handleApiError } from "@/lib/errors"
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
-    const { verify } = await request.json()
-    const userId = params.id
+    // Check if user has permission to verify sellers
+    await requirePermission("users.verify")
 
-    await prisma.sellerProfile.update({
+    const userId = params.id
+    const { verified, reason } = await request.json()
+
+    // Update seller profile
+    const sellerProfile = await db.sellerProfile.update({
       where: { userId },
-      data: { isVerified: verify },
+      data: {
+        isVerified: verified,
+        updatedAt: new Date(),
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
     })
 
-    return NextResponse.json({ success: true })
+    // Create verification log
+    await db.sellerVerification.create({
+      data: {
+        sellerId: userId,
+        verified,
+        reason: reason || (verified ? "Seller verified" : "Seller verification rejected"),
+        verifiedBy: (await requirePermission("users.verify")).id,
+      },
+    })
+
+    return NextResponse.json({
+      message: verified ? "Seller verified successfully" : "Seller verification rejected",
+      seller: sellerProfile,
+    })
   } catch (error) {
-    console.error("Error updating seller verification:", error)
-    return NextResponse.json({ error: "Failed to update seller verification" }, { status: 500 })
+    return handleApiError(error)
   }
 }
