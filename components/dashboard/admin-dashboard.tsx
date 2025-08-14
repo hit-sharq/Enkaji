@@ -34,6 +34,7 @@ import {
   DollarSign,
   Store,
   Trash2,
+  UserCog,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
@@ -104,6 +105,8 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   const [users, setUsers] = useState<User[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
+  const [selectedRoles, setSelectedRoles] = useState<Record<string, string>>({})
+  const [roleUpdateLoading, setRoleUpdateLoading] = useState<Record<string, boolean>>({})
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalSellers: 0,
@@ -141,7 +144,7 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       const ordersArray = Array.isArray(ordersData.orders) ? ordersData.orders : []
       const usersArray = Array.isArray(usersData.users) ? usersData.users : []
       const productsArray = Array.isArray(productsData.products) ? productsData.products : []
-      
+
       const totalRevenue = ordersArray.reduce((sum: number, order: Order) => sum + order.total, 0)
       const pendingApprovals = usersArray.filter(
         (u: User) => u.role === "SELLER" && u.sellerProfile && !u.sellerProfile.isVerified,
@@ -193,6 +196,61 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
     }
   }
 
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    console.log("Changing role for user:", userId, "to:", newRole)
+    setRoleUpdateLoading((prev) => ({ ...prev, [userId]: true }))
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/assign-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role: newRole }),
+      })
+
+      const data = await response.json()
+      console.log("Role change response:", data)
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to assign role")
+      }
+
+      toast({
+        title: "Role Updated",
+        description: `User role has been updated to ${newRole}`,
+      })
+
+      // Clear the selected role for this user
+      setSelectedRoles((prev) => {
+        const updated = { ...prev }
+        delete updated[userId]
+        return updated
+      })
+
+      // Refresh data to show updated roles
+      fetchDashboardData()
+    } catch (error) {
+      console.error("Error assigning role:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update user role",
+        variant: "destructive",
+      })
+    } finally {
+      setRoleUpdateLoading((prev) => ({ ...prev, [userId]: false }))
+    }
+  }
+
+  const handleSelectChange = (userId: string, value: string) => {
+    console.log("Select changed for user:", userId, "new value:", value)
+    setSelectedRoles((prev) => {
+      const updated = { ...prev, [userId]: value }
+      console.log("Updated selectedRoles state:", updated)
+      return updated
+    })
+  }
+
   const handleProductAction = async (productId: string, action: "approve" | "reject" | "feature" | "unfeature") => {
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
@@ -222,9 +280,12 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   const handleSellerVerification = async (userId: string, verify: boolean) => {
     try {
       const response = await fetch(`/api/admin/sellers/${userId}/verify`, {
-        method: "PATCH",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verify }),
+        body: JSON.stringify({
+          verified: verify,
+          reason: verify ? "Seller verified by admin" : "Seller verification rejected by admin",
+        }),
       })
 
       if (response.ok) {
@@ -234,12 +295,13 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
         })
         fetchDashboardData()
       } else {
-        throw new Error("Failed to update seller verification")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update seller verification")
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to update seller verification",
+        description: error instanceof Error ? error.message : "Failed to update seller verification",
         variant: "destructive",
       })
     }
@@ -348,77 +410,144 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                   <TableRow>
                     <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
+                    <TableHead>Current Role</TableHead>
+                    <TableHead>Change Role</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">
-                            {user.firstName} {user.lastName}
+                  {users.map((userItem) => {
+                    const selectedRole = selectedRoles[userItem.id]
+                    const hasRoleChange = selectedRole && selectedRole !== userItem.role
+
+                    return (
+                      <TableRow key={userItem.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">
+                              {userItem.firstName} {userItem.lastName}
+                            </div>
+                            {userItem.sellerProfile && (
+                              <div className="text-sm text-muted-foreground">{userItem.sellerProfile.businessName}</div>
+                            )}
                           </div>
-                          {user.sellerProfile && (
-                            <div className="text-sm text-muted-foreground">{user.sellerProfile.businessName}</div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            user.role === "ADMIN" ? "destructive" : user.role === "SELLER" ? "default" : "secondary"
-                          }
-                        >
-                          {user.role}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={user.isActive ? "default" : "destructive"}>
-                          {user.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          {user.isActive ? (
-                            <Button variant="outline" size="sm" onClick={() => handleUserAction(user.id, "deactivate")}>
-                              Deactivate
+                        </TableCell>
+                        <TableCell>{userItem.email}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              userItem.role === "ADMIN"
+                                ? "destructive"
+                                : userItem.role === "SELLER"
+                                  ? "default"
+                                  : "secondary"
+                            }
+                          >
+                            {userItem.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={selectedRole || ""}
+                              onValueChange={(value) => handleSelectChange(userItem.id, value)}
+                              disabled={roleUpdateLoading[userItem.id]}
+                            >
+                              <SelectTrigger className="w-40">
+                                <SelectValue placeholder="Select role" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BUYER">Buyer</SelectItem>
+                                <SelectItem value="SELLER">Seller</SelectItem>
+                                <SelectItem value="ARTISAN">Artisan</SelectItem>
+                                <SelectItem value="SUPPORT_AGENT">Support Agent</SelectItem>
+                                <SelectItem value="MODERATOR">Moderator</SelectItem>
+                                <SelectItem value="CONTENT_MANAGER">Content Manager</SelectItem>
+                                <SelectItem value="FINANCE_MANAGER">Finance Manager</SelectItem>
+                                <SelectItem value="REGIONAL_MANAGER">Regional Manager</SelectItem>
+                                <SelectItem value="ADMIN">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              onClick={() => selectedRole && handleRoleChange(userItem.id, selectedRole)}
+                              disabled={roleUpdateLoading[userItem.id] || !hasRoleChange}
+                              size="sm"
+                              variant={hasRoleChange ? "default" : "secondary"}
+                            >
+                              {roleUpdateLoading[userItem.id] ? (
+                                <>
+                                  <UserCog className="h-3 w-3 mr-1 animate-spin" />
+                                  Updating...
+                                </>
+                              ) : hasRoleChange ? (
+                                <>
+                                  <UserCog className="h-3 w-3 mr-1" />
+                                  Update
+                                </>
+                              ) : (
+                                "Select Role"
+                              )}
                             </Button>
-                          ) : (
-                            <Button variant="outline" size="sm" onClick={() => handleUserAction(user.id, "activate")}>
-                              Activate
-                            </Button>
+                          </div>
+                          {hasRoleChange && (
+                            <div className="text-xs text-blue-600 mt-1">
+                              {userItem.role} → {selectedRole}
+                            </div>
                           )}
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">
-                                <Trash2 className="h-4 w-4" />
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={userItem.isActive ? "default" : "destructive"}>
+                            {userItem.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(userItem.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            {userItem.isActive ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleUserAction(userItem.id, "deactivate")}
+                              >
+                                Deactivate
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete User</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete this user? This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleUserAction(user.id, "delete")}>
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleUserAction(userItem.id, "activate")}
+                              >
+                                Activate
+                              </Button>
+                            )}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete User</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete this user? This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleUserAction(userItem.id, "delete")}>
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </CardContent>
