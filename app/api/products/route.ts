@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get("minPrice")
     const maxPrice = searchParams.get("maxPrice")
     const featured = searchParams.get("featured")
-    const sortBy = searchParams.get("sortBy") || "createdAt"
+    const sortBy = searchParams.get("sortBy") || "newest"
     const sortOrder = searchParams.get("sortOrder") || "desc"
 
     const skip = (page - 1) * limit
@@ -45,6 +45,25 @@ export async function GET(request: NextRequest) {
       where.isFeatured = true
     }
 
+    // Map sortBy values to actual database fields
+    const sortMapping: { [key: string]: string } = {
+      newest: "createdAt",
+      oldest: "createdAt",
+      "price-low": "price",
+      "price-high": "price",
+      name: "name",
+      popular: "createdAt", // You can change this to a popularity field if you have one
+    }
+
+    const actualSortField = sortMapping[sortBy] || "createdAt"
+
+    // Determine sort order based on sortBy
+    let actualSortOrder: "asc" | "desc" = "desc"
+    if (sortBy === "oldest") actualSortOrder = "asc"
+    if (sortBy === "price-low") actualSortOrder = "asc"
+    if (sortBy === "price-high") actualSortOrder = "desc"
+    if (sortBy === "name") actualSortOrder = "asc"
+
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
@@ -71,7 +90,7 @@ export async function GET(request: NextRequest) {
           },
         },
         orderBy: {
-          [sortBy]: sortOrder as "asc" | "desc",
+          [actualSortField]: actualSortOrder,
         },
         skip,
         take: limit,
@@ -125,11 +144,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    
+
     // Debug: Log the received data
-    console.log('Received product data:', body)
-    console.log('Category ID received:', body.categoryId)
-    
+    console.log("Received product data:", body)
+    console.log("Category ID received:", body.categoryId)
+
     const validatedData = productSchema.parse(body)
 
     // Check if category exists

@@ -3,7 +3,7 @@ import { db } from "@/lib/db"
 import { requirePermission } from "@/lib/auth"
 import { handleApiError } from "@/lib/errors"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Check if user has permission to verify sellers
     await requirePermission("users.verify")
