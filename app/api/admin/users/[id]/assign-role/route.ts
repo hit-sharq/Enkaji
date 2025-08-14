@@ -1,11 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { requirePermission, canManageUser } from "@/lib/auth"
+import { isAdmin, canManageUser } from "@/lib/auth"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // Check if user has permission to assign roles
-    await requirePermission("roles.assign")
+    // Check if current user is admin
+    const isCurrentUserAdmin = await isAdmin()
+    if (!isCurrentUserAdmin) {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 })
+    }
 
     const { role } = await request.json()
     const userId = params.id
@@ -55,4 +58,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     console.error("Error assigning role:", error)
     return NextResponse.json({ error: "Failed to assign role" }, { status: 500 })
   }
+}
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  return POST(request, { params })
 }

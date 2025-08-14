@@ -1,5 +1,6 @@
-import { auth, currentUser } from "@clerk/nextjs/server"
+import { currentUser } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
+import { redirect } from "next/navigation"
 import { AuthenticationError, AuthorizationError } from "@/lib/errors"
 
 // Role hierarchy definition
@@ -82,6 +83,7 @@ export async function getCurrentUser() {
       },
       include: {
         sellerProfile: true,
+        artisanProfile: true,
       },
     })
 
@@ -98,12 +100,26 @@ export async function getCurrentUser() {
           firstName: user.firstName || "",
           lastName: user.lastName || "",
           imageUrl: user.imageUrl || "",
-          role: isAdminUser ? "ADMIN" : "BUYER", // Set role based on admin check
+          role: isAdminUser ? "ADMIN" : "BUYER",
         },
         include: {
           sellerProfile: true,
+          artisanProfile: true,
         },
       })
+    } else {
+      // Update existing user to admin if they're in ADMIN_IDS but not admin in DB
+      const adminIds = process.env.ADMIN_IDS?.split(",") || []
+      if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
+        dbUser = await db.user.update({
+          where: { id: dbUser.id },
+          data: { role: "ADMIN" },
+          include: {
+            sellerProfile: true,
+            artisanProfile: true,
+          },
+        })
+      }
     }
 
     return dbUser
@@ -114,13 +130,36 @@ export async function getCurrentUser() {
 }
 
 export async function requireAuth() {
-  const { userId } = await auth()
+  const user = await getCurrentUser()
 
-  if (!userId) {
-    throw new AuthenticationError()
+  if (!user) {
+    redirect("/sign-in")
   }
 
-  return userId
+  return user
+}
+
+// Check if user is admin (environment variable OR database role)
+export async function isAdmin() {
+  try {
+    const user = await getCurrentUser()
+
+    if (!user) {
+      return false
+    }
+
+    // Check environment variable first (highest priority)
+    const adminIds = process.env.ADMIN_IDS?.split(",") || []
+    if (adminIds.includes(user.clerkId)) {
+      return true
+    }
+
+    // Check database role
+    return user.role === "ADMIN"
+  } catch (error) {
+    console.error("Error checking admin status:", error)
+    return false
+  }
 }
 
 // Enhanced role checking functions
@@ -129,7 +168,7 @@ export async function hasRole(requiredRole: keyof typeof ROLE_HIERARCHY) {
     const user = await getCurrentUser()
     if (!user) return false
 
-    // Check environment variable for admin (fallback)
+    // Check environment variable for admin (highest priority)
     if (requiredRole === "ADMIN") {
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
       if (adminIds.includes(user.clerkId)) return true
@@ -148,6 +187,10 @@ export async function hasPermission(permission: keyof typeof PERMISSIONS) {
     const user = await getCurrentUser()
     if (!user) return false
 
+    // Environment admin has all permissions
+    const adminIds = process.env.ADMIN_IDS?.split(",") || []
+    if (adminIds.includes(user.clerkId)) return true
+
     // Check if user's role has this permission
     const allowedRoles = PERMISSIONS[permission]
     return allowedRoles.includes(user.role as any)
@@ -161,6 +204,10 @@ export async function hasMinimumRole(minimumRole: keyof typeof ROLE_HIERARCHY) {
   try {
     const user = await getCurrentUser()
     if (!user) return false
+
+    // Environment admin has highest role
+    const adminIds = process.env.ADMIN_IDS?.split(",") || []
+    if (adminIds.includes(user.clerkId)) return true
 
     const userRoleLevel = ROLE_HIERARCHY[user.role as keyof typeof ROLE_HIERARCHY] || 0
     const requiredLevel = ROLE_HIERARCHY[minimumRole]
@@ -193,7 +240,15 @@ export async function requirePermission(permission: keyof typeof PERMISSIONS) {
     throw new AuthenticationError()
   }
 
-  if (!(await hasPermission(permission))) {
+  // Environment admin has all permissions
+  const adminIds = process.env.ADMIN_IDS?.split(",") || []
+  if (adminIds.includes(user.clerkId)) {
+    return user
+  }
+
+  // Check if user's role has this permission
+  const allowedRoles = PERMISSIONS[permission]
+  if (!allowedRoles.includes(user.role as any)) {
     throw new AuthorizationError(`Permission ${permission} required`)
   }
 
@@ -212,23 +267,6 @@ export async function requireMinimumRole(minimumRole: keyof typeof ROLE_HIERARCH
   }
 
   return user
-}
-
-// Legacy functions for backward compatibility
-export async function isAdmin() {
-  try {
-    const user = await getCurrentUser()
-
-    if (!user) {
-      return false
-    }
-
-    const adminIds = process.env.ADMIN_IDS?.split(",") || []
-    return adminIds.includes(user.clerkId) || user.role === "ADMIN"
-  } catch (error) {
-    console.error("Error checking admin status:", error)
-    return false
-  }
 }
 
 export async function isUserAdmin(userId: string) {
@@ -276,6 +314,10 @@ export async function getUserRoleLevel() {
   const user = await getCurrentUser()
   if (!user) return 0
 
+  // Environment admin has highest level
+  const adminIds = process.env.ADMIN_IDS?.split(",") || []
+  if (adminIds.includes(user.clerkId)) return 100
+
   return ROLE_HIERARCHY[user.role as keyof typeof ROLE_HIERARCHY] || 0
 }
 
@@ -283,6 +325,10 @@ export async function getUserRoleLevel() {
 export async function canManageUser(targetUserId: string) {
   const currentUser = await getCurrentUser()
   if (!currentUser) return false
+
+  // Environment admin can manage anyone
+  const adminIds = process.env.ADMIN_IDS?.split(",") || []
+  if (adminIds.includes(currentUser.clerkId)) return true
 
   const targetUser = await db.user.findUnique({
     where: { id: targetUserId },
@@ -295,4 +341,18 @@ export async function canManageUser(targetUserId: string) {
 
   // Can only manage users with lower role level
   return currentUserLevel > targetUserLevel
+}
+
+export async function checkUserRole(userId: string) {
+  try {
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      select: { role: true, id: true },
+    })
+
+    return user
+  } catch (error) {
+    console.error("Error checking user role:", error)
+    return null
+  }
 }

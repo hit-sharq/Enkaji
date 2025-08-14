@@ -1,26 +1,34 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { requirePermission } from "@/lib/auth"
-import { handleApiError } from "@/lib/errors"
+import { isAdmin } from "@/lib/auth"
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // Check if user has permission to verify sellers
-    await requirePermission("users.verify")
+    // Check if current user is admin
+    const isCurrentUserAdmin = await isAdmin()
+    if (!isCurrentUserAdmin) {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 })
+    }
 
-    const userId = params.id
-    const { verified, reason } = await request.json()
+    const body = await request.json()
+    const { verified, verify } = body
+    const sellerId = params.id
 
-    // Update seller profile
-    const sellerProfile = await db.sellerProfile.update({
-      where: { userId },
-      data: {
-        isVerified: verified,
-        updatedAt: new Date(),
-      },
+    // Handle both 'verified' and 'verify' parameters
+    const isVerified = verified !== undefined ? verified : verify
+
+    if (typeof isVerified !== "boolean") {
+      return NextResponse.json({ error: "Invalid verification status" }, { status: 400 })
+    }
+
+    // Update seller verification status
+    const updatedSeller = await db.sellerProfile.update({
+      where: { userId: sellerId },
+      data: { isVerified },
       include: {
         user: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
             email: true,
@@ -29,21 +37,16 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       },
     })
 
-    // Create verification log
-    await db.sellerVerification.create({
-      data: {
-        sellerId: userId,
-        verified,
-        reason: reason || (verified ? "Seller verified" : "Seller verification rejected"),
-        verifiedBy: (await requirePermission("users.verify")).id,
-      },
-    })
-
     return NextResponse.json({
-      message: verified ? "Seller verified successfully" : "Seller verification rejected",
-      seller: sellerProfile,
+      message: `Seller ${isVerified ? "verified" : "unverified"} successfully`,
+      seller: updatedSeller,
     })
   } catch (error) {
-    return handleApiError(error)
+    console.error("Error updating seller verification:", error)
+    return NextResponse.json({ error: "Failed to update seller verification" }, { status: 500 })
   }
+}
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  return POST(request, { params })
 }
