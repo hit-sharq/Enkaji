@@ -253,11 +253,25 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
 
   const handleProductAction = async (productId: string, action: "approve" | "reject" | "feature" | "unfeature") => {
     try {
-      const response = await fetch(`/api/admin/products/${productId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      })
+      let response
+
+      if (action === "feature" || action === "unfeature") {
+        // Use the dedicated feature endpoint
+        response = await fetch(`/api/admin/products/${productId}/feature`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ featured: action === "feature" }),
+        })
+      } else if (action === "approve" || action === "reject") {
+        // Use the dedicated approve endpoint
+        response = await fetch(`/api/admin/products/${productId}/approve`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ approved: action === "approve" }),
+        })
+      } else {
+        throw new Error("Invalid action")
+      }
 
       if (response.ok) {
         toast({
@@ -266,9 +280,11 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
         })
         fetchDashboardData()
       } else {
-        throw new Error("Failed to update product")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update product")
       }
     } catch (error) {
+      console.error("Product action error:", error)
       toast({
         title: "Error",
         description: `Failed to ${action} product`,

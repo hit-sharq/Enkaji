@@ -5,7 +5,10 @@ import { handleApiError, AuthenticationError, ValidationError, NotFoundError } f
 import { z } from "zod"
 
 const addToCartSchema = z.object({
-  productId: z.string().uuid("Invalid product ID"),
+  productId: z
+    .string()
+    .min(1, "Product ID is required")
+    .regex(/^c[a-z0-9]{24}$/, "Invalid product ID"),
   quantity: z.number().int().min(1, "Quantity must be at least 1").max(100, "Maximum quantity is 100"),
 })
 

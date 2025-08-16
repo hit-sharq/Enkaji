@@ -98,10 +98,17 @@ export async function GET(request: NextRequest) {
       prisma.product.count({ where }),
     ])
 
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: Number(product.price),
+      comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
+      weight: product.weight ? Number(product.weight) : null,
+    }))
+
     const totalPages = Math.ceil(total / limit)
 
     return NextResponse.json({
-      products,
+      products: serializedProducts,
       pagination: {
         page,
         limit,

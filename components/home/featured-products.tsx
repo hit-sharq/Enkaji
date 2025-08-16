@@ -53,7 +53,7 @@ export function FeaturedProducts() {
   }, [])
 
   const calculateAverageRating = (reviews: { rating: number }[]) => {
-    if (reviews.length === 0) return 0
+    if (!reviews || reviews.length === 0) return 0
     const sum = reviews.reduce((acc, review) => acc + review.rating, 0)
     return sum / reviews.length
   }
@@ -117,7 +117,7 @@ export function FeaturedProducts() {
           <>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {products.map((product) => {
-                const averageRating = calculateAverageRating(product.reviews)
+                const averageRating = calculateAverageRating(product.reviews || [])
                 const badge = getBadgeInfo(product)
                 const discountPercentage = product.originalPrice
                   ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -132,7 +132,7 @@ export function FeaturedProducts() {
                       <img
                         src={
                           product.images[0] ||
-                          `/placeholder.svg?height=300&width=300&text=${encodeURIComponent(product.name)}`
+                          `/placeholder.svg?height=300&width=300&text=${encodeURIComponent(product.name) || "/placeholder.svg"}`
                         }
                         alt={product.name}
                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -170,7 +170,7 @@ export function FeaturedProducts() {
                             />
                           ))}
                         </div>
-                        <span className="text-sm text-gray-600">({product._count.reviews})</span>
+                        <span className="text-sm text-gray-600">({product._count?.reviews || 0})</span>
                       </div>
 
                       <div className="flex items-center justify-between mb-4">

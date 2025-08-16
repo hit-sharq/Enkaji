@@ -73,69 +73,128 @@ export async function getCurrentUser() {
   try {
     console.log("🔍 Attempting to get current user from Clerk...")
 
-    // Add timeout and retry logic
-    const user = (await Promise.race([
-      currentUser(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 10000)),
-    ])) as any
+    let user: any = null
+    let retryCount = 0
+    const maxRetries = 3
+
+    while (retryCount < maxRetries && !user) {
+      try {
+        // Increase timeout and add retry logic
+        user = await Promise.race([
+          currentUser(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 15000)),
+        ])
+
+        if (user) break
+      } catch (error) {
+        retryCount++
+        console.log(`🔄 Clerk API attempt ${retryCount} failed, retrying...`)
+
+        if (retryCount < maxRetries) {
+          // Wait before retry with exponential backoff
+          await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount))
+        } else {
+          throw error
+        }
+      }
+    }
 
     if (!user) {
-      console.log("❌ No user found from Clerk")
+      console.log("❌ No user found from Clerk after retries")
       return null
     }
 
     console.log("✅ User found from Clerk:", user.id)
 
-    let dbUser = await db.user.findUnique({
-      where: {
-        clerkId: user.id,
-      },
-      include: {
-        sellerProfile: true,
-        artisanProfile: true,
-      },
-    })
-
-    // If user doesn't exist in database, create them
-    if (!dbUser) {
-      console.log("🔄 Creating new user in database...")
-
-      // Check if user is admin based on environment variable
-      const adminIds = process.env.ADMIN_IDS?.split(",") || []
-      const isAdminUser = adminIds.includes(user.id)
-
-      dbUser = await db.user.create({
-        data: {
+    let dbUser = null
+    try {
+      dbUser = await db.user.findUnique({
+        where: {
           clerkId: user.id,
-          email: user.emailAddresses[0]?.emailAddress || "",
-          firstName: user.firstName || "",
-          lastName: user.lastName || "",
-          imageUrl: user.imageUrl || "",
-          role: isAdminUser ? "ADMIN" : "BUYER",
         },
         include: {
           sellerProfile: true,
           artisanProfile: true,
         },
       })
+    } catch (dbError) {
+      console.error("❌ Database error when fetching user:", dbError)
+      // Return a minimal user object if DB fails but Clerk succeeds
+      return {
+        id: user.id,
+        clerkId: user.id,
+        email: user.emailAddresses[0]?.emailAddress || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        imageUrl: user.imageUrl || "",
+        role: "BUYER" as const,
+        sellerProfile: null,
+        artisanProfile: null,
+      }
+    }
 
-      console.log("✅ User created in database:", dbUser.id)
-    } else {
-      // Update existing user to admin if they're in ADMIN_IDS but not admin in DB
-      const adminIds = process.env.ADMIN_IDS?.split(",") || []
-      if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
-        console.log("🔄 Updating user to admin role...")
+    // If user doesn't exist in database, create them
+    if (!dbUser) {
+      console.log("🔄 Creating new user in database...")
 
-        dbUser = await db.user.update({
-          where: { id: dbUser.id },
-          data: { role: "ADMIN" },
+      try {
+        // Check if user is admin based on environment variable
+        const adminIds = process.env.ADMIN_IDS?.split(",") || []
+        const isAdminUser = adminIds.includes(user.id)
+
+        dbUser = await db.user.create({
+          data: {
+            clerkId: user.id,
+            email: user.emailAddresses[0]?.emailAddress || "",
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            imageUrl: user.imageUrl || "",
+            role: isAdminUser ? "ADMIN" : "BUYER",
+          },
           include: {
             sellerProfile: true,
             artisanProfile: true,
           },
         })
 
-        console.log("✅ User updated to admin role")
+        console.log("✅ User created in database:", dbUser.id)
+      } catch (createError) {
+        console.error("❌ Error creating user in database:", createError)
+        // Return minimal user object if creation fails
+        const adminIds = process.env.ADMIN_IDS?.split(",") || []
+        return {
+          id: user.id,
+          clerkId: user.id,
+          email: user.emailAddresses[0]?.emailAddress || "",
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          imageUrl: user.imageUrl || "",
+          role: adminIds.includes(user.id) ? ("ADMIN" as const) : ("BUYER" as const),
+          sellerProfile: null,
+          artisanProfile: null,
+        }
+      }
+    } else {
+      // Update existing user to admin if they're in ADMIN_IDS but not admin in DB
+      const adminIds = process.env.ADMIN_IDS?.split(",") || []
+      if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
+        console.log("🔄 Updating user to admin role...")
+
+        try {
+          dbUser = await db.user.update({
+            where: { id: dbUser.id },
+            data: { role: "ADMIN" },
+            include: {
+              sellerProfile: true,
+              artisanProfile: true,
+            },
+          })
+
+          console.log("✅ User updated to admin role")
+        } catch (updateError) {
+          console.error("❌ Error updating user role:", updateError)
+          // Continue with existing user data if update fails
+        }
       }
     }
 
