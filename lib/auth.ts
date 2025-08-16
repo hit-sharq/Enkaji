@@ -71,11 +71,20 @@ const PERMISSIONS = {
 
 export async function getCurrentUser() {
   try {
-    const user = await currentUser()
+    console.log("🔍 Attempting to get current user from Clerk...")
+
+    // Add timeout and retry logic
+    const user = (await Promise.race([
+      currentUser(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 10000)),
+    ])) as any
 
     if (!user) {
+      console.log("❌ No user found from Clerk")
       return null
     }
+
+    console.log("✅ User found from Clerk:", user.id)
 
     let dbUser = await db.user.findUnique({
       where: {
@@ -89,6 +98,8 @@ export async function getCurrentUser() {
 
     // If user doesn't exist in database, create them
     if (!dbUser) {
+      console.log("🔄 Creating new user in database...")
+
       // Check if user is admin based on environment variable
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
       const isAdminUser = adminIds.includes(user.id)
@@ -107,10 +118,14 @@ export async function getCurrentUser() {
           artisanProfile: true,
         },
       })
+
+      console.log("✅ User created in database:", dbUser.id)
     } else {
       // Update existing user to admin if they're in ADMIN_IDS but not admin in DB
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
       if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
+        console.log("🔄 Updating user to admin role...")
+
         dbUser = await db.user.update({
           where: { id: dbUser.id },
           data: { role: "ADMIN" },
@@ -119,12 +134,38 @@ export async function getCurrentUser() {
             artisanProfile: true,
           },
         })
+
+        console.log("✅ User updated to admin role")
       }
     }
 
     return dbUser
   } catch (error) {
-    console.error("Error getting current user:", error)
+    console.error("❌ Error getting current user:", error)
+
+    // Enhanced error logging
+    if (error instanceof Error) {
+      console.error("Error name:", error.name)
+      console.error("Error message:", error.message)
+      console.error("Error stack:", error.stack)
+    }
+
+    // Check if it's a Clerk API error
+    if (error && typeof error === "object" && "clerkError" in error) {
+      console.error("🔴 Clerk API Error Details:", {
+        status: (error as any).status,
+        clerkTraceId: (error as any).clerkTraceId,
+        errors: (error as any).errors,
+      })
+
+      // Log environment check
+      console.error("🔧 Environment Check:", {
+        hasPublishableKey: !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+        hasSecretKey: !!process.env.CLERK_SECRET_KEY,
+        nodeEnv: process.env.NODE_ENV,
+      })
+    }
+
     return null
   }
 }
@@ -133,6 +174,7 @@ export async function requireAuth() {
   const user = await getCurrentUser()
 
   if (!user) {
+    console.log("🚫 No user found, redirecting to sign-in")
     redirect("/sign-in")
   }
 
