@@ -25,7 +25,7 @@ interface ProductFormProps {
     name: string
     description: string
     price: number
-    stock: number
+    inventory: number
     images: string[]
     categoryId: string
   }
@@ -96,13 +96,13 @@ export function ProductForm({ categories, product }: ProductFormProps) {
       name: formData.get("name"),
       description: formData.get("description"),
       price: formData.get("price"),
-      stock: formData.get("stock"),
+      inventory: formData.get("inventory"),
       categoryId: formData.get("categoryId"),
       images,
     }
-    
-    console.log('Form data being sent:', productData)
-    console.log('Category ID from form:', formData.get("categoryId"))
+
+    console.log("Form data being sent:", productData)
+    console.log("Category ID from form:", formData.get("categoryId"))
 
     try {
       const url = product ? `/api/products/${product.id}` : "/api/products"
@@ -159,7 +159,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="price">Price (USD) *</Label>
+              <Label htmlFor="price">Price (KES) *</Label>
               <Input
                 id="price"
                 name="price"
@@ -172,14 +172,14 @@ export function ProductForm({ categories, product }: ProductFormProps) {
               />
             </div>
             <div>
-              <Label htmlFor="stock">Stock Quantity *</Label>
+              <Label htmlFor="inventory">Inventory Quantity *</Label>
               <Input
-                id="stock"
-                name="stock"
+                id="inventory"
+                name="inventory"
                 type="number"
                 min="0"
                 required
-                defaultValue={product?.stock || ""}
+                defaultValue={product?.inventory || ""}
                 placeholder="0"
               />
             </div>

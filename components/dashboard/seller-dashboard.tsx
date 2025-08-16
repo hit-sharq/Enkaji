@@ -262,7 +262,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                         <div className="text-right">
                           <p className="font-medium">KES {Number(product.price).toLocaleString()}</p>
                           <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
-                            {product.status.toLowerCase()}
+                            {product.status ? product.status.toLowerCase() : "pending"}
                           </Badge>
                         </div>
                         <div className="flex gap-2">
