@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, ShoppingCart, Heart, MapPin, Verified } from "lucide-react"
+import { formatDualCurrency } from "@/lib/currency"
 
 interface Product {
   id: string
@@ -73,7 +74,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold text-blue-600">KSh {product.price.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="text-sm text-gray-600">({product._count.reviews})</span>
@@ -152,7 +153,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-blue-600">KSh {product.price.toLocaleString()}</div>
+            <div className="text-xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               <span className="text-sm text-gray-600">({product._count.reviews})</span>

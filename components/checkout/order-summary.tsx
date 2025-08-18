@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { formatDualCurrency } from "@/lib/currency"
 
 interface OrderSummaryProps {
   cartItems: Array<{
@@ -17,7 +18,7 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
-  const shipping = total > 100 ? 0 : 10
+  const shipping = 500
   const tax = total * 0.08
   const finalTotal = total + shipping + tax
 
@@ -44,7 +45,7 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
                 <p className="font-medium">{item.product.name}</p>
                 <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
               </div>
-              <p className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</p>
+              <p className="font-medium">{formatDualCurrency(item.product.price * item.quantity)}</p>
             </div>
           ))}
         </div>
@@ -55,28 +56,26 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
         <div className="space-y-2">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{formatDualCurrency(total)}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Shipping</span>
-            <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+            <span>{formatDualCurrency(shipping)}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>{formatDualCurrency(tax)}</span>
           </div>
 
           <Separator />
 
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>${finalTotal.toFixed(2)}</span>
+            <span>{formatDualCurrency(finalTotal)}</span>
           </div>
         </div>
-
-        {total > 100 && <p className="text-sm text-green-600">🎉 You qualify for free shipping!</p>}
       </CardContent>
     </Card>
   )

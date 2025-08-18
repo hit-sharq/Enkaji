@@ -160,7 +160,7 @@ export function CheckoutForm({ cartItems, total }: CheckoutFormProps) {
       </Card>
 
       <Button type="submit" disabled={isLoading} className="w-full bg-red-800 hover:bg-red-900 text-white" size="lg">
-        {isLoading ? "Processing..." : `Place Order - $${total.toFixed(2)}`}
+        {isLoading ? "Processing..." : "Place Order"}
       </Button>
     </form>
   )

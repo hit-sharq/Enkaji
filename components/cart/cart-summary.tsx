@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/components/providers/cart-provider"
+import { formatDualCurrency } from "@/lib/currency"
 import Link from "next/link"
 
 type CartItem = { id: string; price: number; quantity: number }
@@ -15,7 +16,7 @@ export function CartSummary() {
 
   const items = state.items || []
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const shipping = subtotal > 5000 ? 0 : 500
+  const shipping = 500
   const tax = Math.round(subtotal * 0.08)
   const finalTotal = subtotal + shipping + tax
 
@@ -27,27 +28,25 @@ export function CartSummary() {
       <CardContent className="space-y-4">
         <div className="flex justify-between">
           <span>Subtotal ({items.length} items)</span>
-          <span>KES {subtotal.toLocaleString()}</span>
+          <span>{formatDualCurrency(subtotal)}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Shipping</span>
-          <span>{shipping === 0 ? "Free" : `KES ${shipping.toLocaleString()}`}</span>
+          <span>{formatDualCurrency(shipping)}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Tax</span>
-          <span>KES {tax.toLocaleString()}</span>
+          <span>{formatDualCurrency(tax)}</span>
         </div>
 
         <Separator />
 
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span>KES {finalTotal.toLocaleString()}</span>
+          <span>{formatDualCurrency(finalTotal)}</span>
         </div>
-
-        {subtotal > 5000 && <p className="text-sm text-green-600">🎉 You qualify for free shipping!</p>}
 
         <Link href="/checkout" className="block">
           <Button className="w-full bg-red-800 hover:bg-red-900 text-white">Proceed to Checkout</Button>
