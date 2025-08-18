@@ -34,7 +34,12 @@ const CartContext = createContext<{
 
 function calculateTotals(items: CartItem[]) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
+  const totalWeight = items.reduce((sum, item) => {
+    const itemWeight = item.weight || 0
+    console.log("[v0] Item:", item.name, "Weight:", itemWeight, "Quantity:", item.quantity)
+    return sum + itemWeight * item.quantity
+  }, 0)
+  console.log("[v0] Total cart weight:", totalWeight)
   return { total, totalWeight }
 }
 

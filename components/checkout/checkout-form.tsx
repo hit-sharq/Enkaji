@@ -11,22 +11,21 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { calculateShippingCost } from "@/lib/shipping"
+import { useCart } from "@/components/providers/cart-provider"
 
-interface CheckoutFormProps {
-  cartItems: any[]
-  total: number
-  totalWeight: number
-}
-
-export function CheckoutForm({ cartItems, total, totalWeight }: CheckoutFormProps) {
+export function CheckoutForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("STRIPE")
   const [shippingCountry, setShippingCountry] = useState("Kenya")
   const { toast } = useToast()
   const router = useRouter()
 
+  const { state } = useCart()
+  const { items: cartItems, total, totalWeight } = state
+
   const shippingCalculation = calculateShippingCost(totalWeight, shippingCountry)
-  const finalTotal = total + shippingCalculation.cost
+  const tax = total * 0.16 // 16% VAT
+  const finalTotal = total + tax + shippingCalculation.cost
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -45,18 +44,31 @@ export function CheckoutForm({ cartItems, total, totalWeight }: CheckoutFormProp
       country: formData.get("country"),
     }
 
+    const orderData = {
+      items: cartItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      subtotal: total,
+      tax: tax,
+      shipping: shippingCalculation.cost,
+      total: finalTotal,
+      shippingAddress,
+      paymentMethod,
+    }
+
+    console.log("[v0] Cart items from context:", cartItems)
+    console.log("[v0] Order data being sent:", orderData)
+    console.log("[v0] Total weight:", totalWeight)
+
     try {
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          shippingAddress,
-          paymentMethod,
-          shippingCost: shippingCalculation.cost,
-          totalWeight,
-        }),
+        body: JSON.stringify(orderData),
       })
 
       if (response.ok) {
@@ -87,6 +99,10 @@ export function CheckoutForm({ cartItems, total, totalWeight }: CheckoutFormProp
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (state.loading) {
+    return <div>Loading cart...</div>
   }
 
   return (
@@ -153,13 +169,21 @@ export function CheckoutForm({ cartItems, total, totalWeight }: CheckoutFormProp
 
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Subtotal</span>
+              <span>KSh {total.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Tax (16%)</span>
+              <span>KSh {tax.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">
                 Shipping ({shippingCalculation.tier.name} - {shippingCalculation.zone.name})
               </span>
-              <span className="font-semibold">KSh {shippingCalculation.cost.toLocaleString()}</span>
+              <span>KSh {shippingCalculation.cost.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center mt-2 pt-2 border-t">
-              <span className="font-semibold">Total with Shipping</span>
+              <span className="font-semibold">Total</span>
               <span className="font-bold text-lg">KSh {finalTotal.toLocaleString()}</span>
             </div>
           </div>

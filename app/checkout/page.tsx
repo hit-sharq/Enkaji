@@ -41,7 +41,7 @@ export default function CheckoutPage() {
         <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <CheckoutForm cartItems={state.items} total={state.total} totalWeight={state.totalWeight} />
+          <CheckoutForm />
           <OrderSummary cartItems={state.items} total={state.total} />
         </div>
       </main>

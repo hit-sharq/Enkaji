@@ -1,36 +1,59 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
-import { handleApiError } from "@/lib/errors"
 
 export async function POST(request: Request) {
   try {
+    console.log("🔍 Attempting to get current user from Clerk...")
     const user = await getCurrentUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+    console.log("✅ User found from Clerk:", user.id)
 
-    const {
-      items,
-      shippingAddress,
-      billingAddress,
-      paymentMethod,
-      paymentIntentId,
+    const requestData = await request.json()
+    console.log("[v0] Order request data:", JSON.stringify(requestData, null, 2))
+
+    const { items, shippingAddress, billingAddress, paymentMethod, paymentIntentId, subtotal, tax, shipping, total } =
+      requestData
+
+    console.log(
+      "[v0] Validation check - subtotal:",
       subtotal,
-      tax,
+      "shipping:",
       shipping,
+      "total:",
       total,
-    } = await request.json()
+      "items length:",
+      items?.length,
+    )
+
+    if (!subtotal || !shipping || !total || !items || items.length === 0) {
+      console.log("[v0] Validation failed - missing required fields")
+      return NextResponse.json(
+        {
+          error: "Missing required order data",
+          details: {
+            subtotal: !!subtotal,
+            shipping: !!shipping,
+            total: !!total,
+            items: !!items,
+            itemsLength: items?.length || 0,
+          },
+        },
+        { status: 400 },
+      )
+    }
 
     // Create order
     const order = await prisma.order.create({
       data: {
         orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         userId: user.id,
-        subtotal,
-        tax,
-        shipping,
-        total,
+        subtotal: Number(subtotal),
+        tax: Number(tax) || 0,
+        shipping: Number(shipping),
+        total: Number(total),
         shippingAddress,
         billingAddress,
         paymentMethod,
@@ -76,10 +99,7 @@ export async function GET(request: Request) {
 
     const orders = await prisma.order.findMany({
       where: {
-        OR: [
-          { userId: user.id },
-          { items: { some: { product: { sellerId: user.id } } } },
-        ],
+        OR: [{ userId: user.id }, { items: { some: { product: { sellerId: user.id } } } }],
       },
       include: {
         items: {

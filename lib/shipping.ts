@@ -92,11 +92,15 @@ export function calculateShippingCost(
   totalWeight: number,
   country = "Kenya",
 ): { cost: number; tier: ShippingTier; zone: ShippingZone } {
+  console.log("[v0] Calculating shipping for weight:", totalWeight, "country:", country)
   const zone = getShippingZone(country)
+  console.log("[v0] Selected zone:", zone.name)
+
   const tier =
-    zone.tiers.find((tier) => totalWeight > tier.minWeight && totalWeight <= tier.maxWeight) ||
+    zone.tiers.find((tier) => totalWeight >= tier.minWeight && totalWeight <= tier.maxWeight) ||
     zone.tiers[zone.tiers.length - 1]
 
+  console.log("[v0] Selected tier:", tier.name, "for weight:", totalWeight)
   return { cost: tier.cost, tier, zone }
 }
 
