@@ -8,20 +8,17 @@ import { Weight, Package } from "lucide-react"
 interface OrderSummaryProps {
   cartItems: Array<{
     id: string
+    name: string
+    price: number
     quantity: number
-    product: {
-      id: string
-      name: string
-      price: number
-      images: string[]
-      weight?: number
-    }
+    image?: string
+    weight?: number
   }>
   total: number
 }
 
 export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
-  const totalWeight = cartItems.reduce((sum, item) => sum + (item.product.weight || 0) * item.quantity, 0)
+  const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
   const { cost: shipping, tier } = calculateShippingCost(totalWeight)
   const tax = total * 0.08
@@ -39,26 +36,26 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
             <div key={item.id} className="flex items-center space-x-4">
               <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-200">
                 <Image
-                  src={item.product.images[0] || "/placeholder.svg?height=64&width=64"}
-                  alt={item.product.name}
+                  src={item.image || "/placeholder.svg?height=64&width=64"}
+                  alt={item.name}
                   width={64}
                   height={64}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex-1">
-                <p className="font-medium">{item.product.name}</p>
+                <p className="font-medium">{item.name}</p>
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <span>Qty: {item.quantity}</span>
-                  {item.product.weight && (
+                  {item.weight && (
                     <div className="flex items-center gap-1">
                       <Weight className="h-3 w-3" />
-                      <span>{formatWeight(item.product.weight * item.quantity)}</span>
+                      <span>{formatWeight(item.weight * item.quantity)}</span>
                     </div>
                   )}
                 </div>
               </div>
-              <p className="font-medium">{formatDualCurrency(item.product.price * item.quantity)}</p>
+              <p className="font-medium">{formatDualCurrency(item.price * item.quantity)}</p>
             </div>
           ))}
         </div>

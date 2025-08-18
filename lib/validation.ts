@@ -20,6 +20,10 @@ export const productSchema = z.object({
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === "string" ? Number.parseInt(val, 10) : val))
     .pipe(z.number().int().min(0, "Inventory cannot be negative")),
+  weight: z
+    .union([z.string(), z.number()])
+    .transform((val) => (typeof val === "string" ? Number.parseFloat(val) : val))
+    .pipe(z.number().positive("Weight must be positive")),
   categoryId: z.string().min(1, "Category is required"),
   images: z.array(z.string().url()).min(1, "At least one image is required"),
 })
