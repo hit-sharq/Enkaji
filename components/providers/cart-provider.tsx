@@ -9,17 +9,19 @@ interface CartItem {
   price: number
   quantity: number
   image?: string
+  weight?: number
 }
 
 interface CartState {
   items: CartItem[]
   total: number
+  totalWeight: number
   loading: boolean
 }
 
 type CartAction =
   | { type: "ADD_ITEM"; payload: CartItem }
-  | { type: "REMOVE_ITEM"; payload: string }
+  | { type: "REMOVE_ITEM"; payload: string | { id: string } }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
   | { type: "CLEAR_CART" }
   | { type: "LOAD_CART"; payload: CartItem[] }
@@ -30,6 +32,12 @@ const CartContext = createContext<{
   dispatch: React.Dispatch<CartAction>
 } | null>(null)
 
+function calculateTotals(items: CartItem[]) {
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
+  return { total, totalWeight }
+}
+
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
@@ -39,28 +47,20 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         const updatedItems = state.items.map((item) =>
           item.id === action.payload.id ? { ...item, quantity: item.quantity + action.payload.quantity } : item,
         )
-        return {
-          ...state,
-          items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        }
+        const { total, totalWeight } = calculateTotals(updatedItems)
+        return { ...state, items: updatedItems, total, totalWeight }
       }
 
       const newItems = [...state.items, action.payload]
-      return {
-        ...state,
-        items: newItems,
-        total: newItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      }
+      const { total, totalWeight } = calculateTotals(newItems)
+      return { ...state, items: newItems, total, totalWeight }
     }
 
     case "REMOVE_ITEM": {
-      const filteredItems = state.items.filter((item) => item.id !== action.payload)
-      return {
-        ...state,
-        items: filteredItems,
-        total: filteredItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      }
+      const itemId = typeof action.payload === "string" ? action.payload : action.payload.id
+      const filteredItems = state.items.filter((item) => item.id !== itemId)
+      const { total, totalWeight } = calculateTotals(filteredItems)
+      return { ...state, items: filteredItems, total, totalWeight }
     }
 
     case "UPDATE_QUANTITY": {
@@ -68,22 +68,16 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         .map((item) => (item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item))
         .filter((item) => item.quantity > 0)
 
-      return {
-        ...state,
-        items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      }
+      const { total, totalWeight } = calculateTotals(updatedItems)
+      return { ...state, items: updatedItems, total, totalWeight }
     }
 
     case "CLEAR_CART":
-      return { ...state, items: [], total: 0 }
+      return { ...state, items: [], total: 0, totalWeight: 0 }
 
     case "LOAD_CART": {
-      return {
-        ...state,
-        items: action.payload,
-        total: action.payload.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      }
+      const { total, totalWeight } = calculateTotals(action.payload)
+      return { ...state, items: action.payload, total, totalWeight }
     }
 
     case "SET_LOADING":
@@ -95,7 +89,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0, loading: true })
+  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0, totalWeight: 0, loading: true })
 
   useEffect(() => {
     const loadCartFromDatabase = async () => {
@@ -105,7 +99,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
         if (response.ok) {
           const data = await response.json()
-          // Transform database cart items to match CartItem interface
           const cartItems =
             data.items?.map((item: any) => ({
               id: item.productId,
@@ -113,11 +106,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               price: item.product?.price || 0,
               quantity: item.quantity,
               image: item.product?.images?.[0] || null,
+              weight: item.product?.weight || 0,
             })) || []
 
           dispatch({ type: "LOAD_CART", payload: cartItems })
         } else {
-          // Fallback to localStorage if API fails
           const savedCart = localStorage.getItem("cart")
           if (savedCart) {
             try {
@@ -130,7 +123,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error("Error loading cart from database:", error)
-        // Fallback to localStorage
         const savedCart = localStorage.getItem("cart")
         if (savedCart) {
           try {
@@ -148,7 +140,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadCartFromDatabase()
   }, [])
 
-  // Save cart to localStorage whenever it changes (as backup)
   useEffect(() => {
     if (!state.loading) {
       localStorage.setItem("cart", JSON.stringify(state.items))

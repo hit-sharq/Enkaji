@@ -146,6 +146,14 @@ export default function ShippingInfoPage() {
                                 <span>5-10kg:</span>
                                 <span className="font-semibold">KSh 5,500</span>
                               </div>
+                              <div className="flex justify-between">
+                                <span>10-20kg:</span>
+                                <span className="font-semibold">KSh 8,500</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>20kg+:</span>
+                                <span className="font-semibold">KSh 12,000</span>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
@@ -168,6 +176,14 @@ export default function ShippingInfoPage() {
                               <div className="flex justify-between">
                                 <span>5-10kg:</span>
                                 <span className="font-semibold">KSh 15,000</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>10-20kg:</span>
+                                <span className="font-semibold">KSh 25,000</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>20kg+:</span>
+                                <span className="font-semibold">KSh 35,000</span>
                               </div>
                             </div>
                           </CardContent>

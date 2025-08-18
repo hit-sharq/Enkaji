@@ -2,6 +2,8 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { formatDualCurrency } from "@/lib/currency"
+import { calculateShippingCost, formatWeight } from "@/lib/shipping"
+import { Weight, Package } from "lucide-react"
 
 interface OrderSummaryProps {
   cartItems: Array<{
@@ -12,13 +14,16 @@ interface OrderSummaryProps {
       name: string
       price: number
       images: string[]
+      weight?: number
     }
   }>
   total: number
 }
 
 export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
-  const shipping = 500
+  const totalWeight = cartItems.reduce((sum, item) => sum + (item.product.weight || 0) * item.quantity, 0)
+
+  const { cost: shipping, tier } = calculateShippingCost(totalWeight)
   const tax = total * 0.08
   const finalTotal = total + shipping + tax
 
@@ -43,7 +48,15 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
               </div>
               <div className="flex-1">
                 <p className="font-medium">{item.product.name}</p>
-                <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <span>Qty: {item.quantity}</span>
+                  {item.product.weight && (
+                    <div className="flex items-center gap-1">
+                      <Weight className="h-3 w-3" />
+                      <span>{formatWeight(item.product.weight * item.quantity)}</span>
+                    </div>
+                  )}
+                </div>
               </div>
               <p className="font-medium">{formatDualCurrency(item.product.price * item.quantity)}</p>
             </div>
@@ -59,8 +72,19 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
             <span>{formatDualCurrency(total)}</span>
           </div>
 
+          <div className="flex justify-between text-sm text-gray-600">
+            <div className="flex items-center gap-1">
+              <Weight className="h-4 w-4" />
+              <span>Total Weight</span>
+            </div>
+            <span>{formatWeight(totalWeight)}</span>
+          </div>
+
           <div className="flex justify-between">
-            <span>Shipping</span>
+            <div className="flex items-center gap-1">
+              <Package className="h-4 w-4" />
+              <span>Shipping ({tier.name})</span>
+            </div>
             <span>{formatDualCurrency(shipping)}</span>
           </div>
 

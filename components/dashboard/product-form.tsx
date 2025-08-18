@@ -28,6 +28,7 @@ interface ProductFormProps {
     inventory: number
     images: string[]
     categoryId: string
+    weight: number
   }
 }
 
@@ -36,6 +37,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
   const [images, setImages] = useState<string[]>(product?.images || [])
   const [isUploading, setIsUploading] = useState(false)
   const [categoryId, setCategoryId] = useState(product?.categoryId || "")
+  const [weight, setWeight] = useState(product?.weight || "")
   const { toast } = useToast()
   const router = useRouter()
 
@@ -98,6 +100,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
       price: formData.get("price"),
       inventory: formData.get("inventory"),
       categoryId: formData.get("categoryId"),
+      weight: formData.get("weight"),
       images,
     }
 
@@ -183,6 +186,23 @@ export function ProductForm({ categories, product }: ProductFormProps) {
                 placeholder="0"
               />
             </div>
+          </div>
+
+          <div>
+            <Label htmlFor="weight">Product Weight (kg) *</Label>
+            <Input
+              id="weight"
+              name="weight"
+              type="number"
+              step="0.01"
+              min="0.01"
+              required
+              defaultValue={product?.weight || ""}
+              placeholder="e.g., 0.5 for 500g items"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Weight is used to calculate accurate shipping costs for customers
+            </p>
           </div>
 
           <div>

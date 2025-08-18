@@ -4,8 +4,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, ShoppingCart, Heart, MapPin, Verified } from "lucide-react"
+import { Star, ShoppingCart, Heart, MapPin, Verified, Weight } from "lucide-react"
 import { formatDualCurrency } from "@/lib/currency"
+import { formatWeight } from "@/lib/shipping"
 
 interface Product {
   id: string
@@ -13,6 +14,7 @@ interface Product {
   description: string
   price: number
   images: string[]
+  weight?: number
   category: {
     id: string
     name: string
@@ -75,9 +77,17 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
               <div className="flex items-center justify-between">
                 <div className="text-2xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm text-gray-600">({product._count.reviews})</span>
+                <div className="flex items-center gap-4">
+                  {product.weight && (
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                      <Weight className="h-4 w-4" />
+                      {formatWeight(product.weight)}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm text-gray-600">({product._count.reviews})</span>
+                  </div>
                 </div>
               </div>
 
@@ -154,9 +164,17 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
           <div className="flex items-center justify-between">
             <div className="text-xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm text-gray-600">({product._count.reviews})</span>
+            <div className="flex items-center gap-3">
+              {product.weight && (
+                <div className="flex items-center gap-1 text-xs text-gray-600">
+                  <Weight className="h-3 w-3" />
+                  {formatWeight(product.weight)}
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm text-gray-600">({product._count.reviews})</span>
+              </div>
             </div>
           </div>
 

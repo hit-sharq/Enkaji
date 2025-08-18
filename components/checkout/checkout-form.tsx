@@ -10,17 +10,23 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { calculateShippingCost } from "@/lib/shipping"
 
 interface CheckoutFormProps {
   cartItems: any[]
   total: number
+  totalWeight: number
 }
 
-export function CheckoutForm({ cartItems, total }: CheckoutFormProps) {
+export function CheckoutForm({ cartItems, total, totalWeight }: CheckoutFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("STRIPE")
+  const [shippingCountry, setShippingCountry] = useState("Kenya")
   const { toast } = useToast()
   const router = useRouter()
+
+  const shippingCalculation = calculateShippingCost(totalWeight, shippingCountry)
+  const finalTotal = total + shippingCalculation.cost
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,6 +54,8 @@ export function CheckoutForm({ cartItems, total }: CheckoutFormProps) {
         body: JSON.stringify({
           shippingAddress,
           paymentMethod,
+          shippingCost: shippingCalculation.cost,
+          totalWeight,
         }),
       })
 
@@ -55,7 +63,6 @@ export function CheckoutForm({ cartItems, total }: CheckoutFormProps) {
         const data = await response.json()
 
         if (paymentMethod === "STRIPE" && data.clientSecret) {
-          // In a real app, you would integrate with Stripe Elements here
           toast({
             title: "Order placed successfully!",
             description: "You will receive a confirmation email shortly.",
@@ -134,7 +141,26 @@ export function CheckoutForm({ cartItems, total }: CheckoutFormProps) {
             </div>
             <div>
               <Label htmlFor="country">Country</Label>
-              <Input id="country" name="country" defaultValue="Kenya" required />
+              <Input
+                id="country"
+                name="country"
+                defaultValue="Kenya"
+                required
+                onChange={(e) => setShippingCountry(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">
+                Shipping ({shippingCalculation.tier.name} - {shippingCalculation.zone.name})
+              </span>
+              <span className="font-semibold">KSh {shippingCalculation.cost.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+              <span className="font-semibold">Total with Shipping</span>
+              <span className="font-bold text-lg">KSh {finalTotal.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>

@@ -27,7 +27,7 @@ export function CartItems() {
   }
 
   const removeItem = (id: string) => {
-    dispatch({ type: "REMOVE_ITEM", payload: { id } })
+    dispatch({ type: "REMOVE_ITEM", payload: id })
   }
 
   if (items.length === 0) {
