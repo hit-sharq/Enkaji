@@ -110,27 +110,31 @@ export function OrdersList({ userId }: OrdersListProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {order.orderItems.map((item) => (
-                <div key={item.id} className="flex items-center space-x-4">
-                  <img
-                    src={item.product.images[0] || "/placeholder.jpg"}
-                    alt={item.product.name}
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-medium">{item.product.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      Quantity: {item.quantity} × KSh {item.price.toLocaleString()}
-                    </p>
+              {order.orderItems && order.orderItems.length > 0 ? (
+                order.orderItems.map((item) => (
+                  <div key={item.id} className="flex items-center space-x-4">
+                    <img
+                      src={item.product.images[0] || "/placeholder.jpg"}
+                      alt={item.product.name}
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-medium">{item.product.name}</h4>
+                      <p className="text-sm text-gray-600">
+                        Quantity: {item.quantity} × KSh {item.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <Link href={`/products/${item.product.id}`}>
+                      <Button variant="outline" size="sm">
+                        <Eye className="w-4 h-4 mr-2" />
+                        View
+                      </Button>
+                    </Link>
                   </div>
-                  <Link href={`/products/${item.product.id}`}>
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4 mr-2" />
-                      View
-                    </Button>
-                  </Link>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No items found for this order</p>
+              )}
             </div>
           </CardContent>
         </Card>
