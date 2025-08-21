@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, Quote } from "lucide-react"
-import Image from "next/image"
 
 // Note: These should be replaced with real testimonials from actual users
 const testimonials = [
@@ -12,7 +11,6 @@ const testimonials = [
     business: "Real Customer Testimonials",
     content: "We're collecting genuine feedback from our users. Your testimonial could be featured here!",
     rating: 5,
-    image: "/placeholder.svg?height=60&width=60&text=User",
   },
   {
     id: 2,
@@ -20,7 +18,6 @@ const testimonials = [
     business: "Verified Buyers & Sellers",
     content: "Have you used Enkaji Trade Kenya? We'd love to hear about your experience and feature your story.",
     rating: 5,
-    image: "/placeholder.svg?height=60&width=60&text=User",
   },
   {
     id: 3,
@@ -28,7 +25,6 @@ const testimonials = [
     business: "Growing Network",
     content: "Be among the first to experience Kenya's premier B2B marketplace and help us build something amazing.",
     rating: 5,
-    image: "/placeholder.svg?height=60&width=60&text=User",
   },
 ]
 
@@ -61,13 +57,9 @@ export function TestimonialsSection() {
                 </div>
 
                 <div className="flex items-center">
-                  <Image
-                    src={testimonial.image || "/placeholder.svg"}
-                    alt={testimonial.name}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full mr-4 bg-gray-200"
-                  />
+                  <div className="w-12 h-12 rounded-full mr-4 bg-gradient-to-br from-enkaji-gold to-enkaji-ochre flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">{testimonial.name.charAt(0)}</span>
+                  </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
                     <p className="text-sm text-gray-600">{testimonial.business}</p>

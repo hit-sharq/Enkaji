@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ShoppingBag, Users, Globe } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 import { memo } from "react"
 
 export const HeroSection = memo(function HeroSection() {
@@ -11,7 +10,6 @@ export const HeroSection = memo(function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-enkaji-red/10 via-enkaji-ochre/5 to-enkaji-brown/10">
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1200')] opacity-5 bg-repeat"></div>
         <div className="absolute top-20 left-10 w-20 h-20 bg-enkaji-gold/20 rounded-full animate-pulse will-change-transform"></div>
         <div className="absolute top-40 right-20 w-16 h-16 bg-enkaji-green/20 rounded-full animate-bounce delay-300 will-change-transform"></div>
         <div className="absolute bottom-40 left-20 w-12 h-12 bg-enkaji-ochre/20 rounded-full animate-pulse delay-700 will-change-transform"></div>
@@ -79,30 +77,20 @@ export const HeroSection = memo(function HeroSection() {
             </div>
           </div>
 
-          {/* Visual */}
           <div className="relative">
-            <div className="relative w-full h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-              <Image
-                src="/placeholder.svg?height=500&width=600"
-                alt="Kenya B2B Marketplace"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-              {/* Overlay Cards */}
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-enkaji-green rounded-full"></div>
-                  <div>
-                    <div className="text-sm font-medium">Active RFQs</div>
-                    <div className="text-xs text-gray-600">1,247 active</div>
+            <div className="relative w-full h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-enkaji-cream to-enkaji-gold/20 flex items-center justify-center">
+              <div className="text-center p-8">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+                  <div className="flex items-center gap-2 justify-center mb-4">
+                    <div className="w-8 h-8 bg-enkaji-green rounded-full"></div>
+                    <div>
+                      <div className="text-sm font-medium">Active RFQs</div>
+                      <div className="text-xs text-gray-600">1,247 active</div>
+                    </div>
                   </div>
+                  <div className="text-sm font-medium">⭐ 4.9/5</div>
+                  <div className="text-xs text-gray-600">Customer Rating</div>
                 </div>
-              </div>
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-                <div className="text-sm font-medium">⭐ 4.9/5</div>
-                <div className="text-xs text-gray-600">Customer Rating</div>
               </div>
             </div>
           </div>

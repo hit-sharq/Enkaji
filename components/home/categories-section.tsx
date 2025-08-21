@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState, useMemo, useCallback } from "react"
-import Image from "next/image"
 
 interface Category {
   id: string
@@ -81,17 +80,11 @@ export function CategoriesSection() {
         >
           <div className="relative h-48 overflow-hidden">
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${categoryColors[index % categoryColors.length]} opacity-20`}
+              className={`absolute inset-0 bg-gradient-to-br ${categoryColors[index % categoryColors.length]} opacity-80`}
             ></div>
-            <Image
-              src={category.image || `/placeholder.svg?height=300&width=400&text=${encodeURIComponent(category.name)}`}
-              alt={category.name}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h3 className="text-2xl font-bold text-white text-center px-4">{category.name}</h3>
+            </div>
             {category._count && (
               <div className="absolute bottom-3 right-3 bg-white/90 text-gray-900 px-2 py-1 rounded text-sm font-medium">
                 {category._count.products} products
@@ -99,7 +92,6 @@ export function CategoriesSection() {
             )}
           </div>
           <CardContent className="p-6">
-            <h3 className="text-xl font-bold mb-2 text-gray-900">{category.name}</h3>
             <p className="text-gray-600 mb-4">{category.description}</p>
             <Button asChild variant="ghost" className="p-0 h-auto text-enkaji-red hover:text-enkaji-red/80 group/btn">
               <Link href={`/categories/${category.slug}`}>

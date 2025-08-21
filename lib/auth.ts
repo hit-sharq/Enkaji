@@ -70,30 +70,86 @@ const PERMISSIONS = {
   "roles.assign": ["ADMIN"],
 } as const
 
+const userCache = new Map<string, { user: any; timestamp: number }>()
+const circuitBreakerState = { failures: 0, lastFailure: 0, isOpen: false }
+const CACHE_TTL = 30000 // 30 seconds
+const CIRCUIT_BREAKER_THRESHOLD = 5
+const CIRCUIT_BREAKER_TIMEOUT = 60000 // 1 minute
+
 export async function getCurrentUser() {
   try {
     console.log("🔍 Attempting to get current user from Clerk...")
 
-    const user: User | null = await Promise.race([
-      currentUser(),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 3000)),
-    ])
+    const now = Date.now()
+    if (circuitBreakerState.isOpen && now - circuitBreakerState.lastFailure < CIRCUIT_BREAKER_TIMEOUT) {
+      console.log("⚡ Circuit breaker is open, skipping Clerk API call")
+      return null
+    }
+
+    let user: User | null = null
+    let lastError: Error | null = null
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log(`🔄 Clerk API attempt ${attempt}/3`)
+
+        user = await Promise.race([
+          currentUser(),
+          new Promise<never>(
+            (_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 8000), // Increased timeout to 8 seconds
+          ),
+        ])
+
+        circuitBreakerState.failures = 0
+        circuitBreakerState.isOpen = false
+        break
+      } catch (error) {
+        lastError = error as Error
+        console.log(`❌ Clerk API attempt ${attempt} failed:`, error)
+
+        if (attempt < 3) {
+          const delay = 500 * Math.pow(2, attempt - 1)
+          console.log(`⏳ Retrying in ${delay}ms...`)
+          await new Promise((resolve) => setTimeout(resolve, delay))
+        }
+      }
+    }
+
+    if (!user && lastError) {
+      circuitBreakerState.failures++
+      circuitBreakerState.lastFailure = now
+
+      if (circuitBreakerState.failures >= CIRCUIT_BREAKER_THRESHOLD) {
+        circuitBreakerState.isOpen = true
+        console.log("⚡ Circuit breaker opened due to repeated failures")
+      }
+    }
 
     if (!user) {
-      console.log("❌ No user found from Clerk")
+      console.log("❌ No user found from Clerk after all attempts")
       return null
     }
 
     console.log("✅ User found from Clerk:", user.id)
 
+    const cacheKey = user.id
+    const cached = userCache.get(cacheKey)
+    if (cached && now - cached.timestamp < CACHE_TTL) {
+      console.log("📦 Returning cached user data")
+      return cached.user
+    }
+
     try {
-      let dbUser = await db.user.findUnique({
-        where: { clerkId: user.id },
-        include: {
-          sellerProfile: true,
-          artisanProfile: true,
-        },
-      })
+      let dbUser = await Promise.race([
+        db.user.findUnique({
+          where: { clerkId: user.id },
+          include: {
+            sellerProfile: true,
+            artisanProfile: true,
+          },
+        }),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 5000)),
+      ])
 
       // If user doesn't exist in database, create them
       if (!dbUser) {
@@ -102,20 +158,23 @@ export async function getCurrentUser() {
         const adminIds = process.env.ADMIN_IDS?.split(",") || []
         const isAdminUser = adminIds.includes(user.id)
 
-        dbUser = await db.user.create({
-          data: {
-            clerkId: user.id,
-            email: user.emailAddresses?.[0]?.emailAddress || "",
-            firstName: user.firstName || "",
-            lastName: user.lastName || "",
-            imageUrl: user.imageUrl || "",
-            role: isAdminUser ? "ADMIN" : "BUYER",
-          },
-          include: {
-            sellerProfile: true,
-            artisanProfile: true,
-          },
-        })
+        dbUser = await Promise.race([
+          db.user.create({
+            data: {
+              clerkId: user.id,
+              email: user.emailAddresses?.[0]?.emailAddress || "",
+              firstName: user.firstName || "",
+              lastName: user.lastName || "",
+              imageUrl: user.imageUrl || "",
+              role: isAdminUser ? "ADMIN" : "BUYER",
+            },
+            include: {
+              sellerProfile: true,
+              artisanProfile: true,
+            },
+          }),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database create timeout")), 5000)),
+        ])
 
         console.log("✅ User created in database:", dbUser.id)
       } else {
@@ -132,11 +191,18 @@ export async function getCurrentUser() {
         }
       }
 
+      userCache.set(cacheKey, { user: dbUser, timestamp: now })
+
+      if (userCache.size > 100) {
+        const oldestKey = Array.from(userCache.keys())[0]
+        userCache.delete(oldestKey)
+      }
+
       return dbUser
     } catch (dbError) {
       console.error("❌ Database error:", dbError)
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
-      return {
+      const fallbackUser = {
         id: user.id,
         clerkId: user.id,
         email: user.emailAddresses?.[0]?.emailAddress || "",
@@ -147,6 +213,9 @@ export async function getCurrentUser() {
         sellerProfile: null,
         artisanProfile: null,
       }
+
+      userCache.set(cacheKey, { user: fallbackUser, timestamp: now })
+      return fallbackUser
     }
   } catch (error) {
     console.error("❌ Error getting current user:", error)
