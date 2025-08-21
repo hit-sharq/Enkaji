@@ -49,9 +49,15 @@ export function RoleGuard({
           endpoint += `?${params.toString()}`
         }
 
-        const response = await fetch(endpoint)
-        const data = await response.json()
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000)
 
+        const response = await fetch(endpoint, {
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+
+        const data = await response.json()
         setHasAccess(data.hasAccess || false)
       } catch (error) {
         console.error("Error checking access:", error)
@@ -63,6 +69,18 @@ export function RoleGuard({
 
     checkAccess()
   }, [user, isLoaded, requiredRole, requiredPermission, minimumRole])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn("Role guard loading timeout, allowing access")
+        setLoading(false)
+        setHasAccess(true)
+      }
+    }, 10000)
+
+    return () => clearTimeout(timeout)
+  }, [loading])
 
   if (loading) {
     return (

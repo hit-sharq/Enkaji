@@ -36,9 +36,15 @@ export function Header() {
           console.log("User ID:", user.id)
           console.log("Checking admin status...")
 
-          const response = await fetch("/api/auth/check-admin")
-          const data = await response.json()
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 3000)
 
+          const response = await fetch("/api/auth/check-admin", {
+            signal: controller.signal,
+          })
+          clearTimeout(timeoutId)
+
+          const data = await response.json()
           console.log("API Response:", data)
           console.log("Is Admin:", data.isAdmin)
 
@@ -53,7 +59,8 @@ export function Header() {
       }
     }
 
-    checkAdminStatus()
+    const timeoutId = setTimeout(checkAdminStatus, 100)
+    return () => clearTimeout(timeoutId)
   }, [user])
 
   const cartItemsCount = cart.state.items.reduce((total: number, item: any) => total + item.quantity, 0)
@@ -64,6 +71,27 @@ export function Header() {
       router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`)
       setSearchQuery("")
     }
+  }
+
+  if (!isLoaded) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                <Store className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-gray-900">Enkaji Trade Kenya</span>
+                <span className="text-xs text-gray-500 -mt-1">Kenya's B2B Marketplace</span>
+              </div>
+            </Link>
+            <div className="animate-pulse h-8 w-8 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </header>
+    )
   }
 
   if (process.env.NODE_ENV === "development") {

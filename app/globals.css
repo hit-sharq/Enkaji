@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
-
 :root {
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
@@ -127,19 +124,21 @@
     @apply bg-black/10 backdrop-blur-md border border-black/20;
   }
 
-  /* Floating animation */
+  /* Optimized animations with GPU acceleration */
   .float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
   }
 
   .float-delayed {
     animation: float 6s ease-in-out infinite;
     animation-delay: -2s;
+    will-change: transform;
   }
 
-  /* Pulse glow effect */
   .pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite alternate;
+    will-change: box-shadow;
   }
 }
 
@@ -180,10 +179,10 @@ html {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
@@ -198,22 +197,22 @@ html {
 
 @keyframes slideInFromLeft {
   0% {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
     opacity: 0;
   }
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 }
 
 @keyframes slideInFromRight {
   0% {
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0);
     opacity: 0;
   }
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 }

@@ -1,4 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server"
+import type { User } from "@clerk/nextjs/server" // Added Clerk User type import
 import { db } from "@/lib/db"
 import { redirect } from "next/navigation"
 import { AuthenticationError, AuthorizationError } from "@/lib/errors"
@@ -73,79 +74,38 @@ export async function getCurrentUser() {
   try {
     console.log("🔍 Attempting to get current user from Clerk...")
 
-    let user: any = null
-    let retryCount = 0
-    const maxRetries = 3
-
-    while (retryCount < maxRetries && !user) {
-      try {
-        // Increase timeout and add retry logic
-        user = await Promise.race([
-          currentUser(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 15000)),
-        ])
-
-        if (user) break
-      } catch (error) {
-        retryCount++
-        console.log(`🔄 Clerk API attempt ${retryCount} failed, retrying...`)
-
-        if (retryCount < maxRetries) {
-          // Wait before retry with exponential backoff
-          await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount))
-        } else {
-          throw error
-        }
-      }
-    }
+    const user: User | null = await Promise.race([
+      currentUser(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 3000)),
+    ])
 
     if (!user) {
-      console.log("❌ No user found from Clerk after retries")
+      console.log("❌ No user found from Clerk")
       return null
     }
 
     console.log("✅ User found from Clerk:", user.id)
 
-    let dbUser = null
     try {
-      dbUser = await db.user.findUnique({
-        where: {
-          clerkId: user.id,
-        },
+      let dbUser = await db.user.findUnique({
+        where: { clerkId: user.id },
         include: {
           sellerProfile: true,
           artisanProfile: true,
         },
       })
-    } catch (dbError) {
-      console.error("❌ Database error when fetching user:", dbError)
-      // Return a minimal user object if DB fails but Clerk succeeds
-      return {
-        id: user.id,
-        clerkId: user.id,
-        email: user.emailAddresses[0]?.emailAddress || "",
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        imageUrl: user.imageUrl || "",
-        role: "BUYER" as const,
-        sellerProfile: null,
-        artisanProfile: null,
-      }
-    }
 
-    // If user doesn't exist in database, create them
-    if (!dbUser) {
-      console.log("🔄 Creating new user in database...")
+      // If user doesn't exist in database, create them
+      if (!dbUser) {
+        console.log("🔄 Creating new user in database...")
 
-      try {
-        // Check if user is admin based on environment variable
         const adminIds = process.env.ADMIN_IDS?.split(",") || []
         const isAdminUser = adminIds.includes(user.id)
 
         dbUser = await db.user.create({
           data: {
             clerkId: user.id,
-            email: user.emailAddresses[0]?.emailAddress || "",
+            email: user.emailAddresses?.[0]?.emailAddress || "",
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             imageUrl: user.imageUrl || "",
@@ -158,29 +118,9 @@ export async function getCurrentUser() {
         })
 
         console.log("✅ User created in database:", dbUser.id)
-      } catch (createError) {
-        console.error("❌ Error creating user in database:", createError)
-        // Return minimal user object if creation fails
+      } else {
         const adminIds = process.env.ADMIN_IDS?.split(",") || []
-        return {
-          id: user.id,
-          clerkId: user.id,
-          email: user.emailAddresses[0]?.emailAddress || "",
-          firstName: user.firstName || "",
-          lastName: user.lastName || "",
-          imageUrl: user.imageUrl || "",
-          role: adminIds.includes(user.id) ? ("ADMIN" as const) : ("BUYER" as const),
-          sellerProfile: null,
-          artisanProfile: null,
-        }
-      }
-    } else {
-      // Update existing user to admin if they're in ADMIN_IDS but not admin in DB
-      const adminIds = process.env.ADMIN_IDS?.split(",") || []
-      if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
-        console.log("🔄 Updating user to admin role...")
-
-        try {
+        if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
           dbUser = await db.user.update({
             where: { id: dbUser.id },
             data: { role: "ADMIN" },
@@ -189,42 +129,27 @@ export async function getCurrentUser() {
               artisanProfile: true,
             },
           })
-
-          console.log("✅ User updated to admin role")
-        } catch (updateError) {
-          console.error("❌ Error updating user role:", updateError)
-          // Continue with existing user data if update fails
         }
       }
-    }
 
-    return dbUser
+      return dbUser
+    } catch (dbError) {
+      console.error("❌ Database error:", dbError)
+      const adminIds = process.env.ADMIN_IDS?.split(",") || []
+      return {
+        id: user.id,
+        clerkId: user.id,
+        email: user.emailAddresses?.[0]?.emailAddress || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        imageUrl: user.imageUrl || "",
+        role: adminIds.includes(user.id) ? ("ADMIN" as const) : ("BUYER" as const),
+        sellerProfile: null,
+        artisanProfile: null,
+      }
+    }
   } catch (error) {
     console.error("❌ Error getting current user:", error)
-
-    // Enhanced error logging
-    if (error instanceof Error) {
-      console.error("Error name:", error.name)
-      console.error("Error message:", error.message)
-      console.error("Error stack:", error.stack)
-    }
-
-    // Check if it's a Clerk API error
-    if (error && typeof error === "object" && "clerkError" in error) {
-      console.error("🔴 Clerk API Error Details:", {
-        status: (error as any).status,
-        clerkTraceId: (error as any).clerkTraceId,
-        errors: (error as any).errors,
-      })
-
-      // Log environment check
-      console.error("🔧 Environment Check:", {
-        hasPublishableKey: !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
-        hasSecretKey: !!process.env.CLERK_SECRET_KEY,
-        nodeEnv: process.env.NODE_ENV,
-      })
-    }
-
     return null
   }
 }
