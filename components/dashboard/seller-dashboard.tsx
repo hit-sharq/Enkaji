@@ -258,28 +258,20 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                           Stock: {product.stock} units • {product.category || "Uncategorized"}
                         </p>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="font-medium">KES {Number(product.price).toLocaleString()}</p>
-                          <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
-                            {product.status ? product.status.toLowerCase() : "pending"}
-                          </Badge>
-                        </div>
-                        <div className="flex gap-2">
-                          <Link href={`/products/${product.id}`}>
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Link href={`/dashboard/products/${product.id}/edit`}>
-                            <Button size="sm" variant="outline">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
+                      <div className="flex gap-2">
+                        <Link href={`/products/${product.id}`}>
                           <Button size="sm" variant="outline">
-                            <Trash2 className="h-4 w-4" />
+                            <Eye className="h-4 w-4" />
                           </Button>
-                        </div>
+                        </Link>
+                        <Link href={`/dashboard/products/${product.id}/edit`}>
+                          <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        <Button size="sm" variant="outline">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -322,7 +314,9 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                             {order.status.toLowerCase()}
                           </Badge>
                         </div>
-                        <Button size="sm">View Details</Button>
+                        <Link href={`/orders/${order.id}`}>
+                          <Button size="sm">View Details</Button>
+                        </Link>
                       </div>
                     </div>
                   ))}

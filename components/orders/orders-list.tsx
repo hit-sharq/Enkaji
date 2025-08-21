@@ -136,6 +136,14 @@ export function OrdersList({ userId }: OrdersListProps) {
                 <p className="text-gray-500 text-center py-4">No items found for this order</p>
               )}
             </div>
+            <div className="mt-4 pt-4 border-t">
+              <Link href={`/orders/${order.id}`}>
+                <Button variant="outline" size="sm">
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Order Details
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       ))}
