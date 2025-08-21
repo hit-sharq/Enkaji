@@ -49,10 +49,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             {/* Image */}
             <div className="relative md:w-64 aspect-square md:aspect-video overflow-hidden">
               <Image
-                src={product.images[0] || "/placeholder.svg?height=200&width=300"}
+                src={product.images[0] || "/placeholder.png?height=200&width=300"}
                 alt={product.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-200"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.png"
+                }}
               />
               <div className="absolute top-2 left-2">
                 <Badge variant="secondary">{product.category.name}</Badge>
@@ -132,10 +135,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden rounded-t-lg">
           <Image
-            src={product.images[0] || "/placeholder.svg?height=300&width=300"}
+            src={product.images[0] || "/placeholder.png?height=300&width=300"}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-200"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder.png"
+            }}
           />
           <div className="absolute top-2 right-2 space-y-2">
             <Button

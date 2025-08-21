@@ -96,11 +96,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <div className="space-y-4">
           <div className="aspect-square overflow-hidden rounded-lg">
             <Image
-              src={product.images[selectedImage] || "/placeholder.svg?height=600&width=600&query=product%20image"}
+              src={product.images[selectedImage] || "/placeholder.png"}
               alt={product.name}
               width={600}
               height={600}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.png"
+              }}
             />
           </div>
           {product.images.length > 1 && (
@@ -114,11 +117,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   }`}
                 >
                   <Image
-                    src={image || "/placeholder.svg?height=80&width=80&query=product%20thumb"}
+                    src={image || "/placeholder.png"}
                     alt={`${product.name} ${index + 1}`}
                     width={80}
                     height={80}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.png"
+                    }}
                   />
                 </button>
               ))}
@@ -203,11 +209,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
                   {product.seller.imageUrl ? (
                     <Image
-                      src={product.seller.imageUrl || "/placeholder.svg?height=48&width=48&query=avatar"}
+                      src={product.seller.imageUrl || "/placeholder.png"}
                       alt={sellerName}
                       width={48}
                       height={48}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/placeholder.png"
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -243,11 +252,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
                       {review.user.imageUrl ? (
                         <Image
-                          src={review.user.imageUrl || "/placeholder.svg?height=40&width=40&query=avatar"}
+                          src={review.user.imageUrl || "/placeholder.png"}
                           alt="Reviewer"
                           width={40}
                           height={40}
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "/placeholder.png"
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
