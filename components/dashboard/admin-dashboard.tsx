@@ -37,6 +37,7 @@ import {
   UserCog,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { ReviewsManagement } from "@/components/admin/reviews-management"
 
 interface User {
   id: string
@@ -404,11 +405,12 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
 
       {/* Main Admin Tabs */}
       <Tabs defaultValue="users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="sellers">Sellers</TabsTrigger>
+          <TabsTrigger value="reviews">Reviews</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
@@ -779,6 +781,11 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Reviews Management */}
+        <TabsContent value="reviews" className="space-y-4">
+          <ReviewsManagement />
         </TabsContent>
 
         {/* Analytics */}
