@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/footer"
 import { ProductDetails } from "@/components/products/product-details"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { db } from "@/lib/db"
+import { convertProductDecimals } from "@/lib/utils"
 import { notFound } from "next/navigation"
 
 async function getProduct(id: string) {
@@ -46,10 +47,13 @@ async function getProduct(id: string) {
       ? product.reviews.reduce((sum: number, review) => sum + review.rating, 0) / product.reviews.length
       : 0
 
-  return {
+  // Convert Decimal objects to numbers before returning
+  const productWithNumbers = convertProductDecimals({
     ...product,
     avgRating: Math.round(avgRating * 10) / 10,
-  }
+  })
+
+  return productWithNumbers
 }
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
@@ -63,7 +67,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     <div className="min-h-screen">
       <Header />
       <main>
-        <ProductDetails product={product as any} />
+        <ProductDetails product={product} />
       </main>
       <Footer />
       <WhatsAppButton />
