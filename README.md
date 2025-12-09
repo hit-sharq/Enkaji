@@ -1,6 +1,6 @@
 # Enkaji - Kenya's Premier B2B Marketplace
 
-Enkaji is a comprehensive B2B marketplace platform designed specifically for the Kenyan market, connecting businesses with verified suppliers across all 47 counties. Our platform facilitates secure trade, enables business growth, and supports Kenya's economic development through digital commerce.
+Enkaji is a comprehensive B2B marketplace platform designed specifically for the Kenyan market, connecting businesses with verified shops across all 47 counties. Our platform facilitates secure trade, enables business growth, and supports Kenya's economic development through digital commerce.
 
 ## 🌍 Platform Overview
 
@@ -70,7 +70,7 @@ Enkaji serves as the bridge between buyers and suppliers in Kenya, offering a tr
 ## 🚀 Business Impact
 
 ### For Buyers
-- Access to verified suppliers nationwide
+- Access to verified businesses nationwide
 - Competitive pricing through marketplace dynamics
 - Secure payment and delivery options
 - Quality assurance and dispute resolution

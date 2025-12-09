@@ -38,9 +38,8 @@ model User {
   sellerPayouts     SellerPayout[]
   payoutRequests    PayoutRequest[]
   sellerSubscription SellerSubscription?
-  escrowPayments    EscrowPayment[]
   paymentDisputes   PaymentDispute[]
-  bankTransferPayments BankTransferPayment[]
+  pesapalPayments   PesapalPayment[]
 
   // Approval relations
   productApprovals  ProductApproval[]
@@ -80,7 +79,7 @@ model SellerProfile {
   phone         String
   website       String?
   taxId         String?
-  bankDetails   Json?    // Store bank account details as JSON
+  bankDetails   String?  // Encrypted bank account details
   isVerified    Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -180,7 +179,7 @@ model Order {
   
   // Relations
   items           OrderItem[]
-  escrowPayment   EscrowPayment?
+  pesapalPayment  PesapalPayment?
 
   @@map("orders")
 }
@@ -293,7 +292,50 @@ model BulkOrderItem {
   @@map("bulk_order_items")
 }
 
-// Payment-related models
+// Pesapal Payment Integration Models
+model PesapalPayment {
+  id                    String             @id @default(cuid())
+  orderId               String             @unique
+  order                 Order              @relation(fields: [orderId], references: [id])
+  userId                String
+  user                  User               @relation(fields: [userId], references: [id])
+  amount                Decimal
+  currency              String             @default("KES")
+  pesapalTrackingId     String?            // Pesapal tracking ID
+  pesapalMerchantRef    String?            // Merchant reference
+  pesapalTransactionId  String?            // Pesapal transaction ID
+  paymentMethod         PesapalPaymentMethod @default(CARD)
+  status                PesapalPaymentStatus @default(PENDING)
+  paymentStatusDescription String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  @@map("pesapal_payments")
+}
+
+model PesapalIPN {
+  id                    String             @id @default(cuid())
+  pesapalTransactionId  String             @unique
+  pesapalTrackingId     String
+  pesapalMerchantRef    String
+  paymentMethod         PesapalPaymentMethod
+  amount                Decimal
+  currency              String
+  status                PesapalPaymentStatus
+  statusDescription     String?
+  paymentAccount        String?
+  callBackUrl           String?
+  description           String?
+  message               String?
+  reference             String?
+  thirdPartyReference   String?
+  rawData               Json               // Store complete IPN data
+  processedAt           DateTime           @default(now())
+  createdAt             DateTime           @default(now())
+
+  @@map("pesapal_ipns")
+}
+
 model SellerPayout {
   id              String        @id @default(cuid())
   sellerId        String
@@ -304,8 +346,8 @@ model SellerPayout {
   platformFee     Decimal       // Platform commission (5%)
   processingFee   Decimal       // Payment processing fee
   status          PayoutStatus  @default(PENDING)
-  method          PayoutMethod  @default(MPESA)
-  recipientDetails Json         // Phone number, bank details, etc.
+  method          PayoutMethod  @default(PESAPAL)
+  recipientDetails String       // Encrypted phone number, bank details, etc.
   transactionId   String?       // External transaction ID
   processedAt     DateTime?
   createdAt       DateTime      @default(now())
@@ -319,7 +361,7 @@ model PayoutRequest {
   sellerId        String
   seller          User               @relation(fields: [sellerId], references: [id])
   amount          Decimal
-  method          PayoutMethod
+  method          PayoutMethod       @default(PESAPAL)
   recipientDetails Json              // Phone number, bank details, etc.
   status          PayoutRequestStatus @default(PENDING)
   adminNotes      String?
@@ -338,28 +380,11 @@ model SellerSubscription {
   status            SubscriptionStatus @default(ACTIVE)
   currentPeriodStart DateTime
   currentPeriodEnd   DateTime
-  stripeSubscriptionId String?
+  pesapalSubscriptionId String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
   @@map("seller_subscriptions")
-}
-
-model EscrowPayment {
-  id              String        @id @default(cuid())
-  orderId         String        @unique
-  order           Order         @relation(fields: [orderId], references: [id])
-  buyerId         String
-  buyer           User          @relation(fields: [buyerId], references: [id])
-  amount          Decimal
-  status          EscrowStatus  @default(HELD)
-  heldAt          DateTime      @default(now())
-  releasedAt      DateTime?
-  refundedAt      DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-
-  @@map("escrow_payments")
 }
 
 model PaymentDispute {
@@ -376,24 +401,6 @@ model PaymentDispute {
   updatedAt   DateTime      @updatedAt
 
   @@map("payment_disputes")
-}
-
-model BankTransferPayment {
-  id              String              @id @default(cuid())
-  userId          String
-  user            User                @relation(fields: [userId], references: [id])
-  orderId         String?
-  amount          Decimal
-  bankName        String
-  accountNumber   String
-  accountName     String
-  referenceNumber String
-  status          BankTransferStatus  @default(PENDING)
-  verifiedAt      DateTime?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-
-  @@map("bank_transfer_payments")
 }
 
 // Contact model for newsletter subscriptions
@@ -521,6 +528,7 @@ enum PayoutStatus {
 }
 
 enum PayoutMethod {
+  PESAPAL
   MPESA
   BANK_TRANSFER
   PAYPAL
@@ -546,12 +554,7 @@ enum SubscriptionStatus {
   UNPAID
 }
 
-enum EscrowStatus {
-  HELD
-  RELEASED
-  REFUNDED
-  DISPUTED
-}
+
 
 enum DisputeStatus {
   OPEN
@@ -560,8 +563,21 @@ enum DisputeStatus {
   CLOSED
 }
 
-enum BankTransferStatus {
+enum PesapalPaymentMethod {
+  CARD
+  MPESA
+  AIRTEL_MONEY
+  EQUITY_BANK
+  KCB_BANK
+  BANK_TRANSFER
+  MOBILE_BANKING
+}
+
+enum PesapalPaymentStatus {
   PENDING
-  VERIFIED
-  REJECTED
+  COMPLETED
+  FAILED
+  CANCELLED
+  INVALID
+  REVERSED
 }

@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Enkaji Trade Kenya - Kenya's Leading Marketplace",
-  description: "Connect with thousands of verified artisans and businesses across Kenya.",
+  description: "Connect with thousands of verified businesses across Kenya.",
   icons: {
     icon: "/favicon.ico",
   },

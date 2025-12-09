@@ -59,7 +59,7 @@ export const HeroSection = memo(function HeroSection() {
               <Button asChild size="lg" className="bg-enkaji-red hover:bg-enkaji-red/90 text-white group">
                 <Link href="/shop">
                   <ShoppingBag className="w-5 h-5 mr-2" />
-                  Find Suppliers
+                  Find Shops
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -71,7 +71,7 @@ export const HeroSection = memo(function HeroSection() {
               >
                 <Link href="/sell">
                   <Users className="w-5 h-5 mr-2" />
-                  Register as Supplier
+                  Register as a Seller
                 </Link>
               </Button>
             </div>

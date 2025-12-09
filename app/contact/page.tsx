@@ -14,7 +14,7 @@ export default function ContactPage() {
           <div className="text-center mb-12">
             <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Have questions about our products or want to learn more about our artisans? We'd love to hear from you!
+              Have questions about our products or want to learn more about our businesses? We'd love to hear from you!
             </p>
           </div>
 
@@ -49,7 +49,7 @@ export default function ContactPage() {
                       <Phone className="w-6 h-6 text-red-800 mt-1" />
                       <div>
                         <h3 className="font-semibold text-lg mb-2">Phone</h3>
-                        <p className="text-gray-600">+254 700 123 456</p>
+                        <p className="text-gray-600">+254 794 773 456</p>
                         <p className="text-sm text-gray-500">Monday - Friday, 9AM - 6PM EAT</p>
                       </div>
                     </div>
@@ -80,7 +80,7 @@ export default function ContactPage() {
                       <MessageCircle className="w-6 h-6 text-red-800 mt-1" />
                       <div>
                         <h3 className="font-semibold text-lg mb-2">WhatsApp</h3>
-                        <p className="text-gray-600">+254 700 123 456</p>
+                        <p className="text-gray-600">+254 792 687 584</p>
                         <p className="text-sm text-gray-500">Quick support via WhatsApp</p>
                       </div>
                     </div>

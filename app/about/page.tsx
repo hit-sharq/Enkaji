@@ -162,7 +162,7 @@ export default function AboutPage() {
                   </div>
                   <h3 className="font-bold text-xl mb-4 text-gray-900">Trust & Security</h3>
                   <p className="text-gray-600 leading-relaxed">
-                    Ensuring secure transactions and verified suppliers for peace of mind in every business deal
+                    Ensuring secure transactions and verified businesses for peace of mind in every business deal
                   </p>
                 </CardContent>
               </Card>
