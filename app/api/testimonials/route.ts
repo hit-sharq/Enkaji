@@ -54,16 +54,12 @@ export async function GET(request: NextRequest) {
 
     const { featured, limit } = validationResult.data
 
-    const where: any = {}
-
-    if (featured) {
-      where.isFeatured = true
-    }
-
+    // For now, just return all testimonials ordered by creation date
+    // TODO: Add isFeatured field to Contact model if needed
     const testimonials = await prisma.contact.findMany({
       where: {
-        ...where,
-        type: "TESTIMONIAL"
+        type: "TESTIMONIAL",
+        isActive: true
       },
       orderBy: [{ createdAt: "desc" }],
       take: limit,
