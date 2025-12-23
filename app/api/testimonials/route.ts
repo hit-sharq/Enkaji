@@ -6,8 +6,8 @@ import sanitizeHtml from "sanitize-html"
 
 // Validation schemas
 const testimonialsQuerySchema = z.object({
-  featured: z.string().optional().transform(val => val === "true"),
-  limit: z.string().optional().transform(val => {
+  featured: z.union([z.string(), z.undefined()]).optional().transform(val => val === "true"),
+  limit: z.union([z.string(), z.undefined()]).optional().transform(val => {
     const num = Number.parseInt(val || "10")
     return Math.min(Math.max(num, 1), 100) // Limit between 1 and 100
   })
@@ -41,8 +41,8 @@ export async function GET(request: NextRequest) {
 
     // Validate query parameters
     const validationResult = testimonialsQuerySchema.safeParse({
-      featured: searchParams.get("featured"),
-      limit: searchParams.get("limit")
+      featured: searchParams.get("featured") || undefined,
+      limit: searchParams.get("limit") || undefined
     })
 
     if (!validationResult.success) {
