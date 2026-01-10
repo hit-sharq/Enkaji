@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('BUYER', 'SELLER', 'ARTISAN', 'ADMIN');
+CREATE TYPE "UserRole" AS ENUM ('BUYER', 'SELLER', 'ARTISAN', 'ADMIN', 'MODERATOR', 'SUPPORT_AGENT', 'CONTENT_MANAGER', 'FINANCE_MANAGER', 'REGIONAL_MANAGER');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED');
@@ -20,7 +20,7 @@ CREATE TYPE "BulkOrderStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'COMPL
 CREATE TYPE "PayoutStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED');
 
 -- CreateEnum
-CREATE TYPE "PayoutMethod" AS ENUM ('MPESA', 'BANK_TRANSFER', 'PAYPAL');
+CREATE TYPE "PayoutMethod" AS ENUM ('PESAPAL', 'MPESA', 'BANK_TRANSFER', 'PAYPAL');
 
 -- CreateEnum
 CREATE TYPE "PayoutRequestStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'PROCESSED');
@@ -32,13 +32,13 @@ CREATE TYPE "SubscriptionPlan" AS ENUM ('BASIC', 'PREMIUM', 'ENTERPRISE');
 CREATE TYPE "SubscriptionStatus" AS ENUM ('ACTIVE', 'CANCELLED', 'PAST_DUE', 'UNPAID');
 
 -- CreateEnum
-CREATE TYPE "EscrowStatus" AS ENUM ('HELD', 'RELEASED', 'REFUNDED', 'DISPUTED');
-
--- CreateEnum
 CREATE TYPE "DisputeStatus" AS ENUM ('OPEN', 'INVESTIGATING', 'RESOLVED', 'CLOSED');
 
 -- CreateEnum
-CREATE TYPE "BankTransferStatus" AS ENUM ('PENDING', 'VERIFIED', 'REJECTED');
+CREATE TYPE "PesapalPaymentMethod" AS ENUM ('CARD', 'MPESA', 'AIRTEL_MONEY', 'EQUITY_BANK', 'KCB_BANK', 'BANK_TRANSFER', 'MOBILE_BANKING');
+
+-- CreateEnum
+CREATE TYPE "PesapalPaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED', 'INVALID', 'REVERSED');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -49,7 +49,7 @@ CREATE TABLE "users" (
     "lastName" TEXT,
     "imageUrl" TEXT,
     "role" "UserRole" NOT NULL DEFAULT 'BUYER',
-    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -85,7 +85,7 @@ CREATE TABLE "seller_profiles" (
     "phone" TEXT NOT NULL,
     "website" TEXT,
     "taxId" TEXT,
-    "bankDetails" JSONB,
+    "bankDetails" TEXT,
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -201,6 +201,7 @@ CREATE TABLE "reviews" (
     "comment" TEXT,
     "images" TEXT[],
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "isFlagged" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -270,6 +271,49 @@ CREATE TABLE "bulk_order_items" (
 );
 
 -- CreateTable
+CREATE TABLE "pesapal_payments" (
+    "id" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'KES',
+    "pesapalTrackingId" TEXT,
+    "pesapalMerchantRef" TEXT,
+    "pesapalTransactionId" TEXT,
+    "paymentMethod" "PesapalPaymentMethod" NOT NULL DEFAULT 'CARD',
+    "status" "PesapalPaymentStatus" NOT NULL DEFAULT 'PENDING',
+    "paymentStatusDescription" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "pesapal_payments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "pesapal_ipns" (
+    "id" TEXT NOT NULL,
+    "pesapalTransactionId" TEXT NOT NULL,
+    "pesapalTrackingId" TEXT NOT NULL,
+    "pesapalMerchantRef" TEXT NOT NULL,
+    "paymentMethod" "PesapalPaymentMethod" NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
+    "currency" TEXT NOT NULL,
+    "status" "PesapalPaymentStatus" NOT NULL,
+    "statusDescription" TEXT,
+    "paymentAccount" TEXT,
+    "callBackUrl" TEXT,
+    "description" TEXT,
+    "message" TEXT,
+    "reference" TEXT,
+    "thirdPartyReference" TEXT,
+    "rawData" JSONB NOT NULL,
+    "processedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "pesapal_ipns_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "seller_payouts" (
     "id" TEXT NOT NULL,
     "sellerId" TEXT NOT NULL,
@@ -279,8 +323,8 @@ CREATE TABLE "seller_payouts" (
     "platformFee" DECIMAL(65,30) NOT NULL,
     "processingFee" DECIMAL(65,30) NOT NULL,
     "status" "PayoutStatus" NOT NULL DEFAULT 'PENDING',
-    "method" "PayoutMethod" NOT NULL DEFAULT 'MPESA',
-    "recipientDetails" JSONB NOT NULL,
+    "method" "PayoutMethod" NOT NULL DEFAULT 'PESAPAL',
+    "recipientDetails" TEXT NOT NULL,
     "transactionId" TEXT,
     "processedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -294,7 +338,7 @@ CREATE TABLE "payout_requests" (
     "id" TEXT NOT NULL,
     "sellerId" TEXT NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
-    "method" "PayoutMethod" NOT NULL,
+    "method" "PayoutMethod" NOT NULL DEFAULT 'PESAPAL',
     "recipientDetails" JSONB NOT NULL,
     "status" "PayoutRequestStatus" NOT NULL DEFAULT 'PENDING',
     "adminNotes" TEXT,
@@ -313,27 +357,11 @@ CREATE TABLE "seller_subscriptions" (
     "status" "SubscriptionStatus" NOT NULL DEFAULT 'ACTIVE',
     "currentPeriodStart" TIMESTAMP(3) NOT NULL,
     "currentPeriodEnd" TIMESTAMP(3) NOT NULL,
-    "stripeSubscriptionId" TEXT,
+    "pesapalSubscriptionId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "seller_subscriptions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "escrow_payments" (
-    "id" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
-    "buyerId" TEXT NOT NULL,
-    "amount" DECIMAL(65,30) NOT NULL,
-    "status" "EscrowStatus" NOT NULL DEFAULT 'HELD',
-    "heldAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "releasedAt" TIMESTAMP(3),
-    "refundedAt" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "escrow_payments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -353,21 +381,67 @@ CREATE TABLE "payment_disputes" (
 );
 
 -- CreateTable
-CREATE TABLE "bank_transfer_payments" (
+CREATE TABLE "contacts" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "orderId" TEXT,
-    "amount" DECIMAL(65,30) NOT NULL,
-    "bankName" TEXT NOT NULL,
-    "accountNumber" TEXT NOT NULL,
-    "accountName" TEXT NOT NULL,
-    "referenceNumber" TEXT NOT NULL,
-    "status" "BankTransferStatus" NOT NULL DEFAULT 'PENDING',
-    "verifiedAt" TIMESTAMP(3),
+    "email" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "type" TEXT NOT NULL DEFAULT 'NEWSLETTER',
+    "subject" TEXT,
+    "message" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "bank_transfer_payments_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "contacts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_approvals" (
+    "id" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
+    "approved" BOOLEAN NOT NULL,
+    "reason" TEXT,
+    "approvedBy" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "product_approvals_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "artisan_approvals" (
+    "id" TEXT NOT NULL,
+    "artisanId" TEXT NOT NULL,
+    "approved" BOOLEAN NOT NULL,
+    "reason" TEXT,
+    "approvedBy" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "artisan_approvals_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "seller_verifications" (
+    "id" TEXT NOT NULL,
+    "sellerId" TEXT NOT NULL,
+    "verified" BOOLEAN NOT NULL,
+    "reason" TEXT,
+    "verifiedBy" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "seller_verifications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "review_moderations" (
+    "id" TEXT NOT NULL,
+    "reviewId" TEXT NOT NULL,
+    "action" TEXT NOT NULL,
+    "reason" TEXT,
+    "moderatedBy" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "review_moderations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -404,10 +478,16 @@ CREATE UNIQUE INDEX "favorites_userId_productId_key" ON "favorites"("userId", "p
 CREATE UNIQUE INDEX "blog_posts_slug_key" ON "blog_posts"("slug");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "pesapal_payments_orderId_key" ON "pesapal_payments"("orderId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "pesapal_ipns_pesapalTransactionId_key" ON "pesapal_ipns"("pesapalTransactionId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "seller_subscriptions_sellerId_key" ON "seller_subscriptions"("sellerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "escrow_payments_orderId_key" ON "escrow_payments"("orderId");
+CREATE UNIQUE INDEX "contacts_email_key" ON "contacts"("email");
 
 -- AddForeignKey
 ALTER TABLE "artisan_profiles" ADD CONSTRAINT "artisan_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -467,6 +547,12 @@ ALTER TABLE "bulk_order_items" ADD CONSTRAINT "bulk_order_items_bulkOrderId_fkey
 ALTER TABLE "bulk_order_items" ADD CONSTRAINT "bulk_order_items_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "pesapal_payments" ADD CONSTRAINT "pesapal_payments_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pesapal_payments" ADD CONSTRAINT "pesapal_payments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "seller_payouts" ADD CONSTRAINT "seller_payouts_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -476,13 +562,16 @@ ALTER TABLE "payout_requests" ADD CONSTRAINT "payout_requests_sellerId_fkey" FOR
 ALTER TABLE "seller_subscriptions" ADD CONSTRAINT "seller_subscriptions_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "escrow_payments" ADD CONSTRAINT "escrow_payments_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "escrow_payments" ADD CONSTRAINT "escrow_payments_buyerId_fkey" FOREIGN KEY ("buyerId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "payment_disputes" ADD CONSTRAINT "payment_disputes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bank_transfer_payments" ADD CONSTRAINT "bank_transfer_payments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "product_approvals" ADD CONSTRAINT "product_approvals_approvedBy_fkey" FOREIGN KEY ("approvedBy") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "artisan_approvals" ADD CONSTRAINT "artisan_approvals_approvedBy_fkey" FOREIGN KEY ("approvedBy") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "seller_verifications" ADD CONSTRAINT "seller_verifications_verifiedBy_fkey" FOREIGN KEY ("verifiedBy") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "review_moderations" ADD CONSTRAINT "review_moderations_moderatedBy_fkey" FOREIGN KEY ("moderatedBy") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
