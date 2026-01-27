@@ -148,7 +148,7 @@ export async function getCurrentUser() {
             artisanProfile: true,
           },
         }),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 5000)),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 15000)), // Increased to 15 seconds for remote databases
       ])
 
       // If user doesn't exist in database, create them
@@ -173,7 +173,7 @@ export async function getCurrentUser() {
               artisanProfile: true,
             },
           }),
-          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database create timeout")), 5000)),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database create timeout")), 15000)),
         ])
 
         console.log("✅ User created in database:", dbUser.id)
