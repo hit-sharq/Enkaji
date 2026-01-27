@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +9,6 @@ import Link from "next/link"
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20 overflow-hidden">
@@ -424,7 +421,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <Footer />
       <WhatsAppButton />
     </div>
   )

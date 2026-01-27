@@ -3,8 +3,6 @@ import { getCurrentUser } from "@/lib/auth"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
 import { SellerDashboard } from "@/components/dashboard/seller-dashboard"
 import { BuyerDashboard } from "@/components/dashboard/buyer-dashboard"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { UserRole } from "@prisma/client"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
@@ -24,7 +22,6 @@ export default async function DashboardPage() {
   if (authError) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <main className="container mx-auto px-4 py-8">
           <Alert className="max-w-2xl mx-auto">
             <AlertTriangle className="h-4 w-4" />
@@ -45,7 +42,6 @@ export default async function DashboardPage() {
             </AlertDescription>
           </Alert>
         </main>
-        <Footer />
       </div>
     )
   }
@@ -85,9 +81,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main className="container mx-auto px-4 py-8">{renderDashboard()}</main>
-      <Footer />
     </div>
   )
 }

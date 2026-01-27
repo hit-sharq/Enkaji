@@ -1,8 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
 import { useRouter } from "next/navigation"
@@ -21,11 +19,9 @@ export default function CheckoutPage() {
   if (state.loading) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse">Loading...</div>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -36,7 +32,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
@@ -45,7 +40,6 @@ export default function CheckoutPage() {
           <OrderSummary cartItems={state.items} total={state.total} />
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

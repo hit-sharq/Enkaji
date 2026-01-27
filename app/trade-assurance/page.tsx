@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Shield, CheckCircle, CreditCard, FileText, Users, Clock, AlertTriangle, Star, TrendingUp } from "lucide-react"
@@ -7,7 +5,6 @@ import { Shield, CheckCircle, CreditCard, FileText, Users, Clock, AlertTriangle,
 export default function TradeAssurancePage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20">
@@ -374,7 +371,6 @@ export default function TradeAssurancePage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

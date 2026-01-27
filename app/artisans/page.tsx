@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { ArtisanGrid } from "@/components/artisans/artisan-grid"
 import { db } from "@/lib/db"
@@ -35,7 +33,6 @@ export default async function ArtisansPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">Meet Our Artisans</h1>
@@ -47,7 +44,6 @@ export default async function ArtisansPage() {
 
         <ArtisanGrid artisans={artisans as any} />
       </main>
-      <Footer />
       <WhatsAppButton />
     </div>
   )

@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -8,7 +6,6 @@ import { Building2, Users, ShoppingCart, BarChart3, Shield, Truck, CheckCircle }
 export default function BusinessSolutionsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-orange-600 to-red-600 text-white py-20">
@@ -339,7 +336,6 @@ export default function BusinessSolutionsPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

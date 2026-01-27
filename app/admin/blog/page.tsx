@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/auth"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { BlogManagement } from "@/components/admin/blog-management"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
@@ -16,7 +14,6 @@ export default async function AdminBlogPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link href="/admin">
@@ -32,7 +29,6 @@ export default async function AdminBlogPage() {
         </div>
         <BlogManagement />
       </main>
-      <Footer />
     </div>
   )
 }

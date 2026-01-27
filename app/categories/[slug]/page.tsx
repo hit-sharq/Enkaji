@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -136,8 +134,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   return (
     <div className="min-h-screen">
-      <Header />
-
       <main>
         {/* Breadcrumb */}
         <section className="bg-gray-50 py-4">
@@ -269,8 +265,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           </section>
         )}
       </main>
-
-      <Footer />
     </div>
   )
 }

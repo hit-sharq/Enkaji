@@ -6,6 +6,8 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { CartProvider } from "@/components/providers/cart-provider"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,7 +41,9 @@ export default function RootLayout({
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
             <CartProvider>
-              {children}
+              <Header />
+              <main className="min-h-screen">{children}</main>
+              <Footer />
               <Toaster />
             </CartProvider>
           </ThemeProvider>

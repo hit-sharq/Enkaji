@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +7,6 @@ import { Truck, Package, MapPin, BarChart3, Plane, Ship, CheckCircle, Calculator
 export default function LogisticsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-green-600 to-teal-600 text-white py-20">
@@ -382,7 +379,6 @@ export default function LogisticsPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

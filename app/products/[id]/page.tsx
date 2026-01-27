@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { ProductDetails } from "@/components/products/product-details"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { db } from "@/lib/db"
@@ -65,11 +63,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main>
         <ProductDetails product={product} />
       </main>
-      <Footer />
       <WhatsAppButton />
     </div>
   )

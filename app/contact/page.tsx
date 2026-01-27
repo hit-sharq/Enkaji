@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { ContactForm } from "@/components/contact/contact-form"
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,7 +6,6 @@ import { Mail, Phone, MapPin, MessageCircle } from "lucide-react"
 export default function ContactPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -102,7 +99,6 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-      <Footer />
       <WhatsAppButton />
     </div>
   )

@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { ProductGrid } from "@/components/shop/product-grid"
 import { ShopFilters } from "@/components/shop/shop-filters"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
@@ -68,8 +66,6 @@ export default async function ShopPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4 py-16">
@@ -114,7 +110,6 @@ export default async function ShopPage({
         </Suspense>
       </main>
 
-      <Footer />
       <WhatsAppButton />
     </div>
   )

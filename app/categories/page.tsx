@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -83,8 +81,6 @@ export default async function CategoriesPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
-
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
@@ -175,8 +171,6 @@ export default async function CategoriesPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   )
 }

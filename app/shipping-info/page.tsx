@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -8,7 +6,6 @@ import { Clock, MapPin, Package, Shield, CreditCard, AlertCircle, CheckCircle, I
 export default function ShippingInfoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
@@ -638,7 +635,6 @@ export default function ShippingInfoPage() {
           </Tabs>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

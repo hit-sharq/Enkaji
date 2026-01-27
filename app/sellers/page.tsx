@@ -1,8 +1,6 @@
 import { prisma } from "@/lib/db"
 import { SellerGrid } from "@/components/sellers/seller-grid"
 import { SellerFilters } from "@/components/sellers/seller-filters"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Search, Users, MapPin, TrendingUp } from "lucide-react"
 import { Suspense } from "react"
 import type { Prisma } from "@prisma/client"
@@ -189,8 +187,6 @@ export default async function SellersPage({
 
   return (
     <div className="min-h-screen">
-      <Header />
-
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
@@ -274,8 +270,6 @@ export default async function SellersPage({
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   )
 }

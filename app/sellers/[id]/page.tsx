@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -47,7 +45,6 @@ export default async function SellerStorePage({ params }: { params: { id: string
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link href="/sellers">
@@ -186,7 +183,6 @@ export default async function SellerStorePage({ params }: { params: { id: string
           </div>
         </div>
       </main>
-      <Footer />
       <WhatsAppButton />
     </div>
   )

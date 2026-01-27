@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +10,6 @@ import { Package, Users, Clock, CheckCircle, TrendingUp } from "lucide-react"
 export default function BulkOrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -241,7 +238,6 @@ export default function BulkOrdersPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

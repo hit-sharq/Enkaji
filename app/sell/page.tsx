@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/auth"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { SellerRegistrationForm } from "@/components/seller/seller-registration-form"
 
 export default async function SellPage() {
@@ -13,7 +11,6 @@ export default async function SellPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
@@ -33,7 +30,6 @@ export default async function SellPage() {
           />
         </div>
       </main>
-      <Footer />
     </div>
   )
 }
