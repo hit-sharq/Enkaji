@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Heart, ShoppingCart, Star, Minus, Plus, User } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useCart } from "@/components/providers/cart-provider"
 
 interface ProductDetailsProps {
   product: {
@@ -15,7 +16,7 @@ interface ProductDetailsProps {
     name: string
     description: string
     price: number
-    stock: number
+    inventory: number
     images: string[]
     category: {
       name: string
@@ -53,6 +54,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const cartContext = useCart()
+  const dispatch = cartContext?.dispatch
 
   const handleAddToCart = async () => {
     setIsLoading(true)
@@ -69,6 +72,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       })
 
       if (response.ok) {
+        // Dispatch to local cart state for immediate UI update
+        dispatch?.({
+          type: "ADD_ITEM",
+          payload: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity,
+            image: product.images[0] || undefined,
+          },
+        })
+        
         toast({
           title: "Added to cart",
           description: `${quantity} ${product.name}(s) added to your cart.`,
@@ -175,19 +190,19 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  disabled={quantity >= product.stock}
+                  onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
+                  disabled={quantity >= product.inventory}
                 >
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>
-              <span className="text-sm text-gray-600">{product.stock} in stock</span>
+              <span className="text-sm text-gray-600">{product.inventory} in stock</span>
             </div>
 
             <div className="flex space-x-4">
               <Button
                 onClick={handleAddToCart}
-                disabled={isLoading || product.stock === 0}
+                disabled={isLoading || product.inventory === 0}
                 className="flex-1 bg-red-800 hover:bg-red-900 text-white"
                 size="lg"
               >

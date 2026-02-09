@@ -21,7 +21,7 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
   const { cost: shipping, tier } = calculateShippingCost(totalWeight)
-  const tax = total * 0.08
+  const tax = total * 0.16 // 16% VAT for Kenya
   const finalTotal = total + shipping + tax
 
   return (

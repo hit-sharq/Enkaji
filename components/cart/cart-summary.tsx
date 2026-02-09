@@ -12,16 +12,17 @@ import Link from "next/link"
 type CartItem = { id: string; price: number; quantity: number; weight?: number }
 
 export function CartSummary() {
-  const { state } = useCart() as {
-    state: { items: CartItem[]; totalWeight: number }
-  }
+  const cartContext = useCart()
+  const state = cartContext?.state
+  
+  const items = state?.items || []
+  const totalWeight = state?.totalWeight || 0
+  const loading = state?.loading || false
 
-  const items = state.items || []
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const totalWeight = state.totalWeight || 0
 
   const { cost: shipping, tier } = calculateShippingCost(totalWeight)
-  const tax = Math.round(subtotal * 0.08)
+  const tax = Math.round(subtotal * 0.16) // 16% VAT for Kenya
   const finalTotal = subtotal + shipping + tax
 
   return (
@@ -63,9 +64,15 @@ export function CartSummary() {
           <span>{formatDualCurrency(finalTotal)}</span>
         </div>
 
-        <Link href="/checkout" className="block">
-          <Button className="w-full bg-red-800 hover:bg-red-900 text-white">Proceed to Checkout</Button>
-        </Link>
+        {items.length > 0 && !loading ? (
+          <Link href="/checkout" className="block">
+            <Button className="w-full bg-red-800 hover:bg-red-900 text-white">Proceed to Checkout</Button>
+          </Link>
+        ) : (
+          <Button className="w-full bg-gray-300 cursor-not-allowed" disabled>
+            {loading ? "Loading..." : "Cart is Empty"}
+          </Button>
+        )}
 
         <Link href="/shop" className="block">
           <Button variant="outline" className="w-full bg-transparent">

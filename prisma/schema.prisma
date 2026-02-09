@@ -336,6 +336,25 @@ model PesapalIPN {
   @@map("pesapal_ipns")
 }
 
+model PesapalRefund {
+  id                  String        @id @default(cuid())
+  orderId             String
+  pesapalTrackingId   String
+  refundTrackingId    String?       @unique
+  amount              Decimal
+  currency            String        @default("KES")
+  reason              String
+  method              RefundMethod  @default(ORIGINAL)
+  status              RefundStatus  @default(PENDING)
+  statusMessage       String?
+  requestedBy         String
+  processedAt         DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@map("pesapal_refunds")
+}
+
 model SellerPayout {
   id              String        @id @default(cuid())
   sellerId        String
@@ -580,4 +599,18 @@ enum PesapalPaymentStatus {
   CANCELLED
   INVALID
   REVERSED
+}
+
+enum RefundMethod {
+  ORIGINAL
+  BANK
+  MPESA
+}
+
+enum RefundStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

@@ -8,15 +8,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { calculateShippingCost } from "@/lib/shipping"
 import { useCart } from "@/components/providers/cart-provider"
+import { PesapalPaymentForm } from "./pesapal-payment-form"
+import { CreditCard, Smartphone, ShieldCheck } from "lucide-react"
 
 export function CheckoutForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("STRIPE")
   const [shippingCountry, setShippingCountry] = useState("Kenya")
+  const [showPesapalForm, setShowPesapalForm] = useState(false)
+  const [createdOrder, setCreatedOrder] = useState<any>(null)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -60,7 +65,6 @@ export function CheckoutForm() {
 
     console.log("[v0] Cart items from context:", cartItems)
     console.log("[v0] Order data being sent:", orderData)
-    console.log("[v0] Total weight:", totalWeight)
 
     try {
       const response = await fetch("/api/orders", {
@@ -73,8 +77,15 @@ export function CheckoutForm() {
 
       if (response.ok) {
         const data = await response.json()
+        setCreatedOrder(data)
 
-        if (paymentMethod === "STRIPE" && data.clientSecret) {
+        // Handle different payment methods
+        if (paymentMethod === "PESAPAL") {
+          // For Pesapal, show the payment form which handles redirect
+          setShowPesapalForm(true)
+          setIsLoading(false)
+          return
+        } else if (paymentMethod === "STRIPE" && data.clientSecret) {
           toast({
             title: "Order placed successfully!",
             description: "You will receive a confirmation email shortly.",
@@ -86,7 +97,7 @@ export function CheckoutForm() {
           })
         }
 
-        router.push(`/orders/${data.order.id}`)
+        router.push(`/orders/${data.id}`)
       } else {
         throw new Error("Failed to place order")
       }
@@ -101,8 +112,50 @@ export function CheckoutForm() {
     }
   }
 
+  const handlePesapalSuccess = (paymentData: any) => {
+    toast({
+      title: "Payment Initiated!",
+      description: "Please complete payment on Pesapal.",
+    })
+    router.push(`/orders/${createdOrder?.id || paymentData.orderId}?payment=pending`)
+  }
+
+  const handlePesapalError = (error: string) => {
+    toast({
+      title: "Payment Error",
+      description: error,
+      variant: "destructive",
+    })
+    setShowPesapalForm(false)
+  }
+
   if (state.loading) {
     return <div>Loading cart...</div>
+  }
+
+  // Show Pesapal payment form after order is created
+  if (showPesapalForm && createdOrder) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-green-600" />
+              Complete Payment
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <PesapalPaymentForm
+              orderId={createdOrder.id}
+              amount={Number(finalTotal)}
+              onSuccess={handlePesapalSuccess}
+              onError={handlePesapalError}
+              onCancel={() => setShowPesapalForm(false)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -196,22 +249,68 @@ export function CheckoutForm() {
           <CardTitle>Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="STRIPE" id="stripe" />
-              <Label htmlFor="stripe">Credit/Debit Card (Stripe)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="MPESA" id="mpesa" />
-              <Label htmlFor="mpesa">M-Pesa (Kenya)</Label>
-            </div>
-          </RadioGroup>
+          <Tabs value={paymentMethod} onValueChange={setPaymentMethod}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="STRIPE" className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Card
+              </TabsTrigger>
+              <TabsTrigger value="PESAPAL" className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Pesapal
+              </TabsTrigger>
+              <TabsTrigger value="MPESA" className="flex items-center gap-2">
+                <Smartphone className="h-4 w-4" />
+                M-Pesa
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="STRIPE" className="mt-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  Pay securely with your credit or debit card via Stripe.
+                </p>
+                <div className="flex gap-2 mt-2">
+                  <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/us.svg" alt="Visa" className="h-6" />
+                  <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/eu.svg" alt="Mastercard" className="h-6" />
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="PESAPAL" className="mt-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">
+                  Pay securely with Pesapal - supports multiple payment methods:
+                </p>
+                <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                  <li>Credit/Debit Cards (Visa, Mastercard)</li>
+                  <li>M-Pesa mobile money</li>
+                  <li>Airtel Money</li>
+                  <li>Bank Transfer (Equity, KCB)</li>
+                </ul>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="MPESA" className="mt-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  Pay using M-Pesa mobile money. You will receive an STK push notification on your phone.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
-      <Button type="submit" disabled={isLoading} className="w-full bg-red-800 hover:bg-red-900 text-white" size="lg">
-        {isLoading ? "Processing..." : "Place Order"}
+      <Button 
+        type="submit" 
+        disabled={isLoading} 
+        className="w-full bg-red-800 hover:bg-red-900 text-white" 
+        size="lg"
+      >
+        {isLoading ? "Processing..." : `Pay KSh ${finalTotal.toLocaleString()}`}
       </Button>
     </form>
   )
 }
+

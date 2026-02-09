@@ -36,10 +36,8 @@ function calculateTotals(items: CartItem[]) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalWeight = items.reduce((sum, item) => {
     const itemWeight = item.weight || 0
-    console.log("[v0] Item:", item.name, "Weight:", itemWeight, "Quantity:", item.quantity)
     return sum + itemWeight * item.quantity
   }, 0)
-  console.log("[v0] Total cart weight:", totalWeight)
   return { total, totalWeight }
 }
 
@@ -50,7 +48,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
       if (existingItem) {
         const updatedItems = state.items.map((item) =>
-          item.id === action.payload.id ? { ...item, quantity: item.quantity + action.payload.quantity } : item,
+          item.id === action.payload.id 
+            ? { ...item, quantity: item.quantity + action.payload.quantity } 
+            : item,
         )
         const { total, totalWeight } = calculateTotals(updatedItems)
         return { ...state, items: updatedItems, total, totalWeight }
@@ -78,11 +78,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case "CLEAR_CART":
-      return { ...state, items: [], total: 0, totalWeight: 0 }
+      return { items: [], total: 0, totalWeight: 0, loading: false }
 
     case "LOAD_CART": {
       const { total, totalWeight } = calculateTotals(action.payload)
-      return { ...state, items: action.payload, total, totalWeight }
+      return { ...state, items: action.payload, total, totalWeight, loading: false }
     }
 
     case "SET_LOADING":

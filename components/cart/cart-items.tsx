@@ -15,19 +15,18 @@ type CartItem = {
 }
 
 export function CartItems() {
-  const { state, dispatch } = useCart() as {
-    state: { items: CartItem[] }
-    dispatch: (action: any) => void
-  }
+  const cartContext = useCart()
+  const state = cartContext?.state
+  const dispatch = cartContext?.dispatch
 
-  const items = state.items || []
+  const items = state?.items || []
 
   const updateQuantity = (id: string, quantity: number) => {
-    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
+    dispatch?.({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
   }
 
   const removeItem = (id: string) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id })
+    dispatch?.({ type: "REMOVE_ITEM", payload: id })
   }
 
   if (items.length === 0) {
