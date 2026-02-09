@@ -1,8 +1,9 @@
+
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { formatDualCurrency } from "@/lib/currency"
-import { calculateShippingCost, formatWeight } from "@/lib/shipping"
+import { formatWeight } from "@/lib/shipping"
 import { Weight, Package } from "lucide-react"
 
 interface OrderSummaryProps {
@@ -15,14 +16,14 @@ interface OrderSummaryProps {
     weight?: number
   }>
   total: number
+  shippingCost?: number
 }
 
-export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
+export function OrderSummary({ cartItems, total, shippingCost = 0 }: OrderSummaryProps) {
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
-  const { cost: shipping, tier } = calculateShippingCost(totalWeight)
   const tax = total * 0.16 // 16% VAT for Kenya
-  const finalTotal = total + shipping + tax
+  const finalTotal = total + shippingCost + tax
 
   return (
     <Card>
@@ -80,13 +81,13 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <Package className="h-4 w-4" />
-              <span>Shipping ({tier.name})</span>
+              <span>Shipping</span>
             </div>
-            <span>{formatDualCurrency(shipping)}</span>
+            <span>{formatDualCurrency(shippingCost)}</span>
           </div>
 
           <div className="flex justify-between">
-            <span>Tax</span>
+            <span>Tax (16%)</span>
             <span>{formatDualCurrency(tax)}</span>
           </div>
 
@@ -101,3 +102,4 @@ export function OrderSummary({ cartItems, total }: OrderSummaryProps) {
     </Card>
   )
 }
+

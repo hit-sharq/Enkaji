@@ -23,18 +23,13 @@ export async function GET() {
       where: { userId: user.id },
       include: {
         product: {
-          include: {
-            category: {
-              select: {
-                name: true,
-              },
-            },
-            seller: {
-              select: {
-                firstName: true,
-                lastName: true,
-              },
-            },
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            images: true,
+            weight: true,
+            isActive: true,
           },
         },
       },

@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -7,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, ShoppingCart, Heart, MapPin, Verified, Weight } from "lucide-react"
 import { formatDualCurrency } from "@/lib/currency"
 import { formatWeight } from "@/lib/shipping"
+import { useCart } from "@/components/providers/cart-provider"
+import { useToast } from "@/hooks/use-toast"
 
 interface Product {
   id: string
@@ -38,8 +43,65 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
+  const [isAdding, setIsAdding] = useState(false)
+  const { toast } = useToast()
+  const cartContext = useCart()
+  const dispatch = cartContext?.dispatch
+
   const sellerName = product.seller.businessName || `${product.seller.firstName} ${product.seller.lastName}`
   const sellerInitials = `${product.seller.firstName[0]}${product.seller.lastName[0]}`
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (isAdding) return
+    
+    setIsAdding(true)
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: 1,
+        }),
+      })
+
+      if (response.ok) {
+        // Dispatch to local cart state for immediate UI update
+        dispatch?.({
+          type: "ADD_ITEM",
+          payload: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.images[0] || undefined,
+            weight: product.weight,
+          },
+        })
+        
+        toast({
+          title: "Added to cart",
+          description: `${product.name} added to your cart.`,
+        })
+      } else {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to add to cart")
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Please sign in to add items to cart.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsAdding(false)
+    }
+  }
 
   if (viewMode === "list") {
     return (
@@ -118,8 +180,17 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                   <Button asChild>
                     <Link href={`/products/${product.id}`}>View Details</Link>
                   </Button>
-                  <Button size="icon" variant="outline">
-                    <ShoppingCart className="h-4 w-4" />
+                  <Button 
+                    size="icon" 
+                    variant="outline"
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
+                  >
+                    {isAdding ? (
+                      <span className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <ShoppingCart className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </div>
@@ -210,11 +281,22 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           <Button asChild className="flex-1">
             <Link href={`/products/${product.id}`}>View Details</Link>
           </Button>
-          <Button size="icon" variant="outline" className="hover:bg-blue-50 hover:border-blue-200 bg-transparent">
-            <ShoppingCart className="h-4 w-4" />
+          <Button 
+            size="icon" 
+            variant="outline" 
+            className="hover:bg-blue-50 hover:border-blue-200 bg-transparent"
+            onClick={handleAddToCart}
+            disabled={isAdding}
+          >
+            {isAdding ? (
+              <span className="h-4 w-4 animate-spin" />
+            ) : (
+              <ShoppingCart className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </CardFooter>
     </Card>
   )
 }
+

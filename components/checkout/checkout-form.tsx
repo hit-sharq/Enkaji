@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -11,26 +12,51 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { calculateShippingCost } from "@/lib/shipping"
 import { useCart } from "@/components/providers/cart-provider"
 import { PesapalPaymentForm } from "./pesapal-payment-form"
 import { CreditCard, Smartphone, ShieldCheck } from "lucide-react"
 
-export function CheckoutForm() {
+interface CheckoutFormProps {
+  onDestinationChange?: (destination: { country: string; city: string; state: string }) => void
+  shippingCost?: number
+}
+
+export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: CheckoutFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("STRIPE")
   const [shippingCountry, setShippingCountry] = useState("Kenya")
+  const [shippingCity, setShippingCity] = useState("")
+  const [shippingState, setShippingState] = useState("")
   const [showPesapalForm, setShowPesapalForm] = useState(false)
   const [createdOrder, setCreatedOrder] = useState<any>(null)
   const { toast } = useToast()
   const router = useRouter()
 
   const { state } = useCart()
-  const { items: cartItems, total, totalWeight } = state
+  const { items: cartItems, total } = state
 
-  const shippingCalculation = calculateShippingCost(totalWeight, shippingCountry)
   const tax = total * 0.16 // 16% VAT
-  const finalTotal = total + tax + shippingCalculation.cost
+  const finalTotal = total + tax + shippingCost
+
+  // Handle destination changes
+  const handleCountryChange = (value: string) => {
+    setShippingCountry(value)
+    notifyDestinationChange(value, shippingCity, shippingState)
+  }
+
+  const handleCityChange = (value: string) => {
+    setShippingCity(value)
+    notifyDestinationChange(shippingCountry, value, shippingState)
+  }
+
+  const handleStateChange = (value: string) => {
+    setShippingState(value)
+    notifyDestinationChange(shippingCountry, shippingCity, value)
+  }
+
+  const notifyDestinationChange = (country: string, city: string, state: string) => {
+    onDestinationChange?.({ country, city, state })
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -43,10 +69,10 @@ export function CheckoutForm() {
       email: formData.get("email"),
       phone: formData.get("phone"),
       address: formData.get("address"),
-      city: formData.get("city"),
-      state: formData.get("state"),
+      city: shippingCity || formData.get("city"),
+      state: shippingState || formData.get("state"),
       zipCode: formData.get("zipCode"),
-      country: formData.get("country"),
+      country: shippingCountry,
     }
 
     const orderData = {
@@ -57,14 +83,11 @@ export function CheckoutForm() {
       })),
       subtotal: total,
       tax: tax,
-      shipping: shippingCalculation.cost,
+      shipping: shippingCost,
       total: finalTotal,
       shippingAddress,
       paymentMethod,
     }
-
-    console.log("[v0] Cart items from context:", cartItems)
-    console.log("[v0] Order data being sent:", orderData)
 
     try {
       const response = await fetch("/api/orders", {
@@ -81,7 +104,6 @@ export function CheckoutForm() {
 
         // Handle different payment methods
         if (paymentMethod === "PESAPAL") {
-          // For Pesapal, show the payment form which handles redirect
           setShowPesapalForm(true)
           setIsLoading(false)
           return
@@ -195,18 +217,31 @@ export function CheckoutForm() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="city">City</Label>
-              <Input id="city" name="city" required />
+              <Input 
+                id="city" 
+                name="city" 
+                required 
+                placeholder="e.g., Nairobi"
+                value={shippingCity}
+                onChange={(e) => handleCityChange(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="state">State/Province</Label>
-              <Input id="state" name="state" required />
+              <Input 
+                id="state" 
+                name="state" 
+                required 
+                value={shippingState}
+                onChange={(e) => handleStateChange(e.target.value)}
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="zipCode">ZIP/Postal Code</Label>
-              <Input id="zipCode" name="zipCode" required />
+              <Input id="zipCode" name="zipCode" />
             </div>
             <div>
               <Label htmlFor="country">Country</Label>
@@ -215,11 +250,13 @@ export function CheckoutForm() {
                 name="country"
                 defaultValue="Kenya"
                 required
-                onChange={(e) => setShippingCountry(e.target.value)}
+                value={shippingCountry}
+                onChange={(e) => handleCountryChange(e.target.value)}
               />
             </div>
           </div>
 
+          {/* Order Summary in Form */}
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Subtotal</span>
@@ -230,10 +267,8 @@ export function CheckoutForm() {
               <span>KSh {tax.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">
-                Shipping ({shippingCalculation.tier.name} - {shippingCalculation.zone.name})
-              </span>
-              <span>KSh {shippingCalculation.cost.toLocaleString()}</span>
+              <span className="text-sm text-gray-600">Shipping</span>
+              <span>KSh {shippingCost.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center mt-2 pt-2 border-t">
               <span className="font-semibold">Total</span>

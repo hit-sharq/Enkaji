@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -6,7 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/components/providers/cart-provider"
 import { formatDualCurrency } from "@/lib/currency"
 import { calculateShippingCost, formatWeight } from "@/lib/shipping"
-import { Weight, Package } from "lucide-react"
+import { Weight, Package, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 
 type CartItem = { id: string; price: number; quantity: number; weight?: number }
@@ -20,9 +21,14 @@ export function CartSummary() {
   const loading = state?.loading || false
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-
-  const { cost: shipping, tier } = calculateShippingCost(totalWeight)
-  const tax = Math.round(subtotal * 0.16) // 16% VAT for Kenya
+  
+  // Only calculate shipping when cart has items
+  const showShipping = items.length > 0 && !loading
+  const { cost: shipping, tier } = showShipping 
+    ? calculateShippingCost(totalWeight)
+    : { cost: 0, tier: { name: "", cost: 0 } }
+    
+  const tax = subtotal * 0.16 // 16% VAT for Kenya
   const finalTotal = subtotal + shipping + tax
 
   return (
@@ -36,26 +42,45 @@ export function CartSummary() {
           <span>{formatDualCurrency(subtotal)}</span>
         </div>
 
-        <div className="flex justify-between text-sm text-gray-600">
-          <div className="flex items-center gap-1">
-            <Weight className="h-4 w-4" />
-            <span>Total Weight</span>
-          </div>
-          <span>{formatWeight(totalWeight)}</span>
-        </div>
+        {showShipping ? (
+          <>
+            <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <Weight className="h-4 w-4" />
+                <span>Total Weight</span>
+              </div>
+              <span>{formatWeight(totalWeight)}</span>
+            </div>
 
-        <div className="flex justify-between">
-          <div className="flex items-center gap-1">
-            <Package className="h-4 w-4" />
-            <span>Shipping ({tier.name})</span>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-1">
+                <Package className="h-4 w-4" />
+                <span>Shipping ({tier.name})</span>
+              </div>
+              <span>{formatDualCurrency(shipping)}</span>
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-between text-sm text-gray-600">
+            <div className="flex items-center gap-1">
+              <ShoppingBag className="h-4 w-4" />
+              <span>Shipping</span>
+            </div>
+            <span className="text-gray-400">Calculated at checkout</span>
           </div>
-          <span>{formatDualCurrency(shipping)}</span>
-        </div>
+        )}
 
-        <div className="flex justify-between">
-          <span>Tax</span>
-          <span>{formatDualCurrency(tax)}</span>
-        </div>
+        {showShipping ? (
+          <div className="flex justify-between">
+            <span>Tax (16%)</span>
+            <span>{formatDualCurrency(tax)}</span>
+          </div>
+        ) : (
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>Tax</span>
+            <span className="text-gray-400">Calculated at checkout</span>
+          </div>
+        )}
 
         <Separator />
 
@@ -83,3 +108,4 @@ export function CartSummary() {
     </Card>
   )
 }
+

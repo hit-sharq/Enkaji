@@ -3,8 +3,9 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Minus, Plus, Trash2 } from "lucide-react"
+import { Minus, Plus, Trash2, Weight } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
+import { formatWeight } from "@/lib/shipping"
 
 type CartItem = {
   id: string
@@ -12,6 +13,7 @@ type CartItem = {
   price: number
   quantity: number
   image?: string | null
+  weight?: number
 }
 
 export function CartItems() {
@@ -57,6 +59,12 @@ export function CartItems() {
               <div className="flex-1">
                 <h3 className="font-semibold text-lg">{item.name}</h3>
                 <p className="text-red-800 font-bold">KES {item.price.toLocaleString()}</p>
+                {item.weight && (
+                  <p className="text-sm text-gray-500 flex items-center gap-1">
+                    <Weight className="w-3 h-3" />
+                    Weight: {formatWeight(item.weight * item.quantity)}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center space-x-2">

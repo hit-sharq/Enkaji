@@ -108,10 +108,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             data.items?.map((item: any) => ({
               id: item.productId,
               name: item.product?.name || "Unknown Product",
-              price: item.product?.price || 0,
+              price: Number(item.product?.price) || 0,
               quantity: item.quantity,
               image: item.product?.images?.[0] || null,
-              weight: item.product?.weight || 0,
+              weight: item.product?.weight ? Number(item.product.weight) : 0,
             })) || []
 
           dispatch({ type: "LOAD_CART", payload: cartItems })
