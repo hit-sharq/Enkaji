@@ -67,7 +67,7 @@ export default async function ShopPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+      <div className="bg-gradient-to-r from-orange-600 to-orange-800 text-white">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl">
             <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">Discover Quality Products</h1>
