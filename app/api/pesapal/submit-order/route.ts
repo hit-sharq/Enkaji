@@ -3,6 +3,14 @@ import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
 
+// Type for shipping address
+interface ShippingAddress {
+  address?: string
+  city?: string
+  state?: string
+  zipCode?: string
+}
+
 export async function POST(request: Request) {
   try {
     const user = await getCurrentUser()
@@ -36,11 +44,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
+    // Safely cast shippingAddress from Json
+    const shippingAddress = order.shippingAddress as unknown as ShippingAddress | null
+
     // Prepare Pesapal order data
     const pesapalOrderData = {
       id: orderId,
       currency,
-      amount: order.total,
+      amount: order.total.toString(), // Convert Decimal to string as required by Pesapal
       description: `Payment for order ${order.orderNumber}`,
       callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
       notification_id: orderId, // We'll use orderId as notification_id for simplicity
@@ -51,12 +62,12 @@ export async function POST(request: Request) {
         first_name: user.firstName || "",
         middle_name: "",
         last_name: user.lastName || "",
-        line_1: order.shippingAddress?.address || "",
+        line_1: shippingAddress?.address || "",
         line_2: "",
-        city: order.shippingAddress?.city || "",
-        state: order.shippingAddress?.state || "",
-        postal_code: order.shippingAddress?.zipCode || "",
-        zip_code: order.shippingAddress?.zipCode || ""
+        city: shippingAddress?.city || "",
+        state: shippingAddress?.state || "",
+        postal_code: shippingAddress?.zipCode || "",
+        zip_code: shippingAddress?.zipCode || ""
       }
     }
 
@@ -68,7 +79,7 @@ export async function POST(request: Request) {
       data: {
         orderId,
         userId: user.id,
-        amount: order.total,
+        amount: Number(order.total),
         currency,
         pesapalTrackingId: pesapalResponse.order_tracking_id,
         pesapalMerchantRef: pesapalResponse.merchant_reference,
@@ -95,9 +106,26 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error("Error submitting Pesapal order:", error)
+    
+    // Safely extract error details
+    let errorMessage = "Unknown error"
+    let errorDetails = null
+    
+    if (error instanceof Error) {
+      errorMessage = error.message
+      // Try to extract nested error info
+      const errorAny = error as any
+      if (errorAny.errors) {
+        errorDetails = JSON.stringify(errorAny.errors)
+      } else if (errorAny.response?.data) {
+        errorDetails = JSON.stringify(errorAny.response.data)
+      }
+    }
+    
     return NextResponse.json({
       error: "Failed to submit order to Pesapal",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: errorMessage,
+      ...(errorDetails && { errorDetails })
     }, { status: 500 })
   }
 }

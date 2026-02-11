@@ -1,6 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
-import { secureHeaders } from "next-secure-headers"
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
@@ -24,6 +23,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/api/pesapal(.*)",  // Allow Pesapal API routes to be public (they handle their own auth)
 ])
 
 export default clerkMiddleware(async (auth, req) => {

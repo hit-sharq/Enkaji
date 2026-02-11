@@ -28,15 +28,15 @@ export async function POST(request: Request) {
       items?.length,
     )
 
-    if (!subtotal || !shipping || !total || !items || items.length === 0) {
+    if (subtotal === undefined || subtotal === null || shipping === undefined || shipping === null || total === undefined || total === null || !items || items.length === 0) {
       console.log("[v0] Validation failed - missing required fields")
       return NextResponse.json(
         {
           error: "Missing required order data",
           details: {
-            subtotal: !!subtotal,
-            shipping: !!shipping,
-            total: !!total,
+            subtotal: subtotal !== undefined && subtotal !== null,
+            shipping: shipping !== undefined && shipping !== null,
+            total: total !== undefined && total !== null,
             items: !!items,
             itemsLength: items?.length || 0,
           },
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         total: Number(total),
         shippingAddress,
         billingAddress,
-        paymentMethod,
+        paymentMethod: paymentMethod || "PESAPAL",
         paymentIntentId,
         status: "PENDING",
         paymentStatus: "PENDING",

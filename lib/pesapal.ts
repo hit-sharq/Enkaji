@@ -20,7 +20,7 @@ export interface PesapalConfig {
 export interface PesapalOrderData {
   id: string
   currency: string
-  amount: number
+  amount: string
   description: string
   callback_url: string
   notification_id: string
@@ -135,14 +135,14 @@ export class PesapalService {
 
     const timestamp = new Date().toISOString()
     const signature = this.generateSignature(
-      'GET',
+      'POST',
       '/api/Auth/RequestToken',
       timestamp,
       this.config.consumerKey
     )
 
     const response = await fetch(`${this.config.baseUrl}/api/Auth/RequestToken`, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -195,8 +195,14 @@ export class PesapalService {
     })
 
     if (!response.ok) {
-      const error = await response.json() as PesapalError
-      throw new Error(`Pesapal order submission failed: ${error.error || response.statusText}`)
+      let error: PesapalError | string = 'Unknown error'
+      try {
+        error = await response.json() as PesapalError
+      } catch (parseError) {
+        error = await response.text()
+      }
+      console.error('Pesapal API error response:', response.status, response.statusText, error)
+      throw new Error(`Pesapal order submission failed: ${typeof error === 'string' ? error : JSON.stringify(error)}`)
     }
 
     return await response.json()
