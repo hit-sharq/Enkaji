@@ -210,21 +210,36 @@ model Favorite {
 }
 
 model Review {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  rating    Int      // 1-5 stars
-  title     String?
-  comment   String?
-  images    String[]
-  isVerified Boolean @default(false) // Verified purchase
-  isFlagged Boolean  @default(false) // Flagged by moderators
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating        Int      // 1-5 stars
+  title         String?
+  comment       String?
+  images        String[]
+  isVerified    Boolean  @default(false) // Verified purchase
+  isFlagged     Boolean  @default(false) // Flagged by moderators
+  helpfulCount  Int      @default(0) // Number of helpful votes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations for tracking helpful votes
+  helpfulVotes  ReviewHelpful[]
 
   @@map("reviews")
+}
+
+model ReviewHelpful {
+  id        String   @id @default(cuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+  @@map("review_helpful")
 }
 
 model BlogPost {

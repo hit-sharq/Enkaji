@@ -26,7 +26,14 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json(favorites)
+    // Transform to return product data with isFavorite flag
+    const favoriteProducts = favorites.map((fav) => ({
+      ...fav.product,
+      isFavorite: true,
+      favoriteId: fav.id,
+    }))
+
+    return NextResponse.json(favoriteProducts)
   } catch (error) {
     console.error("Error fetching favorites:", error)
     return NextResponse.json({ error: "Failed to fetch favorites" }, { status: 500 })
@@ -42,6 +49,19 @@ export async function POST(request: Request) {
 
     const { productId } = await request.json()
 
+    if (!productId) {
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 })
+    }
+
+    // Check if product exists
+    const product = await db.product.findUnique({
+      where: { id: productId },
+    })
+
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+    }
+
     const existingFavorite = await db.favorite.findUnique({
       where: {
         userId_productId: {
@@ -55,7 +75,11 @@ export async function POST(request: Request) {
       await db.favorite.delete({
         where: { id: existingFavorite.id },
       })
-      return NextResponse.json({ message: "Removed from favorites", isFavorite: false })
+      return NextResponse.json({ 
+        message: "Removed from favorites", 
+        isFavorite: false,
+        productId 
+      })
     } else {
       await db.favorite.create({
         data: {
@@ -63,7 +87,11 @@ export async function POST(request: Request) {
           productId,
         },
       })
-      return NextResponse.json({ message: "Added to favorites", isFavorite: true })
+      return NextResponse.json({ 
+        message: "Added to favorites", 
+        isFavorite: true,
+        productId 
+      })
     }
   } catch (error) {
     console.error("Error toggling favorite:", error)

@@ -12,6 +12,7 @@ import { formatDualCurrency } from "@/lib/currency"
 import { formatWeight } from "@/lib/shipping"
 import { useCart } from "@/components/providers/cart-provider"
 import { useToast } from "@/hooks/use-toast"
+import { FavoriteButton } from "@/components/favorites/favorite-button"
 
 interface Product {
   id: string
@@ -35,6 +36,8 @@ interface Product {
   _count: {
     reviews: number
   }
+  isFavorite?: boolean
+  avgRating?: number
 }
 
 interface ProductCardProps {
@@ -123,13 +126,12 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 <Badge variant="secondary">{product.category.name}</Badge>
               </div>
               <div className="absolute top-2 right-2">
-                <Button
-                  size="icon"
+                <FavoriteButton 
+                  productId={product.id} 
+                  initialIsFavorite={product.isFavorite}
+                  size="sm"
                   variant="secondary"
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Heart className="h-4 w-4" />
-                </Button>
+                />
               </div>
             </div>
 
@@ -215,13 +217,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             }}
           />
           <div className="absolute top-2 right-2 space-y-2">
-            <Button
-              size="icon"
+            <FavoriteButton 
+              productId={product.id} 
+              initialIsFavorite={product.isFavorite}
+              size="sm"
               variant="secondary"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
+              className="opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+            />
           </div>
           <div className="absolute top-2 left-2">
             <Badge variant="secondary" className="shadow-sm">
@@ -250,7 +252,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               )}
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm text-gray-600">({product._count.reviews})</span>
+                <span className="text-sm text-gray-600">
+                  {product.avgRating ? product.avgRating.toFixed(1) : "0.0"} 
+                  ({product._count.reviews})
+                </span>
               </div>
             </div>
           </div>

@@ -24,15 +24,68 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     // Check if review exists
     const review = await db.review.findUnique({
       where: { id: reviewId },
+      include: {
+        helpfulVotes: {
+          where: { userId: user.id },
+        },
+      },
     })
 
     if (!review) {
       return NextResponse.json({ error: "Review not found" }, { status: 404 })
     }
 
-    // For now, we'll just return success
-    // In a full implementation, you'd track helpful votes in a separate table
-    return NextResponse.json({ message: "Helpful vote recorded" })
+    // Check if user already voted on this review
+    const existingVote = review.helpfulVotes.length > 0
+
+    if (existingVote) {
+      // Remove the vote (toggle off)
+      await db.reviewHelpful.delete({
+        where: {
+          id: review.helpfulVotes[0].id,
+        },
+      })
+
+      // Decrement helpful count
+      await db.review.update({
+        where: { id: reviewId },
+        data: {
+          helpfulCount: {
+            decrement: 1,
+          },
+        },
+      })
+
+      return NextResponse.json({ 
+        message: "Helpful vote removed",
+        isHelpful: false,
+        helpfulCount: review.helpfulCount - 1
+      })
+    } else {
+      // Add the vote (toggle on)
+      await db.reviewHelpful.create({
+        data: {
+          reviewId,
+          userId: user.id,
+        },
+      })
+
+      // Increment helpful count
+      await db.review.update({
+        where: { id: reviewId },
+        data: {
+          helpfulCount: {
+            increment: 1,
+          },
+        },
+      })
+
+      return NextResponse.json({ 
+        message: "Helpful vote recorded",
+        isHelpful: true,
+        helpfulCount: review.helpfulCount + 1
+      })
+    }
   } catch (error) {
     console.error("Error recording helpful vote:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

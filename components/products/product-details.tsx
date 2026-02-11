@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,6 +9,9 @@ import { Separator } from "@/components/ui/separator"
 import { Heart, ShoppingCart, Star, Minus, Plus, User } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useCart } from "@/components/providers/cart-provider"
+import { FavoriteButton } from "@/components/favorites/favorite-button"
+import { ReviewSummary } from "@/components/reviews/review-summary"
+import { ReviewCard } from "@/components/reviews/review-card"
 
 interface ProductDetailsProps {
   product: {
@@ -47,15 +50,65 @@ interface ProductDetailsProps {
       reviews: number
     }
   }
+  ratingDistribution?: Record<number, number>
 }
 
-export function ProductDetails({ product }: ProductDetailsProps) {
+export function ProductDetails({ product, ratingDistribution }: ProductDetailsProps) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const [reviews, setReviews] = useState<any[]>([])
+  const [summary, setSummary] = useState({
+    averageRating: product.avgRating,
+    totalReviews: product._count.reviews,
+    ratingDistribution: ratingDistribution || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+  })
+  const [isFavorite, setIsFavorite] = useState(false)
   const { toast } = useToast()
   const cartContext = useCart()
   const dispatch = cartContext?.dispatch
+
+  // Fetch reviews from API
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`/api/reviews?productId=${product.id}`)
+        const data = await response.json()
+        if (response.ok) {
+          setReviews(data.reviews || [])
+          if (data.stats) {
+            setSummary({
+              averageRating: data.stats.averageRating || product.avgRating,
+              totalReviews: data.stats.totalReviews || product._count.reviews,
+              ratingDistribution: data.stats.ratingDistribution || ratingDistribution || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+            })
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error)
+      }
+    }
+
+    fetchReviews()
+  }, [product.id, product.avgRating, product._count.reviews, ratingDistribution])
+
+  // Check if product is in favorites
+  useEffect(() => {
+    const checkFavorite = async () => {
+      try {
+        const response = await fetch("/api/favorites")
+        if (response.ok) {
+          const favorites = await response.json()
+          const isFav = favorites.some((fav: any) => fav.id === product.id)
+          setIsFavorite(isFav)
+        }
+      } catch (error) {
+        console.error("Error checking favorites:", error)
+      }
+    }
+
+    checkFavorite()
+  }, [product.id])
 
   const handleAddToCart = async () => {
     setIsLoading(true)
@@ -209,9 +262,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 {isLoading ? "Adding..." : "Add to Cart"}
               </Button>
-              <Button variant="outline" size="lg">
-                <Heart className="w-5 h-5" />
-              </Button>
+              <FavoriteButton
+                productId={product.id}
+                initialIsFavorite={isFavorite}
+                size="lg"
+                variant="outline"
+              />
             </div>
           </div>
 
@@ -258,52 +314,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       <div className="space-y-6">
         <h2 className="font-playfair text-2xl font-bold">Customer Reviews</h2>
 
-        {product.reviews.length > 0 ? (
+        {summary.totalReviews > 0 && (
+          <ReviewSummary
+            averageRating={summary.averageRating}
+            totalReviews={summary.totalReviews}
+            ratingDistribution={summary.ratingDistribution}
+          />
+        )}
+
+        {reviews.length > 0 ? (
           <div className="space-y-4">
-            {product.reviews.map((review) => (
-              <Card key={review.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
-                      {review.user.imageUrl ? (
-                        <Image
-                          src={review.user.imageUrl || "/placeholder.png"}
-                          alt="Reviewer"
-                          width={40}
-                          height={40}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "/placeholder.png"
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-medium">
-                          {`${review.user.firstName || ""} ${review.user.lastName || ""}`.trim() || "Anonymous"}
-                        </span>
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < review.rating ? "text-yellow-400 fill-current" : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      {review.comment && <p className="text-gray-600">{review.comment}</p>}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            {reviews.map((review) => (
+              <ReviewCard
+                key={review.id}
+                review={{
+                  ...review,
+                  createdAt: new Date(review.createdAt).toISOString(),
+                }}
+                variant="detailed"
+              />
             ))}
           </div>
         ) : (

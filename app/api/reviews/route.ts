@@ -88,21 +88,33 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get("productId")
+    const sellerId = searchParams.get("sellerId")
     const page = Number.parseInt(searchParams.get("page") || "1")
     const limit = Number.parseInt(searchParams.get("limit") || "10")
     const rating = searchParams.get("rating")
+    const showUnverified = searchParams.get("showUnverified") === "true"
 
-    if (!productId) {
-      return NextResponse.json({ error: "Product ID is required" }, { status: 400 })
+    if (!productId && !sellerId) {
+      return NextResponse.json({ error: "Product ID or Seller ID is required" }, { status: 400 })
     }
 
     const skip = (page - 1) * limit
 
-    // Build where clause
-    const where: any = {
-      productId,
-      isVerified: true, // Only show verified reviews
-      isFlagged: false, // Don't show flagged reviews
+    // Build where clause for reviews
+    const where: any = {}
+    
+    if (productId) {
+      where.productId = productId
+    }
+    
+    if (sellerId) {
+      where.product = { sellerId }
+    }
+
+    // Only show verified reviews by default, but allow showing all for admin/moderators
+    if (!showUnverified) {
+      where.isVerified = true
+      where.isFlagged = false
     }
 
     if (rating) {
@@ -121,6 +133,12 @@ export async function GET(request: NextRequest) {
               imageUrl: true,
             },
           },
+          product: {
+            select: {
+              name: true,
+              images: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -131,11 +149,12 @@ export async function GET(request: NextRequest) {
       db.review.count({ where }),
     ])
 
-    // Get rating distribution
+    // Get rating distribution (only verified/non-flagged for stats)
     const ratingDistribution = await db.review.groupBy({
       by: ["rating"],
       where: {
-        productId,
+        ...(productId && { productId }),
+        ...(sellerId && { product: { sellerId } }),
         isVerified: true,
         isFlagged: false,
       },
@@ -144,15 +163,26 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Calculate average rating
+    // Calculate average rating (only verified/non-flagged for stats)
     const avgRating = await db.review.aggregate({
       where: {
-        productId,
+        ...(productId && { productId }),
+        ...(sellerId && { product: { sellerId } }),
         isVerified: true,
         isFlagged: false,
       },
       _avg: {
         rating: true,
+      },
+    })
+
+    // Get total count of verified reviews for stats
+    const verifiedCount = await db.review.count({
+      where: {
+        ...(productId && { productId }),
+        ...(sellerId && { product: { sellerId } }),
+        isVerified: true,
+        isFlagged: false,
       },
     })
 
@@ -166,7 +196,7 @@ export async function GET(request: NextRequest) {
       },
       stats: {
         averageRating: avgRating._avg.rating || 0,
-        totalReviews: totalCount,
+        totalReviews: verifiedCount,
         ratingDistribution: ratingDistribution.reduce(
           (acc, item) => {
             acc[item.rating] = item._count.rating
