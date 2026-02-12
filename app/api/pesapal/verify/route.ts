@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
 
+export const dynamic = 'force-dynamic'
+
 // ============================================================================
 // GET /api/pesapal/verify?orderId=xxx&trackingId=xxx
 // Verify payment status with Pesapal

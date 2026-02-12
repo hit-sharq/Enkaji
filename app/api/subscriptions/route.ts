@@ -4,8 +4,14 @@ import { handleApiError, AuthenticationError, ValidationError } from "@/lib/erro
 import { prisma } from "@/lib/db"
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-})
+// Lazy Stripe initialization
+function getStripe(): Stripe {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+    apiVersion: "2025-12-15.clover" as any,
+  })
+}
+
+export const dynamic = 'force-dynamic'
 
 const SUBSCRIPTION_PLANS = {
   BASIC: {
@@ -96,7 +102,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Paid plan - create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount: plan.price * 100, // Convert to cents
       currency: "kes",
       metadata: {
