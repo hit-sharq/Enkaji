@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { requireMinimumRole } from "@/lib/auth"
 import { ApprovalDashboard } from "@/components/admin/approval-dashboard"
 import { RoleGuard } from "@/components/auth/role-guard"
