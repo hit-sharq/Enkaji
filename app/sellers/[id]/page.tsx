@@ -99,7 +99,7 @@ export default async function SellerStorePage({ params }: { params: { id: string
                   </div>
                 )}
 
-                {seller.sellerProfile?.website && (
+                {seller.sellerProfile?.website ? (
                   <div className="flex items-center text-gray-600">
                     <Globe className="w-4 h-4 mr-2" />
                     <a
@@ -110,6 +110,16 @@ export default async function SellerStorePage({ params }: { params: { id: string
                     >
                       Visit Website
                     </a>
+                  </div>
+                ) : (
+                  <div className="flex items-center text-gray-600">
+                    <Globe className="w-4 h-4 mr-2" />
+                    <Link
+                      href={`/sellers/${seller.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Store on Enkaji
+                    </Link>
                   </div>
                 )}
               </div>

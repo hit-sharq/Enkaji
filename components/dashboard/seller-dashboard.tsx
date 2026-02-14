@@ -5,8 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2, Loader2 } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2, Loader2, DollarSign, Wallet, Clock, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
+import { useToast } from "@/hooks/use-toast"
 
 interface User {
   id: string
@@ -66,6 +72,7 @@ interface DashboardData {
 }
 
 export function SellerDashboard({ user }: SellerDashboardProps) {
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("overview")
   const [dashboardData, setDashboardData] = useState<DashboardData>({
     totalProducts: 0,
@@ -77,6 +84,45 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     orders: [],
   })
   const [isLoading, setIsLoading] = useState(true)
+  
+  // Payout state
+  const [payoutData, setPayoutData] = useState<{
+    payouts: Array<{
+      id: string
+      amount: number
+      status: string
+      method: string
+      createdAt: string
+      processedAt: string | null
+    }>
+    payoutRequests: Array<{
+      id: string
+      amount: number
+      status: string
+      method: string
+      createdAt: string
+      processedAt: string | null
+    }>
+    stats: {
+      totalEarnings: number
+      pendingPayouts: number
+      completedPayouts: number
+    }
+  }>({
+    payouts: [],
+    payoutRequests: [],
+    stats: {
+      totalEarnings: 0,
+      pendingPayouts: 0,
+      completedPayouts: 0,
+    },
+  })
+  const [isPayoutLoading, setIsPayoutLoading] = useState(false)
+  const [showPayoutDialog, setShowPayoutDialog] = useState(false)
+  const [payoutAmount, setPayoutAmount] = useState("")
+  const [payoutMethod, setPayoutMethod] = useState("PESAPAL")
+  const [payoutPhone, setPayoutPhone] = useState("")
+  const [isRequestingPayout, setIsRequestingPayout] = useState(false)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -95,6 +141,127 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
 
     fetchDashboardData()
   }, [])
+
+  // Fetch payout data
+  useEffect(() => {
+    const fetchPayoutData = async () => {
+      try {
+        setIsPayoutLoading(true)
+        const response = await fetch("/api/seller/payouts")
+        if (response.ok) {
+          const data = await response.json()
+          setPayoutData({
+            payouts: data.payouts || [],
+            payoutRequests: data.payoutRequests || [],
+            stats: data.stats || {
+              totalEarnings: 0,
+              pendingPayouts: 0,
+              completedPayouts: 0,
+            },
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching payout data:", error)
+      } finally {
+        setIsPayoutLoading(false)
+      }
+    }
+
+    if (activeTab === "payouts") {
+      fetchPayoutData()
+    }
+  }, [activeTab])
+
+  const handleRequestPayout = async () => {
+    if (!payoutAmount || parseFloat(payoutAmount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount to withdraw",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const amount = parseFloat(payoutAmount)
+    const availableBalance = payoutData.stats.totalEarnings - payoutData.stats.pendingPayouts
+
+    if (amount > availableBalance) {
+      toast({
+        title: "Insufficient Balance",
+        description: `You can only withdraw up to KES ${availableBalance.toLocaleString()}`,
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsRequestingPayout(true)
+    try {
+      const response = await fetch("/api/seller/payouts/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: amount,
+          method: payoutMethod,
+          recipientDetails: {
+            phone: payoutPhone,
+          },
+        }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Payout Requested",
+          description: `Your payout request of KES ${amount.toLocaleString()} has been submitted`,
+        })
+        setShowPayoutDialog(false)
+        setPayoutAmount("")
+        setPayoutPhone("")
+        
+        // Refresh payout data
+        const refreshResponse = await fetch("/api/seller/payouts")
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          setPayoutData({
+            payouts: data.payouts || [],
+            payoutRequests: data.payoutRequests || [],
+            stats: data.stats || {
+              totalEarnings: 0,
+              pendingPayouts: 0,
+              completedPayouts: 0,
+            },
+          })
+        }
+      } else {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to request payout")
+      }
+    } catch (error) {
+      console.error("Error requesting payout:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to request payout",
+        variant: "destructive",
+      })
+    } finally {
+      setIsRequestingPayout(false)
+    }
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "COMPLETED":
+        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+      case "PROCESSING":
+        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
+      case "PENDING":
+        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+      case "REJECTED":
+      case "FAILED":
+        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
+      default:
+        return <Badge variant="secondary">{status}</Badge>
+    }
+  }
 
   if (isLoading) {
     return (
@@ -127,10 +294,11 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="payouts">Earnings</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
 

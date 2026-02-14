@@ -35,6 +35,9 @@ import {
   Store,
   Trash2,
   UserCog,
+  Wallet,
+  Clock,
+  RefreshCw,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { ReviewsManagement } from "@/components/admin/reviews-management"
@@ -103,6 +106,7 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ user }: AdminDashboardProps) {
   const { toast } = useToast()
+  const [activeTab, setActiveTab] = useState("users")
   const [users, setUsers] = useState<User[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
@@ -118,9 +122,37 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   })
   const [loading, setLoading] = useState(true)
 
+  // Payout state
+  const [payouts, setPayouts] = useState<Array<{
+    id: string
+    sellerId: string
+    amount: number
+    status: string
+    method: string
+    createdAt: string
+    processedAt: string | null
+    seller?: {
+      firstName: string
+      lastName: string
+      email: string
+      sellerProfile?: {
+        businessName?: string | null
+      } | null
+    }
+  }>>([])
+  const [payoutLoading, setPayoutLoading] = useState(false)
+  const [processingPayout, setProcessingPayout] = useState<string | null>(null)
+
   useEffect(() => {
     fetchDashboardData()
   }, [])
+
+  // Fetch payouts when Payouts tab is selected
+  useEffect(() => {
+    if (activeTab === "payouts" && payouts.length === 0) {
+      fetchPayouts()
+    }
+  }, [activeTab])
 
   const fetchDashboardData = async () => {
     try {
@@ -324,6 +356,76 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
     }
   }
 
+  const fetchPayouts = async () => {
+    try {
+      setPayoutLoading(true)
+      const response = await fetch("/api/admin/payouts")
+      if (response.ok) {
+        const data = await response.json()
+        setPayouts(data.payouts || [])
+      }
+    } catch (error) {
+      console.error("Error fetching payouts:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load payout data",
+        variant: "destructive",
+      })
+    } finally {
+      setPayoutLoading(false)
+    }
+  }
+
+  const handlePayoutAction = async (payoutId: string, action: "approve" | "reject") => {
+    try {
+      setProcessingPayout(payoutId)
+      const response = await fetch(`/api/admin/payouts/${payoutId}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          approved: action === "approve",
+          notes: action === "approve" ? "Payout approved by admin" : "Payout rejected by admin"
+        }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: `Payout ${action}d successfully`,
+        })
+        fetchPayouts()
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `Failed to ${action} payout`)
+      }
+    } catch (error) {
+      console.error("Payout action error:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : `Failed to ${action} payout`,
+        variant: "destructive",
+      })
+    } finally {
+      setProcessingPayout(null)
+    }
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "COMPLETED":
+        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+      case "PROCESSING":
+        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
+      case "PENDING":
+        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+      case "REJECTED":
+      case "FAILED":
+        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
+      default:
+        return <Badge variant="secondary">{status}</Badge>
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -404,12 +506,13 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       </div>
 
       {/* Main Admin Tabs */}
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7">
+      <Tabs defaultValue="users" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="sellers">Sellers</TabsTrigger>
+          <TabsTrigger value="payouts">Payouts</TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -779,6 +882,177 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                     ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Payout Management */}
+        <TabsContent value="payouts" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">Payout Management</h2>
+              <p className="text-gray-600">Manage seller payout requests and approvals</p>
+            </div>
+            <Button variant="outline" onClick={fetchPayouts} disabled={payoutLoading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${payoutLoading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Payout Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
+                <Clock className="h-4 w-4 text-yellow-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  KSh {payouts.filter(p => p.status === "PENDING").reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {payouts.filter(p => p.status === "PENDING").length} requests
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Processing</CardTitle>
+                <RefreshCw className="h-4 w-4 text-blue-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  KSh {payouts.filter(p => p.status === "PROCESSING").reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {payouts.filter(p => p.status === "PROCESSING").length} in progress
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  KSh {payouts.filter(p => p.status === "COMPLETED").reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {payouts.filter(p => p.status === "COMPLETED").length} completed
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Payout Requests Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>All Payout Requests</CardTitle>
+              <CardDescription>Review and process seller payout requests</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {payoutLoading ? (
+                <div className="flex justify-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : payouts.length === 0 ? (
+                <div className="text-center py-8">
+                  <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No payout requests</h3>
+                  <p className="text-gray-600">Payout requests from sellers will appear here</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Seller</TableHead>
+                      <TableHead>Business</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Requested</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {payouts.map((payout) => (
+                      <TableRow key={payout.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">
+                              {payout.seller?.firstName} {payout.seller?.lastName}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{payout.seller?.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{payout.seller?.sellerProfile?.businessName || "N/A"}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{payout.method}</Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">KSh {payout.amount.toLocaleString()}</TableCell>
+                        <TableCell>{getStatusBadge(payout.status)}</TableCell>
+                        <TableCell>{new Date(payout.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          {payout.status === "PENDING" && (
+                            <div className="flex space-x-2">
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => handlePayoutAction(payout.id, "approve")}
+                                disabled={processingPayout === payout.id}
+                              >
+                                {processingPayout === payout.id ? (
+                                  <RefreshCw className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                    Approve
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handlePayoutAction(payout.id, "reject")}
+                                disabled={processingPayout === payout.id}
+                              >
+                                <XCircle className="h-4 w-4 mr-1" />
+                                Reject
+                              </Button>
+                            </div>
+                          )}
+                          {payout.status === "PROCESSING" && (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => handlePayoutAction(payout.id, "approve")}
+                              disabled={processingPayout === payout.id}
+                            >
+                              {processingPayout === payout.id ? (
+                                <RefreshCw className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Complete
+                                </>
+                              )}
+                            </Button>
+                          )}
+                          {(payout.status === "COMPLETED" || payout.status === "REJECTED") && (
+                            <span className="text-sm text-muted-foreground">
+                              {payout.status === "COMPLETED" ? "Processed" : "Rejected"}
+                              {payout.processedAt && ` on ${new Date(payout.processedAt).toLocaleDateString()}`}
+                            </span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
