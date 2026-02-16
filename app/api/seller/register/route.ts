@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (user.role === "SELLER" && !user.sellerProfile) {
       // Allow them to create the missing profile
       const body = await req.json()
-      const { businessName, description, location, phoneNumber, website, businessType } = body
+      const { businessName, description, location, phoneNumber, website, businessType, plan = "BASIC" } = body
 
       if (!businessName || !location || !phoneNumber || !businessType) {
         return NextResponse.json(
@@ -60,6 +60,21 @@ export async function POST(req: NextRequest) {
         },
       })
 
+      // Create subscription
+      const now = new Date()
+      const periodEnd = new Date()
+      periodEnd.setMonth(periodEnd.getMonth() + 1)
+
+      await db.sellerSubscription.create({
+        data: {
+          sellerId: user.id,
+          plan: plan as any,
+          status: "ACTIVE",
+          currentPeriodStart: now,
+          currentPeriodEnd: periodEnd,
+        },
+      })
+
       return NextResponse.json({
         success: true,
         message: "Seller profile created successfully",
@@ -70,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     // Create new seller profile for non-seller users
     const body = await req.json()
-    const { businessName, description, location, phoneNumber, website, businessType } = body
+    const { businessName, description, location, phoneNumber, website, businessType, plan = "BASIC" } = body
 
     if (!businessName || !location || !phoneNumber || !businessType) {
       return NextResponse.json(
@@ -97,6 +112,21 @@ export async function POST(req: NextRequest) {
         location,
         phone: phoneNumber,
         website,
+      },
+    })
+
+    // Create subscription
+    const now = new Date()
+    const periodEnd = new Date()
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
+
+    await db.sellerSubscription.create({
+      data: {
+        sellerId: user.id,
+        plan: plan as any,
+        status: "ACTIVE",
+        currentPeriodStart: now,
+        currentPeriodEnd: periodEnd,
       },
     })
 

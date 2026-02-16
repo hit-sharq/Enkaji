@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2, Loader2, DollarSign, Wallet, Clock, CheckCircle, XCircle } from "lucide-react"
+import { Package, ShoppingCart, TrendingUp, Users, Plus, Eye, Edit, Trash2, Loader2, DollarSign, Wallet, Clock, CheckCircle, XCircle, Crown, CreditCard, Calendar } from "lucide-react"
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 
@@ -124,6 +124,31 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
   const [payoutPhone, setPayoutPhone] = useState("")
   const [isRequestingPayout, setIsRequestingPayout] = useState(false)
 
+  // Subscription state
+  const [subscriptionData, setSubscriptionData] = useState<{
+    subscription: {
+      id: string
+      plan: string
+      status: string
+      currentPeriodStart: string
+      currentPeriodEnd: string
+    } | null
+    plans: {
+      [key: string]: {
+        name: string
+        price: number
+        features: string[]
+      }
+    }
+  }>({
+    subscription: null,
+    plans: {},
+  })
+  const [isSubscriptionLoading, setIsSubscriptionLoading] = useState(false)
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState("")
+  const [isUpgrading, setIsUpgrading] = useState(false)
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -169,6 +194,31 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
 
     if (activeTab === "payouts") {
       fetchPayoutData()
+    }
+  }, [activeTab])
+
+  // Fetch subscription data
+  useEffect(() => {
+    const fetchSubscriptionData = async () => {
+      try {
+        setIsSubscriptionLoading(true)
+        const response = await fetch("/api/subscriptions")
+        if (response.ok) {
+          const data = await response.json()
+          setSubscriptionData({
+            subscription: data.subscription,
+            plans: data.plans,
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching subscription data:", error)
+      } finally {
+        setIsSubscriptionLoading(false)
+      }
+    }
+
+    if (activeTab === "subscriptions") {
+      fetchSubscriptionData()
     }
   }, [activeTab])
 
@@ -247,6 +297,73 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     }
   }
 
+  const handleSubscribe = async () => {
+    if (!selectedPlan) {
+      toast({
+        title: "Select a Plan",
+        description: "Please select a subscription plan",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsUpgrading(true)
+    try {
+      const response = await fetch("/api/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planType: selectedPlan,
+          paymentMethod: "card",
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // If there's a client secret, it means payment is required
+        if (data.clientSecret) {
+          toast({
+            title: "Payment Required",
+            description: "Please complete your payment to activate the subscription",
+          })
+          // In a full implementation, you would integrate with Stripe here
+          // For now, we'll just refresh the data
+        } else {
+          toast({
+            title: "Subscription Activated",
+            description: `You've successfully subscribed to the ${selectedPlan} plan`,
+          })
+        }
+        
+        setShowSubscriptionDialog(false)
+        setSelectedPlan("")
+        
+        // Refresh subscription data
+        const refreshResponse = await fetch("/api/subscriptions")
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          setSubscriptionData({
+            subscription: data.subscription,
+            plans: data.plans,
+          })
+        }
+      } else {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to subscribe")
+      }
+    } catch (error) {
+      console.error("Error subscribing:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to subscribe to plan",
+        variant: "destructive",
+      })
+    } finally {
+      setIsUpgrading(false)
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMPLETED":
@@ -294,11 +411,12 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="payouts">Earnings</TabsTrigger>
+          <TabsTrigger value="subscriptions">Subscription</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
 
@@ -492,6 +610,204 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Subscriptions Tab */}
+        <TabsContent value="subscriptions" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">Subscription</h2>
+              <p className="text-gray-600">Manage your seller subscription plan</p>
+            </div>
+            <Button onClick={() => setShowSubscriptionDialog(true)}>
+              <Crown className="h-4 w-4 mr-2" />
+              {subscriptionData.subscription ? "Change Plan" : "Subscribe"}
+            </Button>
+          </div>
+
+          {/* Current Subscription */}
+          {isSubscriptionLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : subscriptionData.subscription ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-yellow-500" />
+                    Current Plan
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-3xl font-bold">{subscriptionData.subscription.plan}</p>
+                      <p className="text-gray-600">
+                        {subscriptionData.plans[subscriptionData.subscription.plan]?.name || subscriptionData.subscription.plan}
+                      </p>
+                    </div>
+                    <Badge 
+                      variant={subscriptionData.subscription.status === "ACTIVE" ? "default" : "destructive"}
+                      className={subscriptionData.subscription.status === "ACTIVE" ? "bg-green-500" : ""}
+                    >
+                      {subscriptionData.subscription.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                      <Calendar className="h-4 w-4" />
+                      <span>Billing Period</span>
+                    </div>
+                    <p className="text-sm">
+                      {new Date(subscriptionData.subscription.currentPeriodStart).toLocaleDateString()} - {" "}
+                      {new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {subscriptionData.plans[subscriptionData.subscription.plan] && (
+                    <div className="border-t pt-4">
+                      <p className="text-sm font-medium mb-2">Plan Features:</p>
+                      <ul className="space-y-1">
+                        {subscriptionData.plans[subscriptionData.subscription.plan].features.map((feature, index) => (
+                          <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Plan Comparison</CardTitle>
+                  <CardDescription>Compare available plans</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
+                      <div key={planKey} className={`p-4 border rounded-lg ${subscriptionData.subscription?.plan === planKey ? "bg-blue-50 border-blue-200" : ""}`}>
+                        <div className="flex justify-between items-center mb-2">
+                          <div>
+                            <p className="font-medium">{plan.name}</p>
+                            <p className="text-sm text-gray-600">
+                              {plan.price === 0 ? "Free" : `KES ${plan.price.toLocaleString()}/month`}
+                            </p>
+                          </div>
+                          {subscriptionData.subscription?.plan === planKey && (
+                            <Badge className="bg-blue-500">Current</Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>No Active Subscription</CardTitle>
+                <CardDescription>Subscribe to a plan to unlock more features</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
+                    <div key={planKey} className="p-4 border rounded-lg text-center">
+                      <Crown className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
+                      <p className="font-medium">{plan.name}</p>
+                      <p className="text-2xl font-bold my-2">
+                        {plan.price === 0 ? "Free" : `KES ${plan.price.toLocaleString()}`}
+                        {plan.price > 0 && <span className="text-sm font-normal">/mo</span>}
+                      </p>
+                      <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                        {plan.features.slice(0, 3).map((feature, index) => (
+                          <li key={index}>{feature}</li>
+                        ))}
+                      </ul>
+                      <Button 
+                        variant={planKey === "BASIC" ? "default" : "outline"} 
+                        size="sm"
+                        onClick={() => {
+                          setSelectedPlan(planKey)
+                          setShowSubscriptionDialog(true)
+                        }}
+                      >
+                        {planKey === "BASIC" ? "Get Started" : "Upgrade"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Subscription Dialog */}
+          <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Select Subscription Plan</DialogTitle>
+                <DialogDescription>
+                  Choose a plan that best fits your business needs
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
+                  <div 
+                    key={planKey}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      selectedPlan === planKey ? "border-blue-500 bg-blue-50" : "hover:border-gray-300"
+                    }`}
+                    onClick={() => setSelectedPlan(planKey)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{plan.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {plan.price === 0 ? "Free forever" : `KES ${plan.price.toLocaleString()}/month`}
+                        </p>
+                      </div>
+                      {selectedPlan === planKey && (
+                        <CheckCircle className="h-5 w-5 text-blue-500" />
+                      )}
+                    </div>
+                    <ul className="mt-2 space-y-1">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                
+                <Button 
+                  className="w-full" 
+                  onClick={handleSubscribe}
+                  disabled={!selectedPlan || isUpgrading}
+                >
+                  {isUpgrading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      {selectedPlan && subscriptionData.plans[selectedPlan]?.price === 0 
+                        ? "Activate Free Plan" 
+                        : "Subscribe Now"}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         <TabsContent value="profile" className="space-y-6">

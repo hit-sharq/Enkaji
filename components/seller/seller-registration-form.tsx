@@ -11,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, Store } from "lucide-react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Loader2, Store, Check, Crown } from "lucide-react"
 import { toast } from "sonner"
 
 interface SellerRegistrationFormProps {
@@ -23,6 +24,27 @@ interface SellerRegistrationFormProps {
   }
 }
 
+const planOptions = [
+  {
+    value: "BASIC",
+    name: "Basic",
+    price: "Free",
+    description: "Up to 10 products, 5% commission",
+  },
+  {
+    value: "PREMIUM",
+    name: "Premium", 
+    price: "KES 1,500/month",
+    description: "Unlimited products, 3% commission",
+  },
+  {
+    value: "ENTERPRISE",
+    name: "Enterprise",
+    price: "KES 5,000/month",
+    description: "Everything + API access, 2% commission",
+  },
+]
+
 export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -32,6 +54,7 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
     phoneNumber: "",
     website: "",
     businessType: "",
+    plan: "BASIC",
   })
   const router = useRouter()
 
@@ -72,6 +95,13 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
     setFormData({
       ...formData,
       businessType: value,
+    })
+  }
+
+  const handlePlanChange = (value: string) => {
+    setFormData({
+      ...formData,
+      plan: value,
     })
   }
 
@@ -180,6 +210,42 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
               placeholder="Tell customers about your business, products, and what makes you unique..."
               rows={4}
             />
+          </div>
+
+          {/* Plan Selection */}
+          <div className="border rounded-lg p-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <Crown className="w-5 h-5 text-orange-600" />
+              <Label className="text-lg font-semibold">Select Your Plan</Label>
+            </div>
+            <p className="text-sm text-gray-500">Choose the plan that best fits your business needs. You can upgrade anytime.</p>
+            
+            <RadioGroup 
+              value={formData.plan} 
+              onValueChange={handlePlanChange}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              {planOptions.map((plan) => (
+                <Label
+                  key={plan.value}
+                  className={`flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-orange-300 ${
+                    formData.plan === plan.value 
+                      ? "border-orange-500 bg-orange-50" 
+                      : "border-gray-200"
+                  }`}
+                >
+                  <RadioGroupItem value={plan.value} className="sr-only" />
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">{plan.name}</span>
+                    {formData.plan === plan.value && (
+                      <Check className="w-5 h-5 text-orange-600" />
+                    )}
+                  </div>
+                  <div className="text-lg font-bold text-orange-600">{plan.price}</div>
+                  <div className="text-sm text-gray-500 mt-1">{plan.description}</div>
+                </Label>
+              ))}
+            </RadioGroup>
           </div>
 
           <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700" disabled={isLoading}>

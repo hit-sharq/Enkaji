@@ -38,6 +38,7 @@ import {
   Wallet,
   Clock,
   RefreshCw,
+  Crown,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { ReviewsManagement } from "@/components/admin/reviews-management"
@@ -143,6 +144,25 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   const [payoutLoading, setPayoutLoading] = useState(false)
   const [processingPayout, setProcessingPayout] = useState<string | null>(null)
 
+  // Subscription state
+  const [subscriptions, setSubscriptions] = useState<Array<{
+    id: string
+    sellerId: string
+    plan: string
+    status: string
+    currentPeriodStart: string
+    currentPeriodEnd: string
+    seller?: {
+      firstName: string
+      lastName: string
+      email: string
+      sellerProfile?: {
+        businessName?: string | null
+      } | null
+    }
+  }>>([])
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false)
+
   useEffect(() => {
     fetchDashboardData()
   }, [])
@@ -151,6 +171,13 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   useEffect(() => {
     if (activeTab === "payouts" && payouts.length === 0) {
       fetchPayouts()
+    }
+  }, [activeTab])
+
+  // Fetch subscriptions when Subscriptions tab is selected
+  useEffect(() => {
+    if (activeTab === "subscriptions") {
+      fetchSubscriptions()
     }
   }, [activeTab])
 
@@ -421,8 +448,43 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       case "REJECTED":
       case "FAILED":
         return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
+      case "ACTIVE":
+        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Active</Badge>
+      case "CANCELLED":
+        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
+      case "PAST_DUE":
+        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Past Due</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
+    }
+  }
+
+  const fetchSubscriptions = async () => {
+    try {
+      setSubscriptionLoading(true)
+      // Fetch subscriptions from database
+      const response = await fetch("/api/admin/subscriptions")
+      if (response.ok) {
+        const data = await response.json()
+        setSubscriptions(data.subscriptions || [])
+      } else {
+        // If API doesn't exist, fetch from users with seller role
+        const usersResponse = await fetch("/api/admin/users")
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json()
+          // Filter users with subscriptions - we need to check if the API returns this
+          setSubscriptions([])
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load subscription data",
+        variant: "destructive",
+      })
+    } finally {
+      setSubscriptionLoading(false)
     }
   }
 
@@ -507,12 +569,13 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
 
       {/* Main Admin Tabs */}
       <Tabs defaultValue="users" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-8">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="sellers">Sellers</TabsTrigger>
           <TabsTrigger value="payouts">Payouts</TabsTrigger>
+          <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -1048,6 +1111,136 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                             </span>
                           )}
                         </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Subscriptions Management */}
+        <TabsContent value="subscriptions" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">Subscription Management</h2>
+              <p className="text-gray-600">Manage seller subscriptions and plans</p>
+            </div>
+            <Button variant="outline" onClick={fetchSubscriptions} disabled={subscriptionLoading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${subscriptionLoading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Subscription Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Subscriptions</CardTitle>
+                <Crown className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{subscriptions.length}</div>
+                <p className="text-xs text-muted-foreground">Active sellers</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Basic Plan</CardTitle>
+                <Badge variant="outline">Free</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {subscriptions.filter(s => s.plan === "BASIC").length}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {subscriptions.filter(s => s.status === "ACTIVE" && s.plan === "BASIC").length} active
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Premium Plan</CardTitle>
+                <Badge className="bg-yellow-500">KES 1,500/mo</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {subscriptions.filter(s => s.plan === "PREMIUM").length}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {subscriptions.filter(s => s.status === "ACTIVE" && s.plan === "PREMIUM").length} active
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Enterprise Plan</CardTitle>
+                <Badge className="bg-purple-500">KES 5,000/mo</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {subscriptions.filter(s => s.plan === "ENTERPRISE").length}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {subscriptions.filter(s => s.status === "ACTIVE" && s.plan === "ENTERPRISE").length} active
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Subscriptions Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>All Subscriptions</CardTitle>
+              <CardDescription>View and manage seller subscription plans</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {subscriptionLoading ? (
+                <div className="flex justify-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : subscriptions.length === 0 ? (
+                <div className="text-center py-8">
+                  <Crown className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No subscriptions yet</h3>
+                  <p className="text-gray-600">Seller subscriptions will appear here</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Seller</TableHead>
+                      <TableHead>Business</TableHead>
+                      <TableHead>Plan</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Period Start</TableHead>
+                      <TableHead>Period End</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {subscriptions.map((subscription) => (
+                      <TableRow key={subscription.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">
+                              {subscription.seller?.firstName} {subscription.seller?.lastName}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{subscription.seller?.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{subscription.seller?.sellerProfile?.businessName || "N/A"}</TableCell>
+                        <TableCell>
+                          <Badge variant={subscription.plan === "ENTERPRISE" ? "default" : subscription.plan === "PREMIUM" ? "secondary" : "outline"}>
+                            {subscription.plan}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(subscription.status)}</TableCell>
+                        <TableCell>{new Date(subscription.currentPeriodStart).toLocaleDateString()}</TableCell>
+                        <TableCell>{new Date(subscription.currentPeriodEnd).toLocaleDateString()}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
