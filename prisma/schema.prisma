@@ -68,14 +68,16 @@ model ArtisanProfile {
   @@map("artisan_profiles")
 }
 
+
 model SellerProfile {
   id            String   @id @default(cuid())
   userId        String   @unique
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   businessName  String
+  slug          String?  // URL-friendly slug for seller profile (optional, can be generated)
   businessType  String
   description   String?
-  location      String
+  location     String
   phone         String
   website       String?
   taxId         String?

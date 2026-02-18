@@ -14,6 +14,7 @@ interface Seller {
   imageUrl: string | null
   sellerProfile: {
     businessName: string | null
+    slug: string | null
     description: string | null
     location: string | null
     businessType: string | null
@@ -134,7 +135,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                   </a>
                 ) : (
                   <Link
-                    href={`/sellers/${seller.id}`}
+                    href={`/sellers/${seller.sellerProfile?.slug || seller.id}`}
                     className="flex items-center text-blue-600 hover:text-blue-800"
                   >
                     <Globe className="w-4 h-4 mr-1" />

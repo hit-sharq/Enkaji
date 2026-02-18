@@ -12,6 +12,7 @@ interface Seller {
   imageUrl: string | null
   sellerProfile: {
     businessName: string | null
+    slug: string | null
     description: string | null
     location: string | null
     businessType: string | null
@@ -80,6 +81,7 @@ async function getSellers(searchParams: any) {
       sellerProfile: {
         select: {
           businessName: true,
+          slug: true,
           description: true,
           location: true,
           businessType: true,
@@ -116,6 +118,7 @@ async function getSellers(searchParams: any) {
     sellerProfile: seller.sellerProfile
       ? {
           businessName: seller.sellerProfile.businessName,
+          slug: seller.sellerProfile.slug,
           description: seller.sellerProfile.description,
           location: seller.sellerProfile.location,
           businessType: seller.sellerProfile.businessType,

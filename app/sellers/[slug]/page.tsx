@@ -8,40 +8,46 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/lib/db"
 
-async function getSeller(id: string) {
-  return await db.user.findUnique({
-    where: {
-      id,
-      role: "SELLER",
-    },
+async function getSellerBySlug(slug: string) {
+  // First find the sellerProfile by slug, then get the user
+  const sellerProfile = await db.sellerProfile.findUnique({
+    where: { slug },
     include: {
-      sellerProfile: true,
-      products: {
-        where: { isActive: true },
+      user: {
         include: {
-          category: true,
-        },
-        orderBy: { createdAt: "desc" },
-      },
-      _count: {
-        select: {
           products: {
             where: { isActive: true },
+            include: {
+              category: true,
+            },
+            orderBy: { createdAt: "desc" },
           },
         },
       },
     },
   })
+
+  if (!sellerProfile || sellerProfile.user.role !== "SELLER") {
+    return null
+  }
+
+  const { user, ...profile } = sellerProfile
+
+  return {
+    ...user,
+    sellerProfile: profile,
+  }
 }
 
-export default async function SellerStorePage({ params }: { params: { id: string } }) {
-  const seller = await getSeller(params.id)
+export default async function SellerStorePage({ params }: { params: { slug: string } }) {
+  const seller = await getSellerBySlug(params.slug)
 
   if (!seller) {
     notFound()
   }
 
   const businessName = seller.sellerProfile?.businessName || `${seller.firstName} ${seller.lastName}`
+  const sellerSlug = seller.sellerProfile?.slug || seller.id
 
   return (
     <div className="min-h-screen">
@@ -85,9 +91,10 @@ export default async function SellerStorePage({ params }: { params: { id: string
                   </div>
                 )}
 
+
                 <div className="flex items-center text-gray-600">
                   <Package className="w-4 h-4 mr-2" />
-                  <span>{seller._count.products} products</span>
+                  <span>{seller.products.length} products</span>
                 </div>
 
                 {seller.email && (
@@ -115,7 +122,7 @@ export default async function SellerStorePage({ params }: { params: { id: string
                   <div className="flex items-center text-gray-600">
                     <Globe className="w-4 h-4 mr-2" />
                     <Link
-                      href={`/sellers/${seller.id}`}
+                      href={`/sellers/${sellerSlug}`}
                       className="text-blue-600 hover:underline"
                     >
                       View Store on Enkaji
@@ -198,8 +205,8 @@ export default async function SellerStorePage({ params }: { params: { id: string
   )
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const seller = await getSeller(params.id)
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const seller = await getSellerBySlug(params.slug)
 
   if (!seller) {
     return {
