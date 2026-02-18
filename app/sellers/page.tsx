@@ -35,17 +35,17 @@ async function getSellers(searchParams: any) {
   // Build the where clause properly with Prisma types
   const whereClause: Prisma.UserWhereInput = {
     role: "SELLER",
-    sellerProfile: {
-      isNot: null,
-    },
   }
 
-  // Build sellerProfile conditions
-  const sellerProfileConditions: Prisma.SellerProfileWhereInput = {}
+  // Always filter for verified sellers - unverified sellers should not appear in the sellers page
+  // and ensure sellerProfile exists
+  const sellerProfileFilter: Prisma.SellerProfileWhereInput = {
+    isVerified: true,
+  }
 
   // Add location filter if provided and not "All Locations"
   if (location && location !== "All Locations") {
-    sellerProfileConditions.location = {
+    sellerProfileFilter.location = {
       contains: location,
       mode: "insensitive",
     }
@@ -53,20 +53,12 @@ async function getSellers(searchParams: any) {
 
   // Add business type filter if provided and not "All Types"
   if (businessType && businessType !== "All Types") {
-    sellerProfileConditions.businessType = businessType
+    sellerProfileFilter.businessType = businessType
   }
 
-  // Add verification filter if true
-  if (verified === "true") {
-    sellerProfileConditions.isVerified = true
-  }
-
-  // Apply sellerProfile conditions if any exist
-  if (Object.keys(sellerProfileConditions).length > 0) {
-    whereClause.sellerProfile = {
-      ...whereClause.sellerProfile as any,
-      ...sellerProfileConditions,
-    }
+  // Apply sellerProfile filter
+  whereClause.sellerProfile = {
+    is: sellerProfileFilter,
   }
 
   // Add search filter if provided

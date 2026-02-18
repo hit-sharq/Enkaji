@@ -121,7 +121,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                   <Package className="w-4 h-4 mr-1" />
                   {seller._count.products} Products
                 </span>
-                {seller.sellerProfile?.website && (
+                {seller.sellerProfile?.website ? (
                   <a
                     href={seller.sellerProfile.website}
                     target="_blank"
@@ -132,6 +132,14 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                     Website
                     <ExternalLink className="w-3 h-3 ml-1" />
                   </a>
+                ) : (
+                  <Link
+                    href={`/sellers/${seller.id}`}
+                    className="flex items-center text-blue-600 hover:text-blue-800"
+                  >
+                    <Globe className="w-4 h-4 mr-1" />
+                    View Profile
+                  </Link>
                 )}
               </div>
 
