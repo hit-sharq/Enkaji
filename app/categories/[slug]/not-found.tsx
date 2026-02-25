@@ -1,15 +1,10 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Search, ArrowLeft } from "lucide-react"
 
 export default function CategoryNotFound() {
   return (
-    <div className="min-h-screen">
-      <Header />
-
-      <main>
+    <main>
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center">
@@ -61,8 +56,5 @@ export default function CategoryNotFound() {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   )
 }

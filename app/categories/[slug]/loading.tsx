@@ -1,13 +1,8 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function CategoryLoading() {
   return (
-    <div className="min-h-screen">
-      <Header />
-
-      <main>
+    <main>
         {/* Breadcrumb Skeleton */}
         <section className="bg-gray-50 py-4">
           <div className="container mx-auto px-4">
@@ -67,8 +62,5 @@ export default function CategoryLoading() {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   )
 }
