@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       const existingSlugs = await db.sellerProfile.findMany({
         select: { slug: true },
       })
-      const slug = generateUniqueSlug(businessName, existingSlugs.map((s) => s.slug))
+      const slug = generateUniqueSlug(businessName, existingSlugs.map((s) => s.slug).filter((slug): slug is string => slug !== null))
 
       const sellerProfile = await db.sellerProfile.create({
         data: {
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
     const existingSlugs = await db.sellerProfile.findMany({
       select: { slug: true },
     })
-    const slug = generateUniqueSlug(businessName, existingSlugs.map((s) => s.slug))
+    const slug = generateUniqueSlug(businessName, existingSlugs.map((s) => s.slug).filter((slug): slug is string => slug !== null))
 
     // Create seller profile
     const sellerProfile = await db.sellerProfile.create({
