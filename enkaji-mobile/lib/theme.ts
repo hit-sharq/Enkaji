@@ -6,50 +6,39 @@
 
 // Enkaji Brand Colors from web app
 const ENKAJI_COLORS = {
-  // Primary brand gradient colors
-  red: '#8B2635',      // Enkaji Red - main brand color
-  ochre: '#D2691E',    // Enkaji Ochre - accent
-  brown: '#8B4513',    // Enkaji Brown - secondary
-  green: '#228B22',    // Enkaji Green - success states
-  cream: '#F5F5DC',    // Enkaji Cream - backgrounds
-  gold: '#DAA520',     // Enkaji Gold - premium accents
+  // Primary brand colors matching web app
+  primary: '#8B2635',      // Enkaji Maroon
+  primaryLight: '#A53E4D',
+  primaryDark: '#6B1D29',
+  secondary: '#F1F5F9',
+  accent: '#EAB308',      // Gold for ratings/features
+  gold: '#EAB308',
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
   
-  // Functional colors
-  primary: '#8B2635', // Main primary (red)
-  primaryLight: '#A52A3D',
-  primaryDark: '#6B1D28',
+  background: '#FFFFFF',
+  backgroundSecondary: '#F8FAFC',
+  backgroundLight: '#F1F5F9',
   
-  // Standard colors
-  background: '#ffffff',
-  backgroundSecondary: '#F5F5DC', // Cream background like web app
-  backgroundLight: '#FAFAFA',
-  
-  // Text colors
   text: {
-    primary: '#1A1A1A',
-    secondary: '#4A4A4A',
-    tertiary: '#8A8A8A',
-    light: '#CCCCCC',
+    primary: '#0F172A',
+    secondary: '#334155',
+    tertiary: '#64748B',
     white: '#FFFFFF',
+    muted: '#94A3B8',
   },
   
-  // UI colors
-  border: '#E5E5E5',
-  borderLight: '#F0F0F0',
-  
-  // Status colors
-  success: '#228B22',
-  warning: '#D2691E',
-  error: '#DC2626',
-  info: '#3B82F6',
+  border: '#E2E8F0',
+  borderLight: '#F1F5F9',
 }
 
-// Gradient definitions for hero sections and backgrounds
+// Gradient definitions matching web app style
 export const Gradients = {
-  primary: ['#8B2635', '#D2691E', '#8B4513'],
-  hero: ['#8B2635', '#A52A3D'],
-  card: ['#F5F5DC', '#FFFFFF'],
-  button: ['#8B2635', '#D2691E'],
+  primary: ['#8B2635', '#A53E4D'],
+  surface: ['#FFFFFF', '#F8FAFC'],
+  hero: ['#8B2635', '#6B1D29'],
 }
 
 // Placeholder image

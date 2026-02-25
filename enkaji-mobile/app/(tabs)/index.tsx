@@ -120,19 +120,17 @@ export default function HomeScreen() {
       }
     >
       {/* Hero Section with Enkaji Brand Gradient */}
-      <View style={styles.heroSection}>
-        <View style={styles.heroGradient}>
-          <View style={styles.heroContent}>
-            <Text style={styles.heroTitle}>Welcome to Enkaji</Text>
-            <Text style={styles.heroSubtitle}>Kenya's Trusted Marketplace</Text>
-            <Text style={styles.heroTagline}>Quality Products • Verified Sellers • Secure Payments</Text>
-            <TouchableOpacity 
-              style={styles.ctaButton}
-              onPress={() => router.push('/search')}
-            >
-              <Text style={styles.ctaButtonText}>Shop Now</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={[styles.heroSection, { backgroundColor: Colors.primary }]}>
+        <View style={styles.heroContent}>
+          <Text style={styles.heroTitle}>Welcome to Enkaji</Text>
+          <Text style={styles.heroSubtitle}>Kenya's Trusted Marketplace</Text>
+          <Text style={styles.heroTagline}>Quality Products • Verified Sellers • Secure Payments</Text>
+          <TouchableOpacity 
+            style={styles.ctaButton}
+            onPress={() => router.push('/search')}
+          >
+            <Text style={styles.ctaButtonText}>Shop Now</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
