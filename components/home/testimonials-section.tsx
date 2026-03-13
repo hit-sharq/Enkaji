@@ -186,7 +186,7 @@ export function TestimonialsSection() {
 
                         <div className="flex items-center">
                           <div className="w-12 h-12 rounded-full mr-4 overflow-hidden bg-gradient-to-br from-enkaji-gold to-enkaji-ochre flex items-center justify-center">
-                            {testimonial.imageUrl ? (
+{testimonial.imageUrl ? (
                               <Image
                                 src={testimonial.imageUrl || "/placeholder.svg"}
                                 alt={testimonial.name}
@@ -195,7 +195,7 @@ export function TestimonialsSection() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <span className="text-white font-bold text-lg">{testimonial.name.charAt(0)}</span>
+                              <span className="text-white font-bold text-lg">{testimonial.name?.charAt(0) || 'U'}</span>
                             )}
                           </div>
                           <div>
