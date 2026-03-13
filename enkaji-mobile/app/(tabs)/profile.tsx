@@ -14,6 +14,7 @@ import { Feather } from '@expo/vector-icons'
 import { useAuth } from '@clerk/clerk-expo'
 import { useAuthStore } from '@/lib/store'
 import api from '@/lib/api'
+import { Colors } from '@/lib/theme'
 
 const PLACEHOLDER_IMAGE = 'https://placehold.co/200x200/e5e5e5/666666?text=User'
 
@@ -52,7 +53,7 @@ export default function ProfileScreen() {
     { 
       icon: 'heart', 
       label: 'Favorites', 
-      onPress: () => router.push('/favorites'),
+      onPress: () => Alert.alert('Coming Soon', 'Favorites coming soon!'),
       show: true 
     },
     { 
@@ -76,7 +77,7 @@ export default function ProfileScreen() {
     { 
       icon: 'store', 
       label: 'Become a Seller', 
-      onPress: () => router.push('/sell'),
+      onPress: () => Alert.alert('Coming Soon', 'Seller registration coming soon!'),
       show: user?.role !== 'SELLER' 
     },
     { 
@@ -88,13 +89,13 @@ export default function ProfileScreen() {
     { 
       icon: 'settings', 
       label: 'Settings', 
-      onPress: () => router.push('/settings'),
+      onPress: () => Alert.alert('Coming Soon', 'Settings coming soon!'),
       show: true 
     },
     { 
       icon: 'help-circle', 
       label: 'Help & Support', 
-      onPress: () => router.push('/help'),
+      onPress: () => Alert.alert('Coming Soon', 'Help & Support coming soon!'),
       show: true 
     },
   ]
@@ -102,16 +103,26 @@ export default function ProfileScreen() {
   if (!isSignedIn) {
     return (
       <View style={styles.container}>
+        {/* Hero Section */}
+        <View style={styles.authHero}>
+          <View style={styles.logoCircle}>
+            <Text style={styles.logoText}>E</Text>
+          </View>
+          <Text style={styles.brandName}>Enkaji</Text>
+          <Text style={styles.heroTagline}>Kenya's Trusted Marketplace</Text>
+        </View>
+
         <View style={styles.authPrompt}>
-          <Feather name="user" size={64} color="#ccc" />
           <Text style={styles.authTitle}>Welcome to Enkaji</Text>
           <Text style={styles.authText}>Sign in to access your account</Text>
+          
           <TouchableOpacity 
             style={styles.signInButton}
             onPress={() => router.push('/(auth)/sign-in')}
           >
             <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
+          
           <TouchableOpacity 
             style={styles.signUpButton}
             onPress={() => router.push('/(auth)/sign-up')}
@@ -124,13 +135,18 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Profile Header */}
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Profile Header with Brand Colors */}
       <View style={styles.header}>
-        <Image 
-          source={{ uri: user?.imageUrl || PLACEHOLDER_IMAGE }}
-          style={styles.avatar}
-        />
+        <View style={styles.avatarContainer}>
+          <Image 
+            source={{ uri: user?.imageUrl || PLACEHOLDER_IMAGE }}
+            style={styles.avatar}
+          />
+          <View style={styles.avatarBadge}>
+            <Feather name="camera" size={14} color={Colors.text.white} />
+          </View>
+        </View>
         <Text style={styles.userName}>
           {user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'User'}
         </Text>
@@ -143,14 +159,25 @@ export default function ProfileScreen() {
       {/* Quick Stats */}
       <View style={styles.statsContainer}>
         <TouchableOpacity style={styles.statItem} onPress={() => router.push('/orders')}>
+          <View style={styles.statIconContainer}>
+            <Feather name="shopping-bag" size={20} color={Colors.primary} />
+          </View>
           <Text style={styles.statNumber}>0</Text>
           <Text style={styles.statLabel}>Orders</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.statItem} onPress={() => router.push('/favorites')}>
+        <View style={styles.statDivider} />
+        <TouchableOpacity style={styles.statItem} onPress={() => Alert.alert('Coming Soon', 'Favorites coming soon!')}>
+          <View style={styles.statIconContainer}>
+            <Feather name="heart" size={20} color={Colors.primary} />
+          </View>
           <Text style={styles.statNumber}>0</Text>
           <Text style={styles.statLabel}>Favorites</Text>
         </TouchableOpacity>
+        <View style={styles.statDivider} />
         <TouchableOpacity style={styles.statItem}>
+          <View style={styles.statIconContainer}>
+            <Feather name="star" size={20} color={Colors.primary} />
+          </View>
           <Text style={styles.statNumber}>0</Text>
           <Text style={styles.statLabel}>Reviews</Text>
         </TouchableOpacity>
@@ -158,6 +185,7 @@ export default function ProfileScreen() {
 
       {/* Menu Items */}
       <View style={styles.menuContainer}>
+        <Text style={styles.menuSectionTitle}>Account</Text>
         {menuItems.filter(item => item.show).map((item, index) => (
           <TouchableOpacity 
             key={index}
@@ -165,10 +193,12 @@ export default function ProfileScreen() {
             onPress={item.onPress}
           >
             <View style={styles.menuItemLeft}>
-              <Feather name={item.icon as any} size={20} color="#000" />
+              <View style={styles.menuIconContainer}>
+                <Feather name={item.icon as any} size={18} color={Colors.primary} />
+              </View>
               <Text style={styles.menuItemText}>{item.label}</Text>
             </View>
-            <Feather name="chevron-right" size={20} color="#666" />
+            <Feather name="chevron-right" size={20} color={Colors.text.tertiary} />
           </TouchableOpacity>
         ))}
       </View>
@@ -178,12 +208,15 @@ export default function ProfileScreen() {
         style={styles.signOutButton}
         onPress={handleSignOut}
       >
-        <Feather name="log-out" size={20} color="#EF4444" />
+        <View style={styles.menuIconContainer}>
+          <Feather name="log-out" size={18} color={Colors.error} />
+        </View>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Enkaji Mobile v1.0.0</Text>
+        <Text style={styles.footerText}>© 2024 Enkaji Marketplace</Text>
+        <Text style={styles.footerSubtext}>Kenya's Premier B2B & B2C Platform</Text>
       </View>
     </ScrollView>
   )
@@ -192,153 +225,278 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.backgroundSecondary,
+  },
+  // Auth Hero Section
+  authHero: {
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 40,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: Colors.text.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    marginBottom: 16,
+  },
+  logoText: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: Colors.primary,
+  },
+  brandName: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: Colors.text.white,
+    letterSpacing: 1,
+  },
+  heroTagline: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 6,
   },
   authPrompt: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 30,
   },
   authTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    marginTop: 20,
+    fontWeight: '700',
+    color: Colors.text.primary,
+    marginBottom: 8,
   },
   authText: {
     fontSize: 16,
-    color: '#666',
-    marginTop: 8,
+    color: Colors.text.tertiary,
+    marginBottom: 30,
     textAlign: 'center',
   },
   signInButton: {
-    marginTop: 30,
-    backgroundColor: '#000',
+    backgroundColor: Colors.primary,
     paddingHorizontal: 50,
-    paddingVertical: 14,
-    borderRadius: 25,
+    paddingVertical: 15,
+    borderRadius: 30,
+    width: '100%',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+    marginBottom: 12,
   },
   signInButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+    color: Colors.text.white,
+    fontWeight: '700',
+    fontSize: 17,
+    textAlign: 'center',
   },
   signUpButton: {
-    marginTop: 15,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.text.white,
     paddingHorizontal: 50,
-    paddingVertical: 14,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#000',
+    paddingVertical: 15,
+    borderRadius: 30,
+    width: '100%',
+    borderWidth: 2,
+    borderColor: Colors.primary,
   },
   signUpButtonText: {
-    color: '#000',
-    fontWeight: '600',
-    fontSize: 16,
+    color: Colors.primary,
+    fontWeight: '700',
+    fontSize: 17,
+    textAlign: 'center',
   },
+  // Logged in header
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     paddingVertical: 30,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
+  avatarContainer: {
+    position: 'relative',
+    marginBottom: 12,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#e5e5e5',
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: Colors.backgroundLight,
+    borderWidth: 3,
+    borderColor: Colors.text.white,
+  },
+  avatarBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primaryDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.text.white,
   },
   userName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000',
-    marginTop: 15,
+    fontSize: 24,
+    fontWeight: '700',
+    color: Colors.text.white,
   },
   userEmail: {
     fontSize: 14,
-    color: '#666',
+    color: 'rgba(255,255,255,0.8)',
     marginTop: 4,
   },
   roleBadge: {
-    marginTop: 10,
-    backgroundColor: '#000',
-    paddingHorizontal: 16,
+    marginTop: 12,
+    backgroundColor: Colors.text.white,
+    paddingHorizontal: 18,
     paddingVertical: 6,
-    borderRadius: 15,
+    borderRadius: 20,
   },
   roleText: {
-    color: '#fff',
+    color: Colors.primary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
+  // Stats
   statsContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     paddingVertical: 20,
-    marginTop: 10,
+    marginTop: 16,
+    marginHorizontal: 16,
+    borderRadius: 16,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   statItem: {
     flex: 1,
     alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#e5e5e5',
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: Colors.borderLight,
+  },
+  statIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.backgroundSecondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
+    fontSize: 22,
+    fontWeight: '800',
+    color: Colors.text.primary,
   },
   statLabel: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 13,
+    color: Colors.text.tertiary,
     marginTop: 4,
   },
+  // Menu
   menuContainer: {
-    backgroundColor: '#fff',
-    marginTop: 10,
-    paddingHorizontal: 15,
+    backgroundColor: Colors.background,
+    marginTop: 16,
+    marginHorizontal: 16,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  menuSectionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.text.tertiary,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderLight,
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  menuIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.backgroundSecondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
   menuItemText: {
     fontSize: 16,
-    color: '#000',
-    marginLeft: 15,
+    color: Colors.text.primary,
+    fontWeight: '500',
   },
   signOutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    marginTop: 10,
-    paddingVertical: 15,
+    backgroundColor: Colors.background,
+    marginTop: 16,
+    marginHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: Colors.error,
   },
   signOutText: {
     fontSize: 16,
-    color: '#EF4444',
-    marginLeft: 8,
+    color: Colors.error,
+    fontWeight: '600',
+    marginLeft: 10,
   },
   footer: {
     alignItems: 'center',
     paddingVertical: 30,
+    paddingBottom: 40,
   },
   footerText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text.secondary,
+  },
+  footerSubtext: {
     fontSize: 12,
-    color: '#999',
+    color: Colors.text.tertiary,
+    marginTop: 4,
   },
 })
 

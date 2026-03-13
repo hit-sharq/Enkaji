@@ -8,11 +8,14 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView 
+  ScrollView,
+  Image,
+  StatusBar
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useSignIn } from '@clerk/clerk-expo'
+import { Colors } from '@/lib/theme'
 
 export default function SignInScreen() {
   const router = useRouter()
@@ -51,208 +54,311 @@ export default function SignInScreen() {
   }
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.logo}>Enkaji</Text>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue shopping</Text>
-        </View>
-
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Feather name="mail" size={20} color="#666" />
-            <TextInput
-              style={styles.input}
-              placeholder="Email address"
-              placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <KeyboardAvoidingView 
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Hero Section */}
+          <View style={styles.heroSection}>
+            <View style={styles.heroOverlay}>
+              <View style={styles.logoContainer}>
+                <View style={styles.logoCircle}>
+                  <Text style={styles.logoText}>E</Text>
+                </View>
+              </View>
+              <Text style={styles.brandName}>Enkaji</Text>
+              <Text style={styles.tagline}>Kenya's Trusted Marketplace</Text>
+            </View>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Feather name="lock" size={20} color="#666" />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#999"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Feather 
-                name={showPassword ? 'eye-off' : 'eye'} 
-                size={20} 
-                color="#666" 
-              />
-            </TouchableOpacity>
+          {/* Form Section */}
+          <View style={styles.formSection}>
+            <Text style={styles.welcomeText}>Welcome Back</Text>
+            <Text style={styles.subtitleText}>Sign in to continue shopping</Text>
+
+            <View style={styles.form}>
+              <View style={styles.inputWrapper}>
+                <View style={styles.inputIcon}>
+                  <Feather name="mail" size={20} color={Colors.primary} />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email address"
+                  placeholderTextColor={Colors.text.muted}
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <View style={styles.inputIcon}>
+                  <Feather name="lock" size={20} color={Colors.primary} />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor={Colors.text.muted}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity 
+                  style={styles.eyeButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Feather 
+                    name={showPassword ? 'eye-off' : 'eye'} 
+                    size={20} 
+                    color={Colors.text.tertiary} 
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity 
+                style={styles.forgotPassword}
+                onPress={() => Alert.alert('Coming Soon', 'Password reset coming soon!')}
+              >
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.signInButton, isLoading && styles.signInButtonDisabled]}
+                onPress={handleSignIn}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={Colors.text.white} />
+                ) : (
+                  <Text style={styles.signInButtonText}>Sign In</Text>
+                )}
+              </TouchableOpacity>
+
+              <View style={styles.divider}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>OR</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <TouchableOpacity 
+                style={styles.googleButton}
+                onPress={() => Alert.alert('Coming Soon', 'Google sign-in coming soon!')}
+              >
+                <View style={styles.googleIconContainer}>
+                  <Feather name="chrome" size={20} color={Colors.text.primary} />
+                </View>
+                <Text style={styles.googleButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Don't have an account? </Text>
+              <TouchableOpacity onPress={() => router.push('/(auth)/sign-up')}>
+                <Text style={styles.signUpLink}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          <TouchableOpacity 
-            style={styles.forgotPassword}
-            onPress={() => Alert.alert('Coming Soon', 'Password reset coming soon!')}
-          >
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={[styles.signInButton, isLoading && styles.signInButtonDisabled]}
-            onPress={handleSignIn}
-            disabled={isLoading}
-          >
-            <Text style={styles.signInButtonText}>
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </Text>
-          </TouchableOpacity>
-
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          <TouchableOpacity 
-            style={styles.googleButton}
-            onPress={() => Alert.alert('Coming Soon', 'Google sign-in coming soon!')}
-          >
-            <Feather name="chrome" size={20} color="#000" />
-            <Text style={styles.googleButtonText}>Continue with Google</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/sign-up')}>
-            <Text style={styles.signUpLink}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   )
 }
+
+import { ActivityIndicator } from 'react-native'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
+  },
+  keyboardView: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 25,
-    justifyContent: 'center',
   },
-  header: {
+  // Hero Section with Brand Colors
+  heroSection: {
+    backgroundColor: Colors.primary,
+    paddingTop: 60,
+    paddingBottom: 40,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  heroOverlay: {
     alignItems: 'center',
-    marginBottom: 40,
+    paddingHorizontal: 20,
   },
-  logo: {
+  logoContainer: {
+    marginBottom: 16,
+  },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: Colors.text.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  logoText: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: Colors.primary,
+  },
+  brandName: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: '800',
+    color: Colors.text.white,
+    letterSpacing: 1,
+    marginBottom: 8,
   },
-  title: {
+  tagline: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.85)',
+    fontWeight: '500',
+  },
+  // Form Section
+  formSection: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 24,
+  },
+  welcomeText: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
-    marginTop: 20,
+    fontWeight: '700',
+    color: Colors.text.primary,
+    marginBottom: 8,
   },
-  subtitle: {
+  subtitleText: {
     fontSize: 16,
-    color: '#666',
-    marginTop: 8,
+    color: Colors.text.tertiary,
+    marginBottom: 28,
   },
   form: {
     width: '100%',
   },
-  inputContainer: {
+  inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    marginBottom: 15,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    overflow: 'hidden',
+  },
+  inputIcon: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: Colors.backgroundSecondary,
+    borderRightWidth: 1,
+    borderRightColor: Colors.border,
   },
   input: {
     flex: 1,
-    marginLeft: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 16,
-    color: '#000',
+    color: Colors.text.primary,
+  },
+  eyeButton: {
+    padding: 16,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 25,
+    marginBottom: 24,
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.primary,
+    fontWeight: '600',
   },
   signInButton: {
-    backgroundColor: '#000',
-    paddingVertical: 15,
-    borderRadius: 12,
+    backgroundColor: Colors.primary,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: 'center',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   signInButtonDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   signInButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: Colors.text.white,
+    fontSize: 17,
+    fontWeight: '700',
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 25,
+    marginVertical: 28,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: Colors.border,
   },
   dividerText: {
-    marginHorizontal: 15,
-    color: '#666',
-    fontSize: 14,
+    marginHorizontal: 16,
+    color: Colors.text.tertiary,
+    fontSize: 13,
+    fontWeight: '600',
   },
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
-    paddingVertical: 15,
-    borderRadius: 12,
+    backgroundColor: Colors.text.white,
+    borderWidth: 2,
+    borderColor: Colors.border,
+    paddingVertical: 16,
+    borderRadius: 16,
+  },
+  googleIconContainer: {
+    marginRight: 12,
   },
   googleButtonText: {
-    marginLeft: 10,
     fontSize: 16,
-    color: '#000',
-    fontWeight: '500',
+    color: Colors.text.primary,
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 30,
+    marginTop: 32,
   },
   footerText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    color: Colors.text.tertiary,
   },
   signUpLink: {
-    fontSize: 14,
-    color: '#000',
-    fontWeight: '600',
+    fontSize: 15,
+    color: Colors.primary,
+    fontWeight: '700',
   },
 })
 
