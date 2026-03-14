@@ -2,10 +2,8 @@
 // This connects to the existing Next.js API endpoints
 
 import axios, { AxiosInstance, AxiosError } from 'axios'
-import * as SecureStore from 'expo-secure-store'
 
-// Base URL - update this for production
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.origin.includes('replit.app') ? window.location.origin : 'http://localhost:5000')
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000' // Next.js dev server
 
 class ApiClient {
   private client: AxiosInstance

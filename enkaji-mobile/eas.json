@@ -1,0 +1,20 @@
+{
+  "cli": {
+    "version": ">= 15.0.0"
+  },
+  "postInstall": {
+    "postInstallScript": "npx expo install --fix"
+  },
+  "build": {
+    "preview": {
+      "projectId": "enkaji-mobile",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
