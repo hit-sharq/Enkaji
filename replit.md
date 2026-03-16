@@ -44,6 +44,16 @@ npx prisma generate
 - `STRIPE_*` - Stripe payment credentials (optional)
 - `REDIS_URL` - Redis connection URL (optional)
 
+## Mobile App (`enkaji-mobile/`)
+React Native (Expo) mobile app sharing the same APIs as the web app.
+- **Framework**: Expo (SDK ~54.0.0) + Expo Router file-based navigation
+- **Auth**: Clerk (`@clerk/clerk-expo`) — runs in keyless mode during development
+- **State**: Zustand stores (`lib/store.ts`)
+- **Theme**: Brand colors in `lib/theme.ts` (primary #8B2635, gold #EAB308, etc.)
+- **API**: Connects to web app via `EXPO_PUBLIC_API_URL` env var (defaults to http://localhost:5000)
+- **Workflow**: `cd enkaji-mobile && node_modules/.bin/expo start --web --port 3001`
+- **Key screens**: Home (index.tsx), Explore/Search, Cart, Orders, Profile, Product Detail, Seller Dashboard, Auth
+
 ## Key Features
 - B2B marketplace with product listings
 - Seller and artisan registration/profiles

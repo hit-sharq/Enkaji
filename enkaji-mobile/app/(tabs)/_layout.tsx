@@ -1,41 +1,50 @@
 import { Tabs } from 'expo-router'
-import { useColorScheme } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Colors } from '@/lib/theme'
+import { useCartStore } from '@/lib/store'
+
+function CartTabIcon({ color, size }: { color: string; size: number }) {
+  const totalItems = useCartStore((s) => s.totalItems)
+  return (
+    <View>
+      <Feather name="shopping-cart" size={size} color={color} />
+      {totalItems > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{totalItems > 99 ? '99+' : totalItems}</Text>
+        </View>
+      )}
+    </View>
+  )
+}
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme()
-
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.text.tertiary,
+        tabBarInactiveTintColor: Colors.text.muted,
         tabBarStyle: {
           backgroundColor: Colors.background,
-          borderTopWidth: 1,
-          borderTopColor: Colors.borderLight,
-          paddingBottom: 8,
+          borderTopWidth: 0,
+          paddingBottom: 10,
           paddingTop: 8,
-          height: 65,
-          elevation: 8,
+          height: 70,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 16,
+          elevation: 16,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: '600',
           marginTop: 2,
         },
         headerStyle: {
           backgroundColor: Colors.primary,
-          elevation: 4,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.15,
-          shadowRadius: 4,
+          shadowColor: 'transparent',
+          elevation: 0,
         },
         headerTitleStyle: {
           fontWeight: '700',
@@ -43,23 +52,24 @@ export default function TabLayout() {
           color: Colors.text.white,
         },
         headerShadowVisible: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Shop',
-          headerTitle: 'Enkaji',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Feather name="shopping-bag" size={size} color={color} />
+            <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
-          headerTitle: 'Search Products',
+          title: 'Explore',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Feather name="search" size={size} color={color} />
           ),
@@ -69,9 +79,9 @@ export default function TabLayout() {
         name="cart"
         options={{
           title: 'Cart',
-          headerTitle: 'Shopping Cart',
+          headerTitle: 'My Cart',
           tabBarIcon: ({ color, size }) => (
-            <Feather name="shopping-cart" size={size} color={color} />
+            <CartTabIcon color={color} size={size} />
           ),
         }}
       />
@@ -99,3 +109,24 @@ export default function TabLayout() {
   )
 }
 
+const styles = StyleSheet.create({
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+    backgroundColor: Colors.primary,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 3,
+    borderWidth: 1.5,
+    borderColor: Colors.background,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+})

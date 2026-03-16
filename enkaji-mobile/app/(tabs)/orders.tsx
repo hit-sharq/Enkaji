@@ -1,50 +1,91 @@
 import { useState, useEffect } from 'react'
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
-  Status 
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useOrdersStore } from '@/lib/store'
 import { Order } from '@/types'
 import api from '@/lib/api'
+import { Colors } from '@/lib/theme'
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'PENDING': return '#F59E0B'
-    case 'CONFIRMED': return '#3B82F6'
-    case 'PROCESSING': return '#8B5CF6'
-    case 'SHIPPED': return '#06B6D4'
-    case 'DELIVERED': return '#10B981'
-    case 'CANCELLED': return '#EF4444'
-    case 'REFUNDED': return '#6B7280'
-    default: return '#666'
-  }
+const STATUS_CONFIG: Record<string, { color: string; icon: string; label: string }> = {
+  PENDING:    { color: '#F59E0B', icon: 'clock',        label: 'Pending' },
+  CONFIRMED:  { color: '#3B82F6', icon: 'check-circle', label: 'Confirmed' },
+  PROCESSING: { color: '#8B5CF6', icon: 'loader',       label: 'Processing' },
+  SHIPPED:    { color: '#06B6D4', icon: 'truck',        label: 'Shipped' },
+  DELIVERED:  { color: '#10B981', icon: 'check-square', label: 'Delivered' },
+  CANCELLED:  { color: '#EF4444', icon: 'x-circle',    label: 'Cancelled' },
+  REFUNDED:   { color: '#6B7280', icon: 'rotate-ccw',  label: 'Refunded' },
 }
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'PENDING': return 'clock'
-    case 'CONFIRMED': return 'check-circle'
-    case 'PROCESSING': return 'package'
-    case 'SHIPPED': return 'truck'
-    case 'DELIVERED': return 'check-square'
-    case 'CANCELLED': return 'x-circle'
-    case 'REFUNDED': return 'rotate-ccw'
-    default: return 'circle'
-  }
+function OrderCard({ item, onPress }: { item: Order; onPress: () => void }) {
+  const status = STATUS_CONFIG[item.status] ?? { color: '#6B7280', icon: 'circle', label: item.status }
+
+  return (
+    <TouchableOpacity style={styles.orderCard} onPress={onPress} activeOpacity={0.9}>
+      <View style={styles.cardTop}>
+        <View style={styles.orderNumberRow}>
+          <Text style={styles.orderNumber}>{item.orderNumber}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: status.color + '18' }]}>
+            <Feather name={status.icon as any} size={12} color={status.color} />
+            <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+          </View>
+        </View>
+        <Text style={styles.orderDate}>
+          {new Date(item.createdAt).toLocaleDateString('en-KE', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          })}
+        </Text>
+      </View>
+
+      <View style={styles.cardDivider} />
+
+      <View style={styles.cardBottom}>
+        <View>
+          <Text style={styles.itemsLabel}>
+            {item.items?.length || 0} item{(item.items?.length || 0) !== 1 ? 's' : ''}
+          </Text>
+          <View style={styles.paymentRow}>
+            <View
+              style={[
+                styles.paymentBadge,
+                { backgroundColor: item.paymentStatus === 'PAID' ? '#10B981' + '15' : '#F59E0B' + '15' },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.paymentText,
+                  { color: item.paymentStatus === 'PAID' ? '#10B981' : '#F59E0B' },
+                ]}
+              >
+                {item.paymentStatus}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.totalRight}>
+          <Text style={styles.totalAmount}>KES {Number(item.total).toLocaleString()}</Text>
+          <Feather name="chevron-right" size={18} color={Colors.text.muted} style={styles.chevron} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  )
 }
 
 export default function OrdersScreen() {
   const router = useRouter()
   const { orders, setOrders, isLoading, setLoading } = useOrdersStore()
   const [refreshing, setRefreshing] = useState(false)
+  const [activeTab, setActiveTab] = useState<string>('ALL')
 
   useEffect(() => {
     loadOrders()
@@ -70,75 +111,85 @@ export default function OrdersScreen() {
     setRefreshing(false)
   }
 
-  const renderOrderCard = ({ item }: { item: Order }) => (
-    <TouchableOpacity 
-      style={styles.orderCard}
-      onPress={() => router.push(`/orders/${item.id}`)}
-    >
-      <View style={styles.orderHeader}>
-        <View>
-          <Text style={styles.orderNumber}>{item.orderNumber}</Text>
-          <Text style={styles.orderDate}>
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
-          <Feather name={getStatusIcon(item.status) as any} size={14} color={getStatusColor(item.status)} />
-          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
-            {item.status}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.orderItems}>
-        <Text style={styles.itemsText}>
-          {item.items?.length || 0} item(s)
-        </Text>
-        <Text style={styles.orderTotal}>
-          KES {Number(item.total).toLocaleString()}
-        </Text>
-      </View>
-
-      <View style={styles.orderFooter}>
-        <Text style={styles.paymentStatus}>
-          Payment: {item.paymentStatus}
-        </Text>
-        <Feather name="chevron-right" size={20} color="#666" />
-      </View>
-    </TouchableOpacity>
-  )
+  const tabs = ['ALL', 'PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']
+  const filteredOrders = activeTab === 'ALL' ? orders : orders.filter((o) => o.status === activeTab)
 
   if (isLoading && orders.length === 0) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#000" />
-        <Text style={styles.loadingText}>Loading orders...</Text>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingText}>Loading your orders...</Text>
       </View>
     )
   }
 
   return (
     <View style={styles.container}>
-      {orders.length === 0 ? (
+      {/* Tabs */}
+      <View style={styles.tabsWrapper}>
+        <FlatList
+          horizontal
+          data={tabs}
+          keyExtractor={(t) => t}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsContent}
+          renderItem={({ item }) => {
+            const count = item === 'ALL' ? orders.length : orders.filter((o) => o.status === item).length
+            const isActive = activeTab === item
+            return (
+              <TouchableOpacity
+                style={[styles.tab, isActive && styles.tabActive]}
+                onPress={() => setActiveTab(item)}
+              >
+                <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
+                  {item === 'ALL' ? 'All' : STATUS_CONFIG[item]?.label ?? item}
+                </Text>
+                {count > 0 && (
+                  <View style={[styles.tabBadge, isActive && styles.tabBadgeActive]}>
+                    <Text style={[styles.tabBadgeText, isActive && styles.tabBadgeTextActive]}>
+                      {count}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            )
+          }}
+        />
+      </View>
+
+      {filteredOrders.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Feather name="package" size={64} color="#ccc" />
-          <Text style={styles.emptyTitle}>No orders yet</Text>
-          <Text style={styles.emptyText}>Your orders will appear here</Text>
-          <TouchableOpacity 
-            style={styles.shopButton}
-            onPress={() => router.push('/')}
-          >
-            <Text style={styles.shopButtonText}>Start Shopping</Text>
-          </TouchableOpacity>
+          <View style={styles.emptyIconBg}>
+            <Feather name="package" size={36} color={Colors.primary} />
+          </View>
+          <Text style={styles.emptyTitle}>
+            {activeTab === 'ALL' ? 'No orders yet' : `No ${STATUS_CONFIG[activeTab]?.label ?? activeTab} orders`}
+          </Text>
+          <Text style={styles.emptyText}>
+            {activeTab === 'ALL' ? 'Your orders will appear here' : 'Check back later'}
+          </Text>
+          {activeTab === 'ALL' && (
+            <TouchableOpacity style={styles.shopButton} onPress={() => router.push('/')}>
+              <Text style={styles.shopButtonText}>Start Shopping</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ) : (
         <FlatList
-          data={orders}
-          renderItem={renderOrderCard}
+          data={filteredOrders}
+          renderItem={({ item }) => (
+            <OrderCard item={item} onPress={() => router.push(`/orders/${item.id}`)} />
+          )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.ordersList}
+          showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.primary]}
+              tintColor={Colors.primary}
+            />
           }
         />
       )}
@@ -149,16 +200,158 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.backgroundSecondary,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.backgroundSecondary,
   },
   loadingText: {
-    marginTop: 10,
-    color: '#666',
+    marginTop: 12,
+    color: Colors.text.tertiary,
+    fontSize: 14,
+  },
+  tabsWrapper: {
+    backgroundColor: Colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.backgroundSecondary,
+  },
+  tabsContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: Colors.backgroundSecondary,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  tabActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  tabText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.text.secondary,
+  },
+  tabTextActive: {
+    color: Colors.text.white,
+  },
+  tabBadge: {
+    marginLeft: 6,
+    backgroundColor: Colors.border,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
+  tabBadgeActive: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  tabBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: Colors.text.secondary,
+  },
+  tabBadgeTextActive: {
+    color: Colors.text.white,
+  },
+  ordersList: {
+    padding: 16,
+    paddingBottom: 24,
+  },
+  orderCard: {
+    backgroundColor: Colors.background,
+    borderRadius: 16,
+    marginBottom: 12,
+    overflow: 'hidden',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  cardTop: {
+    padding: 16,
+    paddingBottom: 12,
+  },
+  orderNumberRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  orderNumber: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: Colors.text.primary,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: '700',
+    marginLeft: 4,
+  },
+  orderDate: {
+    fontSize: 12,
+    color: Colors.text.tertiary,
+    marginTop: 2,
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: Colors.backgroundSecondary,
+  },
+  cardBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 12,
+  },
+  itemsLabel: {
+    fontSize: 13,
+    color: Colors.text.secondary,
+    marginBottom: 4,
+  },
+  paymentRow: {
+    flexDirection: 'row',
+  },
+  paymentBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  paymentText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  totalRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: Colors.primary,
+  },
+  chevron: {
+    marginLeft: 4,
   },
   emptyContainer: {
     flex: 1,
@@ -166,98 +359,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 30,
   },
+  emptyIconBg: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: Colors.primary + '12',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   emptyTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#000',
-    marginTop: 20,
+    fontWeight: '700',
+    color: Colors.text.primary,
+    marginBottom: 8,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
+    fontSize: 15,
+    color: Colors.text.tertiary,
+    textAlign: 'center',
+    marginBottom: 24,
   },
   shopButton: {
-    marginTop: 20,
-    backgroundColor: '#000',
-    paddingHorizontal: 30,
-    paddingVertical: 12,
-    borderRadius: 25,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 30,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   shopButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  ordersList: {
-    padding: 15,
-  },
-  orderCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  orderNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  orderDate: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginLeft: 4,
-  },
-  orderItems: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#f5f5f5',
-  },
-  itemsText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  orderTotal: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  paymentStatus: {
-    fontSize: 14,
-    color: '#666',
+    color: Colors.text.white,
+    fontWeight: '700',
+    fontSize: 15,
   },
 })
-

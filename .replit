@@ -42,7 +42,7 @@ outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd enkaji-mobile && npx expo start --web --port 3001"
+args = "cd enkaji-mobile && node_modules/.bin/expo start --web --port 3001"
 waitForPort = 3001
 
 [[ports]]
