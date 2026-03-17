@@ -1,4 +1,4 @@
-# Enkaji Trade Kenya
+<!-- # Enkaji Trade Kenya
 
 ## Overview
 Enkaji Trade Kenya is a B2B marketplace platform built with Next.js 14, connecting verified suppliers across Kenya. It features product listings, artisan profiles, seller dashboards, order management, reviews, bulk order requests, and payment integrations.
@@ -65,4 +65,4 @@ React Native (Expo) mobile app sharing the same APIs as the web app.
 - Analytics dashboard
 
 ## Deployment
-Configured for Replit Autoscale deployment. Build: `npx prisma generate && npm run build`. Run: `npm start`.
+Configured for Replit Autoscale deployment. Build: `npx prisma generate && npm run build`. Run: `npm start`. -->
