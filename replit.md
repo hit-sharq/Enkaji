@@ -78,6 +78,7 @@ npx prisma migrate deploy  # Run migrations
 - `EXPO_PUBLIC_API_URL` — Web app URL (defaults to http://localhost:5000)
 
 ## Key Features
+- App download page at `/download` with phone mockup, installation guide, and APK download button
 - B2B/B2C marketplace with product listings, categories, and search
 - Seller and artisan registration/profiles with admin approval
 - Shopping cart (local + server-synced), checkout, and order management

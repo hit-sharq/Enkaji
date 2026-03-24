@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu, Search, ShoppingCart, Heart, User, Store, Shield, Package, Settings, LogOut } from "lucide-react"
+import { Menu, Search, ShoppingCart, Heart, User, Store, Shield, Package, Settings, LogOut, Smartphone } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { useRouter } from "next/navigation"
 
@@ -193,6 +193,13 @@ export function Header() {
               About
             </Link>
 
+            <Link href="/download">
+              <Button size="sm" className="bg-[#8B2635] hover:bg-[#7a1f2e] text-white font-medium flex items-center gap-1.5 rounded-full px-4">
+                <Smartphone className="w-4 h-4" />
+                Get App
+              </Button>
+            </Link>
+
             {/* Cart */}
             <Link href="/cart" className="relative">
               <Button variant="ghost" size="sm" className="relative">
@@ -347,6 +354,14 @@ export function Header() {
                       onClick={() => setIsOpen(false)}
                     >
                       About
+                    </Link>
+                    <Link
+                      href="/download"
+                      className="flex items-center gap-2 font-medium py-2 text-[#8B2635]"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Smartphone className="w-4 h-4" />
+                      Get the App
                     </Link>
                     {isLoaded && user && (
                       <>
