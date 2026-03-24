@@ -3,7 +3,7 @@
 
 import axios, { AxiosInstance, AxiosError } from 'axios'
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000' // Next.js dev server
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000'
 
 class ApiClient {
   private client: AxiosInstance
@@ -120,11 +120,24 @@ class ApiClient {
   }
 
   async createOrder(data: {
-    items: Array<{ productId: string; quantity: number }>
+    items: Array<{ productId: string; quantity: number; price: number }>
     shippingAddress: any
+    billingAddress?: any
     paymentMethod: string
+    subtotal: number
+    tax: number
+    shipping: number
+    total: number
   }) {
     const response = await this.client.post('/api/orders', data)
+    return response.data
+  }
+
+  async initiatePesapalPayment(orderId: string) {
+    const response = await this.client.post('/api/pesapal/submit-order', {
+      orderId,
+      currency: 'KES',
+    })
     return response.data
   }
 

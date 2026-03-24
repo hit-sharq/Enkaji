@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  TextInput, 
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
   StyleSheet,
   Alert,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
@@ -19,9 +19,9 @@ import { Colors } from '@/lib/theme'
 export default function CheckoutScreen() {
   const router = useRouter()
   const { items, totalItems, totalPrice, clearCart } = useCartStore()
-  
+
   const [isProcessing, setIsProcessing] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState('pesapal')
+  const [paymentMethod, setPaymentMethod] = useState('PESAPAL')
   const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
     lastName: '',
@@ -33,51 +33,99 @@ export default function CheckoutScreen() {
     phone: '',
   })
 
+  const shippingCost = totalPrice > 5000 ? 0 : 500
+  const tax = Math.round(totalPrice * 0.16)
+  const orderTotal = totalPrice + shippingCost + tax
+
   const handlePlaceOrder = async () => {
-    if (!shippingAddress.firstName || !shippingAddress.lastName || 
-        !shippingAddress.address1 || !shippingAddress.city || 
-        !shippingAddress.phone) {
+    if (
+      !shippingAddress.firstName ||
+      !shippingAddress.lastName ||
+      !shippingAddress.address1 ||
+      !shippingAddress.city ||
+      !shippingAddress.phone
+    ) {
       Alert.alert('Error', 'Please fill in all required shipping details')
+      return
+    }
+
+    if (items.length === 0) {
+      Alert.alert('Error', 'Your cart is empty')
       return
     }
 
     setIsProcessing(true)
     try {
-      const orderData = {
-        items: items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
-        shippingAddress,
-        paymentMethod,
+      const formattedShipping = {
+        firstName: shippingAddress.firstName,
+        lastName: shippingAddress.lastName,
+        address: shippingAddress.address1,
+        address2: shippingAddress.address2,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        zipCode: shippingAddress.postalCode,
+        phone: shippingAddress.phone,
       }
 
-      const response = await api.createOrder(orderData)
-      
-      if (response.success) {
+      const orderData = {
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.product?.price || 0,
+        })),
+        shippingAddress: formattedShipping,
+        billingAddress: formattedShipping,
+        paymentMethod,
+        subtotal: totalPrice,
+        tax,
+        shipping: shippingCost,
+        total: orderTotal,
+      }
+
+      const orderResponse = await api.createOrder(orderData)
+
+      if (!orderResponse.success || !orderResponse.data?.id) {
+        throw new Error(orderResponse.error || 'Failed to create order')
+      }
+
+      const orderId = orderResponse.data.id
+
+      if (paymentMethod === 'PESAPAL') {
+        const pesapalResponse = await api.initiatePesapalPayment(orderId)
+
+        if (pesapalResponse.redirect_url || pesapalResponse.data?.redirect_url) {
+          const redirectUrl =
+            pesapalResponse.redirect_url || pesapalResponse.data?.redirect_url
+          clearCart()
+          router.replace({
+            pathname: '/payment-webview',
+            params: { url: redirectUrl, orderId },
+          })
+        } else {
+          clearCart()
+          Alert.alert(
+            'Order Placed!',
+            'Your order has been placed. Our team will contact you for payment.',
+            [{ text: 'View Orders', onPress: () => router.replace('/(tabs)/orders') }]
+          )
+        }
+      } else {
         clearCart()
         Alert.alert(
           'Order Placed!',
-          'Your order has been placed successfully. You will receive a confirmation shortly.',
-          [
-            {
-              text: 'View Orders',
-              onPress: () => router.replace('/orders'),
-            },
-          ]
+          `Your order has been placed. Please transfer KES ${orderTotal.toLocaleString()} to our bank account.\n\nOrder #${orderResponse.data?.orderNumber || orderId}`,
+          [{ text: 'View Orders', onPress: () => router.replace('/(tabs)/orders') }]
         )
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Order error:', error)
-      Alert.alert('Error', 'Failed to place order. Please try again.')
+      const message =
+        error?.response?.data?.error || error.message || 'Failed to place order. Please try again.'
+      Alert.alert('Error', message)
     } finally {
       setIsProcessing(false)
     }
   }
-
-  const shippingCost = totalPrice > 5000 ? 0 : 500
-  const tax = Math.round(totalPrice * 0.16)
-  const orderTotal = totalPrice + shippingCost + tax
 
   return (
     <View style={styles.container}>
@@ -96,7 +144,7 @@ export default function CheckoutScreen() {
         <View style={styles.progressContainer}>
           <View style={styles.progressStep}>
             <View style={[styles.progressCircle, styles.progressCircleActive]}>
-              <Feather name="check" size={14} color={Colors.text.white} />
+              <Feather name="check" size={14} color={Colors.primary} />
             </View>
             <Text style={[styles.progressText, styles.progressTextActive]}>Shipping</Text>
           </View>
@@ -105,7 +153,7 @@ export default function CheckoutScreen() {
           </View>
           <View style={styles.progressStep}>
             <View style={[styles.progressCircle, styles.progressCircleActive]}>
-              <Feather name="check" size={14} color={Colors.text.white} />
+              <Feather name="check" size={14} color={Colors.primary} />
             </View>
             <Text style={[styles.progressText, styles.progressTextActive]}>Payment</Text>
           </View>
@@ -114,7 +162,7 @@ export default function CheckoutScreen() {
           </View>
           <View style={styles.progressStep}>
             <View style={styles.progressCircle}>
-              <Feather name="check" size={14} color={Colors.text.white} />
+              <Feather name="circle" size={10} color="rgba(255,255,255,0.6)" />
             </View>
             <Text style={styles.progressText}>Confirm</Text>
           </View>
@@ -126,14 +174,16 @@ export default function CheckoutScreen() {
             <Feather name="map-pin" size={20} color={Colors.primary} />
             <Text style={styles.sectionTitle}>Shipping Address</Text>
           </View>
-          
+
           <View style={styles.row}>
             <View style={styles.halfInput}>
               <Text style={styles.label}>First Name *</Text>
               <TextInput
                 style={styles.input}
                 value={shippingAddress.firstName}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, firstName: text})}
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, firstName: text })
+                }
                 placeholder="John"
                 placeholderTextColor={Colors.text.muted}
               />
@@ -143,7 +193,9 @@ export default function CheckoutScreen() {
               <TextInput
                 style={styles.input}
                 value={shippingAddress.lastName}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, lastName: text})}
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, lastName: text })
+                }
                 placeholder="Doe"
                 placeholderTextColor={Colors.text.muted}
               />
@@ -155,7 +207,9 @@ export default function CheckoutScreen() {
             <TextInput
               style={styles.input}
               value={shippingAddress.address1}
-              onChangeText={(text) => setShippingAddress({...shippingAddress, address1: text})}
+              onChangeText={(text) =>
+                setShippingAddress({ ...shippingAddress, address1: text })
+              }
               placeholder="Street address"
               placeholderTextColor={Colors.text.muted}
             />
@@ -166,7 +220,9 @@ export default function CheckoutScreen() {
             <TextInput
               style={styles.input}
               value={shippingAddress.address2}
-              onChangeText={(text) => setShippingAddress({...shippingAddress, address2: text})}
+              onChangeText={(text) =>
+                setShippingAddress({ ...shippingAddress, address2: text })
+              }
               placeholder="Apt 4B"
               placeholderTextColor={Colors.text.muted}
             />
@@ -178,17 +234,21 @@ export default function CheckoutScreen() {
               <TextInput
                 style={styles.input}
                 value={shippingAddress.city}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, city: text})}
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, city: text })
+                }
                 placeholder="Nairobi"
                 placeholderTextColor={Colors.text.muted}
               />
             </View>
             <View style={styles.halfInput}>
-              <Text style={styles.label}>State/County</Text>
+              <Text style={styles.label}>County</Text>
               <TextInput
                 style={styles.input}
                 value={shippingAddress.state}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, state: text})}
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, state: text })
+                }
                 placeholder="Nairobi"
                 placeholderTextColor={Colors.text.muted}
               />
@@ -201,7 +261,9 @@ export default function CheckoutScreen() {
               <TextInput
                 style={styles.input}
                 value={shippingAddress.postalCode}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, postalCode: text})}
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, postalCode: text })
+                }
                 placeholder="00100"
                 placeholderTextColor={Colors.text.muted}
                 keyboardType="numeric"
@@ -212,8 +274,10 @@ export default function CheckoutScreen() {
               <TextInput
                 style={styles.input}
                 value={shippingAddress.phone}
-                onChangeText={(text) => setShippingAddress({...shippingAddress, phone: text})}
-                placeholder="254700000000"
+                onChangeText={(text) =>
+                  setShippingAddress({ ...shippingAddress, phone: text })
+                }
+                placeholder="0700000000"
                 placeholderTextColor={Colors.text.muted}
                 keyboardType="phone-pad"
               />
@@ -227,40 +291,80 @@ export default function CheckoutScreen() {
             <Feather name="credit-card" size={20} color={Colors.primary} />
             <Text style={styles.sectionTitle}>Payment Method</Text>
           </View>
-          
-          <TouchableOpacity 
-            style={[styles.paymentOption, paymentMethod === 'pesapal' && styles.paymentOptionSelected]}
-            onPress={() => setPaymentMethod('pesapal')}
+
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              paymentMethod === 'PESAPAL' && styles.paymentOptionSelected,
+            ]}
+            onPress={() => setPaymentMethod('PESAPAL')}
           >
             <View style={styles.paymentOptionLeft}>
-              <View style={[styles.paymentIconContainer, paymentMethod === 'pesapal' && styles.paymentIconContainerActive]}>
-                <Feather name="smartphone" size={22} color={paymentMethod === 'pesapal' ? Colors.text.white : Colors.text.primary} />
+              <View
+                style={[
+                  styles.paymentIconContainer,
+                  paymentMethod === 'PESAPAL' && styles.paymentIconContainerActive,
+                ]}
+              >
+                <Feather
+                  name="smartphone"
+                  size={22}
+                  color={
+                    paymentMethod === 'PESAPAL' ? Colors.text.white : Colors.text.primary
+                  }
+                />
               </View>
               <View style={styles.paymentOptionText}>
                 <Text style={styles.paymentOptionTitle}>M-Pesa / Card</Text>
                 <Text style={styles.paymentOptionDesc}>Pay securely via Pesapal</Text>
               </View>
             </View>
-            <View style={[styles.radio, paymentMethod === 'pesapal' && styles.radioSelected]}>
-              {paymentMethod === 'pesapal' && <View style={styles.radioInner} />}
+            <View
+              style={[
+                styles.radio,
+                paymentMethod === 'PESAPAL' && styles.radioSelected,
+              ]}
+            >
+              {paymentMethod === 'PESAPAL' && <View style={styles.radioInner} />}
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.paymentOption, paymentMethod === 'bank' && styles.paymentOptionSelected]}
-            onPress={() => setPaymentMethod('bank')}
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              paymentMethod === 'BANK_TRANSFER' && styles.paymentOptionSelected,
+            ]}
+            onPress={() => setPaymentMethod('BANK_TRANSFER')}
           >
             <View style={styles.paymentOptionLeft}>
-              <View style={[styles.paymentIconContainer, paymentMethod === 'bank' && styles.paymentIconContainerActive]}>
-                <Feather name="briefcase" size={22} color={paymentMethod === 'bank' ? Colors.text.white : Colors.text.primary} />
+              <View
+                style={[
+                  styles.paymentIconContainer,
+                  paymentMethod === 'BANK_TRANSFER' && styles.paymentIconContainerActive,
+                ]}
+              >
+                <Feather
+                  name="briefcase"
+                  size={22}
+                  color={
+                    paymentMethod === 'BANK_TRANSFER'
+                      ? Colors.text.white
+                      : Colors.text.primary
+                  }
+                />
               </View>
               <View style={styles.paymentOptionText}>
                 <Text style={styles.paymentOptionTitle}>Bank Transfer</Text>
                 <Text style={styles.paymentOptionDesc}>Pay directly to our bank account</Text>
               </View>
             </View>
-            <View style={[styles.radio, paymentMethod === 'bank' && styles.radioSelected]}>
-              {paymentMethod === 'bank' && <View style={styles.radioInner} />}
+            <View
+              style={[
+                styles.radio,
+                paymentMethod === 'BANK_TRANSFER' && styles.radioSelected,
+              ]}
+            >
+              {paymentMethod === 'BANK_TRANSFER' && <View style={styles.radioInner} />}
             </View>
           </TouchableOpacity>
         </View>
@@ -271,7 +375,7 @@ export default function CheckoutScreen() {
             <Feather name="shopping-bag" size={20} color={Colors.primary} />
             <Text style={styles.sectionTitle}>Order Summary</Text>
           </View>
-          
+
           {items.map((item) => (
             <View key={item.id} style={styles.summaryItem}>
               <Text style={styles.summaryItemName} numberOfLines={1}>
@@ -318,7 +422,7 @@ export default function CheckoutScreen() {
           <Text style={styles.bottomTotalLabel}>Total</Text>
           <Text style={styles.bottomTotalValue}>KES {orderTotal.toLocaleString()}</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.placeOrderButton, isProcessing && styles.placeOrderButtonDisabled]}
           onPress={handlePlaceOrder}
           disabled={isProcessing}
@@ -438,9 +542,11 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 12,
   },
   halfInput: {
-    width: '48%',
+    flex: 1,
+    marginBottom: 14,
   },
   inputGroup: {
     marginBottom: 14,
@@ -624,6 +730,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -637,7 +744,5 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     fontSize: 17,
     fontWeight: '700',
-    marginLeft: 8,
   },
 })
-

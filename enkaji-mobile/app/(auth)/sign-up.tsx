@@ -51,12 +51,15 @@ export default function SignUpScreen() {
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
         router.replace('/(tabs)')
+      } else if (result.status === 'missing_requirements') {
+        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+        router.push({ pathname: '/(auth)/verify-email', params: { email } })
       } else {
-        Alert.alert('Success', 'Please check your email to verify your account')
-        router.replace('/(auth)/sign-in')
+        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+        router.push({ pathname: '/(auth)/verify-email', params: { email } })
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to create account')
+      Alert.alert('Error', error.errors?.[0]?.message || error.message || 'Failed to create account')
     } finally {
       setIsLoading(false)
     }

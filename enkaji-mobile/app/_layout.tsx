@@ -3,22 +3,76 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
+import * as SecureStore from 'expo-secure-store'
 import { View, ActivityIndicator, StyleSheet } from 'react-native'
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
+import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Colors } from '@/lib/theme'
+import { useAuthStore } from '@/lib/store'
+import api from '@/lib/api'
 
-// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync()
 
-// Get Clerk publishable key from environment
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
 
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      const item = await SecureStore.getItemAsync(key)
+      return item
+    } catch (error) {
+      await SecureStore.deleteItemAsync(key)
+      return null
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value)
+    } catch (error) {
+      return
+    }
+  },
+}
+
+function UserSyncComponent() {
+  const { isSignedIn, getToken } = useAuth()
+  const { user: clerkUser } = useUser()
+  const { setUser, logout } = useAuthStore()
+
+  useEffect(() => {
+    if (isSignedIn && clerkUser) {
+      const syncUser = async () => {
+        try {
+          const token = await getToken()
+          if (token) {
+            api.setToken(token)
+          }
+          setUser({
+            id: clerkUser.id,
+            clerkId: clerkUser.id,
+            email: clerkUser.primaryEmailAddress?.emailAddress || '',
+            firstName: clerkUser.firstName || null,
+            lastName: clerkUser.lastName || null,
+            imageUrl: clerkUser.imageUrl || null,
+            role: (clerkUser.publicMetadata?.role as string) || 'BUYER',
+          })
+        } catch (error) {
+          console.error('Error syncing user:', error)
+        }
+      }
+      syncUser()
+    } else if (!isSignedIn) {
+      api.setToken(null)
+      logout()
+    }
+  }, [isSignedIn, clerkUser])
+
+  return null
+}
+
 function RootLayoutContent() {
-  const { isLoaded, isSignedIn } = useAuth()
-  const [fontsLoaded] = useFonts({
-    // Add custom fonts if needed
-  })
+  const { isLoaded } = useAuth()
+  const [fontsLoaded] = useFonts({})
 
   useEffect(() => {
     if (isLoaded && fontsLoaded) {
@@ -37,6 +91,7 @@ function RootLayoutContent() {
   return (
     <>
       <StatusBar style="light" />
+      <UserSyncComponent />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -50,67 +105,66 @@ function RootLayoutContent() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen 
-          name="(auth)" 
-          options={{ 
+        <Stack.Screen
+          name="(auth)"
+          options={{
             headerShown: false,
-            presentation: 'modal'
-          }} 
+            presentation: 'modal',
+          }}
         />
-        <Stack.Screen 
-          name="product/[id]" 
-          options={{ 
+        <Stack.Screen
+          name="product/[id]"
+          options={{
             headerShown: true,
             title: 'Product Details',
-            headerStyle: {
-              backgroundColor: Colors.background,
-            },
+            headerStyle: { backgroundColor: Colors.background },
             headerTintColor: Colors.text.primary,
-          }} 
+          }}
         />
-        <Stack.Screen 
-          name="checkout" 
-          options={{ 
+        <Stack.Screen
+          name="checkout"
+          options={{
             headerShown: true,
             title: 'Checkout',
-            headerStyle: {
-              backgroundColor: Colors.background,
-            },
+            headerStyle: { backgroundColor: Colors.background },
             headerTintColor: Colors.text.primary,
-          }} 
+          }}
         />
-        <Stack.Screen 
-          name="seller/dashboard" 
-          options={{ 
+        <Stack.Screen
+          name="payment-webview"
+          options={{
+            headerShown: true,
+            title: 'Complete Payment',
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.text.white,
+          }}
+        />
+        <Stack.Screen
+          name="seller/dashboard"
+          options={{
             headerShown: true,
             title: 'Seller Dashboard',
-            headerStyle: {
-              backgroundColor: Colors.primary,
-            },
+            headerStyle: { backgroundColor: Colors.primary },
             headerTintColor: Colors.text.white,
-          }} 
+          }}
         />
-        <Stack.Screen 
-          name="seller/products" 
-          options={{ 
+        <Stack.Screen
+          name="seller/products"
+          options={{
             headerShown: true,
             title: 'My Products',
-            headerStyle: {
-              backgroundColor: Colors.primary,
-            },
+            headerStyle: { backgroundColor: Colors.primary },
             headerTintColor: Colors.text.white,
-          }} 
+          }}
         />
-        <Stack.Screen 
-          name="admin/index" 
-          options={{ 
+        <Stack.Screen
+          name="admin/index"
+          options={{
             headerShown: true,
             title: 'Admin Panel',
-            headerStyle: {
-              backgroundColor: Colors.primary,
-            },
+            headerStyle: { backgroundColor: Colors.primary },
             headerTintColor: Colors.text.white,
-          }} 
+          }}
         />
       </Stack>
     </>
@@ -119,7 +173,7 @@ function RootLayoutContent() {
 
 export default function RootLayout() {
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
       <SafeAreaProvider>
         <RootLayoutContent />
       </SafeAreaProvider>
@@ -135,4 +189,3 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundSecondary,
   },
 })
-

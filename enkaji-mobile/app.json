@@ -8,7 +8,7 @@
     "scheme": "enkaji",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/favicon.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,11 +23,10 @@
       },
       "package": "com.enkaji.mobile"
     },
-"web": {
+    "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/favicon.png",
-      "port": 8081
+      "output": "single",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -54,4 +53,3 @@
     }
   }
 }
-
