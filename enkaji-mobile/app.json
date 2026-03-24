@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.enkaji.mobile"
+      "bundleIdentifier": "com.enkaji.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -48,8 +51,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "enkaji-mobile"
+        "projectId": "85373eeb-84ea-4aca-9871-888b06f295d5"
       }
-    }
+    },
+    "owner": "hit-sharq"
   }
 }
