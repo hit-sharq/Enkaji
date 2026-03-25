@@ -16,7 +16,7 @@ export async function GET() {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      throw new AuthenticationError()
+      return NextResponse.json({ items: [], total: 0, itemCount: 0, currency: "KES" })
     }
 
     const cartItems = await prisma.cartItem.findMany({
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      throw new AuthenticationError()
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
     const body = await request.json()
