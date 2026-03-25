@@ -1,29 +1,35 @@
 import { useState } from 'react'
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
-  StatusBar
+  StatusBar,
+  ActivityIndicator,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
-import { useSignIn } from '@clerk/clerk-expo'
+import { useSignIn, useOAuth } from '@clerk/clerk-expo'
+import * as WebBrowser from 'expo-web-browser'
+import * as Linking from 'expo-linking'
 import { Colors } from '@/lib/theme'
+
+WebBrowser.maybeCompleteAuthSession()
 
 export default function SignInScreen() {
   const router = useRouter()
   const { signIn, setActive, isLoaded } = useSignIn()
+  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -36,7 +42,7 @@ export default function SignInScreen() {
     setIsLoading(true)
     try {
       const result = await signIn.create({
-        identifier: email,
+        identifier: email.trim().toLowerCase(),
         password,
       })
 
@@ -47,20 +53,40 @@ export default function SignInScreen() {
         Alert.alert('Error', 'Sign in failed. Please try again.')
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to sign in')
+      const message = error.errors?.[0]?.message || error.message || 'Failed to sign in'
+      Alert.alert('Sign In Failed', message)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true)
+    try {
+      const { createdSessionId, setActive: setActiveSession } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('/(tabs)', { scheme: 'enkaji' }),
+      })
+
+      if (createdSessionId && setActiveSession) {
+        await setActiveSession({ session: createdSessionId })
+        router.replace('/(tabs)')
+      }
+    } catch (error: any) {
+      const message = error.errors?.[0]?.message || error.message || 'Google sign-in failed'
+      Alert.alert('Google Sign-In Failed', message)
+    } finally {
+      setIsGoogleLoading(false)
     }
   }
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView 
+        <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -112,27 +138,27 @@ export default function SignInScreen() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.eyeButton}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Feather 
-                    name={showPassword ? 'eye-off' : 'eye'} 
-                    size={20} 
-                    color={Colors.text.tertiary} 
+                  <Feather
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={20}
+                    color={Colors.text.tertiary}
                   />
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.forgotPassword}
-                onPress={() => Alert.alert('Coming Soon', 'Password reset coming soon!')}
+                onPress={() => router.push('/(auth)/forgot-password')}
               >
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.signInButton, isLoading && styles.signInButtonDisabled]}
+              <TouchableOpacity
+                style={[styles.signInButton, isLoading && styles.buttonDisabled]}
                 onPress={handleSignIn}
                 disabled={isLoading}
               >
@@ -149,14 +175,21 @@ export default function SignInScreen() {
                 <View style={styles.dividerLine} />
               </View>
 
-              <TouchableOpacity 
-                style={styles.googleButton}
-                onPress={() => Alert.alert('Coming Soon', 'Google sign-in coming soon!')}
+              <TouchableOpacity
+                style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
+                onPress={handleGoogleSignIn}
+                disabled={isGoogleLoading}
               >
-                <View style={styles.googleIconContainer}>
-                  <Feather name="chrome" size={20} color={Colors.text.primary} />
-                </View>
-                <Text style={styles.googleButtonText}>Continue with Google</Text>
+                {isGoogleLoading ? (
+                  <ActivityIndicator size="small" color={Colors.text.primary} />
+                ) : (
+                  <>
+                    <View style={styles.googleIconContainer}>
+                      <Feather name="chrome" size={20} color="#4285F4" />
+                    </View>
+                    <Text style={styles.googleButtonText}>Continue with Google</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -173,8 +206,6 @@ export default function SignInScreen() {
   )
 }
 
-import { ActivityIndicator } from 'react-native'
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -186,7 +217,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
-  // Hero Section with Brand Colors
   heroSection: {
     backgroundColor: Colors.primary,
     paddingTop: 60,
@@ -236,7 +266,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '500',
   },
-  // Form Section
   formSection: {
     flex: 1,
     paddingHorizontal: 24,
@@ -304,7 +333,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  signInButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.7,
   },
   signInButtonText: {
@@ -333,10 +362,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.text.white,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: Colors.border,
     paddingVertical: 16,
     borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   googleIconContainer: {
     marginRight: 12,
@@ -361,4 +395,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 })
-
