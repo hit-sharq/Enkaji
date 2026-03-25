@@ -1,30 +1,37 @@
 import { useState } from 'react'
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StatusBar
+  StatusBar,
+  ActivityIndicator,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
-import { useSignUp } from '@clerk/clerk-expo'
+import { useSignUp, useOAuth } from '@clerk/clerk-expo'
+import * as WebBrowser from 'expo-web-browser'
+import * as Linking from 'expo-linking'
 import { Colors } from '@/lib/theme'
+
+WebBrowser.maybeCompleteAuthSession()
 
 export default function SignUpScreen() {
   const router = useRouter()
   const { signUp, setActive, isLoaded } = useSignUp()
+  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   const handleSignUp = async () => {
     if (!firstName || !lastName || !email || !password) {
@@ -42,37 +49,54 @@ export default function SignUpScreen() {
     setIsLoading(true)
     try {
       const result = await signUp.create({
-        firstName,
-        lastName,
-        emailAddress: email,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        emailAddress: email.trim().toLowerCase(),
         password,
       })
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
         router.replace('/(tabs)')
-      } else if (result.status === 'missing_requirements') {
-        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-        router.push({ pathname: '/(auth)/verify-email', params: { email } })
       } else {
         await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-        router.push({ pathname: '/(auth)/verify-email', params: { email } })
+        router.push({ pathname: '/(auth)/verify-email', params: { email: email.trim().toLowerCase() } })
       }
     } catch (error: any) {
-      Alert.alert('Error', error.errors?.[0]?.message || error.message || 'Failed to create account')
+      const message = error.errors?.[0]?.message || error.message || 'Failed to create account'
+      Alert.alert('Sign Up Failed', message)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignUp = async () => {
+    setIsGoogleLoading(true)
+    try {
+      const { createdSessionId, setActive: setActiveSession } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('/(tabs)', { scheme: 'enkaji' }),
+      })
+
+      if (createdSessionId && setActiveSession) {
+        await setActiveSession({ session: createdSessionId })
+        router.replace('/(tabs)')
+      }
+    } catch (error: any) {
+      const message = error.errors?.[0]?.message || error.message || 'Google sign-up failed'
+      Alert.alert('Google Sign-Up Failed', message)
+    } finally {
+      setIsGoogleLoading(false)
     }
   }
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView 
+        <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -153,20 +177,20 @@ export default function SignUpScreen() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.eyeButton}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Feather 
-                    name={showPassword ? 'eye-off' : 'eye'} 
-                    size={20} 
-                    color={Colors.text.tertiary} 
+                  <Feather
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={20}
+                    color={Colors.text.tertiary}
                   />
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity 
-                style={[styles.signUpButton, isLoading && styles.signUpButtonDisabled]}
+              <TouchableOpacity
+                style={[styles.signUpButton, isLoading && styles.buttonDisabled]}
                 onPress={handleSignUp}
                 disabled={isLoading}
               >
@@ -183,14 +207,21 @@ export default function SignUpScreen() {
                 <View style={styles.dividerLine} />
               </View>
 
-              <TouchableOpacity 
-                style={styles.googleButton}
-                onPress={() => Alert.alert('Coming Soon', 'Google sign-up coming soon!')}
+              <TouchableOpacity
+                style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
+                onPress={handleGoogleSignUp}
+                disabled={isGoogleLoading}
               >
-                <View style={styles.googleIconContainer}>
-                  <Feather name="chrome" size={20} color={Colors.text.primary} />
-                </View>
-                <Text style={styles.googleButtonText}>Continue with Google</Text>
+                {isGoogleLoading ? (
+                  <ActivityIndicator size="small" color={Colors.text.primary} />
+                ) : (
+                  <>
+                    <View style={styles.googleIconContainer}>
+                      <Feather name="chrome" size={20} color="#4285F4" />
+                    </View>
+                    <Text style={styles.googleButtonText}>Continue with Google</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -213,8 +244,6 @@ export default function SignUpScreen() {
   )
 }
 
-import { ActivityIndicator } from 'react-native'
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -226,7 +255,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
-  // Hero Section with Brand Colors
   heroSection: {
     backgroundColor: Colors.primary,
     paddingTop: 50,
@@ -276,7 +304,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '500',
   },
-  // Form Section
   formSection: {
     flex: 1,
     paddingHorizontal: 24,
@@ -339,7 +366,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.text.primary,
   },
   eyeButton: {
@@ -357,7 +384,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  signUpButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.7,
   },
   signUpButtonText: {
@@ -386,10 +413,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.text.white,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: Colors.border,
     paddingVertical: 16,
     borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   googleIconContainer: {
     marginRight: 12,
@@ -425,4 +457,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 })
-
