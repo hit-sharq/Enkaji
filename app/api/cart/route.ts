@@ -5,9 +5,7 @@ import { handleApiError, AuthenticationError, ValidationError, NotFoundError } f
 import { z } from "zod"
 
 const addToCartSchema = z.object({
-  productId: z
-    .string()
-    .min(1, "Product ID is required"),
+  productId: z.string().min(1, "Product ID is required"),
   quantity: z.number().int().min(1, "Quantity must be at least 1").max(100, "Maximum quantity is 100"),
 })
 
@@ -34,11 +32,10 @@ export async function GET() {
       },
     })
 
-    // Filter out inactive products
+    // Filter out inactive products and remove them from cart
     const activeCartItems = cartItems.filter((item) => item.product.isActive)
-
-    // Remove inactive products from cart
     const inactiveItems = cartItems.filter((item) => !item.product.isActive)
+    
     if (inactiveItems.length > 0) {
       await prisma.cartItem.deleteMany({
         where: {
@@ -49,7 +46,6 @@ export async function GET() {
       })
     }
 
-    // Fix the total calculation by converting Decimal to number
     const total = activeCartItems.reduce((sum, item) => {
       return sum + Number(item.product.price) * item.quantity
     }, 0)
@@ -84,16 +80,17 @@ export async function POST(request: NextRequest) {
     })
 
     if (!product) {
-      throw new NotFoundError("Product not found")
+      return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
 
     if (!product.isActive) {
-      throw new ValidationError("Product is not available")
+      return NextResponse.json({ error: "Product is not available" }, { status: 400 })
     }
 
-    // Fix stock validation - use inventory instead of stock
     if (product.inventory < quantity) {
-      throw new ValidationError(`Only ${product.inventory} items available in stock`)
+      return NextResponse.json({ 
+        error: `Only ${product.inventory} items available in stock` 
+      }, { status: 400 })
     }
 
     // Check if item already exists in cart
@@ -110,9 +107,10 @@ export async function POST(request: NextRequest) {
     if (existingItem) {
       const newQuantity = existingItem.quantity + quantity
 
-      // Fix existing item stock validation
       if (newQuantity > product.inventory) {
-        throw new ValidationError(`Cannot add more items. Only ${product.inventory} available in stock`)
+        return NextResponse.json({ 
+          error: `Cannot add more. Only ${product.inventory} available` 
+        }, { status: 400 })
       }
 
       cartItem = await prisma.cartItem.update({
@@ -156,3 +154,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
+

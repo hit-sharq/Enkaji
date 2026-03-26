@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 import { handleApiError, ValidationError, NotFoundError } from "@/lib/errors"
  
@@ -13,7 +13,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const { quantity } = await request.json()
 
     if (quantity <= 0) {
-      await db.cartItem.delete({
+      await prisma.cartItem.delete({
         where: {
           id: params.id,
           userId: user.id,
@@ -22,7 +22,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: "Item removed from cart" })
     }
 
-    const currentItem = await db.cartItem.findUnique({
+    const currentItem = await prisma.cartItem.findUnique({
       where: {
         id: params.id,
         userId: user.id,
@@ -44,7 +44,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       throw new ValidationError(`Cannot update to ${quantity} items. Only ${currentItem.product.inventory} available in stock`)
     }
 
-    const cartItem = await db.cartItem.update({
+    const cartItem = await prisma.cartItem.update({
       where: {
         id: params.id,
         userId: user.id,
@@ -69,16 +69,31 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    await db.cartItem.delete({
+    // Support both cartItem.id and productId (for context compatibility)
+    const cartItemId = params.id
+    const cartItem = await prisma.cartItem.findFirst({
       where: {
-        id: params.id,
-        userId: user.id,
+        OR: [
+          { id: cartItemId, userId: user.id },
+          { productId: cartItemId, userId: user.id }
+        ]
       },
     })
 
-    return NextResponse.json({ message: "Item removed from cart" })
+    if (!cartItem) {
+      return NextResponse.json({ error: "Cart item not found" }, { status: 404 })
+    }
+
+    await prisma.cartItem.delete({
+      where: {
+        id: cartItem.id,
+      },
+    })
+
+    return NextResponse.json({ message: "Item removed from cart successfully" })
   } catch (error) {
     console.error("Error removing cart item:", error)
     return NextResponse.json({ error: "Failed to remove cart item" }, { status: 500 })
   }
 }
+

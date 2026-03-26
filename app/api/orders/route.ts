@@ -4,69 +4,42 @@ import { getCurrentUser } from "@/lib/auth"
 
 export async function POST(request: Request) {
   try {
-    console.log("🔍 Attempting to get current user from Clerk...")
     const user = await getCurrentUser()
+    console.log("User ID:", user?.id || "No user")
+
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Please sign in to place an order" }, { status: 401 })
     }
-    console.log("✅ User found from Clerk:", user.id)
 
     const requestData = await request.json()
-    console.log("[v0] Order request data:", JSON.stringify(requestData, null, 2))
+    console.log("Order request:", requestData)
 
-    const { items, shippingAddress, billingAddress, paymentMethod, paymentIntentId, subtotal, tax, shipping, total } =
-      requestData
+    const { items, shippingAddress, subtotal, tax, shipping, total, paymentMethod } = requestData
 
-    console.log(
-      "[v0] Validation check - subtotal:",
-      subtotal,
-      "shipping:",
-      shipping,
-      "total:",
-      total,
-      "items length:",
-      items?.length,
-    )
-
-    if (subtotal === undefined || subtotal === null || shipping === undefined || shipping === null || total === undefined || total === null || !items || items.length === 0) {
-      console.log("[v0] Validation failed - missing required fields")
-      return NextResponse.json(
-        {
-          error: "Missing required order data",
-          details: {
-            subtotal: subtotal !== undefined && subtotal !== null,
-            shipping: shipping !== undefined && shipping !== null,
-            total: total !== undefined && total !== null,
-            items: !!items,
-            itemsLength: items?.length || 0,
-          },
-        },
-        { status: 400 },
-      )
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: "No items in cart" }, { status: 400 })
     }
+
+    if (!total || total <= 0) {
+      return NextResponse.json({ error: "Invalid total" }, { status: 400 })
+    }
+
+    // Generate unique order number
+    const orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`
 
     // Create order
     const order = await prisma.order.create({
       data: {
-        orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        orderNumber,
         userId: user.id,
-        subtotal: Number(subtotal),
-        tax: Number(tax) || 0,
-        shipping: Number(shipping),
+        subtotal: Number(subtotal || 0),
+        tax: Number(tax || 0),
+        shipping: Number(shipping || 0),
         total: Number(total),
         shippingAddress,
-        billingAddress,
         paymentMethod: paymentMethod || "PESAPAL",
-        paymentIntentId,
         status: "PENDING",
         paymentStatus: "PENDING",
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
       },
     })
 
@@ -75,18 +48,28 @@ export async function POST(request: Request) {
       await prisma.orderItem.create({
         data: {
           orderId: order.id,
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-          total: item.price * item.quantity,
+          productId: item.id,  // Note: cart item id === productId in context
+          quantity: Number(item.quantity),
+          price: Number(item.price),
+          total: Number(item.price * item.quantity),
         },
       })
     }
 
+    // Clear user's cart
+    await prisma.cartItem.deleteMany({
+      where: { userId: user.id },
+    })
+
+    console.log(`✅ Order created: ${order.id} for user ${user.id}`)
+
     return NextResponse.json(order)
   } catch (error) {
-    console.error("Error creating order:", error)
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
+    console.error("Order creation error:", error)
+    return NextResponse.json({ 
+      error: "Failed to create order",
+      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined 
+    }, { status: 500 })
   }
 }
 
@@ -99,7 +82,16 @@ export async function GET(request: Request) {
 
     const orders = await prisma.order.findMany({
       where: {
-        OR: [{ userId: user.id }, { items: { some: { product: { sellerId: user.id } } } }],
+        OR: [
+          { userId: user.id },
+          { 
+            items: { 
+              some: { 
+                product: { sellerId: user.id } 
+              } 
+            } 
+          }
+        ],
       },
       include: {
         items: {
@@ -117,3 +109,4 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 })
   }
 }
+
