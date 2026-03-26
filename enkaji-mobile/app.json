@@ -55,6 +55,12 @@
         "projectId": "85373eeb-84ea-4aca-9871-888b06f295d5"
       }
     },
-    "owner": "hit-sharq"
+    "owner": "hit-sharq",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/85373eeb-84ea-4aca-9871-888b06f295d5"
+    }
   }
 }
