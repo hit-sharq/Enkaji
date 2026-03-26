@@ -178,6 +178,12 @@ class ApiClient {
     return response.data
   }
 
+  // User profile (with real role from database)
+  async getUserProfile() {
+    const response = await this.client.get('/api/user/me')
+    return response.data
+  }
+
   // Auth
   async checkAuth() {
     const response = await this.client.get('/api/auth/check-access')
@@ -192,6 +198,24 @@ class ApiClient {
   // Seller
   async getSellerDashboard() {
     const response = await this.client.get('/api/seller/dashboard')
+    return response.data
+  }
+
+  async registerSeller(data: {
+    businessName: string
+    businessType: string
+    location: string
+    phoneNumber: string
+    description?: string
+    website?: string
+    plan?: string
+  }) {
+    const response = await this.client.post('/api/seller/register', data)
+    return response.data
+  }
+
+  async getAdminStats() {
+    const response = await this.client.get('/api/admin/stats')
     return response.data
   }
 

@@ -47,6 +47,7 @@ function UserSyncComponent() {
           if (token) {
             api.setToken(token)
           }
+          // Set basic info from Clerk immediately so UI isn't blank
           setUser({
             id: clerkUser.id,
             clerkId: clerkUser.id,
@@ -56,6 +57,23 @@ function UserSyncComponent() {
             imageUrl: clerkUser.imageUrl || null,
             role: (clerkUser.publicMetadata?.role as string) || 'BUYER',
           })
+          // Then fetch the real role and data from our database
+          try {
+            const dbUser = await api.getUserProfile()
+            if (dbUser && !dbUser.error) {
+              setUser({
+                id: dbUser.id,
+                clerkId: dbUser.clerkId,
+                email: dbUser.email,
+                firstName: dbUser.firstName,
+                lastName: dbUser.lastName,
+                imageUrl: dbUser.imageUrl || clerkUser.imageUrl || null,
+                role: dbUser.role,
+              })
+            }
+          } catch (dbError) {
+            console.warn('Could not fetch DB user profile, using Clerk data:', dbError)
+          }
         } catch (error) {
           console.error('Error syncing user:', error)
         }
