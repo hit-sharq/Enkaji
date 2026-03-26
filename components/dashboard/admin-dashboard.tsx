@@ -181,43 +181,35 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
     }
   }, [activeTab])
 
-  const fetchDashboardData = async () => {
+const fetchDashboardData = async () => {
     try {
       setLoading(true)
 
-      // Fetch users
+      // Single API call for all stats
+      const response = await fetch("/api/admin/stats")
+      const data = await response.json()
+
+      setStats({
+        totalUsers: data.totalUsers || 0,
+        totalSellers: data.activeSellers || 0,
+        totalProducts: data.totalProducts || 0,
+        totalOrders: data.totalOrders || 0,
+        totalRevenue: data.totalRevenue || 0,
+        pendingApprovals: data.pendingApprovals || 0,
+      })
+
+      // Keep fetching other data if needed
       const usersResponse = await fetch("/api/admin/users")
       const usersData = await usersResponse.json()
       setUsers(Array.isArray(usersData.users) ? usersData.users : [])
 
-      // Fetch products
       const productsResponse = await fetch("/api/admin/products")
       const productsData = await productsResponse.json()
       setProducts(Array.isArray(productsData.products) ? productsData.products : [])
 
-      // Fetch orders
       const ordersResponse = await fetch("/api/admin/orders")
       const ordersData = await ordersResponse.json()
       setOrders(Array.isArray(ordersData.orders) ? ordersData.orders : [])
-
-      // Calculate stats
-      const ordersArray = Array.isArray(ordersData.orders) ? ordersData.orders : []
-      const usersArray = Array.isArray(usersData.users) ? usersData.users : []
-      const productsArray = Array.isArray(productsData.products) ? productsData.products : []
-
-      const totalRevenue = ordersArray.reduce((sum: number, order: Order) => sum + order.total, 0)
-      const pendingApprovals = usersArray.filter(
-        (u: User) => u.role === "SELLER" && u.sellerProfile && !u.sellerProfile.isVerified,
-      ).length
-
-      setStats({
-        totalUsers: usersArray.length,
-        totalSellers: usersArray.filter((u: User) => u.role === "SELLER").length,
-        totalProducts: productsArray.length,
-        totalOrders: ordersArray.length,
-        totalRevenue,
-        pendingApprovals,
-      })
     } catch (error) {
       console.error("Error fetching dashboard data:", error)
       toast({

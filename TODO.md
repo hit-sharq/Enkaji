@@ -1,9 +1,9 @@
-# Fix seed.ts TypeScript Errors
+<!-- # Cart Inventory Validation Fix
 
-- [x] Create TODO.md
-- [ ] Understand file contents and errors (read_file, search_files done)
-- [ ] Get plan approval (done)
-- [x] Edit scripts/seed.ts: Remove internal try, restructure main(), preserve outer catch/finally
-- [x] Verify syntax (no TS errors)
-- [x] Test script execution (optional: run tsx scripts/seed.ts)
-- [x] attempt_completion
+## Steps:
+
+- [x] Step 3: Add inventory validation to app/api/cart/[id]/route.ts PUT endpoint
+- [ ] Step 4: Test POST /api/cart with low-inventory product via UI or curl
+- [ ] Step 5: Verify no 500 errors, proper 400 responses with helpful messages
+- [ ] Step 6: Update this TODO.md with completion, then attempt_completion
+ -->

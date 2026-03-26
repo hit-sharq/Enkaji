@@ -74,7 +74,7 @@ model SellerProfile {
   userId        String   @unique
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   businessName  String
-  slug          String?  // URL-friendly slug for seller profile (optional, can be generated)
+  slug          String   @unique // URL-friendly slug for seller profile
   businessType  String
   description   String?
   location     String
@@ -121,6 +121,7 @@ model Product {
   tags          String[]
   specifications Json?
   isActive      Boolean     @default(true)
+  isShopApproved Boolean    @default(false)
   isFeatured    Boolean     @default(false)
   weight        Decimal?
   dimensions    Json?       // {length, width, height}

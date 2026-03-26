@@ -135,7 +135,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                   </a>
                 ) : (
                   <Link
-                    href={`/sellers/${seller.sellerProfile?.slug || seller.id}`}
+                    href={`/sellers/${seller.sellerProfile.slug}`}
                     className="flex items-center text-blue-600 hover:text-blue-800"
                   >
                     <Globe className="w-4 h-4 mr-1" />
@@ -172,10 +172,10 @@ export function SellerGrid({ sellers }: SellerGridProps) {
               {/* Actions */}
               <div className="flex gap-2 pt-2">
                 <Button asChild className="flex-1">
-                  <Link href={`/sellers/${seller.id}`}>View Profile</Link>
+                  <Link href={`/sellers/${seller.sellerProfile.slug}`}>View Profile</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href={`/sellers/${seller.id}#products`}>
+                  <Link href={`/sellers/${seller.sellerProfile.slug}#products`}>
                     <Package className="w-4 h-4" />
                   </Link>
                 </Button>

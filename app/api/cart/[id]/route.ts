@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
-
+import { handleApiError, ValidationError, NotFoundError } from "@/lib/errors"
+ 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const user = await getCurrentUser()
@@ -21,6 +22,28 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: "Item removed from cart" })
     }
 
+    const currentItem = await db.cartItem.findUnique({
+      where: {
+        id: params.id,
+        userId: user.id,
+      },
+      include: {
+        product: {
+          select: {
+            inventory: true,
+          },
+        },
+      },
+    })
+
+    if (!currentItem?.product) {
+      throw new NotFoundError("Cart item or product not found")
+    }
+
+    if (quantity > currentItem.product.inventory) {
+      throw new ValidationError(`Cannot update to ${quantity} items. Only ${currentItem.product.inventory} available in stock`)
+    }
+
     const cartItem = await db.cartItem.update({
       where: {
         id: params.id,
@@ -34,8 +57,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     return NextResponse.json(cartItem)
   } catch (error) {
-    console.error("Error updating cart item:", error)
-    return NextResponse.json({ error: "Failed to update cart item" }, { status: 500 })
+    const { error: errorMessage, statusCode } = handleApiError(error)
+    return NextResponse.json({ error: errorMessage }, { status: statusCode })
   }
 }
 

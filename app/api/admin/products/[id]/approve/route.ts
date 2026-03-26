@@ -16,6 +16,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       where: { id: productId },
       data: {
         isActive: approved,
+        isShopApproved: approved,
         updatedAt: new Date(),
       },
       include: {

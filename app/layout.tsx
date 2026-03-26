@@ -4,7 +4,8 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "sonner"
+import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 import { CartProvider } from "@/components/providers/cart-provider"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
@@ -44,7 +45,10 @@ export default function RootLayout({
               <Header />
               <main className="min-h-screen">{children}</main>
               <Footer />
+
               <Toaster />
+              <ShadcnToaster />
+
             </CartProvider>
           </ThemeProvider>
         </body>

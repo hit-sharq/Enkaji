@@ -20,8 +20,9 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit
 
-    const where: any = {
+const where: any = {
       isActive: true,
+      isShopApproved: true,
     }
 
     if (category) {
@@ -171,7 +172,8 @@ export async function POST(request: NextRequest) {
       data: {
         ...validatedData,
         sellerId: user.id,
-        isActive: false, // Requires admin approval
+        isActive: true, // Auto-visible on seller profile
+        isShopApproved: false, // Requires admin approval for shop
       },
       include: {
         category: true,

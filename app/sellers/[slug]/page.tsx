@@ -1,4 +1,6 @@
 import { WhatsAppButton } from "@/components/ui/whatsapp-button"
+import { AddToCartButton } from "@/components/cart/add-to-cart-button"
+
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,7 +18,7 @@ async function getSellerBySlug(slug: string) {
       user: {
         include: {
           products: {
-            where: { isActive: true },
+where: {},
             include: {
               category: true,
             },
@@ -167,11 +169,17 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
                       </Badge>
                     )}
                     <p className="text-lg font-bold text-orange-600 mb-3">KSh {product.price.toLocaleString()}</p>
-                    <Link href={`/products/${product.id}`}>
-                      <Button size="sm" className="w-full">
-                        View Product
-                      </Button>
-                    </Link>
+                    <div className="space-y-2">
+                      <Link href={`/products/${product.id}`}>
+                        <Button size="sm" className="w-full" variant="outline">
+                          View Product
+                        </Button>
+                      </Link>
+                      <AddToCartButton 
+                        productId={product.id} 
+                        productName={product.name}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               ))}
