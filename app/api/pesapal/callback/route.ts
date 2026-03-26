@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { pesapalService } from "@/lib/pesapal"
 
 // ============================================================================
 // Pesapal Callback/IPN Handler
@@ -127,26 +128,78 @@ export async function POST(request: NextRequest) {
 // ============================================================================
 
 export async function GET(request: NextRequest) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || `https://${request.headers.get("host")}`
+
   try {
     const { searchParams } = new URL(request.url)
     const orderTrackingId = searchParams.get("OrderTrackingId")
     const merchantReference = searchParams.get("OrderMerchantReference")
-    const status = searchParams.get("status")
 
-    console.log("[Callback] Redirect received:", { orderTrackingId, merchantReference, status })
+    console.log("[Callback] Redirect received:", { orderTrackingId, merchantReference })
 
-    if (orderTrackingId && merchantReference) {
-      const redirectUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}/orders/${merchantReference}`)
-      redirectUrl.searchParams.set("payment", "completed")
-      redirectUrl.searchParams.set("tracking_id", orderTrackingId)
-      return NextResponse.redirect(redirectUrl.toString())
+    if (!orderTrackingId || !merchantReference) {
+      return NextResponse.redirect(`${appUrl}/orders?payment=error`)
     }
 
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/orders?payment=error`)
+    // Verify the transaction status directly with PesaPal
+    let paymentStatus: "completed" | "pending" | "failed" = "pending"
+    try {
+      const txStatus = await pesapalService.getTransactionStatus(orderTrackingId)
+      console.log("[Callback] PesaPal transaction status:", txStatus)
+
+      const statusCode = txStatus.payment_status_code
+
+      // Update order in database based on verified status
+      const orderId = merchantReference
+      const order = await prisma.order.findUnique({ where: { id: orderId } })
+
+      if (order) {
+        const orderStatus = mapOrderStatus(statusCode)
+        const orderPaymentStatus = mapOrderPaymentStatus(statusCode)
+
+        await prisma.order.update({
+          where: { id: orderId },
+          data: {
+            status: orderStatus,
+            paymentStatus: orderPaymentStatus,
+          },
+        })
+
+        // Update or create PesaPal payment record
+        const existingPayment = await prisma.pesapalPayment.findFirst({
+          where: { orderId },
+        })
+        const pesapalStatus = mapPesapalStatus(statusCode)
+
+        if (existingPayment) {
+          await prisma.pesapalPayment.update({
+            where: { id: existingPayment.id },
+            data: {
+              pesapalTransactionId: txStatus.order_tracking_id,
+              status: pesapalStatus,
+              paymentStatusDescription: txStatus.payment_status_description,
+              paymentMethod: mapPaymentMethod(txStatus.payment_method),
+            },
+          })
+        }
+      }
+
+      if (statusCode === 1) paymentStatus = "completed"
+      else if (statusCode === 0) paymentStatus = "failed"
+      else paymentStatus = "pending"
+    } catch (verifyError) {
+      console.error("[Callback] Could not verify transaction with PesaPal:", verifyError)
+      // Still redirect to order page — IPN may update it later
+    }
+
+    const redirectUrl = new URL(`${appUrl}/orders/${merchantReference}`)
+    redirectUrl.searchParams.set("payment", paymentStatus)
+    redirectUrl.searchParams.set("tracking_id", orderTrackingId)
+    return NextResponse.redirect(redirectUrl.toString())
 
   } catch (error) {
     console.error("[Callback] Redirect error:", error)
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/orders?payment=error`)
+    return NextResponse.redirect(`${appUrl}/orders?payment=error`)
   }
 }
 

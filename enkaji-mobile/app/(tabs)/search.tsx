@@ -60,9 +60,9 @@ export default function SearchScreen() {
       if (activeSort) queryParams.sortBy = activeSort
 
       const response = await api.getProducts(queryParams)
-      if (response.success && response.data) {
-        setProducts(response.data)
-        setSearchResults(response.data)
+      if (response.products) {
+        setProducts(response.products)
+        setSearchResults(response.products)
       }
     } catch (error) {
       console.error('Error loading products:', error)
@@ -82,8 +82,8 @@ export default function SearchScreen() {
     setHasSearched(true)
     try {
       const response = await api.getProducts({ search: query, limit: '24' })
-      if (response.success && response.data) {
-        setSearchResults(response.data)
+      if (response.products) {
+        setSearchResults(response.products)
       }
     } catch (error) {
       console.error('Search error:', error)

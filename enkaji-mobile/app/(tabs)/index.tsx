@@ -50,8 +50,9 @@ export default function HomeScreen() {
         api.getProducts({ limit: 12 }),
         api.getCategories(),
       ])
-      if (productsRes.success && productsRes.data) setFeaturedProducts(productsRes.data)
-      if (categoriesRes.success && categoriesRes.data) setCategories(categoriesRes.data)
+      if (productsRes.products) setFeaturedProducts(productsRes.products)
+      if (categoriesRes.categories) setCategories(categoriesRes.categories)
+      else if (Array.isArray(categoriesRes)) setCategories(categoriesRes)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {

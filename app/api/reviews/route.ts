@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         title: title || null,
         comment,
         images: images || [],
-        isVerified: false, // Will be verified after moderation
+        isVerified: true, // Auto-verified; flagged reviews can be removed by admin
       },
       include: {
         user: {

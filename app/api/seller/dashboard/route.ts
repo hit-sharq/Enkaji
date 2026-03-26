@@ -55,9 +55,19 @@ export async function GET(request: Request) {
       (order) => order.status === OrderStatus.PENDING
     ).length
 
-    // Calculate revenue
+    // Revenue counts all paid/confirmed orders (not just delivered)
+    const revenueStatuses = [
+      OrderStatus.CONFIRMED,
+      OrderStatus.PROCESSING,
+      OrderStatus.SHIPPED,
+      OrderStatus.DELIVERED,
+    ]
     const totalRevenue = orders
-      .filter((order) => order.status === OrderStatus.DELIVERED)
+      .filter(
+        (order) =>
+          revenueStatuses.includes(order.status) ||
+          order.paymentStatus === "PAID"
+      )
       .reduce((sum, order) => {
         const sellerItems = order.items.filter(
           (item) => item.product.sellerId === user.id

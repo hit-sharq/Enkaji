@@ -18,7 +18,7 @@ async function getSellerBySlug(slug: string) {
       user: {
         include: {
           products: {
-where: {},
+            where: { isActive: true },
             include: {
               category: true,
             },
@@ -168,7 +168,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
                         {product.category.name}
                       </Badge>
                     )}
-                    <p className="text-lg font-bold text-orange-600 mb-3">KSh {product.price.toLocaleString()}</p>
+                    <p className="text-lg font-bold text-orange-600 mb-3">KSh {Number(product.price).toLocaleString()}</p>
                     <div className="space-y-2">
                       <Link href={`/products/${product.id}`}>
                         <Button size="sm" className="w-full" variant="outline">
