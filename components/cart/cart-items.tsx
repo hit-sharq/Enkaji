@@ -27,8 +27,30 @@ export function CartItems() {
     dispatch?.({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
   }
 
-  const removeItem = (id: string) => {
-    dispatch?.({ type: "REMOVE_ITEM", payload: id })
+  const removeItem = async (id: string) => {
+    try {
+      const response = await fetch(`/api/cart/${id}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        // Refetch from server
+        const cartResponse = await fetch('/api/cart')
+        if (cartResponse.ok) {
+          const data = await cartResponse.json()
+          const cartItems = data.items?.map((item: any) => ({
+            id: item.productId,
+            name: item.product?.name || "Unknown Product",
+            price: Number(item.product?.price) || 0,
+            quantity: item.quantity,
+            image: item.product?.images?.[0] || null,
+            weight: item.product?.weight ? Number(item.product.weight) : 0,
+          })) || []
+          dispatch({ type: "LOAD_CART", payload: cartItems })
+        }
+      }
+    } catch (error) {
+      console.error('Error removing item:', error)
+    }
   }
 
   if (items.length === 0) {

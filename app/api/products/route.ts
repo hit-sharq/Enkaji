@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
 
 const where: any = {
       isActive: true,
-      isShopApproved: true,
     }
 
     if (category) {
