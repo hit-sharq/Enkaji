@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -13,11 +13,14 @@ import {
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useCartStore } from '@/lib/store'
+import { useAuth, useUser } from '@clerk/clerk-expo'
 import api from '@/lib/api'
 import { Colors } from '@/lib/theme'
 
 export default function CheckoutScreen() {
   const router = useRouter()
+  const { isSignedIn } = useAuth()
+  const { user: clerkUser } = useUser()
   const { items, totalItems, totalPrice, clearCart } = useCartStore()
 
   const [isProcessing, setIsProcessing] = useState(false)
@@ -32,6 +35,30 @@ export default function CheckoutScreen() {
     postalCode: '',
     phone: '',
   })
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      Alert.alert(
+        'Sign In Required',
+        'Please sign in to place an order.',
+        [
+          { text: 'Cancel', onPress: () => router.back() },
+          { text: 'Sign In', onPress: () => router.replace('/(auth)/sign-in') },
+        ]
+      )
+    }
+  }, [isSignedIn])
+
+  useEffect(() => {
+    if (clerkUser) {
+      setShippingAddress((prev) => ({
+        ...prev,
+        firstName: prev.firstName || clerkUser.firstName || '',
+        lastName: prev.lastName || clerkUser.lastName || '',
+        phone: prev.phone || (clerkUser.phoneNumbers?.[0]?.phoneNumber ?? ''),
+      }))
+    }
+  }, [clerkUser])
 
   const shippingCost = totalPrice > 5000 ? 0 : 500
   const tax = Math.round(totalPrice * 0.16)

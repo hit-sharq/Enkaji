@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useCartStore } from '@/lib/store'
+import { useAuth } from '@clerk/clerk-expo'
 import api from '@/lib/api'
 import { Colors } from '@/lib/theme'
 
@@ -19,6 +20,7 @@ const PLACEHOLDER_IMAGE = 'https://placehold.co/400x400/e5e5e5/666666?text=No+Im
 
 export default function CartScreen() {
   const router = useRouter()
+  const { isSignedIn } = useAuth()
   const { items, totalItems, totalPrice, setItems, removeItem, updateQuantity, clearCart, isLoading, setLoading } = useCartStore()
   const [refreshing, setRefreshing] = useState(false)
 
@@ -75,6 +77,17 @@ export default function CartScreen() {
   const handleCheckout = () => {
     if (items.length === 0) {
       Alert.alert('Empty Cart', 'Add some products to your cart first!')
+      return
+    }
+    if (!isSignedIn) {
+      Alert.alert(
+        'Sign In Required',
+        'You need to sign in before placing an order.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/(auth)/sign-in') },
+        ]
+      )
       return
     }
     router.push('/checkout')
