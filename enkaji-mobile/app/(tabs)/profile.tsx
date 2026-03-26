@@ -47,38 +47,32 @@ export default function ProfileScreen() {
     { 
       icon: 'shopping-bag', 
       label: 'My Orders', 
-      onPress: () => router.push('/orders'),
+      onPress: () => router.push('/(tabs)/orders'),
       show: true 
     },
     { 
       icon: 'heart', 
-      label: 'Favorites', 
-      onPress: () => Alert.alert('Coming Soon', 'Favorites coming soon!'),
+      label: 'Favourites', 
+      onPress: () => router.push('/favorites'),
       show: true 
     },
     { 
       icon: 'map-pin', 
       label: 'Shipping Addresses', 
-      onPress: () => Alert.alert('Coming Soon', 'Address management coming soon!'),
-      show: true 
-    },
-    { 
-      icon: 'credit-card', 
-      label: 'Payment Methods', 
-      onPress: () => Alert.alert('Coming Soon', 'Payment methods coming soon!'),
+      onPress: () => router.push('/shipping-addresses'),
       show: true 
     },
     { 
       icon: 'bell', 
       label: 'Notifications', 
-      onPress: () => Alert.alert('Coming Soon', 'Notifications settings coming soon!'),
+      onPress: () => router.push('/notifications'),
       show: true 
     },
     { 
       icon: 'store', 
       label: 'Become a Seller', 
-      onPress: () => Alert.alert('Coming Soon', 'Seller registration coming soon!'),
-      show: user?.role !== 'SELLER' 
+      onPress: () => router.push('/become-seller'),
+      show: user?.role !== 'SELLER' && user?.role !== 'ADMIN'
     },
     { 
       icon: 'layout', 
@@ -87,15 +81,21 @@ export default function ProfileScreen() {
       show: user?.role === 'SELLER' || user?.role === 'ADMIN'
     },
     { 
+      icon: 'package', 
+      label: 'My Products', 
+      onPress: () => router.push('/seller/products'),
+      show: user?.role === 'SELLER' || user?.role === 'ADMIN'
+    },
+    { 
       icon: 'settings', 
       label: 'Settings', 
-      onPress: () => Alert.alert('Coming Soon', 'Settings coming soon!'),
+      onPress: () => router.push('/settings'),
       show: true 
     },
     { 
       icon: 'help-circle', 
       label: 'Help & Support', 
-      onPress: () => Alert.alert('Coming Soon', 'Help & Support coming soon!'),
+      onPress: () => router.push('/help'),
       show: true 
     },
   ]
@@ -166,7 +166,7 @@ export default function ProfileScreen() {
           <Text style={styles.statLabel}>Orders</Text>
         </TouchableOpacity>
         <View style={styles.statDivider} />
-        <TouchableOpacity style={styles.statItem} onPress={() => Alert.alert('Coming Soon', 'Favorites coming soon!')}>
+        <TouchableOpacity style={styles.statItem} onPress={() => router.push('/favorites')}>
           <View style={styles.statIconContainer}>
             <Feather name="heart" size={20} color={Colors.primary} />
           </View>

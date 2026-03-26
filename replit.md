@@ -35,14 +35,25 @@ Enkaji Trade Kenya is a premier B2B marketplace platform built for the Kenyan ma
 - `public/` — Static assets
 
 ### Mobile App (`enkaji-mobile/`)
-- `app/_layout.tsx` — Root layout with ClerkProvider (tokenCache via SecureStore) + user sync
-- `app/(auth)/` — Auth screens: sign-in, sign-up, verify-email
-- `app/(auth)/_layout.tsx` — Redirects signed-in users away from auth screens
-- `app/(tabs)/` — Tab navigation: Home, Explore, Cart, Orders, Profile
-- `app/product/[id].tsx` — Product detail screen
+- `app/_layout.tsx` — Root layout with ClerkProvider + all stack screen declarations
+- `app/(auth)/` — Auth screens: sign-in, sign-up, verify-email, forgot-password
+- `app/(tabs)/` — Tab navigation: Home, Explore/Search, Cart, Orders, Profile
+- `app/product/[id].tsx` — Product detail with review submission modal
+- `app/orders/[id].tsx` — Order detail with progress tracker and price summary
 - `app/checkout.tsx` — Full checkout flow (shipping, payment selection, order creation)
 - `app/payment-webview.tsx` — WebView for Pesapal payment completion
-- `app/seller/dashboard.tsx` — Seller management screen
+- `app/favorites.tsx` — Saved favourite products
+- `app/notifications.tsx` — Notification feed
+- `app/settings.tsx` — Account settings
+- `app/help.tsx` — Help & Support
+- `app/shipping-addresses.tsx` — Saved shipping addresses
+- `app/become-seller.tsx` — Become a seller info screen (registration done via web)
+- `app/seller/dashboard.tsx` — Seller analytics + quick actions
+- `app/seller/products.tsx` — Seller product list (edit, toggle, delete)
+- `app/seller/products/add.tsx` — Add new product form
+- `app/seller/orders.tsx` — Customer orders with status tabs
+- `app/seller/payouts.tsx` — Payout history + request payout modal
+- `app/admin/index.tsx` — Admin panel
 - `lib/api.ts` — Axios API client (with Bearer token auth)
 - `lib/store.ts` — Zustand stores: auth, cart, products, orders, favorites, UI
 - `lib/theme.ts` — Design tokens and common styles

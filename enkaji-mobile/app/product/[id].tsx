@@ -9,13 +9,18 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native'
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
-import { useCartStore, useFavoritesStore } from '@/lib/store'
+import { useCartStore, useFavoritesStore, useAuthStore } from '@/lib/store'
 import { Product, Review } from '@/types'
 import api from '@/lib/api'
 import { Colors, PLACEHOLDER_IMAGE } from '@/lib/theme'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const { width } = Dimensions.get('window')
 
@@ -30,8 +35,15 @@ export default function ProductDetailScreen() {
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [showFullDesc, setShowFullDesc] = useState(false)
 
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewTitle, setReviewTitle] = useState('')
+  const [reviewComment, setReviewComment] = useState('')
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+
   const { addItem } = useCartStore()
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore()
+  const { user, isAuthenticated } = useAuthStore()
 
   useEffect(() => {
     if (id) loadProduct(id)
@@ -93,6 +105,44 @@ export default function ProductDetailScreen() {
       }
     } catch (error) {
       console.error('Error toggling favorite:', error)
+    }
+  }
+
+  const handleSubmitReview = async () => {
+    if (!product) return
+    if (!isAuthenticated) {
+      Alert.alert('Sign In Required', 'Please sign in to leave a review.', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign In', onPress: () => router.push('/(auth)/sign-in') },
+      ])
+      return
+    }
+    if (!reviewComment.trim()) {
+      Alert.alert('Error', 'Please write a comment for your review.')
+      return
+    }
+    setIsSubmittingReview(true)
+    try {
+      const response = await api.createReview({
+        productId: product.id,
+        rating: reviewRating,
+        title: reviewTitle.trim() || undefined,
+        comment: reviewComment.trim(),
+      })
+      if (response.success) {
+        setShowReviewModal(false)
+        setReviewRating(5)
+        setReviewTitle('')
+        setReviewComment('')
+        Alert.alert('Thank You!', 'Your review has been submitted.')
+        if (id) loadProduct(id)
+      } else {
+        Alert.alert('Error', response.error || 'Failed to submit review.')
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error?.response?.data?.error || 'Failed to submit review. You may have already reviewed this product.')
+    } finally {
+      setIsSubmittingReview(false)
     }
   }
 
@@ -265,16 +315,31 @@ export default function ProductDetailScreen() {
           )}
 
           {/* Reviews */}
-          {reviews.length > 0 && (
-            <View style={styles.section}>
-              <View style={styles.reviewsHeader}>
-                <Text style={styles.sectionTitle}>Reviews</Text>
-                <View style={styles.reviewsRatingSummary}>
-                  <Text style={styles.avgRatingBig}>{product.avgRating?.toFixed(1)}</Text>
-                  <Text style={styles.reviewsCount}>/ 5 · {reviews.length} reviews</Text>
-                </View>
+          <View style={styles.section}>
+            <View style={styles.reviewsHeader}>
+              <Text style={styles.sectionTitle}>Reviews</Text>
+              <TouchableOpacity
+                style={styles.writeReviewBtn}
+                onPress={() => setShowReviewModal(true)}
+              >
+                <Feather name="edit-3" size={14} color={Colors.primary} />
+                <Text style={styles.writeReviewText}>Write Review</Text>
+              </TouchableOpacity>
+            </View>
+            {reviews.length > 0 && (
+              <View style={styles.reviewsRatingSummary}>
+                <Text style={styles.avgRatingBig}>{product.avgRating?.toFixed(1)}</Text>
+                <Text style={styles.reviewsCount}>/ 5 · {reviews.length} review{reviews.length !== 1 ? 's' : ''}</Text>
               </View>
-              {reviews.slice(0, 4).map((review) => (
+            )}
+            {reviews.length === 0 ? (
+              <TouchableOpacity style={styles.noReviewsCard} onPress={() => setShowReviewModal(true)}>
+                <Feather name="star" size={28} color={Colors.border} />
+                <Text style={styles.noReviewsText}>No reviews yet</Text>
+                <Text style={styles.noReviewsSub}>Be the first to review this product</Text>
+              </TouchableOpacity>
+            ) : (
+              reviews.slice(0, 4).map((review) => (
                 <View key={review.id} style={styles.reviewCard}>
                   <View style={styles.reviewTop}>
                     <View style={styles.reviewAvatar}>
@@ -302,9 +367,9 @@ export default function ProductDetailScreen() {
                   {review.title && <Text style={styles.reviewTitle}>{review.title}</Text>}
                   {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
                 </View>
-              ))}
-            </View>
-          )}
+              ))
+            )}
+          </View>
 
           <View style={{ height: 120 }} />
         </ScrollView>
@@ -345,6 +410,77 @@ export default function ProductDetailScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Review Submission Modal */}
+      <Modal visible={showReviewModal} animationType="slide" presentationStyle="pageSheet">
+        <SafeAreaView style={styles.reviewModal}>
+          <View style={styles.reviewModalHeader}>
+            <TouchableOpacity onPress={() => setShowReviewModal(false)}>
+              <Feather name="x" size={24} color={Colors.text.primary} />
+            </TouchableOpacity>
+            <Text style={styles.reviewModalTitle}>Write a Review</Text>
+            <View style={{ width: 24 }} />
+          </View>
+
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={styles.reviewModalContent} showsVerticalScrollIndicator={false}>
+              <Text style={styles.reviewProductName}>{product.name}</Text>
+
+              <Text style={styles.reviewFieldLabel}>Your Rating *</Text>
+              <View style={styles.starSelector}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity key={star} onPress={() => setReviewRating(star)}>
+                    <Feather
+                      name="star"
+                      size={36}
+                      color={star <= reviewRating ? '#EAB308' : Colors.border}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <Text style={styles.ratingLabel}>
+                {reviewRating === 1 ? 'Poor' : reviewRating === 2 ? 'Fair' : reviewRating === 3 ? 'Good' : reviewRating === 4 ? 'Very Good' : 'Excellent'}
+              </Text>
+
+              <Text style={[styles.reviewFieldLabel, { marginTop: 20 }]}>Review Title</Text>
+              <TextInput
+                style={styles.reviewInput}
+                placeholder="Summarise your experience"
+                value={reviewTitle}
+                onChangeText={setReviewTitle}
+                placeholderTextColor={Colors.text.tertiary}
+              />
+
+              <Text style={[styles.reviewFieldLabel, { marginTop: 14 }]}>Comment *</Text>
+              <TextInput
+                style={[styles.reviewInput, styles.reviewTextarea]}
+                placeholder="Tell others about your experience with this product..."
+                value={reviewComment}
+                onChangeText={setReviewComment}
+                multiline
+                numberOfLines={5}
+                placeholderTextColor={Colors.text.tertiary}
+                textAlignVertical="top"
+              />
+
+              <TouchableOpacity
+                style={[styles.reviewSubmitBtn, isSubmittingReview && { opacity: 0.7 }]}
+                onPress={handleSubmitReview}
+                disabled={isSubmittingReview}
+              >
+                {isSubmittingReview ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <>
+                    <Feather name="send" size={16} color="#fff" />
+                    <Text style={styles.reviewSubmitText}>Submit Review</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </Modal>
     </>
   )
 }
@@ -735,5 +871,122 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     fontSize: 16,
     fontWeight: '700',
+  },
+  writeReviewBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.primary + '12',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.primary + '30',
+  },
+  writeReviewText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  noReviewsCard: {
+    backgroundColor: Colors.backgroundSecondary,
+    borderRadius: 12,
+    padding: 28,
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 4,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderStyle: 'dashed',
+  },
+  noReviewsText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: Colors.text.primary,
+  },
+  noReviewsSub: {
+    fontSize: 13,
+    color: Colors.text.tertiary,
+    textAlign: 'center',
+  },
+  reviewModal: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  reviewModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  reviewModalTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: Colors.text.primary,
+  },
+  reviewModalContent: {
+    padding: 20,
+    paddingBottom: 48,
+  },
+  reviewProductName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.text.primary,
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  reviewFieldLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text.secondary,
+    marginBottom: 8,
+  },
+  starSelector: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+  },
+  ratingLabel: {
+    fontSize: 13,
+    color: '#EAB308',
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  reviewInput: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    fontSize: 14,
+    color: Colors.text.primary,
+    backgroundColor: Colors.backgroundSecondary,
+  },
+  reviewTextarea: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
+  reviewSubmitBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 24,
+    gap: 8,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  reviewSubmitText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 })

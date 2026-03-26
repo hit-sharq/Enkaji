@@ -184,6 +184,75 @@ function RootLayoutContent() {
             headerTintColor: Colors.text.white,
           }}
         />
+        <Stack.Screen
+          name="orders/[id]"
+          options={{
+            headerShown: true,
+            title: 'Order Details',
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.text.white,
+          }}
+        />
+        <Stack.Screen
+          name="seller/orders"
+          options={{
+            headerShown: true,
+            title: 'Customer Orders',
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.text.white,
+          }}
+        />
+        <Stack.Screen
+          name="seller/payouts"
+          options={{
+            headerShown: true,
+            title: 'Payouts',
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.text.white,
+          }}
+        />
+        <Stack.Screen
+          name="seller/products/add"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="favorites"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="notifications"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="help"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="shipping-addresses"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="become-seller"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   )
