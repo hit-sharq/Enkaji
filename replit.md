@@ -88,6 +88,34 @@ npx prisma migrate deploy  # Run migrations
 - `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` — Same Clerk app key as web
 - `EXPO_PUBLIC_API_URL` — Web app URL (defaults to http://localhost:5000)
 
+## Lumyn Flow (Delivery System)
+
+### Lumyn Flow Mobile (`lumyn-flow-mobile/`)
+- Role selection (Customer / Driver)
+- Customer: Home, Request Delivery (`/customer/request`), Delivery Tracking (`/customer/[id]`)
+- Driver: Home (available jobs), Active Job (`/driver/active`), Earnings (`/driver/earnings`), Registration/KYC (`/driver/register`)
+- Zustand stores: auth, delivery, driver
+- API client at `lib/api.ts` (axios, Bearer token)
+
+### Lumyn Flow Web (Admin)
+- Admin dashboard at `/admin/lumyn` — KPI cards, driver management (approve/suspend), delivery table
+- Accessible from main `/admin` page via "Lumyn Flow Admin" button
+
+### Lumyn Backend APIs
+- `GET/POST /api/lumyn/deliveries` — Create and list deliveries
+- `GET/POST /api/lumyn/deliveries/[id]` — Get/update delivery (accept, pickup, deliver, cancel)
+- `POST /api/lumyn/deliveries/[id]/rate` — Rate a delivery
+- `GET/POST /api/lumyn/drivers` — Register and get available jobs
+- `GET /api/lumyn/drivers/me` — Get current driver profile + earnings
+- `GET /api/lumyn/admin/stats` — KPIs for admin dashboard
+- `GET /api/lumyn/admin/deliveries` — Paginated delivery list with filters
+- `GET /api/lumyn/admin/drivers` — Paginated driver list with filters
+- `GET/PATCH /api/lumyn/admin/drivers/[id]` — View/approve/suspend individual driver
+
+### Checkout Lumyn Integration
+- "Lumyn Express Delivery" card appears at checkout for Nairobi orders
+- Shows price estimate, ETA, peak hour surcharge info (`components/checkout/lumyn-delivery-option.tsx`)
+
 ## Key Features
 - App download page at `/download` with phone mockup, installation guide, and APK download button
 - B2B/B2C marketplace with product listings, categories, and search
@@ -98,6 +126,7 @@ npx prisma migrate deploy  # Run migrations
 - Reviews, blog, testimonials, RFQ (bulk order requests)
 - Newsletter subscriptions and contact form
 - RBAC: BUYER, SELLER, ARTISAN, ADMIN, MODERATOR, FINANCE_MANAGER, etc.
+- Lumyn Flow delivery system integrated (web admin + mobile app + backend APIs)
 
 ## Deployment
 Configured for Replit Autoscale. Build: `npx prisma generate && next build`. Run: `next start`.

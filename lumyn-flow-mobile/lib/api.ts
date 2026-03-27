@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from 'axios'
 const API_BASE_URL = process.env.EXPO_PUBLIC_LUMYN_API_URL || 'http://localhost:5000'
 
 class LumynApiClient {
-  private client: AxiosInstance
+  public client: AxiosInstance
   private token: string | null = null
 
   constructor() {

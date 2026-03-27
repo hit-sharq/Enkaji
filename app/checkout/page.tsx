@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -6,14 +5,16 @@ import { useEffect } from "react"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
 import { ShippingOptions } from "@/components/checkout/shipping-options"
+import { LumynDeliveryOption } from "@/components/checkout/lumyn-delivery-option"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
+
+const LUMYN_OPTION_ID = 'lumyn-express'
 
 export default function CheckoutPage() {
   const { state } = useCart()
   const router = useRouter()
   
-  // Shipping state
   const [shippingDestination, setShippingDestination] = useState({
     country: "",
     city: "",
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const [selectedShippingId, setSelectedShippingId] = useState<string>("")
   const [shippingCost, setShippingCost] = useState(0)
   const [isCodEnabled, setIsCodEnabled] = useState(false)
+  const [useLumyn, setUseLumyn] = useState(false)
 
   useEffect(() => {
     if (!state.loading && state.items.length === 0) {
@@ -40,12 +42,19 @@ export default function CheckoutPage() {
   }
 
   if (state.items.length === 0) {
-    return null // Will redirect in useEffect
+    return null
   }
 
   const handleShippingSelect = (optionId: string, price: number) => {
+    setUseLumyn(false)
     setSelectedShippingId(optionId)
     setShippingCost(price)
+  }
+
+  const handleLumynSelect = () => {
+    setUseLumyn(true)
+    setSelectedShippingId(LUMYN_OPTION_ID)
+    setShippingCost(150)
   }
 
   const handleDestinationChange = (destination: { country: string; city: string; state?: string }) => {
@@ -54,10 +63,15 @@ export default function CheckoutPage() {
       city: destination.city,
       state: destination.state || "",
     })
-    // Reset shipping selection when destination changes
     setSelectedShippingId("")
     setShippingCost(0)
+    setUseLumyn(false)
   }
+
+  const cartTotal = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const isNairobi = shippingDestination.city.toLowerCase().includes('nairobi') ||
+    shippingDestination.country === 'KE' || shippingDestination.country === 'Kenya' ||
+    !shippingDestination.city
 
   return (
     <div className="min-h-screen">
@@ -66,21 +80,35 @@ export default function CheckoutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <CheckoutForm 
+            <CheckoutForm
               onDestinationChange={handleDestinationChange}
               shippingCost={shippingCost}
             />
-            <ShippingOptions
-              destination={shippingDestination}
-              cartItems={state.items}
-              selectedShippingId={selectedShippingId}
-              onShippingSelect={handleShippingSelect}
-              onCodChange={setIsCodEnabled}
-              isCodEnabled={isCodEnabled}
-            />
+
+            {isNairobi && (
+              <div className="space-y-3">
+                <h2 className="font-semibold text-gray-800">Express Delivery Option</h2>
+                <LumynDeliveryOption
+                  selected={useLumyn}
+                  onSelect={handleLumynSelect}
+                  cartTotal={cartTotal}
+                />
+              </div>
+            )}
+
+            {!useLumyn && (
+              <ShippingOptions
+                destination={shippingDestination}
+                cartItems={state.items}
+                selectedShippingId={selectedShippingId}
+                onShippingSelect={handleShippingSelect}
+                onCodChange={setIsCodEnabled}
+                isCodEnabled={isCodEnabled}
+              />
+            )}
           </div>
-          <OrderSummary 
-            cartItems={state.items} 
+          <OrderSummary
+            cartItems={state.items}
             total={state.total}
             shippingCost={shippingCost}
           />
@@ -89,4 +117,3 @@ export default function CheckoutPage() {
     </div>
   )
 }
-

@@ -6,6 +6,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  allowedDevOrigins: ['*.replit.dev', '*.janeway.replit.dev', '*.repl.co'],
   images: {
     remotePatterns: [
       {

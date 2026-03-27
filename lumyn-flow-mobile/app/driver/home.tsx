@@ -43,7 +43,7 @@ export default function DriverHomeScreen() {
   const handleAcceptJob = async (jobId: string) => {
     try {
       await api.acceptDelivery(jobId)
-      router.push(`/driver/active/${jobId}`)
+      router.push({ pathname: '/driver/active', params: { id: jobId } })
     } catch (error) {
       alert('Failed to accept job. Please try again.')
     }
@@ -86,9 +86,14 @@ export default function DriverHomeScreen() {
             {availableJobs.length} job{availableJobs.length !== 1 ? 's' : ''} nearby
           </Text>
         </View>
-        <TouchableOpacity onPress={() => router.push('/driver/profile')}>
-          <Feather name="user" size={24} color={COLORS.primary} />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/driver/earnings')}>
+            <Feather name="dollar-sign" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/driver/register')}>
+            <Feather name="user-plus" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {isLoading ? (
@@ -116,6 +121,8 @@ export default function DriverHomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
+  headerActions: { flexDirection: 'row', gap: 8 },
+  headerBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.primary + '12', justifyContent: 'center', alignItems: 'center' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
