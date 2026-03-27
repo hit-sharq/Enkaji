@@ -107,14 +107,17 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
         setIsLoading(false)
         return
       } else {
-        throw new Error("Failed to place order")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to place order")
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to place order. Please try again."
       toast({
-        title: "Error",
-        description: "Failed to place order. Please try again.",
+        title: "Order Error",
+        description: errorMessage,
         variant: "destructive",
       })
+      console.error("Order error:", error)
     } finally {
       setIsLoading(false)
     }

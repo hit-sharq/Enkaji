@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       await prisma.orderItem.create({
         data: {
           orderId: order.id,
-          productId: item.id,  // Note: cart item id === productId in context
+          productId: item.productId || item.id,
           quantity: Number(item.quantity),
           price: Number(item.price),
           total: Number(item.price * item.quantity),

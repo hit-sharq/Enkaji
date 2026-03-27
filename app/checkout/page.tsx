@@ -68,6 +68,7 @@ export default function CheckoutPage() {
           <div className="space-y-6">
             <CheckoutForm 
               onDestinationChange={handleDestinationChange}
+              shippingCost={shippingCost}
             />
             <ShippingOptions
               destination={shippingDestination}
