@@ -35,9 +35,10 @@ class LumynApiClient {
     return response.data
   }
 
-  async getDeliveries(role: 'customer' | 'driver', status?: string) {
-    const params = { role }
-    if (status) Object.assign(params, { status })
+  async getDeliveries(role?: 'customer' | 'driver', status?: string) {
+    const params: Record<string, string> = {}
+    if (role) params.role = role
+    if (status) params.status = status
     const response = await this.client.get('/api/lumyn/deliveries', { params })
     return response.data
   }
@@ -82,6 +83,22 @@ class LumynApiClient {
     const response = await this.client.put(`/api/lumyn/drivers/${id}`, data)
     return response.data
   }
+
+  async updateLocation(lat: number, lng: number, isAvailable?: boolean) {
+    const response = await this.client.post('/api/lumyn/drivers/location', { lat, lng, isAvailable })
+    return response.data
+  }
+
+  async submitKyc(data: { idDocumentBase64?: string; licenseDocumentBase64?: string; idNumber?: string; licenseNumber?: string }) {
+    const response = await this.client.post('/api/lumyn/drivers/kyc', data)
+    return response.data
+  }
+
+  async getKycStatus() {
+    const response = await this.client.get('/api/lumyn/drivers/kyc')
+    return response.data
+  }
 }
 
-export default new LumynApiClient()
+export const lumynApi = new LumynApiClient()
+export default lumynApi

@@ -6,6 +6,7 @@ import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
 import { ShippingOptions } from "@/components/checkout/shipping-options"
 import { LumynDeliveryOption } from "@/components/checkout/lumyn-delivery-option"
+import { PromoCode } from "@/components/checkout/promo-code"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
 
@@ -24,6 +25,8 @@ export default function CheckoutPage() {
   const [shippingCost, setShippingCost] = useState(0)
   const [isCodEnabled, setIsCodEnabled] = useState(false)
   const [useLumyn, setUseLumyn] = useState(false)
+  const [appliedCoupon, setAppliedCoupon] = useState<string>("")
+  const [discountAmount, setDiscountAmount] = useState(0)
 
   useEffect(() => {
     if (!state.loading && state.items.length === 0) {
@@ -107,11 +110,22 @@ export default function CheckoutPage() {
               />
             )}
           </div>
-          <OrderSummary
-            cartItems={state.items}
-            total={state.total}
-            shippingCost={shippingCost}
-          />
+          <div className="space-y-4">
+            <PromoCode
+              orderTotal={cartTotal}
+              appliedCode={appliedCoupon}
+              discountAmount={discountAmount}
+              onDiscount={(code, amount) => { setAppliedCoupon(code); setDiscountAmount(amount) }}
+              onRemove={() => { setAppliedCoupon(""); setDiscountAmount(0) }}
+            />
+            <OrderSummary
+              cartItems={state.items}
+              total={state.total}
+              shippingCost={shippingCost}
+              discountAmount={discountAmount}
+              couponCode={appliedCoupon}
+            />
+          </div>
         </div>
       </main>
     </div>

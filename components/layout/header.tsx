@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu, Search, ShoppingCart, Heart, User, Store, Shield, Package, Settings, LogOut, Smartphone } from "lucide-react"
+import { Menu, Search, ShoppingCart, Heart, User, Store, Shield, Package, Settings, LogOut, Smartphone, MessageSquare } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { useRouter } from "next/navigation"
 
@@ -238,6 +238,12 @@ export function Header() {
                     <Link href="/orders" className="flex items-center">
                       <Package className="w-4 h-4 mr-2" />
                       My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/messages" className="flex items-center">
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Messages
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>

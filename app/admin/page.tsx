@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
 import { isUserAdmin } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Truck } from "lucide-react"
+import { ArrowLeft, Truck, Tag, Wallet } from "lucide-react"
 import Link from "next/link"
 import { db } from "@/lib/db"
 
@@ -52,12 +52,26 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Manage users, products, and monitor platform performance</p>
         </div>
-        <Link href="/admin/lumyn">
-          <Button variant="outline" className="gap-2">
-            <Truck className="w-4 h-4" />
-            Lumyn Flow Admin
-          </Button>
-        </Link>
+        <div className="flex gap-2 flex-wrap justify-end">
+          <Link href="/admin/lumyn">
+            <Button variant="outline" className="gap-2">
+              <Truck className="w-4 h-4" />
+              Lumyn Flow
+            </Button>
+          </Link>
+          <Link href="/admin/payouts">
+            <Button variant="outline" className="gap-2">
+              <Wallet className="w-4 h-4" />
+              Payouts
+            </Button>
+          </Link>
+          <Link href="/admin/coupons">
+            <Button variant="outline" className="gap-2">
+              <Tag className="w-4 h-4" />
+              Coupons
+            </Button>
+          </Link>
+        </div>
       </div>
       <AdminDashboard user={currentUser} />
     </div>

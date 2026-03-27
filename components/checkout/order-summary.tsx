@@ -17,13 +17,15 @@ interface OrderSummaryProps {
   }>
   total: number
   shippingCost?: number
+  discountAmount?: number
+  couponCode?: string
 }
 
-export function OrderSummary({ cartItems, total, shippingCost = 0 }: OrderSummaryProps) {
+export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmount = 0, couponCode }: OrderSummaryProps) {
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
   const tax = total * 0.16 // 16% VAT for Kenya
-  const finalTotal = total + shippingCost + tax
+  const finalTotal = Math.max(0, total + shippingCost + tax - discountAmount)
 
   return (
     <Card>
@@ -90,6 +92,13 @@ export function OrderSummary({ cartItems, total, shippingCost = 0 }: OrderSummar
             <span>Tax (16%)</span>
             <span>{formatDualCurrency(tax)}</span>
           </div>
+
+          {discountAmount > 0 && couponCode && (
+            <div className="flex justify-between text-green-600 font-medium">
+              <span>Discount ({couponCode})</span>
+              <span>− {formatDualCurrency(discountAmount)}</span>
+            </div>
+          )}
 
           <Separator />
 
