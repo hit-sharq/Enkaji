@@ -43,17 +43,45 @@ export async function POST(request: Request) {
       },
     })
 
+// Validate products exist
+    console.log('Validating products:', items.map(i => ({productId: i.productId || i.id, quantity: i.quantity})));
+    
+    for (const item of items) {
+      const productId = item.productId || item.id;
+      const product = await prisma.product.findUnique({ 
+        where: { id: productId },
+        select: { id: true, name: true, inventory: true }
+      });
+      
+      if (!product) {
+        console.error(`Product not found: ${productId}`);
+        return NextResponse.json({ 
+          error: `Product not found: ${productId}`,
+          details: 'Check if product exists in database'
+        }, { status: 404 });
+      }
+      
+      if (product.inventory < Number(item.quantity)) {
+        return NextResponse.json({ 
+          error: `Insufficient inventory for ${product.name}`,
+          details: `Available: ${product.inventory}, Requested: ${item.quantity}`
+        }, { status: 400 });
+      }
+      
+      item.productId = productId;
+    }
+
     // Create order items
     for (const item of items) {
       await prisma.orderItem.create({
         data: {
           orderId: order.id,
-          productId: item.productId || item.id,
+          productId: item.productId!,
           quantity: Number(item.quantity),
           price: Number(item.price),
           total: Number(item.price * item.quantity),
         },
-      })
+      });
     }
 
     // Clear user's cart
@@ -65,11 +93,21 @@ export async function POST(request: Request) {
 
     return NextResponse.json(order)
   } catch (error) {
-    console.error("Order creation error:", error)
+    console.error("Order creation FULL ERROR:", {
+      message: error instanceof Error ? error.message : 'Unknown',
+      stack: error instanceof Error ? error.stack : 'No stack',
+      name: error instanceof Error ? error.name : 'Unknown',
+      cause: error instanceof Error ? (error as any).cause : 'No cause'
+    });
+    
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json({ 
-      error: "Failed to create order",
-      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined 
-    }, { status: 500 })
+      error: "Failed to create order: " + errorMessage,
+      details: process.env.NODE_ENV === 'development' ? {
+        message: errorMessage,
+        ...(error instanceof Error && error.stack ? { stack: error.stack } : {})
+      } : undefined 
+    }, { status: 500 });
   }
 }
 
