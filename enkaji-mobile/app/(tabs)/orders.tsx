@@ -95,8 +95,11 @@ export default function OrdersScreen() {
     setLoading(true)
     try {
       const response = await api.getOrders()
-      if (response.success && response.data) {
-        setOrders(response.data)
+      // Orders API returns an array directly
+      if (Array.isArray(response)) {
+        setOrders(response)
+      } else if (response && Array.isArray(response.orders)) {
+        setOrders(response.orders)
       }
     } catch (error) {
       console.error('Error loading orders:', error)

@@ -46,12 +46,13 @@ export default function SellerPayoutsScreen() {
   const loadPayouts = useCallback(async () => {
     try {
       const response = await api.getSellerPayouts()
-      if (response.success && response.data) {
-        setPayouts(response.data.payouts || [])
+      // Payouts API returns { payouts, availableBalance, pendingBalance, totalEarned }
+      if (response && response.payouts) {
+        setPayouts(response.payouts)
         setStats({
-          available: response.data.availableBalance || 0,
-          pending: response.data.pendingBalance || 0,
-          totalEarned: response.data.totalEarned || 0,
+          available: response.availableBalance || 0,
+          pending: response.pendingBalance || 0,
+          totalEarned: response.totalEarned || 0,
         })
       } else if (Array.isArray(response)) {
         setPayouts(response)

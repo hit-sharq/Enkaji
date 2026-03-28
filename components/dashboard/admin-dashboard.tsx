@@ -42,6 +42,21 @@ import {
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { ReviewsManagement } from "@/components/admin/reviews-management"
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts"
 
 interface User {
   id: string
@@ -162,6 +177,42 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
     }
   }>>([])
   const [subscriptionLoading, setSubscriptionLoading] = useState(false)
+
+  // Bulk order management state
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set())
+  const [orderStatusFilter, setOrderStatusFilter] = useState<string>("ALL")
+  const [bulkActionLoading, setBulkActionLoading] = useState(false)
+
+  // Compute monthly revenue data for charts from orders
+  const monthlyRevenueData = (() => {
+    const now = new Date()
+    const months: { month: string; revenue: number; orders: number }[] = []
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      months.push({
+        month: d.toLocaleString("default", { month: "short" }),
+        revenue: 0,
+        orders: 0,
+      })
+    }
+    orders.forEach((order) => {
+      const d = new Date(order.createdAt)
+      const diff = (now.getFullYear() - d.getFullYear()) * 12 + now.getMonth() - d.getMonth()
+      if (diff >= 0 && diff < 6) {
+        months[5 - diff].revenue += order.total || 0
+        months[5 - diff].orders += 1
+      }
+    })
+    return months
+  })()
+
+  const orderStatusData = (() => {
+    const statusMap: Record<string, number> = {}
+    orders.forEach((o) => { statusMap[o.status] = (statusMap[o.status] || 0) + 1 })
+    return Object.entries(statusMap).map(([name, value]) => ({ name, value }))
+  })()
+
+  const PIE_COLORS = ["#16a34a", "#2563eb", "#d97706", "#dc2626", "#7c3aed", "#0891b2"]
 
   useEffect(() => {
     fetchDashboardData()
@@ -372,6 +423,50 @@ const fetchDashboardData = async () => {
         description: error instanceof Error ? error.message : "Failed to update seller verification",
         variant: "destructive",
       })
+    }
+  }
+
+  const handleBulkOrderAction = async (action: string) => {
+    if (selectedOrders.size === 0) return
+    setBulkActionLoading(true)
+    try {
+      const results = await Promise.allSettled(
+        Array.from(selectedOrders).map((orderId) =>
+          fetch("/api/admin/orders", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId, status: action }),
+          })
+        )
+      )
+      const succeeded = results.filter((r) => r.status === "fulfilled").length
+      toast({ title: "Bulk Action", description: `Updated ${succeeded} of ${selectedOrders.size} orders to ${action}` })
+      setSelectedOrders(new Set())
+      // Refresh orders
+      const ordersResponse = await fetch("/api/admin/orders")
+      const ordersData = await ordersResponse.json()
+      setOrders(Array.isArray(ordersData.orders) ? ordersData.orders : [])
+    } catch (error) {
+      toast({ title: "Error", description: "Bulk action failed", variant: "destructive" })
+    } finally {
+      setBulkActionLoading(false)
+    }
+  }
+
+  const toggleOrderSelection = (orderId: string) => {
+    setSelectedOrders((prev) => {
+      const next = new Set(prev)
+      if (next.has(orderId)) next.delete(orderId)
+      else next.add(orderId)
+      return next
+    })
+  }
+
+  const toggleAllOrders = (filtered: typeof orders) => {
+    if (selectedOrders.size === filtered.length) {
+      setSelectedOrders(new Set())
+    } else {
+      setSelectedOrders(new Set(filtered.map((o) => o.id)))
     }
   }
 
@@ -803,69 +898,192 @@ const fetchDashboardData = async () => {
 
         {/* Order Management */}
         <TabsContent value="orders" className="space-y-4">
+          {/* Filters + Bulk Actions Bar */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Select value={orderStatusFilter} onValueChange={setOrderStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Orders</SelectItem>
+                <SelectItem value="PENDING">Pending</SelectItem>
+                <SelectItem value="CONFIRMED">Confirmed</SelectItem>
+                <SelectItem value="PROCESSING">Processing</SelectItem>
+                <SelectItem value="SHIPPED">Shipped</SelectItem>
+                <SelectItem value="DELIVERED">Delivered</SelectItem>
+                <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                <SelectItem value="DISPUTED">Disputed</SelectItem>
+              </SelectContent>
+            </Select>
+            {selectedOrders.size > 0 && (
+              <div className="flex items-center gap-2 ml-auto">
+                <span className="text-sm text-muted-foreground">{selectedOrders.size} selected</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkActionLoading}
+                  onClick={() => handleBulkOrderAction("CONFIRMED")}
+                >
+                  <CheckCircle className="h-4 w-4 mr-1" /> Confirm
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkActionLoading}
+                  onClick={() => handleBulkOrderAction("CANCELLED")}
+                >
+                  <XCircle className="h-4 w-4 mr-1" /> Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkActionLoading}
+                  onClick={() => setSelectedOrders(new Set())}
+                >
+                  Clear
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Disputed Orders Alert */}
+          {orders.filter((o) => o.status === "DISPUTED").length > 0 && (
+            <Card className="border-orange-300 bg-orange-50">
+              <CardContent className="pt-4 pb-4">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-600 shrink-0" />
+                  <div>
+                    <p className="font-medium text-orange-800">
+                      {orders.filter((o) => o.status === "DISPUTED").length} Disputed Order(s) Require Attention
+                    </p>
+                    <p className="text-sm text-orange-600">Use the filter above to view disputed orders and take action.</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="ml-auto border-orange-400 text-orange-700"
+                    onClick={() => setOrderStatusFilter("DISPUTED")}
+                  >
+                    View Disputes
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle>Order Management</CardTitle>
               <CardDescription>Monitor and manage all platform orders</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Buyer</TableHead>
-                    <TableHead>Items</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-mono text-sm">{order.id.slice(0, 8)}...</TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">
-                            {order.buyer.firstName} {order.buyer.lastName}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{order.buyer.email}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {order.items.map((item, index) => (
-                            <div key={index}>
-                              {item.quantity}x {item.product.name}
-                            </div>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>KSh {order.total.toLocaleString()}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            order.status === "DELIVERED"
-                              ? "default"
-                              : order.status === "CANCELLED"
-                                ? "destructive"
-                                : "secondary"
-                          }
-                        >
-                          {order.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {(() => {
+                const filteredOrders = orderStatusFilter === "ALL"
+                  ? orders
+                  : orders.filter((o) => o.status === orderStatusFilter)
+                return (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-10">
+                          <input
+                            type="checkbox"
+                            className="rounded"
+                            checked={filteredOrders.length > 0 && selectedOrders.size === filteredOrders.length}
+                            onChange={() => toggleAllOrders(filteredOrders)}
+                          />
+                        </TableHead>
+                        <TableHead>Order ID</TableHead>
+                        <TableHead>Buyer</TableHead>
+                        <TableHead>Items</TableHead>
+                        <TableHead>Total</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredOrders.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                            No orders found
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredOrders.map((order) => (
+                          <TableRow
+                            key={order.id}
+                            className={order.status === "DISPUTED" ? "bg-orange-50" : ""}
+                          >
+                            <TableCell>
+                              <input
+                                type="checkbox"
+                                className="rounded"
+                                checked={selectedOrders.has(order.id)}
+                                onChange={() => toggleOrderSelection(order.id)}
+                              />
+                            </TableCell>
+                            <TableCell className="font-mono text-sm">{order.id.slice(0, 8)}...</TableCell>
+                            <TableCell>
+                              <div>
+                                <div className="font-medium">
+                                  {order.buyer.firstName} {order.buyer.lastName}
+                                </div>
+                                <div className="text-sm text-muted-foreground">{order.buyer.email}</div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="text-sm">
+                                {order.items.map((item, index) => (
+                                  <div key={index}>
+                                    {item.quantity}x {item.product.name}
+                                  </div>
+                                ))}
+                              </div>
+                            </TableCell>
+                            <TableCell>KSh {order.total.toLocaleString()}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  order.status === "DELIVERED"
+                                    ? "default"
+                                    : order.status === "CANCELLED"
+                                      ? "destructive"
+                                      : order.status === "DISPUTED"
+                                        ? "secondary"
+                                        : "secondary"
+                                }
+                                className={order.status === "DISPUTED" ? "bg-orange-100 text-orange-700 border-orange-300" : ""}
+                              >
+                                {order.status === "DISPUTED" && <AlertTriangle className="h-3 w-3 mr-1" />}
+                                {order.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <Button variant="outline" size="sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                {order.status === "DISPUTED" && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-green-600 border-green-300"
+                                    onClick={() => handleBulkOrderAction("CONFIRMED")}
+                                  >
+                                    Resolve
+                                  </Button>
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                )
+              })()}
             </CardContent>
           </Card>
         </TabsContent>
@@ -1249,33 +1467,132 @@ const fetchDashboardData = async () => {
 
         {/* Analytics */}
         <TabsContent value="analytics" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Summary Stats Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Platform Growth</CardTitle>
-                <CardDescription>User registration and activity trends</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Analytics dashboard coming soon</p>
-                </div>
+              <CardContent className="pt-4">
+                <p className="text-xs text-muted-foreground">Total Revenue</p>
+                <p className="text-2xl font-bold text-green-600">KSh {stats.totalRevenue.toLocaleString()}</p>
               </CardContent>
             </Card>
-
             <Card>
-              <CardHeader>
-                <CardTitle>Revenue Analytics</CardTitle>
-                <CardDescription>Sales performance and revenue trends</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Revenue charts coming soon</p>
-                </div>
+              <CardContent className="pt-4">
+                <p className="text-xs text-muted-foreground">Total Orders</p>
+                <p className="text-2xl font-bold">{stats.totalOrders}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <p className="text-xs text-muted-foreground">Active Sellers</p>
+                <p className="text-2xl font-bold">{stats.totalSellers}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <p className="text-xs text-muted-foreground">Total Products</p>
+                <p className="text-2xl font-bold">{stats.totalProducts}</p>
               </CardContent>
             </Card>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Revenue Trend */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Revenue Trend (6 months)
+                </CardTitle>
+                <CardDescription>Monthly revenue in KSh</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={220}>
+                  <AreaChart data={monthlyRevenueData}>
+                    <defs>
+                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip formatter={(value: number) => [`KSh ${value.toLocaleString()}`, "Revenue"]} />
+                    <Area type="monotone" dataKey="revenue" stroke="#16a34a" fill="url(#revenueGradient)" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Orders per month */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  Orders per Month
+                </CardTitle>
+                <CardDescription>Order volume over last 6 months</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={monthlyRevenueData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip formatter={(value: number) => [value, "Orders"]} />
+                    <Bar dataKey="orders" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Order Status Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Order Status Breakdown</CardTitle>
+              <CardDescription>Distribution of all orders by current status</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {orderStatusData.length > 0 ? (
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <ResponsiveContainer width="100%" height={220}>
+                    <PieChart>
+                      <Pie
+                        data={orderStatusData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                        label={({ name, percent }: { name: string; percent: number }) =>
+                          `${name} ${(percent * 100).toFixed(0)}%`
+                        }
+                      >
+                        {orderStatusData.map((_, i) => (
+                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Legend />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="space-y-2 min-w-[180px]">
+                    {orderStatusData.map((item, i) => (
+                      <div key={item.name} className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
+                          <span className="text-sm capitalize">{item.name.toLowerCase().replace(/_/g, " ")}</span>
+                        </div>
+                        <Badge variant="secondary">{item.value}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">No order data yet</div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Settings */}

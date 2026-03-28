@@ -84,7 +84,12 @@ export default function SellerDashboardScreen() {
     setIsLoading(true)
     try {
       const response = await api.getSellerDashboard()
-      if (response.success && response.data) setStats(response.data)
+      // Seller dashboard API returns stats object directly (not wrapped in {success, data})
+      if (response && (response.totalOrders !== undefined || response.revenue !== undefined)) {
+        setStats(response)
+      } else if (response && response.data) {
+        setStats(response.data)
+      }
     } catch (error) {
       console.error('Error loading dashboard:', error)
     } finally {

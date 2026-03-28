@@ -32,8 +32,11 @@ export default function CartScreen() {
     setLoading(true)
     try {
       const response = await api.getCart()
-      if (response.success && response.data) {
-        setItems(response.data)
+      // Cart API returns { items: [...], total, itemCount, currency }
+      if (response && response.items) {
+        setItems(response.items)
+      } else if (Array.isArray(response)) {
+        setItems(response)
       }
     } catch (error) {
       console.error('Error loading cart:', error)

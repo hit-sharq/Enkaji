@@ -37,8 +37,9 @@ export default function SellerOrdersScreen() {
   const loadOrders = useCallback(async () => {
     try {
       const response = await api.getOrders()
-      if (response.success && response.data) setOrders(response.data)
-      else if (Array.isArray(response)) setOrders(response)
+      if (Array.isArray(response)) setOrders(response)
+      else if (response && Array.isArray(response.orders)) setOrders(response.orders)
+      else if (response && response.data && Array.isArray(response.data)) setOrders(response.data)
     } catch (error) {
       console.error('Error loading seller orders:', error)
     } finally {

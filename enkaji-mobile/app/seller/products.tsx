@@ -27,12 +27,11 @@ export default function SellerProductsScreen() {
   const loadProducts = useCallback(async () => {
     try {
       const response = await api.getSellerProducts()
-      if (response.success && response.data) {
-        setProducts(response.data)
+      // Products API returns { products: [...], pagination } or array directly
+      if (response && Array.isArray(response.products)) {
+        setProducts(response.products)
       } else if (Array.isArray(response)) {
         setProducts(response)
-      } else if (response.products) {
-        setProducts(response.products)
       }
     } catch (error) {
       console.error('Error loading seller products:', error)

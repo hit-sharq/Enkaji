@@ -56,10 +56,23 @@ export default function ProductDetailScreen() {
         api.getProduct(productId),
         api.getProductReviews(productId),
       ])
-      if (productRes.success && productRes.data) setProduct(productRes.data)
-      if (reviewsRes.success && reviewsRes.data) setReviews(reviewsRes.data)
+
+      // API returns the raw product object directly (not wrapped in {success, data})
+      if (productRes && productRes.id) {
+        // Map averageRating → avgRating to match our type
+        setProduct({ ...productRes, avgRating: productRes.avgRating ?? productRes.averageRating ?? 0 })
+      }
+
+      // Reviews API returns { reviews: [...], pagination: {...} }
+      if (reviewsRes && Array.isArray(reviewsRes.reviews)) {
+        setReviews(reviewsRes.reviews)
+      } else if (reviewsRes && productRes.reviews) {
+        // Fallback: use reviews embedded in the product response
+        setReviews(productRes.reviews)
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to load product')
+      console.error('Failed to load product:', error)
+      Alert.alert('Error', 'Failed to load product. Check your connection.')
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +82,7 @@ export default function ProductDetailScreen() {
     if (!product) return
     setIsAddingToCart(true)
     try {
-      await api.addToCart(product.id, quantity)
+      // Always add to local cart state first for instant feedback
       addItem({
         id: `temp-${Date.now()}`,
         userId: '',
@@ -79,9 +92,19 @@ export default function ProductDetailScreen() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       })
-      Alert.alert('Added to Cart', `${product.name} (x${quantity}) added successfully!`)
+
+      // Try to sync with server (requires auth) — silently ignore if not signed in
+      if (isAuthenticated) {
+        try {
+          await api.addToCart(product.id, quantity)
+        } catch (syncErr) {
+          console.warn('Cart sync failed (will retry on next load):', syncErr)
+        }
+      }
+
+      Alert.alert('Added to Cart', `${product.name} (x${quantity}) added to your cart!`)
     } catch (error) {
-      Alert.alert('Error', 'Failed to add to cart. Please sign in first.')
+      Alert.alert('Error', 'Failed to add item to cart.')
     } finally {
       setIsAddingToCart(false)
     }

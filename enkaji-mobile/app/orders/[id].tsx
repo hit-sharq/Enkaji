@@ -42,8 +42,9 @@ export default function OrderDetailScreen() {
     setIsLoading(true)
     try {
       const response = await api.getOrder(orderId)
-      if (response.success && response.data) {
-        setOrder(response.data)
+      // Orders API returns the raw order object directly
+      if (response && response.id) {
+        setOrder(response)
       } else {
         Alert.alert('Error', 'Order not found')
         router.back()
