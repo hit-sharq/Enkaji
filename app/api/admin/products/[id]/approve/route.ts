@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { requirePermission } from "@/lib/auth"
 import { handleApiError } from "@/lib/errors"
+import { sendEmail, productApprovalEmail } from "@/lib/email"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -45,8 +46,13 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       },
     })
 
-    // TODO: Send notification to seller
-    // await sendProductApprovalNotification(product.seller.email, approved, product.name, reason)
+    // Send notification to seller
+    const sellerFullName = `${product.seller.firstName} ${product.seller.lastName}`.trim()
+    await sendEmail(
+      product.seller.email,
+      `Product ${approved ? 'Approved' : 'Rejected'} - ${product.name}`,
+      productApprovalEmail(sellerFullName, approved, product.name, reason)
+    )
 
     return NextResponse.json({
       message: approved ? "Product approved successfully" : "Product rejected",

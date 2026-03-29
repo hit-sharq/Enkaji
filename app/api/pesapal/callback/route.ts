@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
+import { sendEmail, paymentCallbackEmail } from "@/lib/email"
+import type { User } from "@prisma/client"
 
 // ============================================================================
 // Pesapal Callback/IPN Handler
@@ -262,12 +264,23 @@ async function handlePaymentState(order: any, paymentStatus: string, statusCode:
   switch (code) {
     case 1: // Payment completed
       console.log(`[Callback] Payment completed for order ${order.id}`)
-      // TODO: Send confirmation email
-      // TODO: Update inventory
+      // Send confirmation email
+      const customerName = `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || 'Customer'
+      await sendEmail(
+        order.user.email,
+        `Payment Successful — Order ${order.orderNumber}`,
+        paymentCallbackEmail(customerName, order.orderNumber, Number(order.total), 'completed', 'Pesapal')
+      )
       break
     case 0: // Payment failed
       console.log(`[Callback] Payment failed for order ${order.id}`)
-      // TODO: Send failure notification
+      // Send failure notification
+      const customerNameFail = `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || 'Customer'
+      await sendEmail(
+        order.user.email,
+        `Payment Failed — Order ${order.orderNumber}`,
+        paymentCallbackEmail(customerNameFail, order.orderNumber, Number(order.total), 'failed', 'Pesapal')
+      )
       break
     case 4: // Payment reversed/refunded
       console.log(`[Callback] Payment reversed for order ${order.id}`)

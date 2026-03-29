@@ -72,3 +72,57 @@ export function driverApprovedEmail(driver: { fullName: string }) {
     <p style="color:#666;font-size:12px">Lumyn Flow — Fast Delivery in Nairobi</p>
   </div>`
 }
+
+export function productApprovalEmail(sellerName: string, approved: boolean, productName: string, reason?: string) {
+  const status = approved ? 'APPROVED' : 'REJECTED'
+  const color = approved ? '#28a745' : '#dc3545'
+  const message = approved 
+    ? 'Your product has been approved and is now live on Enkaji!'
+    : `Your product submission has been reviewed. Reason: ${reason || 'Needs improvements'}`
+
+  return `
+  <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+    <h2 style="color:${color}">Product ${status} — ${productName}</h2>
+    <p>Hi ${sellerName},</p>
+    <p>${message}</p>
+    ${reason && !approved ? `<p><strong>Feedback:</strong> ${reason}</p>` : ''}
+    <p>Login to <a href="https://enkaji.co.ke/sellers">Enkaji Sellers</a> dashboard to view/manage products.</p>
+    <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+  </div>`
+}
+
+export function bulkOrderNotificationEmail(sellerName: string, bulkOrder: { title: string, totalAmount: number, id: string }) {
+  return `
+  <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+    <h2 style="color:#8B2635">New Bulk Order Inquiry #${bulkOrder.id.slice(-6)}</h2>
+    <p>Hi ${sellerName},</p>
+    <p>You have a new bulk order request for <strong>${bulkOrder.title}</strong></p>
+    <p><strong>Total Value:</strong> KES ${bulkOrder.totalAmount.toLocaleString()}</p>
+    <p>Login to your <a href="https://enkaji.co.ke/sellers">seller dashboard</a> to review and respond.</p>
+    <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+  </div>`
+}
+
+export function paymentCallbackEmail(
+  customerName: string, 
+  orderNumber: string, 
+  amount: number, 
+  status: 'completed' | 'failed',
+  method: string
+) {
+  const icon = status === 'completed' ? '✅' : '❌'
+  const title = status === 'completed' ? 'Payment Successful' : 'Payment Failed'
+  const color = status === 'completed' ? '#28a745' : '#dc3545'
+  const message = status === 'completed' 
+    ? `Your payment of KES ${amount.toLocaleString()} was successful!`
+    : `Your payment attempt failed. Please try again or contact support.`
+
+  return `
+  <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+    <h2 style="color:${color}">${icon} ${title} — ${orderNumber}</h2>
+    <p>Hi ${customerName},</p>
+    <p>${message}</p>
+    <p><strong>Method:</strong> ${method}</p>
+    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Secure Payments</p>
+  </div>`
+}

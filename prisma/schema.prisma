@@ -608,7 +608,7 @@ model LumynDelivery {
   pickupPhotoUrl  String?
   deliveryPhotoUrl String?
 
-  linkedOrderId   String?
+  linkedOrderId   String?   @unique
   linkedOrder     Order?   @relation("LumynDelivery", fields: [linkedOrderId], references: [id])
 
   acceptedAt      DateTime?

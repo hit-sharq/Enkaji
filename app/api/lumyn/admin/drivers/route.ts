@@ -1,27 +1,22 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { isUserAdmin } from '@/lib/auth'
+import { prisma } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    await requireAdmin()
 
-    const isAdmin = await isUserAdmin(userId)
-    if (!isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-
-    const { searchParams } = new URL(req.url)
-    const status = searchParams.get('status')
-    const kyc = searchParams.get('kyc')
+    const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '20')
     const skip = (page - 1) * limit
+    const status = searchParams.get('status')
+    const kyc = searchParams.get('kyc')
 
     const where: any = {}
-    if (status && status !== 'all') where.status = status
-    if (kyc === 'verified') where.kycVerified = true
-    if (kyc === 'pending') where.kycVerified = false
+    if (status) where.status = status
+    if (kyc === 'true') where.kycVerified = true
+    if (kyc === 'false') where.kycVerified = false
 
     const [drivers, total] = await Promise.all([
       prisma.lumynDriver.findMany({
@@ -29,20 +24,35 @@ export async function GET(req: NextRequest) {
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: {
-          _count: { select: { deliveries: true } },
-        },
+        include: { user: true },
       }),
       prisma.lumynDriver.count({ where }),
     ])
 
     return NextResponse.json({
-      success: true,
-      data: drivers,
-      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+      drivers,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) }
     })
   } catch (error) {
-    console.error('Lumyn admin drivers error:', error)
-    return NextResponse.json({ error: 'Failed to fetch drivers' }, { status: 500 })
+    console.error(error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    await requireAdmin()
+
+    const body = await request.json()
+    const driver = await prisma.lumynDriver.create({
+      data: body,
+      include: { user: true },
+    })
+
+    return NextResponse.json(driver, { status: 201 })
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: 'Failed to create driver' }, { status: 500 })
+  }
+}
+

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
+import { sendEmail, bulkOrderNotificationEmail } from "@/lib/email"
 
 export async function POST(request: Request) {
   try {
@@ -41,8 +42,17 @@ export async function POST(request: Request) {
       },
     })
 
-    // TODO: Send email notification to seller
-    // await sendBulkOrderNotification(product.seller.email, bulkOrder)
+    // Send email notification to seller
+    const sellerFullName = `${product.seller.firstName} ${product.seller.lastName}`.trim()
+    await sendEmail(
+      product.seller.email,
+      `New Bulk Order Inquiry #${bulkOrder.id.slice(-6)}`,
+      bulkOrderNotificationEmail(sellerFullName, { 
+        title: bulkOrder.title, 
+        totalAmount: Number(bulkOrder.totalAmount || 0), 
+        id: bulkOrder.id 
+      })
+    )
 
     return NextResponse.json({
       success: true,

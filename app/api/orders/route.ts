@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
+import { detectShippingZone, getShippingOptions } from "@/lib/shipping-enhanced"
+import type { ShippingOption } from "@/types/shipping"
 
 export async function POST(request: Request) {
   try {
@@ -14,84 +16,130 @@ export async function POST(request: Request) {
     const requestData = await request.json()
     console.log("Order request:", requestData)
 
-    const { items, shippingAddress, subtotal, tax, shipping, total, paymentMethod } = requestData
+    const { items, shippingAddress, subtotal, tax, paymentMethod, selectedShippingOption } = requestData
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: "No items in cart" }, { status: 400 })
     }
 
-    if (!total || total <= 0) {
-      return NextResponse.json({ error: "Invalid total" }, { status: 400 })
+    // Calculate totals & shipping automatically
+    let totalWeight = 0
+    let lineSubtotal = 0
+
+    // Get product weights for calculation
+    for (const item of items) {
+      const productId = item.productId || item.id
+        const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { weight: true }
+      })
+      const itemWeight = product?.weight ? Number(product.weight) : 1
+      const itemQty = Number(item.quantity)
+      totalWeight += itemWeight * itemQty // Default 1kg
+      lineSubtotal += Number(item.price) * itemQty
     }
+
+    // Detect zone from address
+    const country = shippingAddress?.country || 'Kenya'
+    const city = shippingAddress?.city || ''
+    const zone = detectShippingZone(country, city)
+    console.log('Detected shipping zone:', zone.displayName)
+
+    // Get shipping options & use selected or cheapest
+    const shippingOptions = getShippingOptions(zone, totalWeight, lineSubtotal)
+    const shippingOption = selectedShippingOption 
+      ? (shippingOptions.find((opt: ShippingOption) => opt.id === selectedShippingOption) as ShippingOption)
+      : shippingOptions[0] as ShippingOption // Default cheapest
+
+    if (!shippingOption) {
+      return NextResponse.json({ error: "No shipping available for this destination" }, { status: 400 })
+    }
+
+    const shippingCost = shippingOption.price
+    const taxRate = 0.16 // 16% VAT
+    const taxAmount = lineSubtotal * taxRate
+    const grandTotal = lineSubtotal + taxAmount + shippingCost
 
     // Generate unique order number
     const orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`
 
-    // Create order
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: user.id,
-        subtotal: Number(subtotal || 0),
-        tax: Number(tax || 0),
-        shipping: Number(shipping || 0),
-        total: Number(total),
-        shippingAddress,
-        paymentMethod: paymentMethod || "PESAPAL",
-        status: "PENDING",
-        paymentStatus: "PENDING",
-      },
-    })
+    console.log(`Shipping calc: zone=${zone.id}, weight=${totalWeight.toFixed(1)}kg, cost=KES${shippingCost}, total=KES${grandTotal}`)
 
-// Validate products exist
-    console.log('Validating products:', items.map(i => ({productId: i.productId || i.id, quantity: i.quantity})));
-    
-    for (const item of items) {
-      const productId = item.productId || item.id;
-      const product = await prisma.product.findUnique({ 
-        where: { id: productId },
-        select: { id: true, name: true, inventory: true }
-      });
-      
-      if (!product) {
-        console.error(`Product not found: ${productId}`);
-        return NextResponse.json({ 
-          error: `Product not found: ${productId}`,
-          details: 'Check if product exists in database'
-        }, { status: 404 });
-      }
-      
-      if (product.inventory < Number(item.quantity)) {
-        return NextResponse.json({ 
-          error: `Insufficient inventory for ${product.name}`,
-          details: `Available: ${product.inventory}, Requested: ${item.quantity}`
-        }, { status: 400 });
-      }
-      
-      item.productId = productId;
-    }
-
-    // Create order items
-    for (const item of items) {
-      await prisma.orderItem.create({
+    // Atomic transaction: order + inventory deduction + orderItems
+    const order = await prisma.$transaction(async (tx) => {
+      // Create order first
+      const orderData = await tx.order.create({
         data: {
-          orderId: order.id,
-          productId: item.productId!,
-          quantity: Number(item.quantity),
-          price: Number(item.price),
-          total: Number(item.price * item.quantity),
+          orderNumber,
+          userId: user.id,
+          subtotal: lineSubtotal,
+          tax: taxAmount,
+          shipping: shippingCost,
+          total: grandTotal,
+          shippingAddress,
+          paymentMethod: paymentMethod || "PESAPAL",
+          status: "PENDING",
+          paymentStatus: "PENDING",
         },
       });
-    }
 
-    // Clear user's cart
+      console.log('Validating products:', items.map(i => ({productId: i.productId || i.id, quantity: i.quantity})));
+      
+      // Deduct inventory & create items
+      for (const item of items) {
+        const productId = item.productId || item.id;
+        const quantity = Number(item.quantity);
+        
+        // Double-check inventory
+        const product = await tx.product.findUnique({ 
+          where: { id: productId },
+          select: { inventory: true }
+        });
+        
+        if (!product || product.inventory < quantity) {
+          throw new Error(`Insufficient inventory for product ${productId}: ${product?.inventory || 0} < ${quantity}`);
+        }
+        
+        // Update inventory
+        await tx.product.update({
+          where: { id: productId },
+          data: { inventory: { decrement: quantity } }
+        });
+        
+        // Create order item
+        await tx.orderItem.create({
+          data: {
+            orderId: orderData.id,
+            productId,
+            quantity,
+            price: Number(item.price),
+            total: Number(item.price * quantity),
+          },
+        });
+        
+        item.productId = productId;
+      }
+      
+      return orderData;
+    });
+
+    // Clear cart outside tx (less critical)
     await prisma.cartItem.deleteMany({
       where: { userId: user.id },
     })
 
     console.log(`✅ Order created: ${order.id} for user ${user.id}`)
 
-    return NextResponse.json(order)
+    return NextResponse.json({
+      ...order,
+      shippingDetails: {
+        zone: zone.displayName,
+        option: shippingOption.service.name,
+        provider: shippingOption.provider.name,
+        estimatedWeight: totalWeight.toFixed(1) + 'kg',
+        estimatedDelivery: shippingOption.formattedDelivery
+      }
+    })
   } catch (error) {
     console.error("Order creation FULL ERROR:", {
       message: error instanceof Error ? error.message : 'Unknown',
