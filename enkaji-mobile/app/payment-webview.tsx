@@ -24,15 +24,17 @@ export default function PaymentWebViewScreen() {
     setCanGoBack(navState.canGoBack)
 
     const currentUrl = navState.url || ''
+    const url = new URL(currentUrl)
 
-    if (
-      currentUrl.includes('/api/pesapal/callback') ||
-      currentUrl.includes('/payment/success') ||
-      currentUrl.includes('/payment/complete')
-    ) {
+    // Parse query params for Pesapal callback
+    const params = new URLSearchParams(url.search)
+    const orderTrackingId = params.get('orderTrackingId') || params.get('merchant_reference')
+    const status = params.get('payment_status') || url.pathname.includes('success') ? 'COMPLETED' : 'FAILED'
+
+    if (currentUrl.includes('/api/pesapal/callback') || status === 'COMPLETED' || url.searchParams.has('success')) {
       Alert.alert(
         'Payment Successful!',
-        'Your payment has been processed. Thank you for your order!',
+        `Order payment completed. Check your orders.`,
         [
           {
             text: 'View Orders',
@@ -40,16 +42,13 @@ export default function PaymentWebViewScreen() {
           },
         ]
       )
-    } else if (
-      currentUrl.includes('/payment/failed') ||
-      currentUrl.includes('/payment/cancel')
-    ) {
+    } else if (status === 'FAILED' || url.searchParams.has('cancel')) {
       Alert.alert(
-        'Payment Failed',
-        'Your payment was not completed. Please try again.',
+        'Payment Failed/Cancelled',
+        'Payment not completed. Cart items preserved.',
         [
           { text: 'Try Again', onPress: () => router.back() },
-          { text: 'Cancel', onPress: () => router.replace('/(tabs)/cart') },
+          { text: 'Cart', onPress: () => router.replace('/(tabs)/cart') },
         ]
       )
     }

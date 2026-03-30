@@ -186,8 +186,8 @@ class ApiClient {
 
   // Auth
   async checkAuth() {
-    const response = await this.client.get('/api/auth/check-access')
-    return response.data
+    await this.client.get('/api/auth/check-access')
+    return true
   }
 
   async checkAdmin() {

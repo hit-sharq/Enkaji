@@ -1,133 +1,76 @@
-import { NextResponse } from "next/server"
-import { getCurrentUser } from "@/lib/auth"
-import { prisma } from "@/lib/db"
-import { pesapalService } from "@/lib/pesapal"
+import { NextRequest, NextResponse } from 'next/server'
+import { pesapalService } from '@/lib/pesapal'
+import { getCurrentUser } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
-export const dynamic = 'force-dynamic'
-
-// Type for shipping address
-interface ShippingAddress {
-  address?: string
-  city?: string
-  state?: string
-  zipCode?: string
-}
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const { orderId, currency = "KES", paymentMethod } = await request.json()
+    const { orderId, currency = 'KES' } = await request.json()
 
-    if (!orderId) {
-      return NextResponse.json({ error: "Order ID is required" }, { status: 400 })
-    }
-
-    // Get order details
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        items: {
-          include: {
-            product: true
-          }
-        }
+      where: { id: orderId, userId: user.id },
+      select: { 
+        id: true,
+        orderNumber: true,
+        total: true,
+        status: true,
+        shippingAddress: true 
       }
     })
 
-    if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 })
+    if (!order || order.status !== 'PENDING') {
+      return NextResponse.json({ error: 'Order not found or not pending' }, { status: 404 })
     }
 
-    if (order.userId !== user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
-    }
+    const shippingAddr = typeof order.shippingAddress === 'string' ? JSON.parse(order.shippingAddress) : order.shippingAddress
 
-    // Safely cast shippingAddress from Json
-    const shippingAddress = order.shippingAddress as unknown as ShippingAddress | null
-
-    // Prepare Pesapal order data
-    const pesapalOrderData = {
-      id: orderId,
+    const orderData: any = {
+      id: order.orderNumber,
       currency,
-      amount: order.total.toString(), // Convert Decimal to string as required by Pesapal
-      description: `Payment for order ${order.orderNumber}`,
+      amount: order.total.toString(),
+      description: `Order #${order.orderNumber} - Enkaji Marketplace`,
       callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
-      notification_id: orderId, // We'll use orderId as notification_id for simplicity
+      notification_id: order.id,
       billing_address: {
         email_address: user.email,
-        phone_number: user.phone || "",
-        country_code: "KE", // Default to Kenya, can be made dynamic
-        first_name: user.firstName || "",
-        middle_name: "",
-        last_name: user.lastName || "",
-        line_1: shippingAddress?.address || "",
-        line_2: "",
-        city: shippingAddress?.city || "",
-        state: shippingAddress?.state || "",
-        postal_code: shippingAddress?.zipCode || "",
-        zip_code: shippingAddress?.zipCode || ""
+        phone_number: user.phone || '',
+        country_code: 'KE',
+        first_name: user.firstName || '',
+        last_name: user.lastName || '',
+        line_1: shippingAddr?.address1 || shippingAddr?.line_1 || '',
+        city: shippingAddr?.city || 'Nairobi',
+        state: shippingAddr?.state || 'Nairobi',
+        postal_code: shippingAddr?.postalCode || shippingAddr?.zip_code || '',
       }
     }
 
-    // Submit order to Pesapal
-    const pesapalResponse = await pesapalService.submitOrder(pesapalOrderData)
+    const response = await pesapalService.submitOrder(orderData)
 
-    // Create Pesapal payment record
-    const pesapalPayment = await prisma.pesapalPayment.create({
+    if (response.error) {
+      return NextResponse.json({ error: response.error }, { status: 400 })
+    }
+
+    // Save Pesapal tracking ID
+    await prisma.pesapalPayment.create({
       data: {
-        orderId,
+        orderId: order.id,
         userId: user.id,
-        amount: Number(order.total),
+        amount: order.total,
         currency,
-        pesapalTrackingId: pesapalResponse.order_tracking_id,
-        pesapalMerchantRef: pesapalResponse.merchant_reference,
-        paymentMethod: paymentMethod || "CARD",
-        status: "PENDING"
+        pesapalTrackingId: response.order_tracking_id,
+        pesapalMerchantRef: response.merchant_reference,
+        status: 'PENDING'
       }
     })
 
-    // Update order with payment method
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        paymentMethod: "PESAPAL",
-        paymentStatus: "PENDING"
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      pesapalPayment,
-      redirect_url: pesapalResponse.redirect_url,
-      order_tracking_id: pesapalResponse.order_tracking_id
-    })
-
+    return NextResponse.json(response)
   } catch (error) {
-    console.error("Error submitting Pesapal order:", error)
-    
-    // Safely extract error details
-    let errorMessage = "Unknown error"
-    let errorDetails = null
-    
-    if (error instanceof Error) {
-      errorMessage = error.message
-      // Try to extract nested error info
-      const errorAny = error as any
-      if (errorAny.errors) {
-        errorDetails = JSON.stringify(errorAny.errors)
-      } else if (errorAny.response?.data) {
-        errorDetails = JSON.stringify(errorAny.response.data)
-      }
-    }
-    
-    return NextResponse.json({
-      error: "Failed to submit order to Pesapal",
-      details: errorMessage,
-      ...(errorDetails && { errorDetails })
-    }, { status: 500 })
+    console.error('Pesapal submit error:', error)
+    return NextResponse.json({ error: 'Failed to initiate payment' }, { status: 500 })
   }
 }

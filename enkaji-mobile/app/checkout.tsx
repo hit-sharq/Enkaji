@@ -37,6 +37,20 @@ export default function CheckoutScreen() {
   })
 
   useEffect(() => {
+    const checkServerAuth = async () => {
+      try {
+        await api.checkAuth()
+      } catch {
+        Alert.alert(
+          'Session Expired',
+          'Please sign in again to continue.',
+          [
+            { text: 'Cancel', onPress: () => router.back() },
+            { text: 'Sign In', onPress: () => router.replace('/(auth)/sign-in') },
+          ]
+        )
+      }
+    }
     if (!isSignedIn) {
       Alert.alert(
         'Sign In Required',
@@ -46,6 +60,8 @@ export default function CheckoutScreen() {
           { text: 'Sign In', onPress: () => router.replace('/(auth)/sign-in') },
         ]
       )
+    } else {
+      checkServerAuth()
     }
   }, [isSignedIn])
 

@@ -58,8 +58,10 @@ export default function CartScreen() {
             try {
               await api.removeCartItem(itemId)
               removeItem(itemId)
+              Alert.alert('Success', 'Item removed from cart')
             } catch (error) {
               console.error('Error removing item:', error)
+              Alert.alert('Error', 'Failed to remove item. Please try again.')
             }
           }
         },
