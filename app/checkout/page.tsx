@@ -5,12 +5,9 @@ import { useEffect } from "react"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
 import { ShippingOptions } from "@/components/checkout/shipping-options"
-import { LumynDeliveryOption } from "@/components/checkout/lumyn-delivery-option"
 import { PromoCode } from "@/components/checkout/promo-code"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
-
-const LUMYN_OPTION_ID = 'lumyn-express'
 
 export default function CheckoutPage() {
   const { state } = useCart()
@@ -24,7 +21,6 @@ export default function CheckoutPage() {
   const [selectedShippingId, setSelectedShippingId] = useState<string>("")
   const [shippingCost, setShippingCost] = useState(0)
   const [isCodEnabled, setIsCodEnabled] = useState(false)
-  const [useLumyn, setUseLumyn] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState<string>("")
   const [discountAmount, setDiscountAmount] = useState(0)
 
@@ -49,15 +45,8 @@ export default function CheckoutPage() {
   }
 
   const handleShippingSelect = (optionId: string, price: number) => {
-    setUseLumyn(false)
     setSelectedShippingId(optionId)
     setShippingCost(price)
-  }
-
-  const handleLumynSelect = () => {
-    setUseLumyn(true)
-    setSelectedShippingId(LUMYN_OPTION_ID)
-    setShippingCost(150)
   }
 
   const handleDestinationChange = (destination: { country: string; city: string; state?: string }) => {
@@ -68,13 +57,9 @@ export default function CheckoutPage() {
     })
     setSelectedShippingId("")
     setShippingCost(0)
-    setUseLumyn(false)
   }
 
   const cartTotal = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const isNairobi = shippingDestination.city.toLowerCase().includes('nairobi') ||
-    shippingDestination.country === 'KE' || shippingDestination.country === 'Kenya' ||
-    !shippingDestination.city
 
   return (
     <div className="min-h-screen">
@@ -88,27 +73,14 @@ export default function CheckoutPage() {
               shippingCost={shippingCost}
             />
 
-            {isNairobi && (
-              <div className="space-y-3">
-                <h2 className="font-semibold text-gray-800">Express Delivery Option</h2>
-                <LumynDeliveryOption
-                  selected={useLumyn}
-                  onSelect={handleLumynSelect}
-                  cartTotal={cartTotal}
-                />
-              </div>
-            )}
-
-            {!useLumyn && (
-              <ShippingOptions
-                destination={shippingDestination}
-                cartItems={state.items}
-                selectedShippingId={selectedShippingId}
-                onShippingSelect={handleShippingSelect}
-                onCodChange={setIsCodEnabled}
-                isCodEnabled={isCodEnabled}
-              />
-            )}
+            <ShippingOptions
+              destination={shippingDestination}
+              cartItems={state.items}
+              selectedShippingId={selectedShippingId}
+              onShippingSelect={handleShippingSelect}
+              onCodChange={setIsCodEnabled}
+              isCodEnabled={isCodEnabled}
+            />
           </div>
           <div className="space-y-4">
             <PromoCode
