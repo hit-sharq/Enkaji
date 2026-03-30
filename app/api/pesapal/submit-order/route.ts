@@ -69,8 +69,11 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(response)
-  } catch (error) {
-    console.error('Pesapal submit error:', error)
-    return NextResponse.json({ error: 'Failed to initiate payment' }, { status: 500 })
+
+  }
+  catch (error: any) {
+    console.error('Error submitting Pesapal order:', error)
+    return NextResponse.json({ error: error.message || 'Failed to submit order' }, { status: 500 })
   }
 }
+

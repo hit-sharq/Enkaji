@@ -55,7 +55,7 @@ function UserSyncComponent() {
             firstName: clerkUser.firstName || null,
             lastName: clerkUser.lastName || null,
             imageUrl: clerkUser.imageUrl || null,
-            role: (clerkUser.publicMetadata?.role as string) || 'BUYER',
+role: ((clerkUser.publicMetadata?.role as any) || 'BUYER') as UserRole,
           })
           // Then fetch the real role and data from our database
           try {
@@ -243,12 +243,6 @@ function RootLayoutContent() {
         />
         <Stack.Screen
           name="shipping-addresses"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="become-seller"
           options={{
             headerShown: false,
           }}

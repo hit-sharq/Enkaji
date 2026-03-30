@@ -203,7 +203,49 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
             <Input id="address" name="address" required />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="space-y-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+
+              onClick={async () => {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                        .then(res => res.json())
+                        .then((data: any) => {
+                          const city = data.address?.city || data.address?.town || data.address?.municipality || ''
+                          const state = data.address?.state || data.address?.county || ''
+                          setShippingCity(city)
+                          setShippingState(state)
+                          handleCityChange(city)
+                          handleStateChange(state)
+                          toast({
+                            title: "Location Set",
+                            description: data.display_name,
+                          })
+                        })
+                        .catch(() => toast({
+                          title: "Location Error",
+                          description: "Could not reverse geocode location",
+                          variant: "destructive",
+                        }))
+                    },
+                    () => toast({
+                      title: "Location Error",
+                      description: "Please enable location access",
+                      variant: "destructive",
+                    })
+                  )
+                }
+              }}
+
+              className="w-full"
+            >
+              📍 Use Current Location
+            </Button>
             <div>
               <Label htmlFor="city">City</Label>
               <Input 
@@ -215,6 +257,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
                 onChange={(e) => handleCityChange(e.target.value)}
               />
             </div>
+
             <div>
               <Label htmlFor="state">State/Province</Label>
               <Input 

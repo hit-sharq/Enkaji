@@ -68,24 +68,14 @@ export default function ProfileScreen() {
       onPress: () => router.push('/notifications'),
       show: true 
     },
-    { 
-      icon: 'store', 
-      label: 'Become a Seller', 
-      onPress: () => router.push('/become-seller'),
-      show: user?.role !== 'SELLER' && user?.role !== 'ADMIN'
-    },
+
     { 
       icon: 'layout', 
       label: 'Seller Dashboard', 
       onPress: () => router.push('/seller/dashboard'),
       show: user?.role === 'SELLER' || user?.role === 'ADMIN'
     },
-    { 
-      icon: 'package', 
-      label: 'My Products', 
-      onPress: () => router.push('/seller/products'),
-      show: user?.role === 'SELLER' || user?.role === 'ADMIN'
-    },
+
     { 
       icon: 'settings', 
       label: 'Settings', 

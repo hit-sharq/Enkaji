@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 import {
   View,
   Text,
@@ -10,6 +11,8 @@ import {
   ActivityIndicator,
   StatusBar,
 } from 'react-native'
+import * as Location from 'expo-location'
+
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useCartStore } from '@/lib/store'
@@ -298,6 +301,34 @@ export default function CheckoutScreen() {
             </View>
           </View>
 
+
+          <TouchableOpacity
+            style={[styles.locationButton]}
+            onPress={async () => {
+              try {
+                const { status } = await Location.requestForegroundPermissionsAsync()
+                if (status !== 'granted') {
+                  Alert.alert('Location Permission', 'Location access needed for auto-fill')
+                  return
+                }
+                const { coords } = await Location.getCurrentPositionAsync({})
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`)
+                const data = await response.json()
+                setShippingAddress({
+                  ...shippingAddress,
+                  city: data.address?.city || data.address?.town || data.address?.municipality || '',
+                  state: data.address?.state || data.address?.county || '',
+                  address1: data.display_name,
+                })
+                Alert.alert('Success', 'Address auto-filled from current location')
+              } catch (error) {
+                Alert.alert('Error', 'Could not get current location')
+              }
+            }}
+          >
+            <Feather name="map-pin" size={20} color={Colors.primary} />
+            <Text style={styles.locationButtonText}>Use Current Location</Text>
+          </TouchableOpacity>
           <View style={styles.row}>
             <View style={styles.halfInput}>
               <Text style={styles.label}>Postal Code</Text>
@@ -327,6 +358,7 @@ export default function CheckoutScreen() {
             </View>
           </View>
         </View>
+
 
         {/* Payment Method */}
         <View style={styles.section}>
@@ -484,11 +516,29 @@ export default function CheckoutScreen() {
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.backgroundSecondary,
   },
+  locationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 14,
+  },
+  locationButtonText: {
+    color: Colors.primary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
   scrollView: {
     flex: 1,
   },
