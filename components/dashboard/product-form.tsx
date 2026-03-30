@@ -28,7 +28,7 @@ interface ProductFormProps {
     inventory: number
     images: string[]
     categoryId: string
-    weight: number
+    weight: number | null
   }
 }
 
@@ -94,13 +94,14 @@ export function ProductForm({ categories, product }: ProductFormProps) {
     setIsSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
+    const weightValue = formData.get("weight") as string
     const productData = {
       name: formData.get("name"),
       description: formData.get("description"),
       price: formData.get("price"),
       inventory: formData.get("inventory"),
       categoryId: formData.get("categoryId"),
-      weight: formData.get("weight"),
+      weight: weightValue ? parseFloat(weightValue) : null,
       images,
     }
 

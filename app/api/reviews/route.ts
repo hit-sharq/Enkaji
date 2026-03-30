@@ -1,12 +1,51 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
+import { getCurrentUser } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { auth } from "@clerk/nextjs/server"
+
+// Helper function to get user from Bearer token (for mobile app)
+async function getUserFromBearerToken(request: NextRequest) {
+  try {
+    const authorization = request.headers.get('authorization')
+    if (!authorization?.startsWith('Bearer ')) {
+      return null
+    }
+    
+    const token = authorization.substring(7)
+    // Use Clerk's auth() to verify the token
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return null
+    }
+    
+    // Get user from database
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      include: {
+        sellerProfile: true,
+        artisanProfile: true,
+      },
+    })
+    
+    return user
+  } catch (error) {
+    console.error('Error verifying Bearer token:', error)
+    return null
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth()
+    // Try to get user from Bearer token first (for mobile app)
+    let user = await getUserFromBearerToken(request)
+    
+    // Fall back to getCurrentUser() for web sessions
+    if (!user) {
+      user = await getCurrentUser()
+    }
 
-    if (!userId) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -22,14 +61,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Rating must be between 1 and 5" }, { status: 400 })
     }
 
-    // Check if user exists in our database
-    const user = await db.user.findUnique({
-      where: { clerkId: userId },
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
-    }
+    // User already retrieved from getCurrentUser() above
 
     // Check if product exists
     const product = await db.product.findUnique({

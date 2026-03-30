@@ -89,6 +89,7 @@ export async function getCurrentUser() {
     let user: User | null = null
     let lastError: Error | null = null
 
+    // Fall back to Clerk web session authentication
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         console.log(`🔄 Clerk API attempt ${attempt}/3`)

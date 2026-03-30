@@ -250,13 +250,15 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                   {formatWeight(product.weight)}
                 </div>
               )}
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm text-gray-600">
-                  {product.avgRating ? product.avgRating.toFixed(1) : "0.0"} 
-                  ({product._count.reviews})
-                </span>
-              </div>
+              {product._count.reviews > 0 && (
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm text-gray-600 truncate">
+                    {product.avgRating ? product.avgRating.toFixed(1) : "0.0"} 
+                    ({product._count.reviews})
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
