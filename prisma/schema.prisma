@@ -41,16 +41,15 @@ model User {
   paymentDisputes   PaymentDispute[]
   pesapalPayments   PesapalPayment[]
 
-  // Approval relations
+
   productApprovals  ProductApproval[]
   artisanApprovals  ArtisanApproval[]
   sellerVerifications SellerVerification[]
   reviewModerations ReviewModeration[]
 
-  // Lumyn relations
-  lumynDriver       LumynDriver?        @relation("LumynDriverUser")
-  lumynDeliveries   LumynDelivery[]     @relation("LumynCustomer")
-  lumynRatings      LumynDeliveryRating[] @relation("LumynRatingCustomer")
+
+
+
 
   // Messaging
   sentMessages      Message[]           @relation("MessageSender")
@@ -197,8 +196,7 @@ model Order {
 
   // Relations
   items           OrderItem[]
-  pesapalPayment  PesapalPayment?
-  lumynDelivery   LumynDelivery?  @relation("LumynDelivery")
+
 
   @@map("orders")
 }
@@ -525,9 +523,7 @@ model ReviewModeration {
 // Lumyn Flow Models
 // ============================================================================
 
-model LumynDriver {
-  id                  String   @id @default(cuid())
-  userId              String   @unique
+
   user                User     @relation("LumynDriverUser", fields: [userId], references: [id], onDelete: Cascade)
 
   phoneNumber         String   @unique
