@@ -32,6 +32,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           products: {
             where: {
               isActive: true,
+              isShopApproved: true, // Only count approved products
             },
           },
         },
@@ -47,6 +48,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const where: any = {
     categoryId: category.id,
     isActive: true,
+    isShopApproved: true, // Only show admin-approved products
   }
 
   if (search) {

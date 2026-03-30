@@ -10,9 +10,9 @@ export async function GET(request: NextRequest) {
     // Check if user has minimum moderator role
     await requireMinimumRole("MODERATOR")
 
-    // Get pending products
+    // Get pending products (products not yet approved for shop)
     const pendingProducts = await db.product.findMany({
-      where: { isActive: false },
+      where: { isShopApproved: false },
       include: {
         seller: {
           select: {

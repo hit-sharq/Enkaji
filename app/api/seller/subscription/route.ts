@@ -40,6 +40,7 @@ const SUBSCRIPTION_PLANS = {
   },
 }
 
+// GET - Get current subscription and available plans
 export async function GET() {
   try {
     const user = await getCurrentUser()
@@ -47,19 +48,34 @@ export async function GET() {
       throw new AuthenticationError()
     }
 
+    if (user.role !== "SELLER") {
+      throw new ValidationError("Only sellers can access subscription information")
+    }
+
     const subscription = await prisma.sellerSubscription.findUnique({
-      where: { sellerId: user.id },
+      where: { sellerId: user.id }
     })
 
-    // Get current product count for the seller
+    // Get current product count
     const productCount = await prisma.product.count({
       where: { sellerId: user.id }
+    })
+
+    // Get subscription history
+    const subscriptionHistory = await prisma.pesapalPayment.findMany({
+      where: { 
+        userId: user.id,
+        orderId: { startsWith: "SUB-" }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10
     })
 
     return NextResponse.json({
       subscription,
       plans: SUBSCRIPTION_PLANS,
       productCount,
+      subscriptionHistory
     })
   } catch (error) {
     const { error: errorMessage, statusCode } = handleApiError(error)
@@ -67,6 +83,7 @@ export async function GET() {
   }
 }
 
+// POST - Change subscription plan
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
@@ -75,7 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (user.role !== "SELLER") {
-      throw new ValidationError("Only sellers can subscribe to plans")
+      throw new ValidationError("Only sellers can change subscriptions")
     }
 
     const { planType, phoneNumber } = await request.json()
@@ -86,13 +103,22 @@ export async function POST(request: NextRequest) {
 
     const plan = SUBSCRIPTION_PLANS[planType as keyof typeof SUBSCRIPTION_PLANS]
 
-    // Check if seller already has an active subscription
-    const existingSubscription = await prisma.sellerSubscription.findUnique({
+    // Check current subscription
+    const currentSubscription = await prisma.sellerSubscription.findUnique({
       where: { sellerId: user.id }
     })
 
-    if (existingSubscription?.plan === planType && existingSubscription?.status === "ACTIVE") {
+    if (currentSubscription?.plan === planType && currentSubscription?.status === "ACTIVE") {
       throw new ValidationError("You are already subscribed to this plan")
+    }
+
+    // Check product count against new plan limits
+    const productCount = await prisma.product.count({
+      where: { sellerId: user.id }
+    })
+
+    if (plan.maxProducts !== -1 && productCount > plan.maxProducts) {
+      throw new ValidationError(`You have ${productCount} products, but the ${plan.name} plan only allows ${plan.maxProducts}. Please delete some products before downgrading.`)
     }
 
     if (plan.price === 0) {
@@ -104,6 +130,7 @@ export async function POST(request: NextRequest) {
           status: "ACTIVE",
           currentPeriodStart: new Date(),
           currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+          pesapalSubscriptionId: null
         },
         create: {
           sellerId: user.id,
@@ -115,7 +142,7 @@ export async function POST(request: NextRequest) {
       })
 
       return NextResponse.json({ 
-        message: "Subscription activated successfully",
+        message: "Subscription changed successfully",
         subscription: {
           plan: planType,
           status: "ACTIVE"
@@ -123,7 +150,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Paid plan - create Pesapal payment
+    // Paid plan - require payment
     if (!phoneNumber) {
       throw new ValidationError("Phone number is required for paid plans")
     }
@@ -131,19 +158,19 @@ export async function POST(request: NextRequest) {
     // Normalize phone number
     const normalizedPhone = normalizePhoneNumber(phoneNumber)
 
-    // Create subscription record with PENDING status
+    // Create subscription record with UNPAID status (pending payment)
     const subscription = await prisma.sellerSubscription.upsert({
       where: { sellerId: user.id },
       update: {
         plan: planType as any,
-        status: "PENDING",
+        status: "UNPAID",
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       },
       create: {
         sellerId: user.id,
         plan: planType as any,
-        status: "PENDING",
+        status: "UNPAID",
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
@@ -176,7 +203,7 @@ export async function POST(request: NextRequest) {
     // Create Pesapal payment record
     await prisma.pesapalPayment.create({
       data: {
-        orderId: subscription.id, // Use subscription ID as order ID
+        orderId: subscription.id,
         userId: user.id,
         amount: plan.price,
         currency: "KES",

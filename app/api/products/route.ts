@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
 
 const where: any = {
       isActive: true,
+      isShopApproved: true, // Only show admin-approved products on shop
     }
 
     if (category) {
@@ -148,6 +149,31 @@ export async function POST(request: NextRequest) {
 
     if (user.role !== "SELLER") {
       throw new ValidationError("Only sellers can create products")
+    }
+
+    // Check subscription status and product limits
+    const subscription = await prisma.sellerSubscription.findUnique({
+      where: { sellerId: user.id }
+    })
+
+    if (!subscription || subscription.status !== "ACTIVE") {
+      throw new ValidationError("You need an active subscription to create products. Please subscribe to a plan.")
+    }
+
+    // Check product limits based on plan
+    const productCount = await prisma.product.count({
+      where: { sellerId: user.id }
+    })
+
+    const planLimits: { [key: string]: number } = {
+      BASIC: 20,
+      PREMIUM: -1, // Unlimited
+      ENTERPRISE: -1, // Unlimited
+    }
+
+    const maxProducts = planLimits[subscription.plan] || 20
+    if (maxProducts !== -1 && productCount >= maxProducts) {
+      throw new ValidationError(`You have reached the maximum number of products (${maxProducts}) for your ${subscription.plan} plan. Please upgrade to add more products.`)
     }
 
     const body = await request.json()

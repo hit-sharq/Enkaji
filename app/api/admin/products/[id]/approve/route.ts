@@ -16,8 +16,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const product = await db.product.update({
       where: { id: productId },
       data: {
-        isActive: approved,
-        isShopApproved: approved,
+        isActive: true, // Keep product visible on seller's page
+        isShopApproved: approved, // Only approved products appear on shop
         updatedAt: new Date(),
       },
       include: {

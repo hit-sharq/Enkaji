@@ -114,7 +114,46 @@ export class PesapalService {
     return await response.json()
   }
 
-  // ... rest of methods unchanged
+  async getTransactionStatus(orderTrackingId: string): Promise<any> {
+    const accessToken = await this.getAccessToken()
+    const timestamp = new Date().toISOString()
+
+    const signature = this.generateSignature(
+      'GET',
+      `/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
+      timestamp,
+      this.config.consumerKey
+    )
+
+    console.log('Pesapal get status headers:', { timestamp, signature: signature.substring(0,50) + '...' })
+
+    const response = await fetch(
+      `${this.config.baseUrl}/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'pesapal-request-date': timestamp,
+          'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+
+    console.log('Pesapal get status response:', response.status, response.statusText)
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Get status error full:', errorText)
+      let error = { error: errorText }
+      try {
+        error = JSON.parse(errorText)
+      } catch {}
+      throw new Error(`Pesapal get status failed (${response.status}): ${error.error || errorText.substring(0,200)}`)
+    }
+
+    return await response.json()
+  }
 }
 
 // Singleton

@@ -18,7 +18,10 @@ async function getSellerBySlug(slug: string) {
       user: {
         include: {
           products: {
-            where: { isActive: true },
+            where: { 
+              isActive: true,
+              isShopApproved: true, // Only show admin-approved products to customers
+            },
             include: {
               category: true,
             },
