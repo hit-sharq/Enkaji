@@ -20,7 +20,7 @@ async function getSellerBySlug(slug: string) {
           products: {
             where: { 
               isActive: true,
-              isShopApproved: true, // Only show admin-approved products to customers
+              // Show all active products on seller's page (not just shop-approved ones)
             },
             include: {
               category: true,

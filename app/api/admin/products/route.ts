@@ -129,7 +129,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (typeof featured === "boolean") {
-      updateData.featured = featured
+      updateData.isFeatured = featured
     }
 
     const updatedProduct = await db.product.update({

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
 const where: any = {
       isActive: true,
-      isShopApproved: true, // Only show admin-approved products on shop
+      // Show all active products on shop page (no admin approval required)
     }
 
     if (category) {
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
         ...validatedData,
         sellerId: user.id,
         isActive: true, // Auto-visible on seller profile
-        isShopApproved: false, // Requires admin approval for shop
+        isShopApproved: true, // Auto-approved for shop (no admin approval required)
       },
       include: {
         category: true,
