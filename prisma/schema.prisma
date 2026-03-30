@@ -56,8 +56,10 @@ model User {
   receivedMessages  Message[]           @relation("MessageRecipient")
   messageThreadsAsA MessageThread[]     @relation("ThreadParticipantA")
   messageThreadsAsB MessageThread[]     @relation("ThreadParticipantB")
-
+  
   @@map("users")
+
+
 }
 
 model ArtisanProfile {
@@ -196,9 +198,10 @@ model Order {
 
   // Relations
   items           OrderItem[]
-
+  pesapalPayment   PesapalPayment? 
 
   @@map("orders")
+
 }
 
 model OrderItem {
@@ -520,156 +523,9 @@ model ReviewModeration {
 }
 
 // ============================================================================
-// Lumyn Flow Models
-// ============================================================================
-
-
-  user                User     @relation("LumynDriverUser", fields: [userId], references: [id], onDelete: Cascade)
-
-  phoneNumber         String   @unique
-  fullName            String
-  email               String?
-
-  vehicleType         String   @default("motorcycle")
-  vehicleRegistration String?
-  licenseNumber       String?
-  idNumber            String?
-  profilePhotoUrl     String?
-  idDocumentUrl       String?
-  licenseDocumentUrl  String?
-
-  status              String   @default("inactive")
-  kycVerified         Boolean  @default(false)
-  kycSubmittedAt      DateTime?
-
-  rating              Float    @default(0.0)
-  totalDeliveries     Int      @default(0)
-  totalEarnings       Float    @default(0.0)
-
-  bankAccountName     String?
-  bankAccountNumber   String?
-  bankCode            String?
-
-  isAvailable         Boolean  @default(true)
-  currentLocationLat  Float?
-  currentLocationLng  Float?
-  lastLocationUpdate  DateTime?
-
-  deliveries          LumynDelivery[]
-  earnings            LumynDriverEarning[]
-  ratings             LumynDeliveryRating[]
-
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  @@map("lumyn_drivers")
-  @@index([status])
-  @@index([isAvailable])
-}
-
-model LumynDelivery {
-  id             String   @id @default(cuid())
-  deliveryNumber String   @unique
-
-  customerId     String
-  customer       User     @relation("LumynCustomer", fields: [customerId], references: [id], onDelete: Cascade)
-
-  driverId       String?
-  driver         LumynDriver? @relation(fields: [driverId], references: [id])
-
-  pickupAddress  String
-  pickupLat      Float
-  pickupLng      Float
-  dropoffAddress String
-  dropoffLat     Float
-  dropoffLng     Float
-  distanceKm     Float?
-
-  itemDescription String
-  itemWeightKg    Float?
-  itemValue       Float?
-  specialHandling String?
-
-  baseFee         Float    @default(150.0)
-  distanceFee     Float    @default(0.0)
-  peakSurcharge   Float    @default(0.0)
-  totalAmount     Float
-
-  paymentMethod   String   @default("pesapal")
-  paymentStatus   String   @default("pending")
-  pesapalRef      String?
-
-  status          String   @default("requested")
-
-  pickupPhotoUrl  String?
-  deliveryPhotoUrl String?
-
-  linkedOrderId   String?   @unique
-  linkedOrder     Order?   @relation("LumynDelivery", fields: [linkedOrderId], references: [id])
-
-  acceptedAt      DateTime?
-  pickedUpAt      DateTime?
-  deliveredAt     DateTime?
-  cancelledAt     DateTime?
-
-  ratings         LumynDeliveryRating[]
-  earnings        LumynDriverEarning[]
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@map("lumyn_deliveries")
-  @@index([customerId])
-  @@index([driverId])
-  @@index([status])
-  @@index([linkedOrderId])
-}
-
-model LumynDriverEarning {
-  id         String   @id @default(cuid())
-  driverId   String
-  driver     LumynDriver @relation(fields: [driverId], references: [id], onDelete: Cascade)
-
-  deliveryId String
-  delivery   LumynDelivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
-
-  amount     Float
-  commission Float    @default(0.0)
-  netAmount  Float    @default(0.0)
-  status     String   @default("pending")
-  payoutDate DateTime?
-  pesapalRef String?
-
-  createdAt  DateTime @default(now())
-
-  @@map("lumyn_driver_earnings")
-  @@index([driverId])
-  @@index([status])
-}
-
-model LumynDeliveryRating {
-  id         String   @id @default(cuid())
-  deliveryId String   @unique
-  delivery   LumynDelivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
-
-  customerId String
-  customer   User     @relation("LumynRatingCustomer", fields: [customerId], references: [id])
-
-  driverId   String
-  driver     LumynDriver @relation(fields: [driverId], references: [id], onDelete: Cascade)
-
-  rating     Int
-  comment    String?
-
-  createdAt  DateTime @default(now())
-
-  @@map("lumyn_delivery_ratings")
-  @@index([driverId])
-}
-
-// ============================================================================
 // Coupon / Promo Code Models
 // ============================================================================
+
 
 model Coupon {
   id              String   @id @default(cuid())
