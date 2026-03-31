@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     console.log(`[Callback] Order ${orderId} updated: orderStatus=${orderStatus}, paymentStatus=${paymentStatus}`)
 
     // Handle payment states
-    await handlePaymentState(order, paymentStatus, statusCode)
+    await handlePaymentState(order, paymentStatus, statusCode, merchantReference)
 
     return NextResponse.json({ 
       success: true, 
@@ -261,12 +261,19 @@ function mapPaymentMethod(method: string): "CARD" | "MPESA" | "AIRTEL_MONEY" | "
 }
 
 // Handle different payment states
-async function handlePaymentState(order: any, paymentStatus: string, statusCode: number | string): Promise<void> {
+async function handlePaymentState(order: any, paymentStatus: string, statusCode: number | string, merchantReference?: string): Promise<void> {
   const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
 
   switch (code) {
     case 1: // Payment completed
       console.log(`[Callback] Payment completed for order ${order.id}`)
+      
+      // If order doesn't exist yet, create it now (new flow)
+      if (!order.id && merchantReference) {
+        console.log(`[Callback] Creating new order for payment reference: ${merchantReference}`)
+        await createOrderFromPayment(merchantReference)
+      }
+      
       // Send confirmation email
       const customerName = `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || 'Customer'
       await sendEmail(
@@ -290,6 +297,27 @@ async function handlePaymentState(order: any, paymentStatus: string, statusCode:
       break
     default:
       console.log(`[Callback] Payment pending (status ${code}) for order ${order.id}`)
+  }
+}
+
+// Create order from successful payment
+async function createOrderFromPayment(paymentReference: string): Promise<void> {
+  try {
+    // In a real implementation, you would retrieve checkout data from cache/database
+    // For now, we'll log that this should be implemented
+    console.log(`[Callback] TODO: Create order for payment reference: ${paymentReference}`)
+    console.log(`[Callback] This should retrieve checkout data and create the order`)
+    
+    // The flow would be:
+    // 1. Retrieve checkout data using paymentReference
+    // 2. Validate inventory again
+    // 3. Create order with status CONFIRMED
+    // 4. Create order items
+    // 5. Deduct inventory
+    // 6. Clear user's cart
+    
+  } catch (error) {
+    console.error(`[Callback] Error creating order from payment:`, error)
   }
 }
 

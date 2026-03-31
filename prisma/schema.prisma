@@ -217,6 +217,25 @@ model OrderItem {
   @@map("order_items")
 }
 
+model CheckoutSession {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  items           Json     // Cart items at checkout
+  shippingAddress Json     // Shipping address
+  subtotal        Decimal
+  tax             Decimal
+  shipping        Decimal
+  total           Decimal
+  shippingZone    String   // Detected shipping zone
+  shippingOption  String   // Selected shipping option
+  expiresAt       DateTime // Session expiry (30 minutes)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("checkout_sessions")
+}
+
 model Favorite {
   id        String   @id @default(cuid())
   userId    String

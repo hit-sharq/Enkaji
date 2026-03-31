@@ -13,7 +13,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
-import { PesapalPaymentForm } from "./pesapal-payment-form"
 import { ShieldCheck } from "lucide-react"
 
 interface CheckoutFormProps {
@@ -27,8 +26,6 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
   const [shippingCountry, setShippingCountry] = useState("Kenya")
   const [shippingCity, setShippingCity] = useState("")
   const [shippingState, setShippingState] = useState("")
-  const [showPesapalForm, setShowPesapalForm] = useState(false)
-  const [createdOrder, setCreatedOrder] = useState<any>(null)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -75,98 +72,55 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
       country: shippingCountry,
     }
 
-    const orderData = {
+    const checkoutData = {
       items: cartItems.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
         price: item.price,
       })),
-      subtotal: total,
-      tax: tax,
-      shipping: shippingCost,
-      total: finalTotal,
       shippingAddress,
+      selectedShippingOption: null, // Can be made selectable
       paymentMethod: "PESAPAL",
     }
 
     try {
-      const response = await fetch("/api/orders", {
+      // Initiate payment WITHOUT creating order
+      const response = await fetch("/api/checkout/initiate-payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(checkoutData),
       })
 
       if (response.ok) {
         const data = await response.json()
-        setCreatedOrder(data)
-
-        // Handle Pesapal payment method
-        setShowPesapalForm(true)
-        setIsLoading(false)
+        
+        // Store checkout data in session storage for later use
+        sessionStorage.setItem('checkoutData', JSON.stringify(data.checkoutData))
+        
+        // Redirect to Pesapal payment page
+        window.location.href = data.redirectUrl
         return
       } else {
         const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to place order")
+        throw new Error(errorData.error || "Failed to initiate payment")
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to place order. Please try again."
+      const errorMessage = error instanceof Error ? error.message : "Failed to initiate payment. Please try again."
       toast({
-        title: "Order Error",
+        title: "Payment Error",
         description: errorMessage,
         variant: "destructive",
       })
-      console.error("Order error:", error)
+      console.error("Payment error:", error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handlePesapalSuccess = (paymentData: any) => {
-    toast({
-      title: "Payment Initiated!",
-      description: "Please complete payment on Pesapal.",
-    })
-    router.push(`/orders/${createdOrder?.id || paymentData.orderId}?payment=pending`)
-  }
-
-  const handlePesapalError = (error: string) => {
-    toast({
-      title: "Payment Error",
-      description: error,
-      variant: "destructive",
-    })
-    setShowPesapalForm(false)
-  }
-
   if (state.loading) {
     return <div>Loading cart...</div>
-  }
-
-  // Show Pesapal payment form after order is created
-  if (showPesapalForm && createdOrder) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-green-600" />
-              Complete Payment
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <PesapalPaymentForm
-              orderId={createdOrder.id}
-              amount={Number(finalTotal)}
-              onSuccess={handlePesapalSuccess}
-              onError={handlePesapalError}
-              onCancel={() => setShowPesapalForm(false)}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    )
   }
 
   return (

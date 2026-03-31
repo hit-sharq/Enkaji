@@ -50,10 +50,41 @@ export function PayoutDashboard() {
     accountName: "",
     swiftCode: "",
   })
+  const [savedPaymentMethod, setSavedPaymentMethod] = useState<any>(null)
 
   useEffect(() => {
     fetchPayoutData()
+    fetchSavedPaymentMethod()
   }, [])
+
+  const fetchSavedPaymentMethod = async () => {
+    try {
+      const response = await fetch("/api/seller/payment-settings")
+      if (response.ok) {
+        const data = await response.json()
+        if (data.paymentDetails) {
+          setSavedPaymentMethod(data.paymentDetails)
+          setPayoutMethod(data.paymentDetails.method)
+          if (data.paymentDetails.method === "MPESA") {
+            setAccountDetails((prev) => ({
+              ...prev,
+              phoneNumber: data.paymentDetails.phoneNumber || "",
+            }))
+          } else if (data.paymentDetails.method === "BANK_TRANSFER") {
+            setAccountDetails((prev) => ({
+              ...prev,
+              bankName: data.paymentDetails.bankName || "",
+              accountNumber: data.paymentDetails.accountNumber || "",
+              accountName: data.paymentDetails.accountName || "",
+              swiftCode: data.paymentDetails.swiftCode || "",
+            }))
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching saved payment method:", error)
+    }
+  }
 
   const fetchPayoutData = async () => {
     try {
@@ -227,28 +258,45 @@ export function PayoutDashboard() {
                   <DialogTitle>Request Payout</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="payout-method">Payout Method</Label>
-                    <Select value={payoutMethod} onValueChange={setPayoutMethod}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select payout method" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="MPESA">
-                          <div className="flex items-center gap-2">
-                            <Smartphone className="h-4 w-4" />
-                            M-Pesa
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="BANK_TRANSFER">
-                          <div className="flex items-center gap-2">
-                            <Building className="h-4 w-4" />
-                            Bank Transfer
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {savedPaymentMethod ? (
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="font-semibold text-green-800">Using Saved Payment Method</span>
+                      </div>
+                      <p className="text-sm text-green-700">
+                        {savedPaymentMethod.method === "MPESA" 
+                          ? `M-Pesa: ${savedPaymentMethod.phoneNumber}`
+                          : `Bank: ${savedPaymentMethod.bankName} - ${savedPaymentMethod.accountNumber}`}
+                      </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        <a href="/dashboard/payment-settings" className="underline">Update in Payment Settings</a>
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <Label htmlFor="payout-method">Payout Method</Label>
+                      <Select value={payoutMethod} onValueChange={setPayoutMethod}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select payout method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MPESA">
+                            <div className="flex items-center gap-2">
+                              <Smartphone className="h-4 w-4" />
+                              M-Pesa
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="BANK_TRANSFER">
+                            <div className="flex items-center gap-2">
+                              <Building className="h-4 w-4" />
+                              Bank Transfer
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
 
                   {payoutMethod === "MPESA" && (
                     <div>
