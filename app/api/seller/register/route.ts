@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db"
 import { handleApiError } from "@/lib/errors"
 import { generateUniqueSlug } from "@/lib/slug"
+import { sendEmail, sellerRegistrationEmail } from "@/lib/email"
 
 export async function POST(req: NextRequest) {
   try {
@@ -83,6 +84,14 @@ export async function POST(req: NextRequest) {
         },
       })
 
+      // Send confirmation email
+      const sellerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Seller'
+      await sendEmail(
+        user.email,
+        `Welcome to Enkaji Trade — ${businessName}`,
+        sellerRegistrationEmail(sellerName, businessName)
+      )
+
       return NextResponse.json({
         success: true,
         message: "Seller profile created successfully",
@@ -144,6 +153,14 @@ export async function POST(req: NextRequest) {
         currentPeriodEnd: periodEnd,
       },
     })
+
+    // Send confirmation email
+    const sellerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Seller'
+    await sendEmail(
+      user.email,
+      `Welcome to Enkaji Trade — ${businessName}`,
+      sellerRegistrationEmail(sellerName, businessName)
+    )
 
     return NextResponse.json({
       success: true,

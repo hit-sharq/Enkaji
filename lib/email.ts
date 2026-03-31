@@ -91,6 +91,29 @@ export function productApprovalEmail(sellerName: string, approved: boolean, prod
   </div>`
 }
 
+export function sellerVerifiedEmail(sellerName: string, businessName: string) {
+  return `
+  <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+    <h2 style="color:#28a745">✅ Congratulations, ${sellerName}!</h2>
+    <p>Your seller account for <strong>${businessName}</strong> has been verified and approved!</p>
+    
+    <div style="background:#d4edda;padding:16px;border-radius:8px;margin:16px 0;border-left:4px solid #28a745">
+      <p style="margin:0"><strong>You can now:</strong></p>
+      <ul style="margin:8px 0 0 0;padding-left:20px">
+        <li>List and sell products on Enkaji</li>
+        <li>Receive orders from customers</li>
+        <li>Get paid for your sales</li>
+        <li>Access seller analytics and insights</li>
+      </ul>
+    </div>
+    
+    <p><a href="https://enkaji.co.ke/dashboard" style="display:inline-block;background:#28a745;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Start Selling</a></p>
+    
+    <p>Welcome to the Enkaji seller community!</p>
+    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Connecting Kenya's Market</p>
+  </div>`
+}
+
 export function bulkOrderNotificationEmail(sellerName: string, bulkOrder: { title: string, totalAmount: number, id: string }) {
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
@@ -124,5 +147,41 @@ export function paymentCallbackEmail(
     <p>${message}</p>
     <p><strong>Method:</strong> ${method}</p>
     <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Secure Payments</p>
+  </div>`
+}
+
+export function sellerRegistrationEmail(sellerName: string, businessName: string) {
+  return `
+  <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+    <h2 style="color:#8B2635">🎉 Welcome to Enkaji Trade, ${sellerName}!</h2>
+    <p>Your seller account for <strong>${businessName}</strong> has been created successfully.</p>
+    
+    <h3 style="color:#333;margin-top:24px">Next Steps: Legal Verification</h3>
+    <p>To complete your seller verification and start selling on Enkaji, please provide the following documents:</p>
+    
+    <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin:16px 0">
+      <h4 style="margin:0 0 12px 0;color:#8B2635">Required Documents:</h4>
+      <ul style="margin:0;padding-left:20px">
+        <li style="margin-bottom:8px"><strong>Business Registration Certificate</strong> — Proof your business exists</li>
+        <li style="margin-bottom:8px"><strong>KRA PIN Certificate</strong> — For tax and payment processing</li>
+        <li style="margin-bottom:8px"><strong>CR12 Form</strong> — List of company directors/owners</li>
+        <li style="margin-bottom:8px"><strong>Director's ID/Passport</strong> — To verify the person in charge</li>
+      </ul>
+    </div>
+    
+    <p>You can upload these documents from your <a href="https://enkaji.co.ke/dashboard">seller dashboard</a> under the "Legal Verification" section.</p>
+    
+    <h3 style="color:#333;margin-top:24px">While You Wait</h3>
+    <p>You can start preparing your store:</p>
+    <ul>
+      <li>Complete your business profile</li>
+      <li>Add your first products</li>
+      <li>Set up your payment preferences</li>
+    </ul>
+    
+    <p><a href="https://enkaji.co.ke/dashboard" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
+    
+    <p>If you have any questions, contact us at <a href="mailto:support@enkaji.co.ke">support@enkaji.co.ke</a></p>
+    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Connecting Kenya's Market</p>
   </div>`
 }
