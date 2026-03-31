@@ -30,9 +30,9 @@ const FILTERS = [
 
 const SORT_OPTIONS = [
   { label: 'Newest', value: 'newest' },
-  { label: 'Price ↑', value: 'price_asc' },
-  { label: 'Price ↓', value: 'price_desc' },
-  { label: 'Popular', value: 'popular' },
+  { label: 'Price: Low to High', value: 'price_asc' },
+  { label: 'Price: High to Low', value: 'price_desc' },
+  { label: 'Most Popular', value: 'popular' },
 ]
 
 export default function SearchScreen() {
