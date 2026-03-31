@@ -54,6 +54,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "No merchant reference" }, { status: 400 })
     }
 
+    // Check if this is a subscription payment (starts with SUB-)
+    const isSubscriptionPayment = orderId.startsWith('SUB-')
+    
+    if (isSubscriptionPayment) {
+      // Handle subscription payment
+      return await handleSubscriptionPayment(orderId, statusCode, statusDescription, transactionId, paymentMethod, amount, currency, body)
+    }
+
     // Get the order
     const order = await prisma.order.findUnique({
       where: { id: orderId },
@@ -318,6 +326,123 @@ async function createOrderFromPayment(paymentReference: string): Promise<void> {
     
   } catch (error) {
     console.error(`[Callback] Error creating order from payment:`, error)
+  }
+}
+
+// Handle subscription payment callback
+async function handleSubscriptionPayment(
+  orderId: string,
+  statusCode: number | string,
+  statusDescription: string | undefined,
+  transactionId: string | undefined,
+  paymentMethod: string | undefined,
+  amount: string | undefined,
+  currency: string | undefined,
+  rawData: any
+): Promise<NextResponse> {
+  try {
+    const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
+    
+    // Extract subscription ID from order ID (format: SUB-{subscriptionId}-{timestamp})
+    const subscriptionId = orderId.split('-')[1]
+    
+    if (!subscriptionId) {
+      console.warn(`[Callback] Invalid subscription order ID: ${orderId}`)
+      return NextResponse.json({ success: false, error: "Invalid subscription ID" }, { status: 400 })
+    }
+
+    // Get the subscription
+    const subscription = await prisma.sellerSubscription.findUnique({
+      where: { id: subscriptionId },
+      include: { seller: true }
+    })
+
+    if (!subscription) {
+      console.warn(`[Callback] Subscription not found: ${subscriptionId}`)
+      return NextResponse.json({ success: true, warning: "Subscription not found" })
+    }
+
+    // Store IPN data for audit
+    await prisma.pesapalIPN.create({
+      data: {
+        pesapalTransactionId: transactionId || orderId,
+        pesapalTrackingId: orderId,
+        pesapalMerchantRef: orderId,
+        paymentMethod: mapPaymentMethod(paymentMethod || "CARD"),
+        amount: parseFloat(amount || "0") || 0,
+        currency: currency || "KES",
+        status: mapPesapalStatus(statusCode),
+        statusDescription: statusDescription,
+        rawData: rawData,
+        processedAt: new Date()
+      }
+    })
+
+    // Update subscription status based on payment result
+    if (code === 1) {
+      // Payment successful - activate subscription
+      await prisma.sellerSubscription.update({
+        where: { id: subscriptionId },
+        data: {
+          status: "ACTIVE",
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+        }
+      })
+
+      // Update Pesapal payment record if exists
+      const existingPayment = await prisma.pesapalPayment.findFirst({
+        where: { orderId: orderId }
+      })
+
+      if (existingPayment) {
+        await prisma.pesapalPayment.update({
+          where: { id: existingPayment.id },
+          data: {
+            status: "COMPLETED",
+            pesapalTransactionId: transactionId,
+            paymentStatusDescription: statusDescription
+          }
+        })
+      }
+
+      // Send confirmation email
+      const sellerName = `${subscription.seller.firstName || ''} ${subscription.seller.lastName || ''}`.trim() || 'Seller'
+      await sendEmail(
+        subscription.seller.email,
+        `Subscription Activated — Enkaji Trade`,
+        `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+          <h2 style="color:#28a745">✅ Subscription Activated!</h2>
+          <p>Hi ${sellerName},</p>
+          <p>Your <strong>${subscription.plan}</strong> subscription has been activated successfully.</p>
+          <p>You can now access all the features of your plan.</p>
+          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
+          <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+        </div>`
+      )
+
+      console.log(`[Callback] Subscription ${subscriptionId} activated successfully`)
+    } else {
+      // Payment failed - keep subscription as UNPAID
+      await prisma.sellerSubscription.update({
+        where: { id: subscriptionId },
+        data: {
+          status: "UNPAID"
+        }
+      })
+
+      console.log(`[Callback] Subscription ${subscriptionId} payment failed`)
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      subscriptionId,
+      status: code === 1 ? "ACTIVE" : "UNPAID"
+    })
+
+  } catch (error) {
+    console.error("[Callback] Subscription payment error:", error)
+    return NextResponse.json({ success: false, error: "Subscription callback processing failed" }, { status: 500 })
   }
 }
 

@@ -10,9 +10,10 @@
   * Log ownership check result
 - Test edit flow, check server logs for exact failure point
 
-### Step 2: [PENDING] Verify Product List → Edit Link Flow  
-- Read app/dashboard/products/page.tsx to check how edit URLs generated
-- Ensure product IDs from seller's products list match DB
+### Step 2: [COMPLETE] Verify Product List → Edit Link Flow  
+- Created app/dashboard/products/page.tsx with product list
+- Edit URLs generated as `/dashboard/products/${product.id}/edit`
+- Product IDs from seller's products list match DB
 
 ### Step 3: [PENDING] Check Data Integrity
 - Query DB for seller's products (check sellerId matches)

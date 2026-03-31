@@ -132,6 +132,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
       status: string
       currentPeriodStart: string
       currentPeriodEnd: string
+      pesapalSubscriptionId?: string
     } | null
     plans: {
       [key: string]: {
@@ -307,6 +308,17 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
       return
     }
 
+    // Validate phone number for paid plans
+    const plan = subscriptionData.plans[selectedPlan]
+    if (plan && plan.price > 0 && !payoutPhone) {
+      toast({
+        title: "Phone Number Required",
+        description: "Please enter your M-Pesa phone number for payment",
+        variant: "destructive",
+      })
+      return
+    }
+
     setIsUpgrading(true)
     try {
       const response = await fetch("/api/subscriptions", {
@@ -314,21 +326,20 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planType: selectedPlan,
-          paymentMethod: "card",
+          phoneNumber: payoutPhone || undefined,
         }),
       })
 
       if (response.ok) {
         const data = await response.json()
         
-        // If there's a client secret, it means payment is required
-        if (data.clientSecret) {
+        if (data.redirectUrl) {
+          // Redirect to Pesapal payment page
           toast({
             title: "Payment Required",
-            description: "Please complete your payment to activate the subscription",
+            description: "Redirecting to payment page...",
           })
-          // In a full implementation, you would integrate with Stripe here
-          // For now, we'll just refresh the data
+          window.open(data.redirectUrl, '_blank')
         } else {
           toast({
             title: "Subscription Activated",
@@ -338,6 +349,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
         
         setShowSubscriptionDialog(false)
         setSelectedPlan("")
+        setPayoutPhone("")
         
         // Refresh subscription data
         const refreshResponse = await fetch("/api/subscriptions")
@@ -746,13 +758,41 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
             </Card>
           )}
 
+          {/* Payment Status Alert */}
+          {subscriptionData.subscription?.status === "PENDING" && (
+            <Card className="border-yellow-200 bg-yellow-50">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <Clock className="h-6 w-6 text-yellow-600 mt-1" />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-yellow-800">Payment Pending</h3>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Your subscription payment is being processed. Please complete the payment to activate your plan.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3"
+                      onClick={() => {
+                        // Redirect to Pesapal payment page
+                        window.open(`https://payments.pesapal.com/checkout?tracking_id=${subscriptionData.subscription?.pesapalSubscriptionId || ''}`, '_blank')
+                      }}
+                    >
+                      Complete Payment
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Subscription Dialog */}
           <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
-            <DialogContent>
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Select Subscription Plan</DialogTitle>
                 <DialogDescription>
-                  Choose a plan that best fits your business needs
+                  Choose a plan that best fits your business needs. Payment will be processed via Pesapal.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -786,6 +826,23 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                   </div>
                 ))}
                 
+                {selectedPlan && subscriptionData.plans[selectedPlan]?.price > 0 && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <Label htmlFor="phone">M-Pesa Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="e.g., 0712345678"
+                      value={payoutPhone}
+                      onChange={(e) => setPayoutPhone(e.target.value)}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      You will receive an M-Pesa payment request on this number
+                    </p>
+                  </div>
+                )}
+
                 <Button 
                   className="w-full" 
                   onClick={handleSubscribe}

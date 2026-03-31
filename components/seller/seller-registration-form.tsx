@@ -84,6 +84,16 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
         throw new Error(errorData.error || "Failed to create seller profile")
       }
 
+      const data = await response.json()
+      
+      // Check if payment is required (for PREMIUM or ENTERPRISE plans)
+      if (data.requiresPayment && data.redirectUrl) {
+        toast.success("Redirecting to payment...")
+        // Redirect to Pesapal payment page
+        window.location.href = data.redirectUrl
+        return
+      }
+
       setIsSuccess(true)
       toast.success("Seller profile created successfully!")
     } catch (error) {

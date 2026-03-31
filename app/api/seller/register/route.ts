@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 import { handleApiError } from "@/lib/errors"
 import { generateUniqueSlug } from "@/lib/slug"
 import { sendEmail, sellerRegistrationEmail } from "@/lib/email"
+import { pesapalService } from "@/lib/pesapal"
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,16 +70,25 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      // Create subscription
+      // Create subscription based on plan
       const now = new Date()
       const periodEnd = new Date()
       periodEnd.setMonth(periodEnd.getMonth() + 1)
 
-      await db.sellerSubscription.create({
+      const SUBSCRIPTION_PLANS: Record<string, { price: number }> = {
+        BASIC: { price: 0 },
+        PREMIUM: { price: 1500 },
+        ENTERPRISE: { price: 5000 },
+      }
+
+      const selectedPlan = SUBSCRIPTION_PLANS[plan] || SUBSCRIPTION_PLANS.BASIC
+      const isFreePlan = selectedPlan.price === 0
+
+      const subscription = await db.sellerSubscription.create({
         data: {
           sellerId: user.id,
           plan: plan as any,
-          status: "ACTIVE",
+          status: isFreePlan ? "ACTIVE" : "UNPAID",
           currentPeriodStart: now,
           currentPeriodEnd: periodEnd,
         },
@@ -91,6 +101,64 @@ export async function POST(req: NextRequest) {
         `Welcome to Enkaji Trade — ${businessName}`,
         sellerRegistrationEmail(sellerName, businessName)
       )
+
+      // For paid plans, initiate Pesapal payment
+      if (!isFreePlan) {
+        const orderData = {
+          id: `SUB-${subscription.id}-${Date.now()}`,
+          currency: "KES",
+          amount: selectedPlan.price,
+          description: `${plan} Subscription - Enkaji Trade Kenya`,
+          callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+          notification_id: subscription.id,
+          billing_address: {
+            email_address: user.email,
+            phone_number: phoneNumber,
+            country_code: "KE",
+            first_name: user.firstName || "",
+            last_name: user.lastName || "",
+            line_1: "",
+            city: "Nairobi",
+            state: "Nairobi",
+            postal_code: "",
+            zip_code: ""
+          }
+        }
+
+        const pesapalResponse = await pesapalService.submitOrder(orderData)
+
+        // Create Pesapal payment record
+        await db.pesapalPayment.create({
+          data: {
+            orderId: subscription.id,
+            userId: user.id,
+            amount: selectedPlan.price,
+            currency: "KES",
+            pesapalTrackingId: pesapalResponse.order_tracking_id,
+            pesapalMerchantRef: pesapalResponse.merchant_reference,
+            paymentMethod: "CARD",
+            status: "PENDING"
+          }
+        })
+
+        // Update subscription with Pesapal tracking ID
+        await db.sellerSubscription.update({
+          where: { id: subscription.id },
+          data: {
+            pesapalSubscriptionId: pesapalResponse.order_tracking_id
+          }
+        })
+
+        return NextResponse.json({
+          success: true,
+          message: "Payment required. Please complete payment to activate your subscription.",
+          sellerProfile,
+          isExisting: false,
+          requiresPayment: true,
+          redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+          trackingId: pesapalResponse.order_tracking_id
+        })
+      }
 
       return NextResponse.json({
         success: true,
@@ -139,16 +207,25 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Create subscription
+    // Create subscription based on plan
     const now = new Date()
     const periodEnd = new Date()
     periodEnd.setMonth(periodEnd.getMonth() + 1)
 
-    await db.sellerSubscription.create({
+    const SUBSCRIPTION_PLANS: Record<string, { price: number }> = {
+      BASIC: { price: 0 },
+      PREMIUM: { price: 1500 },
+      ENTERPRISE: { price: 5000 },
+    }
+
+    const selectedPlan = SUBSCRIPTION_PLANS[plan] || SUBSCRIPTION_PLANS.BASIC
+    const isFreePlan = selectedPlan.price === 0
+
+    const subscription = await db.sellerSubscription.create({
       data: {
         sellerId: user.id,
         plan: plan as any,
-        status: "ACTIVE",
+        status: isFreePlan ? "ACTIVE" : "UNPAID",
         currentPeriodStart: now,
         currentPeriodEnd: periodEnd,
       },
@@ -161,6 +238,64 @@ export async function POST(req: NextRequest) {
       `Welcome to Enkaji Trade — ${businessName}`,
       sellerRegistrationEmail(sellerName, businessName)
     )
+
+    // For paid plans, initiate Pesapal payment
+    if (!isFreePlan) {
+      const orderData = {
+        id: `SUB-${subscription.id}-${Date.now()}`,
+        currency: "KES",
+        amount: selectedPlan.price,
+        description: `${plan} Subscription - Enkaji Trade Kenya`,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+        notification_id: subscription.id,
+        billing_address: {
+          email_address: user.email,
+          phone_number: phoneNumber,
+          country_code: "KE",
+          first_name: user.firstName || "",
+          last_name: user.lastName || "",
+          line_1: "",
+          city: "Nairobi",
+          state: "Nairobi",
+          postal_code: "",
+          zip_code: ""
+        }
+      }
+
+      const pesapalResponse = await pesapalService.submitOrder(orderData)
+
+      // Create Pesapal payment record
+      await db.pesapalPayment.create({
+        data: {
+          orderId: subscription.id,
+          userId: user.id,
+          amount: selectedPlan.price,
+          currency: "KES",
+          pesapalTrackingId: pesapalResponse.order_tracking_id,
+          pesapalMerchantRef: pesapalResponse.merchant_reference,
+          paymentMethod: "CARD",
+          status: "PENDING"
+        }
+      })
+
+      // Update subscription with Pesapal tracking ID
+      await db.sellerSubscription.update({
+        where: { id: subscription.id },
+        data: {
+          pesapalSubscriptionId: pesapalResponse.order_tracking_id
+        }
+      })
+
+      return NextResponse.json({
+        success: true,
+        message: "Payment required. Please complete payment to activate your subscription.",
+        sellerProfile,
+        isExisting: false,
+        requiresPayment: true,
+        redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+        trackingId: pesapalResponse.order_tracking_id
+      })
+    }
 
     return NextResponse.json({
       success: true,
