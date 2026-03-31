@@ -367,81 +367,27 @@ export default function CheckoutScreen() {
             <Text style={styles.sectionTitle}>Payment Method</Text>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === 'PESAPAL' && styles.paymentOptionSelected,
-            ]}
-            onPress={() => setPaymentMethod('PESAPAL')}
-          >
+          <View style={[styles.paymentOption, styles.paymentOptionSelected]}>
             <View style={styles.paymentOptionLeft}>
-              <View
-                style={[
-                  styles.paymentIconContainer,
-                  paymentMethod === 'PESAPAL' && styles.paymentIconContainerActive,
-                ]}
-              >
-                <Feather
-                  name="smartphone"
-                  size={22}
-                  color={
-                    paymentMethod === 'PESAPAL' ? Colors.text.white : Colors.text.primary
-                  }
-                />
+              <View style={[styles.paymentIconContainer, styles.paymentIconContainerActive]}>
+                <Feather name="smartphone" size={22} color={Colors.text.white} />
               </View>
               <View style={styles.paymentOptionText}>
                 <Text style={styles.paymentOptionTitle}>M-Pesa / Card</Text>
                 <Text style={styles.paymentOptionDesc}>Pay securely via Pesapal</Text>
               </View>
             </View>
-            <View
-              style={[
-                styles.radio,
-                paymentMethod === 'PESAPAL' && styles.radioSelected,
-              ]}
-            >
-              {paymentMethod === 'PESAPAL' && <View style={styles.radioInner} />}
+            <View style={[styles.radio, styles.radioSelected]}>
+              <View style={styles.radioInner} />
             </View>
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === 'BANK_TRANSFER' && styles.paymentOptionSelected,
-            ]}
-            onPress={() => setPaymentMethod('BANK_TRANSFER')}
-          >
-            <View style={styles.paymentOptionLeft}>
-              <View
-                style={[
-                  styles.paymentIconContainer,
-                  paymentMethod === 'BANK_TRANSFER' && styles.paymentIconContainerActive,
-                ]}
-              >
-                <Feather
-                  name="briefcase"
-                  size={22}
-                  color={
-                    paymentMethod === 'BANK_TRANSFER'
-                      ? Colors.text.white
-                      : Colors.text.primary
-                  }
-                />
-              </View>
-              <View style={styles.paymentOptionText}>
-                <Text style={styles.paymentOptionTitle}>Bank Transfer</Text>
-                <Text style={styles.paymentOptionDesc}>Pay directly to our bank account</Text>
-              </View>
-            </View>
-            <View
-              style={[
-                styles.radio,
-                paymentMethod === 'BANK_TRANSFER' && styles.radioSelected,
-              ]}
-            >
-              {paymentMethod === 'BANK_TRANSFER' && <View style={styles.radioInner} />}
-            </View>
-          </TouchableOpacity>
+          <View style={styles.paymentInfoBox}>
+            <Feather name="info" size={16} color={Colors.primary} />
+            <Text style={styles.paymentInfoText}>
+              You'll be redirected to Pesapal to complete your payment securely.
+            </Text>
+          </View>
         </View>
 
         {/* Order Summary */}
@@ -837,5 +783,20 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     fontSize: 17,
     fontWeight: '700',
+  },
+  paymentInfoBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.backgroundSecondary,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  paymentInfoText: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 13,
+    color: Colors.text.secondary,
+    lineHeight: 18,
   },
 })
