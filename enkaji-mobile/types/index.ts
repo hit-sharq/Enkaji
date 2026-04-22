@@ -14,6 +14,7 @@ export interface User {
   updatedAt: string
   sellerProfile?: SellerProfile | null
   artisanProfile?: ArtisanProfile | null
+  serviceProvider?: ServiceProvider | null
 }
 
 export type UserRole = 
@@ -27,7 +28,7 @@ export type UserRole =
   | 'FINANCE_MANAGER' 
   | 'REGIONAL_MANAGER'
 
-// Seller Profile
+// Seller Profile (Legacy product-focused)
 export interface SellerProfile {
   id: string
   userId: string
@@ -39,6 +40,31 @@ export interface SellerProfile {
   website: string | null
   taxId: string | null
   isVerified: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Service Provider Profile
+export interface ServiceProvider {
+  id: string
+  userId: string
+  businessName: string
+  slug: string
+  description: string | null
+  logo: string | null
+  coverImage: string | null
+  email: string
+  phone: string
+  whatsapp: string
+  website: string | null
+  location: string
+  city: string
+  county: string
+  yearsExperience: number
+  isVerified: boolean
+  isPremium: boolean
+  averageRating: number
+  totalReviews: number
   createdAt: string
   updatedAt: string
 }
@@ -119,6 +145,126 @@ export interface ProductLite {
   _count: {
     reviews: number
   }
+}
+
+// Working Hour
+export interface WorkingHour {
+  day: string
+  dayOfWeek: number
+  openTime: string | null
+  closeTime: string | null
+  isOpen: boolean
+}
+
+// Service Category
+export interface ServiceCategory {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+}
+
+// Service (Lite for listings)
+export interface ServiceLite {
+  id: string
+  name: string
+  description: string
+  price: number
+  duration: number
+  category: string
+  city: string
+  county: string
+  images: string[]
+  averageRating: number
+  totalReviews: number
+  provider: {
+    id: string
+    businessName: string
+    slug: string
+    logo: string | null
+    isVerified: boolean
+  }
+}
+
+// Service (Full detail)
+export interface Service extends ServiceLite {
+  subcategory: string | null
+  priceType: 'FIXED' | 'HOURLY' | 'startingFrom' | 'negotiable'
+  location: string
+  address: string
+  availableDays: string[] | null
+  startTime: string | null
+  endTime: string | null
+  workingHours: WorkingHour[]
+  reviews: ServiceReview[]
+  provider: {
+    id: string
+    businessName: string
+    slug: string
+    logo: string | null
+    description: string | null
+    phone: string
+    whatsapp: string
+    email: string
+    yearsExperience: number
+    isVerified: boolean
+    averageRating: number
+    totalReviews: number
+  }
+}
+
+// Service Review
+export interface ServiceReview {
+  id: string
+  serviceId: string
+  customerId: string
+  customer: {
+    firstName: string | null
+    lastName: string | null
+    imageUrl: string | null
+  }
+  rating: number
+  title: string | null
+  comment: string | null
+  images: string[]
+  isVerified: boolean
+  createdAt: string
+}
+
+// Booking
+export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
+
+export interface Booking {
+  id: string
+  serviceId: string
+  service: {
+    name: string
+  }
+  providerId: string
+  provider: {
+    businessName: string
+    logo: string | null
+  }
+  customerId: string | null
+  customer: User | null
+  date: string
+  timeSlot: string
+  status: BookingStatus
+  duration: number
+  customerName: string
+  customerPhone: string
+  customerEmail: string | null
+  notes: string | null
+  price: number
+  total: number
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
+  paymentMethod: string | null
+  confirmedAt: string | null
+  completedAt: string | null
+  cancelledAt: string | null
+  cancelReason: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 // Cart Item

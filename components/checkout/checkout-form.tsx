@@ -166,26 +166,54 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
               onClick={async () => {
                 if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-                        .then(res => res.json())
-                        .then((data: any) => {
-                          const city = data.address?.city || data.address?.town || data.address?.municipality || ''
-                          const state = data.address?.state || data.address?.county || ''
+                    async (position) => {
+                      try {
+                        const response = await fetch(
+                          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`
+                        )
+                        const data: any = await response.json()
+
+                        if (data.address) {
+                          const address = data.address
+
+                          // Extract street address
+                          const street = address.road || address.pedestrian || address.footway || address.living_street || ''
+                          const addressLine1 = street || data.display_name?.split(',')[0] || ''
+
+                          // Extract city/town
+                          const city = address.city || address.town || address.municipality || address.village || ''
+
+                          // Extract state/county
+                          const state = address.state || address.county || address.province || ''
+
+                          // Extract postal code
+                          const postcode = address.postcode || ''
+
+                          // Update React state (updates Input fields automatically)
                           setShippingCity(city)
                           setShippingState(state)
-                          handleCityChange(city)
-                          handleStateChange(state)
+
+                          // Notify parent of destination change
+                          notifyDestinationChange(shippingCountry, city, state)
+
                           toast({
                             title: "Location Set",
+                            description: `Address: ${addressLine1}, ${city}`,
+                          })
+                        } else {
+                          toast({
+                            title: "Location Found",
                             description: data.display_name,
                           })
-                        })
-                        .catch(() => toast({
+                        }
+                      } catch (err) {
+                        console.error('Geocoding error:', err)
+                        toast({
                           title: "Location Error",
                           description: "Could not reverse geocode location",
                           variant: "destructive",
-                        }))
+                        })
+                      }
                     },
                     () => toast({
                       title: "Location Error",

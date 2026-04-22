@@ -2,9 +2,11 @@
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 import { formatDualCurrency } from "@/lib/currency"
 import { formatWeight } from "@/lib/shipping"
-import { Weight, Package } from "lucide-react"
+import { Weight, Package, Shield } from "lucide-react"
 
 interface OrderSummaryProps {
   cartItems: Array<{
@@ -19,13 +21,19 @@ interface OrderSummaryProps {
   shippingCost?: number
   discountAmount?: number
   couponCode?: string
+  insurance?: number
+  onInsuranceChange?: (enabled: boolean) => void
 }
 
-export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmount = 0, couponCode }: OrderSummaryProps) {
+const INSURANCE_RATE = 0.02 // 2% of order value, min KES 100
+const MIN_INSURANCE_FEE = 100
+
+export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmount = 0, couponCode, insurance = 0, onInsuranceChange }: OrderSummaryProps) {
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
   const tax = total * 0.16 // 16% VAT for Kenya
-  const finalTotal = Math.max(0, total + shippingCost + tax - discountAmount)
+  const insuranceFee = onInsuranceChange ? Math.max(MIN_INSURANCE_FEE, total * INSURANCE_RATE) : insurance
+  const finalTotal = Math.max(0, total + shippingCost + tax + insuranceFee - discountAmount)
 
   return (
     <Card>
@@ -92,6 +100,23 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
             <span>Tax (16%)</span>
             <span>{formatDualCurrency(tax)}</span>
           </div>
+
+          {onInsuranceChange && (
+            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="insurance"
+                  checked={insurance === 1}
+                  onCheckedChange={(checked) => onInsuranceChange(checked === true)}
+                />
+                <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
+                  <Shield className="h-4 w-4 text-blue-600" />
+                  <span>Shipping Protection</span>
+                </Label>
+              </div>
+              <span className="font-medium text-blue-700">{formatDualCurrency(insuranceFee)}</span>
+            </div>
+          )}
 
           {discountAmount > 0 && couponCode && (
             <div className="flex justify-between text-green-600 font-medium">

@@ -21,7 +21,7 @@ model User {
   isActive          Boolean             @default(true)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  
+
   // Relations
   products          Product[]
   orders            Order[]
@@ -33,7 +33,7 @@ model User {
   bulkOrders        BulkOrder[]
   artisanProfile    ArtisanProfile?
   sellerProfile     SellerProfile?
-  
+
   // Payment relations
   sellerPayouts     SellerPayout[]
   payoutRequests    PayoutRequest[]
@@ -41,25 +41,23 @@ model User {
   paymentDisputes   PaymentDispute[]
   pesapalPayments   PesapalPayment[]
 
-
   productApprovals  ProductApproval[]
   artisanApprovals  ArtisanApproval[]
   sellerVerifications SellerVerification[]
   reviewModerations ReviewModeration[]
 
-
-
-
+  // Checkout & Service Booking
+  checkoutSessions  CheckoutSession[] @relation("CheckoutSessions")
+  customerBookings  Booking[]            @relation("CustomerBookings")
+  serviceReviews    ServiceReview[]       @relation("ServiceReviews")
 
   // Messaging
   sentMessages      Message[]           @relation("MessageSender")
   receivedMessages  Message[]           @relation("MessageRecipient")
   messageThreadsAsA MessageThread[]     @relation("ThreadParticipantA")
   messageThreadsAsB MessageThread[]     @relation("ThreadParticipantB")
-  
+
   @@map("users")
-
-
 }
 
 model ArtisanProfile {
@@ -219,8 +217,8 @@ model OrderItem {
 
 model CheckoutSession {
   id              String   @id @default(cuid())
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
+   userId          String
+   user            User     @relation("CheckoutSessions", fields: [userId], references: [id])
   items           Json     // Cart items at checkout
   shippingAddress Json     // Shipping address
   subtotal        Decimal
@@ -742,4 +740,205 @@ enum RefundStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+// ============================================================================
+// Service Booking Models
+// ============================================================================
+
+model Service {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  description   String?
+  category      String
+  subcategory  String?
+  price        Decimal
+  priceType    PriceType      @default(FIXED)
+  duration     Int            @default(60) // minutes
+  location     String?        // "home", "studio", "remote", or address
+  address      String?
+  city         String
+  county       String
+  images       String[]
+  isActive     Boolean        @default(true)
+  isFeatured   Boolean        @default(false)
+  
+  // Provider
+  providerId   String
+  provider     ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  // Availability
+  availableDays Json?       // ["monday", "tuesday", etc.]
+  startTime    String?       // "09:00"
+  endTime     String?       // "18:00"
+  
+  // Booking
+  bookings    Booking[]
+  reviews     ServiceReview[]
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("services")
+  @@index([providerId])
+  @@index([category])
+  @@index([city])
+  @@index([slug])
+}
+
+model ServiceProvider {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  businessName   String
+  slug           String        @unique
+  description    String?
+  logo           String?
+  coverImage    String?
+  
+  // Contact
+  email          String?
+  phone         String
+  whatsapp     String?
+  address      String?
+  city          String
+  county       String
+  
+  // Business
+  businessType  String        // "barbershop", "salon", "tutor", "mechanic", etc.
+  yearsExperience Int?
+  isVerified    Boolean       @default(false)
+  isPremium     Boolean       @default(false)
+  
+  // Rating
+  averageRating Decimal       @default(0)
+  totalReviews  Int           @default(0)
+  
+  // Services
+  services     Service[]
+  bookings    Booking[]
+  workingHours WorkingHour[]
+  
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("service_providers")
+  @@index([userId])
+  @@index([businessType])
+  @@index([city])
+  @@index([slug])
+}
+
+model WorkingHour {
+  id          String         @id @default(cuid())
+  providerId  String
+  provider   ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  dayOfWeek  Int            // 0=Sunday, 1=Monday, etc.
+  isOpen     Boolean        @default(true)
+  openTime   String?        // "09:00"
+  closeTime  String?        // "18:00"
+  
+  @@unique([providerId, dayOfWeek])
+  @@map("working_hours")
+}
+
+model Booking {
+  id              String         @id @default(cuid())
+   serviceId       String
+   service         Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+   providerId      String
+   provider       ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+   customerId      String
+   customer        User           @relation("CustomerBookings", fields: [customerId], references: [id])
+  
+  // Booking Details
+  date           DateTime
+  timeSlot       String        // "10:00"
+  status         BookingStatus @default(PENDING)
+  duration       Int           // minutes
+  
+  // Contact Info
+  customerName   String
+  customerPhone String
+  customerEmail String?
+  notes         String?
+  
+  // Pricing
+  price         Decimal
+  total         Decimal
+  
+  // Payment
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod String?
+  
+  // History
+  confirmedAt   DateTime?
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  cancelReason  String?
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("bookings")
+  @@index([serviceId])
+  @@index([providerId])
+  @@index([customerId])
+  @@index([date])
+  @@index([status])
+}
+
+model ServiceReview {
+  id          String         @id @default(cuid())
+  serviceId   String
+  service    Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  bookingId  String?        // Optional link to booking
+  customerId String
+  customer   User           @relation("ServiceReviews", fields: [customerId], references: [id])
+
+  rating     Int            // 1-5
+  title     String?
+  comment   String?
+  images    String[]
+
+  isVerified Boolean       @default(false) // Verified customer
+  isFeatured Boolean     @default(false)
+
+  helpfulCount Int         @default(0)
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("service_reviews")
+  @@index([serviceId])
+  @@index([customerId])
+}
+
+// Service Categories for discovery
+model ServiceCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  image       String?
+  parentSlug  String?
+
+  @@map("service_categories")
+}
+
+enum PriceType {
+  FIXED
+  HOURLY
+  startingFrom
+  negotiable
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
 }

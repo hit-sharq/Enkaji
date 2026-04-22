@@ -37,6 +37,7 @@ export default function CheckoutScreen() {
     state: '',
     postalCode: '',
     phone: '',
+    country: 'Kenya',
   })
 
   useEffect(() => {
@@ -102,16 +103,17 @@ export default function CheckoutScreen() {
 
     setIsProcessing(true)
     try {
-      const formattedShipping = {
-        firstName: shippingAddress.firstName,
-        lastName: shippingAddress.lastName,
-        address: shippingAddress.address1,
-        address2: shippingAddress.address2,
-        city: shippingAddress.city,
-        state: shippingAddress.state,
-        zipCode: shippingAddress.postalCode,
-        phone: shippingAddress.phone,
-      }
+       const formattedShipping = {
+         firstName: shippingAddress.firstName,
+         lastName: shippingAddress.lastName,
+         address: shippingAddress.address1,
+         address2: shippingAddress.address2,
+         city: shippingAddress.city,
+         state: shippingAddress.state,
+         zipCode: shippingAddress.postalCode,
+         phone: shippingAddress.phone,
+         country: shippingAddress.country,
+       }
 
       const orderData = {
         items: items.map((item) => ({
@@ -306,23 +308,60 @@ export default function CheckoutScreen() {
             style={[styles.locationButton]}
             onPress={async () => {
               try {
+                // Request permission
                 const { status } = await Location.requestForegroundPermissionsAsync()
                 if (status !== 'granted') {
-                  Alert.alert('Location Permission', 'Location access needed for auto-fill')
+                  Alert.alert('Location Permission', 'Location access is needed to auto-fill your address')
                   return
                 }
-                const { coords } = await Location.getCurrentPositionAsync({})
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`)
-                const data = await response.json()
-                setShippingAddress({
-                  ...shippingAddress,
-                  city: data.address?.city || data.address?.town || data.address?.municipality || '',
-                  state: data.address?.state || data.address?.county || '',
-                  address1: data.display_name,
+
+                // Get current position
+                const { coords } = await Location.getCurrentPositionAsync({
+                  accuracy: Location.Accuracy.High,
                 })
-                Alert.alert('Success', 'Address auto-filled from current location')
-              } catch (error) {
-                Alert.alert('Error', 'Could not get current location')
+
+                // Reverse geocode
+                const response = await fetch(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`
+                )
+                const data: any = await response.json()
+
+                  if (data.address) {
+                    const addr = data.address
+
+                    // Extract street address
+                    const street = addr.road || addr.pedestrian || addr.footway || addr.living_street || ''
+                    const addressLine1 = street || data.display_name?.split(',')[0] || ''
+
+                    // Extract city/town
+                    const city = addr.city || addr.town || addr.municipality || addr.village || ''
+
+                    // Extract county/state
+                    const state = addr.county || addr.state || addr.province || ''
+
+                    // Extract postal code
+                    const postalCode = addr.postcode || ''
+
+                    // Extract country
+                    const country = addr.country || 'Kenya'
+
+                    // Update state with all fields
+                    setShippingAddress({
+                      ...shippingAddress,
+                      address1: addressLine1,
+                      city,
+                      state,
+                      postalCode,
+                      country,
+                    })
+
+                    Alert.alert('Success', 'Address auto-filled from your current location')
+                } else {
+                  Alert.alert('Location Found', data.display_name || 'Address details not available')
+                }
+              } catch (error: any) {
+                console.error('Location error:', error)
+                Alert.alert('Error', error.message || 'Could not get current location. Please try again.')
               }
             }}
           >

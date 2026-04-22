@@ -16,7 +16,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.enkaji.mobile",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
       }
     },
     "android": {
@@ -24,7 +26,10 @@
         "foregroundImage": "./assets/favicon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.enkaji.mobile"
+      "package": "com.enkaji.mobile",
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",

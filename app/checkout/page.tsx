@@ -23,6 +23,7 @@ export default function CheckoutPage() {
   const [isCodEnabled, setIsCodEnabled] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState<string>("")
   const [discountAmount, setDiscountAmount] = useState(0)
+  const [addInsurance, setAddInsurance] = useState(false)
 
   useEffect(() => {
     if (!state.loading && state.items.length === 0) {
@@ -96,6 +97,8 @@ export default function CheckoutPage() {
               shippingCost={shippingCost}
               discountAmount={discountAmount}
               couponCode={appliedCoupon}
+              insurance={addInsurance ? 1 : 0}
+              onInsuranceChange={setAddInsurance}
             />
           </div>
         </div>

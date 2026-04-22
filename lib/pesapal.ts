@@ -1,4 +1,4 @@
-/** Pesapal v3 Payment Gateway Integration - FIXED CONFIG */
+/** Pesapal v3 Payment Gateway Integration */
 
 import crypto from 'crypto'
 
@@ -10,22 +10,31 @@ export interface PesapalConfig {
   ipnUrl?: string
 }
 
-// LIVE PRODUCTION URL
+// Determine environment from env var (default to sandbox for safety)
+const isProduction = process.env.PESAPAL_ENVIRONMENT === 'production'
+
+// Correct URLs based on Pesapal official documentation
 export const pesapalConfig: PesapalConfig = {
   consumerKey: process.env.PESAPAL_CONSUMER_KEY || '',
   consumerSecret: process.env.PESAPAL_CONSUMER_SECRET || '',
-  baseUrl: process.env.PESAPAL_BASE_URL || 'https://www.pesapal.com/pesapalv3', // LIVE
+  baseUrl: isProduction
+    ? 'https://pay.pesapal.com/v3'  // Production/Live
+    : 'https://cybqa.pesapal.com/pesapalv3', // Sandbox/Demo
   callbackUrl: process.env.PESAPAL_CALLBACK_URL || `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
-  ipnUrl: process.env.PESAPAL_IPN_URL || `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/ipn`
+  // IPN uses the same endpoint as callback (POST handler)
+  ipnUrl: process.env.PESAPAL_IPN_URL || `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`
 }
 
 export class PesapalService {
   private config: PesapalConfig
   private accessToken: string | null = null
   private tokenExpiry: Date | null = null
+  private ipnId: string | null = null
 
   constructor(config: PesapalConfig) {
     this.config = config
+    // Load IPN ID from environment if available
+    this.ipnId = process.env.PESAPAL_IPN_ID || null
   }
 
   private generateSignature(method: string, url: string, timestamp: string, consumerKey: string): string {
@@ -59,20 +68,85 @@ export class PesapalService {
       }
     })
 
+    const responseText = await response.text()
     console.log('Pesapal Auth Response:', response.status, response.statusText)
+    console.log('Pesapal Auth body:', responseText.substring(0, 500))
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Auth error full response:', errorText)
-      const error = await response.json().catch(() => ({ error: errorText }))
-      throw new Error(`Pesapal auth failed: ${error.error || response.statusText} - ${errorText.substring(0, 200)}`)
+      throw new Error(`Pesapal auth failed (${response.status}): ${responseText.substring(0,200)}`)
     }
 
-    const data = await response.json()
-    this.accessToken = data.token
-    this.tokenExpiry = new Date(Date.now() + 55 * 60 * 1000)
-    
-    console.log('Pesapal token obtained:', !!this.accessToken)
-    return this.accessToken!
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch {
+      throw new Error(`Pesapal auth failed: Invalid JSON response`)
+    }
+
+    const token = data.token || data.access_token || data.accessToken || data.AccessToken
+    if (!token) {
+      console.error('Pesapal auth response keys:', Object.keys(data))
+      throw new Error(`Pesapal auth failed: No token found. Keys: ${Object.keys(data).join(', ')}`)
+    }
+
+    this.accessToken = token
+    this.tokenExpiry = new Date(Date.now() + 55 * 60 * 1000) // Token valid for ~55 minutes
+
+    console.log('Pesapal token obtained successfully')
+    return this.accessToken
+  }
+
+  async registerIPN(url: string): Promise<string> {
+    const accessToken = await this.getAccessToken()
+    const timestamp = new Date().toISOString()
+    const signature = this.generateSignature(
+      'POST',
+      '/api/URLSetup/RegisterIPN',
+      timestamp,
+      this.config.consumerKey
+    )
+
+    const response = await fetch(`${this.config.baseUrl}/api/URLSetup/RegisterIPN`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'pesapal-request-date': timestamp,
+        'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        url,
+        ipn_notification_type: 'POST'
+      })
+    })
+
+    const responseText = await response.text()
+    console.log('Pesapal IPN Register Response:', response.status, responseText.substring(0, 300))
+
+    if (!response.ok) {
+      throw new Error(`IPN registration failed (${response.status}): ${responseText.substring(0,200)}`)
+    }
+
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch {
+      throw new Error(`IPN registration failed: Invalid JSON: ${responseText.substring(0,200)}`)
+    }
+
+    const ipnId = data.ipn_id || data.ipnId || data.notification_id || data.notificationId
+    if (ipnId) {
+      this.ipnId = ipnId
+      console.log('Pesapal IPN registered, ID:', ipnId)
+    } else {
+      console.warn('Pesapal IPN response lacks ipn_id:', JSON.stringify(data).substring(0, 200))
+    }
+    return ipnId || ''
+  }
+
+  getIPNId(): string | null {
+    return this.ipnId
   }
 
   async submitOrder(orderData: any): Promise<any> {
@@ -86,7 +160,25 @@ export class PesapalService {
       this.config.consumerKey
     )
 
-    console.log('Pesapal submit headers:', { timestamp, signature: signature.substring(0,50) + '...' })
+    // Ensure required notification_id is present
+    if (!orderData.notification_id && !this.ipnId) {
+      // Try to register IPN on the fly
+      try {
+        const ipnUrl = this.config.ipnUrl || this.config.callbackUrl
+        console.log('No IPN ID available, attempting to register IPN:', ipnUrl)
+        await this.registerIPN(ipnUrl)
+      } catch (err) {
+        console.error('Failed to auto-register IPN:', err)
+        throw new Error('notification_id is required. Please register IPN first.')
+      }
+    }
+
+    const payload = {
+      ...orderData,
+      notification_id: orderData.notification_id || this.ipnId
+    }
+
+    console.log('Submitting to Pesapal:', JSON.stringify(payload).substring(0, 300))
 
     const response = await fetch(`${this.config.baseUrl}/api/Transactions/SubmitOrderRequest`, {
       method: 'POST',
@@ -97,21 +189,21 @@ export class PesapalService {
         'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
         'Authorization': `Bearer ${accessToken}`
       },
-      body: JSON.stringify(orderData)
+      body: JSON.stringify(payload)
     })
 
-    console.log('Pesapal submit response:', response.status, response.statusText)
+    const responseText = await response.text()
+    console.log('Pesapal submit response:', response.status, responseText.substring(0, 200))
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Submit error full:', errorText)
-      let error = { error: errorText }
+      let error = { error: responseText }
       try {
-        error = JSON.parse(errorText)
+        error = JSON.parse(responseText)
       } catch {}
-      throw new Error(`Pesapal submit failed (${response.status}): ${error.error || errorText.substring(0,200)}`)
+      throw new Error(`Pesapal submit failed (${response.status}): ${error.error || error.message || responseText.substring(0,200)}`)
     }
 
-    return await response.json()
+    return JSON.parse(responseText)
   }
 
   async getTransactionStatus(orderTrackingId: string): Promise<any> {
@@ -124,8 +216,6 @@ export class PesapalService {
       timestamp,
       this.config.consumerKey
     )
-
-    console.log('Pesapal get status headers:', { timestamp, signature: signature.substring(0,50) + '...' })
 
     const response = await fetch(
       `${this.config.baseUrl}/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
@@ -141,22 +231,20 @@ export class PesapalService {
       }
     )
 
-    console.log('Pesapal get status response:', response.status, response.statusText)
+    const responseText = await response.text()
+    console.log('Pesapal get status response:', response.status, responseText.substring(0, 200))
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Get status error full:', errorText)
-      let error = { error: errorText }
+      let error = { error: responseText }
       try {
-        error = JSON.parse(errorText)
+        error = JSON.parse(responseText)
       } catch {}
-      throw new Error(`Pesapal get status failed (${response.status}): ${error.error || errorText.substring(0,200)}`)
+      throw new Error(`Pesapal get status failed (${response.status}): ${error.error || error.message || responseText.substring(0,200)}`)
     }
 
-    return await response.json()
+    return JSON.parse(responseText)
   }
 }
 
 // Singleton
 export const pesapalService = new PesapalService(pesapalConfig)
-
-

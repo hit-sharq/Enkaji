@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Colors } from '@/lib/theme'
 import { useAuthStore } from '@/lib/store'
 import api from '@/lib/api'
+import type { UserRole } from '@/types'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -130,24 +131,69 @@ function RootLayoutContent() {
             presentation: 'modal',
           }}
         />
-        <Stack.Screen
-          name="product/[id]"
-          options={{
-            headerShown: true,
-            title: 'Product Details',
-            headerStyle: { backgroundColor: Colors.background },
-            headerTintColor: Colors.text.primary,
-          }}
-        />
-        <Stack.Screen
-          name="checkout"
-          options={{
-            headerShown: true,
-            title: 'Checkout',
-            headerStyle: { backgroundColor: Colors.background },
-            headerTintColor: Colors.text.primary,
-          }}
-        />
+         <Stack.Screen
+           name="product/[id]"
+           options={{
+             headerShown: true,
+             title: 'Product Details',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="services"
+           options={{
+             headerShown: true,
+             title: 'Services',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="services/[id]"
+           options={{
+             headerShown: true,
+             title: 'Service Details',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="bookings"
+           options={{
+             headerShown: true,
+             title: 'My Bookings',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="bookings/[id]"
+           options={{
+             headerShown: true,
+             title: 'Booking Details',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="providers/[slug]"
+           options={{
+             headerShown: true,
+             title: 'Provider Profile',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
+         <Stack.Screen
+           name="checkout"
+           options={{
+             headerShown: true,
+             title: 'Checkout',
+             headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: Colors.text.primary,
+           }}
+         />
         <Stack.Screen
           name="payment-webview"
           options={{
@@ -211,12 +257,73 @@ function RootLayoutContent() {
             headerTintColor: Colors.text.white,
           }}
         />
-        <Stack.Screen
-          name="seller/products/add"
-          options={{
-            headerShown: false,
-          }}
-        />
+          <Stack.Screen
+            name="seller/products/add"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="seller/products/edit"
+            options={{
+              headerShown: false,
+            }}
+          />
+          {/* Provider (Services) Routes */}
+         <Stack.Screen
+           name="provider/dashboard"
+           options={{
+             headerShown: true,
+             title: 'Provider Dashboard',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
+         <Stack.Screen
+           name="provider/services"
+           options={{
+             headerShown: true,
+             title: 'My Services',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
+         <Stack.Screen
+           name="provider/services/add"
+           options={{
+             headerShown: true,
+             title: 'Add Service',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
+         <Stack.Screen
+           name="provider/services/[id]"
+           options={{
+             headerShown: true,
+             title: 'Edit Service',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
+         <Stack.Screen
+           name="provider/bookings"
+           options={{
+             headerShown: true,
+             title: 'Service Bookings',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
+         <Stack.Screen
+           name="provider/availability"
+           options={{
+             headerShown: true,
+             title: 'Availability',
+             headerStyle: { backgroundColor: Colors.primary },
+             headerTintColor: Colors.text.white,
+           }}
+         />
         <Stack.Screen
           name="favorites"
           options={{

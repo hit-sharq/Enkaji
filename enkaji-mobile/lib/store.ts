@@ -6,7 +6,14 @@ import {
   Order, 
   Category, 
   Favorite,
-  AuthUser 
+  AuthUser,
+  ServiceLite,
+  Service,
+  Booking,
+  ServiceProvider,
+  WorkingHour,
+  ServiceReview,
+  ServiceCategory
 } from '@/types'
 
 // Auth Store
@@ -151,6 +158,73 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     favorites: get().favorites.filter(f => f.productId !== productId) 
   }),
   isFavorite: (productId) => get().favorites.some(f => f.productId === productId),
+}))
+
+// Services Store
+interface ServicesState {
+  services: ServiceLite[]
+  currentService: Service | null
+  categories: ServiceCategory[]
+  isLoading: boolean
+  setServices: (services: ServiceLite[]) => void
+  setCurrentService: (service: Service | null) => void
+  setCategories: (categories: ServiceCategory[]) => void
+  setLoading: (loading: boolean) => void
+}
+
+export const useServicesStore = create<ServicesState>((set) => ({
+  services: [],
+  currentService: null,
+  categories: [],
+  isLoading: false,
+  setServices: (services) => set({ services }),
+  setCurrentService: (currentService) => set({ currentService }),
+  setCategories: (categories) => set({ categories }),
+  setLoading: (isLoading) => set({ isLoading }),
+}))
+
+// Bookings Store
+interface BookingsState {
+  bookings: Booking[]
+  currentBooking: Booking | null
+  isLoading: boolean
+  setBookings: (bookings: Booking[]) => void
+  setCurrentBooking: (booking: Booking | null) => void
+  setLoading: (loading: boolean) => void
+  addBooking: (booking: Booking) => void
+  updateBooking: (id: string, data: Partial<Booking>) => void
+}
+
+export const useBookingsStore = create<BookingsState>((set, get) => ({
+  bookings: [],
+  currentBooking: null,
+  isLoading: false,
+  setBookings: (bookings) => set({ bookings }),
+  setCurrentBooking: (currentBooking) => set({ currentBooking }),
+  setLoading: (isLoading) => set({ isLoading }),
+  addBooking: (booking) => set({ bookings: [booking, ...get().bookings] }),
+  updateBooking: (id, data) => set({
+    bookings: get().bookings.map(b => b.id === id ? { ...b, ...data } : b)
+  }),
+}))
+
+// Providers Store
+interface ProvidersState {
+  providers: ServiceProvider[]
+  currentProvider: ServiceProvider | null
+  isLoading: boolean
+  setProviders: (providers: ServiceProvider[]) => void
+  setCurrentProvider: (provider: ServiceProvider | null) => void
+  setLoading: (loading: boolean) => void
+}
+
+export const useProvidersStore = create<ProvidersState>((set) => ({
+  providers: [],
+  currentProvider: null,
+  isLoading: false,
+  setProviders: (providers) => set({ providers }),
+  setCurrentProvider: (currentProvider) => set({ currentProvider }),
+  setLoading: (isLoading) => set({ isLoading }),
 }))
 
 // UI Store

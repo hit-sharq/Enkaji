@@ -139,6 +139,10 @@ export function Header() {
               Sellers
             </Link>
 
+            <Link href="/services" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+              Services
+            </Link>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="text-gray-700 hover:text-orange-600 font-medium">
@@ -346,6 +350,13 @@ export function Header() {
                       onClick={() => setIsOpen(false)}
                     >
                       Sellers
+                    </Link>
+                    <Link
+                      href="/services"
+                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Services
                     </Link>
                     <Link
                       href="/categories"

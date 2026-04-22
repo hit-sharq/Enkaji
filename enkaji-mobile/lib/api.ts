@@ -310,6 +310,154 @@ class ApiClient {
     const response = await this.client.post('/api/contact', data)
     return response.data
   }
+
+  // ==================== SERVICES & BOOKINGS ====================
+  // Service Categories
+  async getServiceCategories() {
+    const response = await this.client.get('/api/categories')
+    return response.data
+  }
+
+  // Services
+  async getServices(params?: {
+    category?: string
+    location?: string
+    search?: string
+    page?: number
+    limit?: number
+  }) {
+    const response = await this.client.get('/api/services', { params })
+    return response.data
+  }
+
+  async getService(id: string) {
+    const response = await this.client.get(`/api/services/${id}`)
+    return response.data
+  }
+
+  async getFeaturedServices() {
+    const response = await this.client.get('/api/services?featured=true')
+    return response.data
+  }
+
+  // Service Providers
+  async getProvider(slug: string) {
+    const response = await this.client.get(`/api/services/providers/${slug}`)
+    return response.data
+  }
+
+  async getProviderServices(slug: string) {
+    const response = await this.client.get(`/api/services/providers/${slug}/services`)
+    return response.data
+  }
+
+  async updateProviderProfile(data: any) {
+    const response = await this.client.put('/api/services/providers/profile', data)
+    return response.data
+  }
+
+  // Working Hours
+  async getWorkingHours() {
+    const response = await this.client.get('/api/services/working-hours')
+    return response.data
+  }
+
+  async updateWorkingHours(workingHours: Array<{
+    dayOfWeek: number
+    openTime: string
+    closeTime: string
+    isOpen: boolean
+  }>) {
+    const response = await this.client.post('/api/services/working-hours', { workingHours })
+    return response.data
+  }
+
+  // Bookings (Customer)
+  async getMyBookings() {
+    const response = await this.client.get('/api/services/bookings/me')
+    return response.data
+  }
+
+  async getBooking(id: string) {
+    const response = await this.client.get(`/api/services/bookings/${id}`)
+    return response.data
+  }
+
+  async createBooking(data: {
+    serviceId: string
+    date: string
+    timeSlot: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string
+    notes?: string
+  }) {
+    const response = await this.client.post('/api/services/bookings', data)
+    return response.data
+  }
+
+  async cancelBooking(bookingId: string, reason?: string) {
+    const response = await this.client.patch('/api/services/bookings', {
+      bookingId,
+      action: 'cancel',
+      reason,
+    })
+    return response.data
+  }
+
+  // Bookings (Provider)
+  async getProviderBookings(params?: { status?: string; date?: string }) {
+    const response = await this.client.get('/api/services/bookings', { params })
+    return response.data
+  }
+
+  async updateBookingStatus(bookingId: string, action: 'confirm' | 'complete' | 'cancel', reason?: string) {
+    const response = await this.client.patch('/api/services/bookings', {
+      bookingId,
+      action,
+      reason,
+    })
+    return response.data
+  }
+
+  // Service Reviews
+  async getServiceReviews(serviceId: string, page?: number) {
+    const response = await this.client.get(`/api/services/reviews?serviceId=${serviceId}${page ? `&page=${page}` : ''}`)
+    return response.data
+  }
+
+  async createServiceReview(data: {
+    serviceId: string
+    rating: number
+    title?: string
+    comment?: string
+    images?: string[]
+    bookingId?: string
+  }) {
+    const response = await this.client.post('/api/services/reviews', data)
+    return response.data
+  }
+
+  // Service CRUD (Provider)
+  async createService(data: any) {
+    const response = await this.client.post('/api/services', data)
+    return response.data
+  }
+
+  async updateService(id: string, data: any) {
+    const response = await this.client.put(`/api/services/${id}`, data)
+    return response.data
+  }
+
+  async deleteService(id: string) {
+    const response = await this.client.delete(`/api/services/${id}`)
+    return response.data
+  }
+
+  async getMyServices() {
+    const response = await this.client.get('/api/services?my=true')
+    return response.data
+  }
 }
 
 export const api = new ApiClient()
