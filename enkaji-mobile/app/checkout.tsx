@@ -315,15 +315,25 @@ export default function CheckoutScreen() {
                   return
                 }
 
-                // Get current position
+                // Get current position with timeout and lower accuracy for better success
                 const { coords } = await Location.getCurrentPositionAsync({
-                  accuracy: Location.Accuracy.High,
+                  accuracy: Location.Accuracy.Balanced,
                 })
 
                 // Reverse geocode
                 const response = await fetch(
-                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`,
+                  {
+                    headers: {
+                      'User-Agent': 'EnkajiTrade/1.0 (support@enkaji.co.ke)'
+                    }
+                  }
                 )
+                
+                if (!response.ok) {
+                  throw new Error(`Geocoding failed: ${response.status}`)
+                }
+                
                 const data: any = await response.json()
 
                   if (data.address) {
@@ -361,7 +371,17 @@ export default function CheckoutScreen() {
                 }
               } catch (error: any) {
                 console.error('Location error:', error)
-                Alert.alert('Error', error.message || 'Could not get current location. Please try again.')
+                let errorMessage = 'Could not get current location. Please try again.'
+                
+                if (error.message?.includes('Network')) {
+                  errorMessage = 'No internet connection. Please check your network settings.'
+                } else if (error.message?.includes('timeout')) {
+                  errorMessage = 'Location request timed out. Please check that GPS is enabled.'
+                } else if (error.message?.includes('denied')) {
+                  errorMessage = 'Location permission was denied. Please enable it in settings.'
+                }
+                
+                Alert.alert('Error', errorMessage)
               }
             }}
           >
