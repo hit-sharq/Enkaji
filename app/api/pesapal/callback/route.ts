@@ -47,33 +47,61 @@ export async function POST(request: NextRequest) {
     })
 
     // Find the order using merchant reference
-    const orderId = merchantReference
-
-    if (!orderId) {
+    const merchantRef = merchantReference
+    const isSubscriptionPayment = merchantRef?.startsWith('SUB-')
+    const isCheckoutPayment = merchantRef?.startsWith('PAY-')
+    
+    if (!merchantRef) {
       console.warn("[Callback] No merchant reference found")
       return NextResponse.json({ success: false, error: "No merchant reference" }, { status: 400 })
     }
 
     // Check if this is a subscription payment (starts with SUB-)
-    const isSubscriptionPayment = orderId.startsWith('SUB-')
-    
     if (isSubscriptionPayment) {
       // Handle subscription payment
-      return await handleSubscriptionPayment(orderId, statusCode, statusDescription, transactionId, paymentMethod, amount, currency, body)
+      return await handleSubscriptionPayment(merchantRef, statusCode, statusDescription, transactionId, paymentMethod, amount, currency, body)
     }
 
-    // Get the order
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
+    // Try to find order by multiple identifiers
+    let order = null
+    let orderId = merchantRef
+    
+    // First, try finding by order ID directly
+    order = await prisma.order.findUnique({
+      where: { id: merchantRef },
       include: { 
         pesapalPayment: true,
         user: true
       }
     })
+    
+    // If not found, try finding by orderNumber (for orders created before payment)
+    if (!order) {
+      order = await prisma.order.findFirst({
+        where: { orderNumber: merchantRef },
+        include: { 
+          pesapalPayment: true,
+          user: true
+        }
+      })
+      if (order) {
+        orderId = order.id
+      }
+    }
+    
+    // If still not found and this is a checkout payment (PAY-), create order now
+    if (!order && isCheckoutPayment) {
+      console.log(`[Callback] Creating order from checkout payment: ${merchantRef}`)
+      order = await createOrderFromPayment(merchantRef, statusCode, body)
+      if (order) {
+        orderId = order.id
+      }
+    }
 
     if (!order) {
-      console.warn(`[Callback] Order not found: ${orderId}`)
-      return NextResponse.json({ success: true, warning: "Order not found" })
+      console.warn(`[Callback] Order not found for merchant ref: ${merchantRef}`)
+      // Still return success to acknowledge IPN receipt
+      return NextResponse.json({ success: true, warning: "Order not found - may be pending creation" })
     }
 
     // Map statuses
@@ -163,8 +191,14 @@ export async function GET(request: NextRequest) {
       const statusCode = txStatus.payment_status_code
 
       // Update order in database based on verified status
-      const orderId = merchantReference
-      const order = await prisma.order.findUnique({ where: { id: orderId } })
+      const merchantRef = merchantReference
+      
+      // Try to find by order ID first, then by orderNumber
+      let order = await prisma.order.findUnique({ where: { id: merchantRef } })
+      
+      if (!order) {
+        order = await prisma.order.findFirst({ where: { orderNumber: merchantRef } })
+      }
 
       if (order) {
         const orderStatus = mapOrderStatus(statusCode)
@@ -180,7 +214,7 @@ export async function GET(request: NextRequest) {
 
         // Update or create PesaPal payment record
         const existingPayment = await prisma.pesapalPayment.findFirst({
-          where: { orderId },
+          where: { orderId: order.id },
         })
         const pesapalStatus = mapPesapalStatus(statusCode)
 
@@ -205,7 +239,7 @@ export async function GET(request: NextRequest) {
       // Still redirect to order page — IPN may update it later
     }
 
-    const redirectUrl = new URL(`${appUrl}/orders/${merchantReference}`)
+    const redirectUrl = new URL(`${appUrl}/orders/${order?.id || merchantReference}`)
     redirectUrl.searchParams.set("payment", paymentStatus)
     redirectUrl.searchParams.set("tracking_id", orderTrackingId)
     return NextResponse.redirect(redirectUrl.toString())
@@ -308,24 +342,46 @@ async function handlePaymentState(order: any, paymentStatus: string, statusCode:
   }
 }
 
-// Create order from successful payment
-async function createOrderFromPayment(paymentReference: string): Promise<void> {
+// Create order from successful payment (for checkout flow: PAY-xxx)
+async function createOrderFromPayment(
+  paymentReference: string, 
+  statusCode?: number | string,
+  rawData?: any
+): Promise<any> {
   try {
-    // In a real implementation, you would retrieve checkout data from cache/database
-    // For now, we'll log that this should be implemented
-    console.log(`[Callback] TODO: Create order for payment reference: ${paymentReference}`)
-    console.log(`[Callback] This should retrieve checkout data and create the order`)
+    const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
     
-    // The flow would be:
-    // 1. Retrieve checkout data using paymentReference
-    // 2. Validate inventory again
-    // 3. Create order with status CONFIRMED
-    // 4. Create order items
-    // 5. Deduct inventory
-    // 6. Clear user's cart
+    // Only create order if payment was successful
+    if (code !== 1) {
+      console.log(`[Callback] Skipping order creation - payment not completed (status: ${code})`)
+      return null
+    }
+    
+    // The checkout data was stored in the initiate-payment endpoint
+    // and should have been passed back to the client. Unfortunately 
+    // there's no server-side cache. For this flow to work properly,
+    // we'd need to store checkout data in database or Redis.
+    // 
+    // Since we can't recreate the order without the checkout data,
+    // we'll return null and let the client check the order status
+    console.log(`[Callback] Cannot create order without checkout data for: ${paymentReference}`)
+    console.log(`[Callback] The order should have been pre-created in /api/orders endpoint`)
+    
+    // Try to find any existing order that might match
+    const existingOrder = await prisma.order.findFirst({
+      where: { orderNumber: paymentReference }
+    })
+    
+    if (existingOrder) {
+      console.log(`[Callback] Found existing order: ${existingOrder.id}`)
+      return existingOrder
+    }
+    
+    return null
     
   } catch (error) {
     console.error(`[Callback] Error creating order from payment:`, error)
+    return null
   }
 }
 

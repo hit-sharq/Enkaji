@@ -198,12 +198,22 @@ export class PesapalService {
     if (!response.ok) {
       let error = { error: responseText }
       try {
-        error = JSON.parse(responseText)
+        if (responseText.trim()) {
+          error = JSON.parse(responseText)
+        }
       } catch {}
       throw new Error(`Pesapal submit failed (${response.status}): ${error.error || error.message || responseText.substring(0,200)}`)
     }
 
-    return JSON.parse(responseText)
+    if (!responseText.trim()) {
+      throw new Error('Pesapal submit returned empty response')
+    }
+
+    try {
+      return JSON.parse(responseText)
+    } catch {
+      throw new Error(`Invalid JSON response from Pesapal: ${responseText.substring(0, 200)}`)
+    }
   }
 
   async getTransactionStatus(orderTrackingId: string): Promise<any> {

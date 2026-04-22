@@ -318,6 +318,17 @@ class ApiClient {
     return response.data
   }
 
+  // Subscription (Seller)
+  async getSubscription() {
+    const response = await this.client.get('/api/seller/subscription')
+    return response.data
+  }
+
+  async updateSubscription(data: { planType: string; phoneNumber?: string }) {
+    const response = await this.client.post('/api/seller/subscription', data)
+    return response.data
+  }
+
   // Services
   async getServices(params?: {
     category?: string

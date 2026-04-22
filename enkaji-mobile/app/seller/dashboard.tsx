@@ -59,6 +59,7 @@ const STAT_CARDS = [
 
 const QUICK_ACTIONS = [
   { icon: 'plus-circle', label: 'Add Product', color: Colors.primary, route: '/seller/products/add' },
+  { icon: 'credit-card', label: 'Subscription', color: '#F59E0B', route: '/seller/subscription' },
   { icon: 'bar-chart-2', label: 'Analytics', color: '#8B5CF6', route: null },
   { icon: 'file-text', label: 'Payouts', color: '#10B981', route: '/seller/payouts' },
   { icon: 'settings', label: 'Settings', color: '#64748B', route: '/settings' },
