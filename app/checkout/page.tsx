@@ -60,10 +60,8 @@ export default function CheckoutPage() {
     setShippingCost(0)
   }
 
-  const cartTotal = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
   // Single source of truth for order totals
-  const { grandTotal } = calculateOrderTotals({
+  const { subtotal: cartTotal, grandTotal } = calculateOrderTotals({
     items: state.items,
     shippingCost,
     discountAmount,

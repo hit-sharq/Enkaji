@@ -35,7 +35,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
   const { state } = useCart()
   const { items: cartItems } = state
 
-  const { tax, grandTotal } = calculateOrderTotals({
+  const { subtotal, tax, insurance, grandTotal } = calculateOrderTotals({
     items: cartItems,
     shippingCost,
     discountAmount,
@@ -330,7 +330,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Subtotal</span>
-              <span>KSh {state.total.toLocaleString()}</span>
+              <span>KSh {subtotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Tax (16%)</span>
@@ -349,7 +349,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
             {insuranceEnabled && (
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Shipping Protection</span>
-                <span>KSh {Math.max(100, state.total * 0.02).toLocaleString()}</span>
+                <span>KSh {insurance.toLocaleString()}</span>
               </div>
             )}
             <div className="flex justify-between items-center mt-2 pt-2 border-t">
