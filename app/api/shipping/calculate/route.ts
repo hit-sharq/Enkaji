@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     const subtotal = orderValue
     const recommendedOption = quote.options.find(o => o.id === quote.recommended)
     const shippingCost = recommendedOption?.price || 0
-    const tax = Math.round(subtotal * 0.16) // 16% VAT
+    const tax = subtotal * 0.16 // 16% VAT — consistent with frontend
     const finalTotal = subtotal + shippingCost + tax
 
     return NextResponse.json({

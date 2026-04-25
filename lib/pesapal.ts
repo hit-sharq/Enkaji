@@ -29,12 +29,27 @@ export class PesapalService {
   private config: PesapalConfig
   private accessToken: string | null = null
   private tokenExpiry: Date | null = null
-  private ipnId: string | null = null
+  private ipnId: string = ''
 
   constructor(config: PesapalConfig) {
     this.config = config
     // Load IPN ID from environment if available
-    this.ipnId = process.env.PESAPAL_IPN_ID || null
+    this.ipnId = process.env.PESAPAL_IPN_ID || ''
+  }
+
+  private validateCredentials(): void {
+    if (!this.config.consumerKey || this.config.consumerKey.trim() === '') {
+      throw new Error(
+        'Pesapal credentials not configured. PESAPAL_CONSUMER_KEY is missing or empty. ' +
+        'Please check your .env file and ensure PESAPAL_CONSUMER_KEY and PESAPAL_CONSUMER_SECRET are set.'
+      )
+    }
+    if (!this.config.consumerSecret || this.config.consumerSecret.trim() === '') {
+      throw new Error(
+        'Pesapal credentials not configured. PESAPAL_CONSUMER_SECRET is missing or empty. ' +
+        'Please check your .env file and ensure PESAPAL_CONSUMER_KEY and PESAPAL_CONSUMER_SECRET are set.'
+      )
+    }
   }
 
   private generateSignature(method: string, url: string, timestamp: string, consumerKey: string): string {
@@ -49,6 +64,14 @@ export class PesapalService {
     if (this.accessToken && this.tokenExpiry && this.tokenExpiry > new Date()) {
       return this.accessToken
     }
+
+    // Validate credentials before making request
+    this.validateCredentials()
+
+    const isProduction = this.config.baseUrl.includes('pay.pesapal.com')
+    console.log(`[Pesapal] Environment: ${isProduction ? 'PRODUCTION' : 'SANDBOX'}`)
+    console.log(`[Pesapal] Base URL: ${this.config.baseUrl}`)
+    console.log(`[Pesapal] Consumer Key present: ${!!this.config.consumerKey}`)
 
     const timestamp = new Date().toISOString()
     const signature = this.generateSignature(
@@ -83,6 +106,16 @@ export class PesapalService {
       throw new Error(`Pesapal auth failed: Invalid JSON response`)
     }
 
+    // Check if Pesapal returned an error object instead of token
+    if (data.error || data.status === 'error' || data.status === 'failed') {
+      const errorMsg = data.error || data.message || data.status_description || JSON.stringify(data)
+      console.error('Pesapal auth returned error object:', data)
+      throw new Error(
+        `Pesapal auth failed: ${errorMsg}. ` +
+        `This usually means your Consumer Key/Secret is invalid or the credentials are not registered for this environment (${isProduction ? 'production' : 'sandbox'}).`
+      )
+    }
+
     const token = data.token || data.access_token || data.accessToken || data.AccessToken
     if (!token) {
       console.error('Pesapal auth response keys:', Object.keys(data))
@@ -93,7 +126,7 @@ export class PesapalService {
     this.tokenExpiry = new Date(Date.now() + 55 * 60 * 1000) // Token valid for ~55 minutes
 
     console.log('Pesapal token obtained successfully')
-    return this.accessToken
+    return token
   }
 
   async registerIPN(url: string): Promise<string> {
@@ -145,7 +178,7 @@ export class PesapalService {
     return ipnId || ''
   }
 
-  getIPNId(): string | null {
+  getIPNId(): string {
     return this.ipnId
   }
 
@@ -196,7 +229,7 @@ export class PesapalService {
     console.log('Pesapal submit response:', response.status, responseText.substring(0, 200))
 
     if (!response.ok) {
-      let error = { error: responseText }
+      let error: any = { error: responseText }
       try {
         if (responseText.trim()) {
           error = JSON.parse(responseText)
@@ -245,7 +278,7 @@ export class PesapalService {
     console.log('Pesapal get status response:', response.status, responseText.substring(0, 200))
 
     if (!response.ok) {
-      let error = { error: responseText }
+      let error: any = { error: responseText }
       try {
         error = JSON.parse(responseText)
       } catch {}

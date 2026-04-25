@@ -8,21 +8,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
+import { calculateOrderTotals } from "@/hooks/use-order-totals"
 import { ShieldCheck } from "lucide-react"
 
 interface CheckoutFormProps {
   onDestinationChange?: (destination: { country: string; city: string; state: string }) => void
   shippingCost?: number
+  discountAmount?: number
+  insuranceEnabled?: boolean
 }
 
-export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: CheckoutFormProps) {
+export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAmount = 0, insuranceEnabled = false }: CheckoutFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState("PESAPAL")
   const [shippingCountry, setShippingCountry] = useState("Kenya")
   const [shippingCity, setShippingCity] = useState("")
   const [shippingState, setShippingState] = useState("")
@@ -30,10 +30,14 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
   const router = useRouter()
 
   const { state } = useCart()
-  const { items: cartItems, total } = state
+  const { items: cartItems } = state
 
-  const tax = total * 0.16 // 16% VAT
-  const finalTotal = total + tax + shippingCost
+  const { tax, grandTotal } = calculateOrderTotals({
+    items: cartItems,
+    shippingCost,
+    discountAmount,
+    insuranceEnabled,
+  })
 
   // Handle destination changes
   const handleCountryChange = (value: string) => {
@@ -274,7 +278,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Subtotal</span>
-              <span>KSh {total.toLocaleString()}</span>
+              <span>KSh {state.total.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Tax (16%)</span>
@@ -284,9 +288,21 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
               <span className="text-sm text-gray-600">Shipping</span>
               <span>KSh {shippingCost.toLocaleString()}</span>
             </div>
+            {discountAmount > 0 && (
+              <div className="flex justify-between items-center text-green-600">
+                <span className="text-sm">Discount</span>
+                <span>− KSh {discountAmount.toLocaleString()}</span>
+              </div>
+            )}
+            {insuranceEnabled && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Shipping Protection</span>
+                <span>KSh {Math.max(100, state.total * 0.02).toLocaleString()}</span>
+              </div>
+            )}
             <div className="flex justify-between items-center mt-2 pt-2 border-t">
               <span className="font-semibold">Total</span>
-              <span className="font-bold text-lg">KSh {finalTotal.toLocaleString()}</span>
+              <span className="font-bold text-lg">KSh {grandTotal.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>
@@ -322,7 +338,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0 }: Checkout
         className="w-full bg-red-800 hover:bg-red-900 text-white" 
         size="lg"
       >
-        {isLoading ? "Processing..." : `Pay KSh ${finalTotal.toLocaleString()}`}
+        {isLoading ? "Processing..." : `Pay KSh ${grandTotal.toLocaleString()}`}
       </Button>
     </form>
   )

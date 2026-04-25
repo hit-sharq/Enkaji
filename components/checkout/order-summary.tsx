@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { formatDualCurrency } from "@/lib/currency"
 import { formatWeight } from "@/lib/shipping"
+import { calculateOrderTotals } from "@/hooks/use-order-totals"
 import { Weight, Package, Shield } from "lucide-react"
 
 interface OrderSummaryProps {
@@ -25,15 +26,15 @@ interface OrderSummaryProps {
   onInsuranceChange?: (enabled: boolean) => void
 }
 
-const INSURANCE_RATE = 0.02 // 2% of order value, min KES 100
-const MIN_INSURANCE_FEE = 100
-
 export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmount = 0, couponCode, insurance = 0, onInsuranceChange }: OrderSummaryProps) {
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
-  const tax = total * 0.16 // 16% VAT for Kenya
-  const insuranceFee = onInsuranceChange ? Math.max(MIN_INSURANCE_FEE, total * INSURANCE_RATE) : insurance
-  const finalTotal = Math.max(0, total + shippingCost + tax + insuranceFee - discountAmount)
+  const { tax, insurance: insuranceFee, grandTotal } = calculateOrderTotals({
+    items: cartItems,
+    shippingCost,
+    discountAmount,
+    insuranceEnabled: onInsuranceChange ? insurance === 1 : insurance > 0,
+  })
 
   return (
     <Card>
@@ -129,7 +130,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
 
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>{formatDualCurrency(finalTotal)}</span>
+            <span>{formatDualCurrency(grandTotal)}</span>
           </div>
         </div>
       </CardContent>

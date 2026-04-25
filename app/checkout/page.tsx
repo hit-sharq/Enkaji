@@ -1,18 +1,18 @@
 "use client"
 
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
 import { ShippingOptions } from "@/components/checkout/shipping-options"
 import { PromoCode } from "@/components/checkout/promo-code"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
+import { calculateOrderTotals } from "@/hooks/use-order-totals"
 
 export default function CheckoutPage() {
   const { state } = useCart()
   const router = useRouter()
-  
+
   const [shippingDestination, setShippingDestination] = useState({
     country: "",
     city: "",
@@ -62,6 +62,14 @@ export default function CheckoutPage() {
 
   const cartTotal = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
+  // Single source of truth for order totals
+  const { grandTotal } = calculateOrderTotals({
+    items: state.items,
+    shippingCost,
+    discountAmount,
+    insuranceEnabled: addInsurance,
+  })
+
   return (
     <div className="min-h-screen">
       <main className="container mx-auto px-4 py-8">
@@ -72,6 +80,8 @@ export default function CheckoutPage() {
             <CheckoutForm
               onDestinationChange={handleDestinationChange}
               shippingCost={shippingCost}
+              discountAmount={discountAmount}
+              insuranceEnabled={addInsurance}
             />
 
             <ShippingOptions

@@ -6,30 +6,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/components/providers/cart-provider"
 import { formatDualCurrency } from "@/lib/currency"
-import { calculateShippingCost, formatWeight } from "@/lib/shipping"
-import { Weight, Package, ShoppingBag } from "lucide-react"
+import { formatWeight } from "@/lib/shipping"
+import { calculateOrderTotals } from "@/hooks/use-order-totals"
+import { detectShippingZone, getShippingOptions } from "@/lib/shipping-enhanced"
+import { Weight, Package, ShoppingBag, Info } from "lucide-react"
 import Link from "next/link"
-
-type CartItem = { id: string; price: number; quantity: number; weight?: number }
 
 export function CartSummary() {
   const cartContext = useCart()
   const state = cartContext?.state
-  
+
   const items = state?.items || []
   const totalWeight = state?.totalWeight || 0
   const loading = state?.loading || false
 
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  
-  // Only calculate shipping when cart has items
+  // Use enhanced shipping with a default Nairobi estimate so cart and checkout are consistent
+  const zone = detectShippingZone("Kenya", "Nairobi")
+  const shippingOptions = getShippingOptions(zone, totalWeight, 0)
+  const estimatedShipping = shippingOptions[0]?.price || 0
+
+  const { subtotal, tax, shipping, grandTotal } = calculateOrderTotals({
+    items,
+    shippingCost: estimatedShipping,
+  })
+
   const showShipping = items.length > 0 && !loading
-  const { cost: shipping, tier } = showShipping 
-    ? calculateShippingCost(totalWeight)
-    : { cost: 0, tier: { name: "", cost: 0 } }
-    
-  const tax = subtotal * 0.16 // 16% VAT for Kenya
-  const finalTotal = subtotal + shipping + tax
 
   return (
     <Card>
@@ -55,9 +56,14 @@ export function CartSummary() {
             <div className="flex justify-between">
               <div className="flex items-center gap-1">
                 <Package className="h-4 w-4" />
-                <span>Shipping ({tier.name})</span>
+                <span>Shipping</span>
               </div>
               <span>{formatDualCurrency(shipping)}</span>
+            </div>
+
+            <div className="flex items-center gap-1 text-xs text-amber-600">
+              <Info className="h-3 w-3" />
+              <span>Shipping estimate based on Nairobi. Final cost calculated at checkout.</span>
             </div>
           </>
         ) : (
@@ -86,7 +92,7 @@ export function CartSummary() {
 
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span>{formatDualCurrency(finalTotal)}</span>
+          <span>{formatDualCurrency(grandTotal)}</span>
         </div>
 
         {items.length > 0 && !loading ? (

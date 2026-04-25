@@ -1,34 +1,20 @@
-<!-- # Fix Seller Product Edit 404 Issue
+<!-- # Fix Plan — Pesapal Auth & Order Totals Consistency
 
-## Status: In Progress
+## Issue 1: Pesapal Auth Failed
+- [x] 1.1 Add credential validation in `lib/pesapal.ts`
+- [x] 1.2 Improve error handling in `getAccessToken()` to surface Pesapal's actual error field
+- [x] 1.3 Add debug logging for environment mode and credential presence
 
-### Step 1: [COMPLETE] Add Debug Logs to Edit Page
-- Add console.logs to app/dashboard/products/[id]/edit/page.tsx:
-  * Log params.id
-  * Log user?.id, user?.role  
-  * Log product details if found (id, sellerId, isActive)
-  * Log ownership check result
-- Test edit flow, check server logs for exact failure point
+## Issue 2: Inconsistent Order Totals
+- [x] 2.1 Create shared `hooks/use-order-totals.ts` hook
+- [x] 2.2 Update `components/cart/cart-summary.tsx` to use shared hook and enhanced shipping
+- [x] 2.3 Update `components/checkout/order-summary.tsx` to use shared hook
+- [x] 2.4 Update `components/checkout/checkout-form.tsx` to use shared hook and remove inline hardcoded summary
+- [x] 2.5 Update `app/checkout/page.tsx` to pass consistent subtotal
+- [x] 2.6 Update `app/api/shipping/calculate/route.ts` to align tax calc with frontend
 
-### Step 2: [COMPLETE] Verify Product List → Edit Link Flow  
-- Created app/dashboard/products/page.tsx with product list
-- Edit URLs generated as `/dashboard/products/${product.id}/edit`
-- Product IDs from seller's products list match DB
-
-### Step 3: [PENDING] Check Data Integrity
-- Query DB for seller's products (check sellerId matches)
-- Verify subscription active (POST checks this for create)
-
-### Step 4: [PENDING] Enhanced Error Page
-- Replace notFound() with custom error page showing "Product not found or access denied"
-
-### Step 5: [PENDING] Test & Clean Debug Logs
-
-## Root Cause Analysis (from code review)
-- 404 from `notFound()` if `!product`
-- Ownership check `product.sellerId !== user.id` → redirect (not 404)
-- Schema: Product.sellerId → User.id directly (correct)
-- Auth works across API routes
-- Likely: Invalid ID or ownership mismatch in data
-
-Updated: $(date) -->
+## Follow-up
+- [ ] Run type check / build to verify no errors
+- [ ] Test checkout flow
+- [ ] Verify shipping totals match across cart, checkout, and API
+ --> -->
