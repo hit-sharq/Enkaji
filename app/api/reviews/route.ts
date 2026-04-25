@@ -153,6 +153,38 @@ export async function GET(request: NextRequest) {
       where.rating = Number.parseInt(rating)
     }
 
+    // Handle search
+    const search = searchParams.get("search")
+    if (search && search.trim()) {
+      const searchTerm = search.trim()
+      where.OR = [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { comment: { contains: searchTerm, mode: 'insensitive' } },
+      ]
+    }
+
+    // Handle sortBy
+    const sortBy = searchParams.get("sortBy") || "newest"
+    let orderBy: any = { createdAt: "desc" }
+    switch (sortBy) {
+      case "oldest":
+        orderBy = { createdAt: "asc" }
+        break
+      case "highest":
+        orderBy = { rating: "desc" }
+        break
+      case "lowest":
+        orderBy = { rating: "asc" }
+        break
+      case "helpful":
+        orderBy = { helpfulCount: "desc" }
+        break
+      case "newest":
+      default:
+        orderBy = { createdAt: "desc" }
+        break
+    }
+
     // Get reviews with pagination
     const [reviews, totalCount] = await Promise.all([
       db.review.findMany({
@@ -172,9 +204,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy,
         skip,
         take: limit,
       }),

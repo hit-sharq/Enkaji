@@ -141,6 +141,16 @@ class ApiClient {
     return response.data
   }
 
+  // Shipping
+  async calculateShipping(data: {
+    items: Array<{ id: string; weight: number; value: number }>
+    destination: { country: string; city: string; state?: string }
+    cod?: boolean
+  }) {
+    const response = await this.client.post('/api/shipping/calculate', data)
+    return response.data
+  }
+
   // Favorites
   async getFavorites() {
     const response = await this.client.get('/api/favorites')

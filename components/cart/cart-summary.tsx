@@ -20,10 +20,14 @@ export function CartSummary() {
   const totalWeight = state?.totalWeight || 0
   const loading = state?.loading || false
 
-  // Use enhanced shipping with a default Nairobi estimate so cart and checkout are consistent
-  const zone = detectShippingZone("Kenya", "Nairobi")
-  const shippingOptions = getShippingOptions(zone, totalWeight, 0)
-  const estimatedShipping = shippingOptions[0]?.price || 0
+  // Only calculate shipping estimate when cart has items
+  const estimatedShipping = (items.length > 0 && !loading)
+    ? (() => {
+        const zone = detectShippingZone("Kenya", "Nairobi")
+        const shippingOptions = getShippingOptions(zone, totalWeight, 0)
+        return shippingOptions[0]?.price || 0
+      })()
+    : 0
 
   const { subtotal, tax, shipping, grandTotal } = calculateOrderTotals({
     items,

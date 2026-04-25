@@ -23,9 +23,12 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAmount = 0, insuranceEnabled = false }: CheckoutFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isLocating, setIsLocating] = useState(false)
   const [shippingCountry, setShippingCountry] = useState("Kenya")
   const [shippingCity, setShippingCity] = useState("")
   const [shippingState, setShippingState] = useState("")
+  const [shippingAddressLine, setShippingAddressLine] = useState("")
+  const [shippingZipCode, setShippingZipCode] = useState("")
   const { toast } = useToast()
   const router = useRouter()
 
@@ -53,6 +56,14 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
   const handleStateChange = (value: string) => {
     setShippingState(value)
     notifyDestinationChange(shippingCountry, shippingCity, value)
+  }
+
+  const handleAddressChange = (value: string) => {
+    setShippingAddressLine(value)
+  }
+
+  const handleZipChange = (value: string) => {
+    setShippingZipCode(value)
   }
 
   const notifyDestinationChange = (country: string, city: string, state: string) => {
@@ -158,79 +169,114 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
 
           <div>
             <Label htmlFor="address">Address</Label>
-            <Input id="address" name="address" required />
+            <Input 
+              id="address" 
+              name="address" 
+              required 
+              value={shippingAddressLine}
+              onChange={(e) => handleAddressChange(e.target.value)}
+              placeholder="Street address"
+            />
           </div>
-
 
           <div className="space-y-4">
             <Button 
               type="button" 
               variant="outline" 
+              disabled={isLocating}
+              onClick={() => {
+                if (!navigator.geolocation) {
+                  toast({
+                    title: "Location Not Supported",
+                    description: "Your browser does not support geolocation. Please enter your address manually.",
+                    variant: "destructive",
+                  })
+                  return
+                }
 
-              onClick={async () => {
-                if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                      try {
-                        const response = await fetch(
-                          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`
-                        )
-                        const data: any = await response.json()
+                setIsLocating(true)
+                navigator.geolocation.getCurrentPosition(
+                  async (position) => {
+                    try {
+                      const response = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+                        { headers: { 'Accept-Language': 'en' } }
+                      )
+                      if (!response.ok) {
+                        throw new Error(`Geocoding failed: ${response.status}`)
+                      }
+                      const data: any = await response.json()
 
-                        if (data.address) {
-                          const address = data.address
+                      if (data.address) {
+                        const address = data.address
 
-                          // Extract street address
-                          const street = address.road || address.pedestrian || address.footway || address.living_street || ''
-                          const addressLine1 = street || data.display_name?.split(',')[0] || ''
+                        // Extract street address
+                        const street = address.road || address.pedestrian || address.footway || address.living_street || ''
+                        const addressLine1 = street || data.display_name?.split(',')[0] || ''
 
-                          // Extract city/town
-                          const city = address.city || address.town || address.municipality || address.village || ''
+                        // Extract city/town
+                        const city = address.city || address.town || address.municipality || address.village || ''
 
-                          // Extract state/county
-                          const state = address.state || address.county || address.province || ''
+                        // Extract state/county
+                        const state = address.state || address.county || address.province || ''
 
-                          // Extract postal code
-                          const postcode = address.postcode || ''
+                        // Extract postal code
+                        const postcode = address.postcode || ''
 
-                          // Update React state (updates Input fields automatically)
-                          setShippingCity(city)
-                          setShippingState(state)
+                        // Extract country
+                        const country = address.country || 'Kenya'
 
-                          // Notify parent of destination change
-                          notifyDestinationChange(shippingCountry, city, state)
-
-                          toast({
-                            title: "Location Set",
-                            description: `Address: ${addressLine1}, ${city}`,
-                          })
-                        } else {
-                          toast({
-                            title: "Location Found",
-                            description: data.display_name,
-                          })
+                        // Update all React state fields
+                        setShippingAddressLine(addressLine1)
+                        setShippingCity(city)
+                        setShippingState(state)
+                        setShippingZipCode(postcode)
+                        if (country && country !== shippingCountry) {
+                          setShippingCountry(country)
                         }
-                      } catch (err) {
-                        console.error('Geocoding error:', err)
+
+                        // Notify parent of destination change (use latest country)
+                        notifyDestinationChange(country || shippingCountry, city, state)
+
                         toast({
-                          title: "Location Error",
-                          description: "Could not reverse geocode location",
-                          variant: "destructive",
+                          title: "Location Set",
+                          description: `Address: ${addressLine1}, ${city}`,
+                        })
+                      } else {
+                        toast({
+                          title: "Location Found",
+                          description: data.display_name || "Location details not available",
                         })
                       }
-                    },
-                    () => toast({
+                    } catch (err) {
+                      console.error('Geocoding error:', err)
+                      toast({
+                        title: "Location Error",
+                        description: "Could not reverse geocode location. Please enter manually.",
+                        variant: "destructive",
+                      })
+                    } finally {
+                      setIsLocating(false)
+                    }
+                  },
+                  (err) => {
+                    setIsLocating(false)
+                    let message = "Please enable location access in your browser settings."
+                    if (err.code === 1) message = "Location permission was denied. Please enable it in your browser settings."
+                    if (err.code === 2) message = "Location unavailable. Please check your device settings."
+                    if (err.code === 3) message = "Location request timed out. Please try again."
+                    toast({
                       title: "Location Error",
-                      description: "Please enable location access",
+                      description: message,
                       variant: "destructive",
                     })
-                  )
-                }
+                  },
+                  { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+                )
               }}
-
               className="w-full"
             >
-              📍 Use Current Location
+              {isLocating ? "📍 Getting Location..." : "📍 Use Current Location"}
             </Button>
             <div>
               <Label htmlFor="city">City</Label>
@@ -259,7 +305,13 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="zipCode">ZIP/Postal Code</Label>
-              <Input id="zipCode" name="zipCode" />
+              <Input 
+                id="zipCode" 
+                name="zipCode" 
+                value={shippingZipCode}
+                onChange={(e) => handleZipChange(e.target.value)}
+                placeholder="00100"
+              />
             </div>
             <div>
               <Label htmlFor="country">Country</Label>

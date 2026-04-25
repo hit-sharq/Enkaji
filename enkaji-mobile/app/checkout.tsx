@@ -24,10 +24,12 @@ export default function CheckoutScreen() {
   const router = useRouter()
   const { isSignedIn } = useAuth()
   const { user: clerkUser } = useUser()
-  const { items, totalItems, totalPrice, clearCart } = useCartStore()
+  const { items, totalItems, totalPrice, totalWeight, clearCart } = useCartStore()
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('PESAPAL')
+  const [shippingCost, setShippingCost] = useState(0)
+  const [shippingLoading, setShippingLoading] = useState(false)
   const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
     lastName: '',
@@ -80,8 +82,46 @@ export default function CheckoutScreen() {
     }
   }, [clerkUser])
 
-  const shippingCost = totalPrice > 5000 ? 0 : 500
-  const tax = Math.round(totalPrice * 0.16)
+  // Fetch real shipping cost when address changes
+  useEffect(() => {
+    const fetchShipping = async () => {
+      if (!shippingAddress.city || !shippingAddress.country || items.length === 0) {
+        setShippingCost(0)
+        return
+      }
+      setShippingLoading(true)
+      try {
+        const response = await api.calculateShipping({
+          items: items.map((item) => ({
+            id: item.productId,
+            weight: item.product?.weight || 0.5,
+            value: (item.product?.price || 0) * item.quantity,
+          })),
+          destination: {
+            country: shippingAddress.country,
+            city: shippingAddress.city,
+            state: shippingAddress.state,
+          },
+        })
+        if (response.success && response.data?.shipping?.options?.length > 0) {
+          const recommended = response.data.shipping.options.find((o: any) => o.isRecommended)
+          setShippingCost(recommended?.price || response.data.shipping.options[0].price)
+        } else {
+          // Fallback: free shipping over 5000, else 500
+          setShippingCost(totalPrice > 5000 ? 0 : 500)
+        }
+      } catch (error) {
+        console.error('Shipping calculation error:', error)
+        setShippingCost(totalPrice > 5000 ? 0 : 500)
+      } finally {
+        setShippingLoading(false)
+      }
+    }
+    fetchShipping()
+  }, [shippingAddress.city, shippingAddress.country, shippingAddress.state, items, totalPrice])
+
+  // Consistent tax calculation (no rounding — same as web)
+  const tax = totalPrice * 0.16
   const orderTotal = totalPrice + shippingCost + tax
 
   const handlePlaceOrder = async () => {
@@ -475,9 +515,13 @@ export default function CheckoutScreen() {
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Shipping</Text>
-            <Text style={[styles.summaryValue, shippingCost === 0 && styles.freeShipping]}>
-              {shippingCost === 0 ? 'Free' : `KES ${shippingCost.toLocaleString()}`}
-            </Text>
+            {shippingLoading ? (
+              <ActivityIndicator size="small" color={Colors.primary} />
+            ) : (
+              <Text style={[styles.summaryValue, shippingCost === 0 && styles.freeShipping]}>
+                {shippingCost === 0 ? 'Free' : `KES ${shippingCost.toLocaleString()}`}
+              </Text>
+            )}
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Tax (16%)</Text>

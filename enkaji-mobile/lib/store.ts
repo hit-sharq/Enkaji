@@ -41,6 +41,7 @@ interface CartState {
   isLoading: boolean
   totalItems: number
   totalPrice: number
+  totalWeight: number
   setItems: (items: CartItem[]) => void
   setLoading: (loading: boolean) => void
   addItem: (item: CartItem) => void
@@ -49,46 +50,50 @@ interface CartState {
   clearCart: () => void
 }
 
+function calculateCartTotals(items: CartItem[]) {
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
+  const totalPrice = items.reduce((sum, item) => sum + ((item.product?.price || 0) * item.quantity), 0)
+  const totalWeight = items.reduce((sum, item) => sum + ((item.product?.weight || 0) * item.quantity), 0)
+  return { totalItems, totalPrice, totalWeight }
+}
+
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isLoading: false,
   totalItems: 0,
   totalPrice: 0,
+  totalWeight: 0,
   setItems: (items) => {
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-    const totalPrice = items.reduce((sum, item) => sum + ((item.product?.price || 0) * item.quantity), 0)
-    set({ items, totalItems, totalPrice })
+    const totals = calculateCartTotals(items)
+    set({ items, ...totals })
   },
   setLoading: (isLoading) => set({ isLoading }),
   addItem: (item) => {
     const items = [...get().items]
     const existingIndex = items.findIndex(i => i.productId === item.productId)
-    
+
     if (existingIndex >= 0) {
       items[existingIndex].quantity += item.quantity
     } else {
       items.push(item)
     }
-    
-    const totalItems = items.reduce((sum, i) => sum + i.quantity, 0)
-    const totalPrice = items.reduce((sum, i) => sum + ((i.product?.price || 0) * i.quantity), 0)
-    set({ items, totalItems, totalPrice })
+
+    const totals = calculateCartTotals(items)
+    set({ items, ...totals })
   },
   removeItem: (itemId) => {
     const items = get().items.filter(i => i.id !== itemId)
-    const totalItems = items.reduce((sum, i) => sum + i.quantity, 0)
-    const totalPrice = items.reduce((sum, i) => sum + ((i.product?.price || 0) * i.quantity), 0)
-    set({ items, totalItems, totalPrice })
+    const totals = calculateCartTotals(items)
+    set({ items, ...totals })
   },
   updateQuantity: (itemId, quantity) => {
-    const items = get().items.map(i => 
+    const items = get().items.map(i =>
       i.id === itemId ? { ...i, quantity } : i
     )
-    const totalItems = items.reduce((sum, i) => sum + i.quantity, 0)
-    const totalPrice = items.reduce((sum, i) => sum + ((i.product?.price || 0) * i.quantity), 0)
-    set({ items, totalItems, totalPrice })
+    const totals = calculateCartTotals(items)
+    set({ items, ...totals })
   },
-  clearCart: () => set({ items: [], totalItems: 0, totalPrice: 0 }),
+  clearCart: () => set({ items: [], totalItems: 0, totalPrice: 0, totalWeight: 0 }),
 }))
 
 // Products Store
