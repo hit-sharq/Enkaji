@@ -9,6 +9,8 @@ import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Colors } from '@/lib/theme'
 import { useAuthStore } from '@/lib/store'
+import { useAppUpdates } from '@/hooks/use-app-updates'
+import { UpdateBanner } from '@/components/update-banner'
 import api from '@/lib/api'
 import type { UserRole } from '@/types'
 
@@ -92,6 +94,9 @@ role: ((clerkUser.publicMetadata?.role as any) || 'BUYER') as UserRole,
 function RootLayoutContent() {
   const { isLoaded } = useAuth()
   const [fontsLoaded] = useFonts({})
+  
+  // Initialize app update checking
+  useAppUpdates()
 
   useEffect(() => {
     if (isLoaded && fontsLoaded) {
@@ -111,6 +116,7 @@ function RootLayoutContent() {
     <>
       <StatusBar style="light" />
       <UserSyncComponent />
+      <UpdateBanner />
       <Stack
         screenOptions={{
           headerShown: false,
