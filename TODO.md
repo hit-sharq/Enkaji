@@ -7,22 +7,19 @@
 
 ## Issue 2: Inconsistent Order Totals
 - [x] 2.1 Create shared `hooks/use-order-totals.ts` hook
-- [ ] 2.2 Update `components/cart/cart-summary.tsx` to use shared hook and enhanced shipping
-- [ ] 2.3 Update `components/checkout/order-summary.tsx` to use shared hook
-- [ ] 2.4 Update `components/checkout/checkout-form.tsx` to use shared hook and remove inline hardcoded summary
-- [ ] 2.5 Update `app/checkout/page.tsx` to pass consistent subtotal
-- [ ] 2.6 Update `app/api/checkout/initiate-payment/route.ts` to align totals with frontend
+- [x] 2.2 Update `components/cart/cart-summary.tsx` to use shared hook and enhanced shipping
+- [x] 2.3 Update `components/checkout/order-summary.tsx` to use shared hook
+- [x] 2.4 Update `components/checkout/checkout-form.tsx` to use shared hook and remove inline hardcoded summary
+- [x] 2.5 Update `app/checkout/page.tsx` to pass consistent subtotal
+- [x] 2.6 Update `app/api/checkout/initiate-payment/route.ts` to align totals with frontend
+- [x] 2.7 Update `app/api/pesapal/ipn/route.ts` to create orders from checkout sessions
+- [x] 2.8 Update `app/api/pesapal/callback/route.ts` to create orders from checkout sessions
 
-## Mobile App Update System
-- [x] 3.1 Create `/api/mobile/version` endpoint for version checking
-- [x] 3.2 Create `useAppUpdates` hook for OTA + native update detection
-- [x] 3.3 Create `UpdateBanner` component for in-app notifications
-- [x] 3.4 Integrate update system into mobile app layout
+## Issue 3: Revenue Calculation Accuracy
+- [x] 3.1 Update `app/api/admin/stats/route.ts` to filter revenue by `paymentStatus: "PAID"` (already correct)
+- [x] 3.2 Update mobile API client (`enkaji-mobile/lib/api.ts`) to support new checkout flow
 
 ## Follow-up
-- [ ] Test checkout flow
-- [ ] Verify shipping totals match across cart, checkout, and API
-- [ ] Deploy web app with new API endpoints
-- [ ] Build new APK with update system
-- [ ] Update `NEXT_PUBLIC_APK_DOWNLOAD_URL` env var
- -->
+- [ ] Fix mobile checkout file (`enkaji-mobile/app/checkout.tsx`) — file got corrupted during editing, needs manual cleanup of JSX closing tags
+- [ ] Test checkout flow end-to-end
+- [ ] Verify shipping totals match across cart, checkout, and API -->

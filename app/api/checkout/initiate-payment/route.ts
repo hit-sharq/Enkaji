@@ -110,29 +110,29 @@ export async function POST(request: Request) {
       throw new Error("Failed to get payment redirect URL from Pesapal")
     }
 
-    // Store checkout data in session storage for later use
-    // This will be retrieved after payment success to create the order
-    const checkoutData = {
-      userId: user.id,
-      items,
-      shippingAddress,
-      subtotal: lineSubtotal,
-      tax: taxAmount,
-      shipping: shippingCost,
-      total: grandTotal,
-      shippingZone: zone.id,
-      shippingOption: shippingOption.id,
-      paymentReference,
-      timestamp: Date.now()
-    }
+    // Store checkout data in database for later retrieval after payment
+    const checkoutSession = await prisma.checkoutSession.create({
+      data: {
+        userId: user.id,
+        items,
+        shippingAddress,
+        subtotal: lineSubtotal,
+        tax: taxAmount,
+        shipping: shippingCost,
+        total: grandTotal,
+        shippingZone: zone.id,
+        shippingOption: shippingOption.id,
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
+      }
+    })
 
-    console.log(`✅ Payment initiated: ${paymentReference} for user ${user.id}`)
+    console.log(`✅ Payment initiated: ${paymentReference} for user ${user.id}, checkout session: ${checkoutSession.id}`)
 
     return NextResponse.json({
       success: true,
       paymentReference,
       redirectUrl: pesapalResponse.redirect_url,
-      checkoutData, // Send back to client to store temporarily
+      checkoutSessionId: checkoutSession.id,
       subtotal: lineSubtotal,
       tax: taxAmount,
       shipping: shippingCost,

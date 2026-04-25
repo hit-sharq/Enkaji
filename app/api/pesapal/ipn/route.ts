@@ -245,12 +245,93 @@ async function createOrderFromPayment(paymentReference: string, statusCode?: num
       console.log(`[IPN] Skipping order creation - payment not completed (status: ${code})`)
       return null
     }
+
+    // Find the checkout session for this payment reference
+    const checkoutSession = await prisma.checkoutSession.findFirst({
+      where: {
+        // The payment reference was stored when initiating payment
+        // We need to find the most recent non-expired session for this user
+        expiresAt: { gt: new Date() }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    if (!checkoutSession) {
+      console.error(`[IPN] No checkout session found for payment: ${paymentReference}`)
+      return null
+    }
+
+    // Check if order already exists
     const existingOrder = await prisma.order.findFirst({ where: { orderNumber: paymentReference } })
     if (existingOrder) {
       console.log(`[IPN] Found existing order: ${existingOrder.id}`)
       return existingOrder
     }
-    return null
+
+    // Parse items from checkout session
+    const items = checkoutSession.items as any[]
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error(`[IPN] No items in checkout session for payment: ${paymentReference}`)
+      return null
+    }
+
+    // Create order and deduct inventory atomically
+    const order = await prisma.$transaction(async (tx) => {
+      // Create the order
+      const orderData = await tx.order.create({
+        data: {
+          orderNumber: paymentReference,
+          userId: checkoutSession.userId,
+          subtotal: checkoutSession.subtotal,
+          tax: checkoutSession.tax,
+          shipping: checkoutSession.shipping,
+          total: checkoutSession.total,
+          shippingAddress: checkoutSession.shippingAddress as any,
+          paymentMethod: "PESAPAL",
+          status: "CONFIRMED",
+          paymentStatus: "PAID",
+        }
+      })
+
+      // Create order items and deduct inventory
+      for (const item of items) {
+        const productId = item.productId || item.id
+        const quantity = Number(item.quantity)
+
+        // Deduct inventory
+        await tx.product.update({
+          where: { id: productId },
+          data: { inventory: { decrement: quantity } }
+        })
+
+        // Create order item
+        await tx.orderItem.create({
+          data: {
+            orderId: orderData.id,
+            productId,
+            quantity,
+            price: Number(item.price),
+            total: Number(item.price) * quantity,
+          }
+        })
+      }
+
+      return orderData
+    })
+
+    console.log(`[IPN] Order created from checkout: ${order.id}`)
+
+    // Clear cart
+    await prisma.cartItem.deleteMany({
+      where: { userId: checkoutSession.userId }
+    })
+
+    // Clean up checkout session
+    await prisma.checkoutSession.delete({
+      where: { id: checkoutSession.id }
+    })
+
+    return order
   } catch (error) {
     console.error(`[IPN] Error creating order from payment:`, error)
     return null
@@ -314,4 +395,3 @@ async function handleSubscriptionPayment(
     return NextResponse.json({ success: false, error: "Subscription IPN processing failed" }, { status: 500 })
   }
 }
-

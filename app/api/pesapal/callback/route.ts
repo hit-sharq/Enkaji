@@ -184,6 +184,8 @@ export async function GET(request: NextRequest) {
 
     // Verify the transaction status directly with PesaPal
     let paymentStatus: "completed" | "pending" | "failed" = "pending"
+    let order = null
+
     try {
       const txStatus = await pesapalService.getTransactionStatus(orderTrackingId)
       console.log("[Callback] PesaPal transaction status:", txStatus)
@@ -194,7 +196,7 @@ export async function GET(request: NextRequest) {
       const merchantRef = merchantReference
       
       // Try to find by order ID first, then by orderNumber
-      let order = await prisma.order.findUnique({ where: { id: merchantRef } })
+      order = await prisma.order.findUnique({ where: { id: merchantRef } })
       
       if (!order) {
         order = await prisma.order.findFirst({ where: { orderNumber: merchantRef } })
@@ -205,7 +207,7 @@ export async function GET(request: NextRequest) {
         const orderPaymentStatus = mapOrderPaymentStatus(statusCode)
 
         await prisma.order.update({
-          where: { id: orderId },
+          where: { id: order.id },
           data: {
             status: orderStatus,
             paymentStatus: orderPaymentStatus,
@@ -357,17 +359,20 @@ async function createOrderFromPayment(
       return null
     }
     
-    // The checkout data was stored in the initiate-payment endpoint
-    // and should have been passed back to the client. Unfortunately 
-    // there's no server-side cache. For this flow to work properly,
-    // we'd need to store checkout data in database or Redis.
-    // 
-    // Since we can't recreate the order without the checkout data,
-    // we'll return null and let the client check the order status
-    console.log(`[Callback] Cannot create order without checkout data for: ${paymentReference}`)
-    console.log(`[Callback] The order should have been pre-created in /api/orders endpoint`)
-    
-    // Try to find any existing order that might match
+    // Find the checkout session for this payment reference
+    const checkoutSession = await prisma.checkoutSession.findFirst({
+      where: {
+        expiresAt: { gt: new Date() }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    if (!checkoutSession) {
+      console.error(`[Callback] No checkout session found for payment: ${paymentReference}`)
+      return null
+    }
+
+    // Check if order already exists
     const existingOrder = await prisma.order.findFirst({
       where: { orderNumber: paymentReference }
     })
@@ -376,8 +381,71 @@ async function createOrderFromPayment(
       console.log(`[Callback] Found existing order: ${existingOrder.id}`)
       return existingOrder
     }
-    
-    return null
+
+    // Parse items from checkout session
+    const items = checkoutSession.items as any[]
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error(`[Callback] No items in checkout session for payment: ${paymentReference}`)
+      return null
+    }
+
+    // Create order and deduct inventory atomically
+    const order = await prisma.$transaction(async (tx) => {
+      // Create the order
+      const orderData = await tx.order.create({
+        data: {
+          orderNumber: paymentReference,
+          userId: checkoutSession.userId,
+          subtotal: checkoutSession.subtotal,
+          tax: checkoutSession.tax,
+          shipping: checkoutSession.shipping,
+          total: checkoutSession.total,
+          shippingAddress: checkoutSession.shippingAddress as any,
+          paymentMethod: "PESAPAL",
+          status: "CONFIRMED",
+          paymentStatus: "PAID",
+        }
+      })
+
+      // Create order items and deduct inventory
+      for (const item of items) {
+        const productId = item.productId || item.id
+        const quantity = Number(item.quantity)
+
+        // Deduct inventory
+        await tx.product.update({
+          where: { id: productId },
+          data: { inventory: { decrement: quantity } }
+        })
+
+        // Create order item
+        await tx.orderItem.create({
+          data: {
+            orderId: orderData.id,
+            productId,
+            quantity,
+            price: Number(item.price),
+            total: Number(item.price) * quantity,
+          }
+        })
+      }
+
+      return orderData
+    })
+
+    console.log(`[Callback] Order created from checkout: ${order.id}`)
+
+    // Clear cart
+    await prisma.cartItem.deleteMany({
+      where: { userId: checkoutSession.userId }
+    })
+
+    // Clean up checkout session
+    await prisma.checkoutSession.delete({
+      where: { id: checkoutSession.id }
+    })
+
+    return order
     
   } catch (error) {
     console.error(`[Callback] Error creating order from payment:`, error)
@@ -501,4 +569,3 @@ async function handleSubscriptionPayment(
     return NextResponse.json({ success: false, error: "Subscription callback processing failed" }, { status: 500 })
   }
 }
-

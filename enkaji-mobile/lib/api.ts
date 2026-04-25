@@ -133,6 +133,18 @@ class ApiClient {
     return response.data
   }
 
+  // NEW: Initiate checkout payment (creates checkout session, returns Pesapal redirect)
+  async initiateCheckoutPayment(data: {
+    items: Array<{ productId: string; quantity: number; price: number }>
+    shippingAddress: any
+    selectedShippingOption?: string | null
+    paymentMethod: string
+  }) {
+    const response = await this.client.post('/api/checkout/initiate-payment', data)
+    return response.data
+  }
+
+  // LEGACY: Direct Pesapal payment for existing orders
   async initiatePesapalPayment(orderId: string) {
     const response = await this.client.post('/api/pesapal/submit-order', {
       orderId,
@@ -483,4 +495,3 @@ class ApiClient {
 
 export const api = new ApiClient()
 export default api
-

@@ -143,65 +143,69 @@ export default function CheckoutScreen() {
 
     setIsProcessing(true)
     try {
-       const formattedShipping = {
-         firstName: shippingAddress.firstName,
-         lastName: shippingAddress.lastName,
-         address: shippingAddress.address1,
-         address2: shippingAddress.address2,
-         city: shippingAddress.city,
-         state: shippingAddress.state,
-         zipCode: shippingAddress.postalCode,
-         phone: shippingAddress.phone,
-         country: shippingAddress.country,
-       }
-
-      const orderData = {
-        items: items.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.product?.price || 0,
-        })),
-        shippingAddress: formattedShipping,
-        billingAddress: formattedShipping,
-        paymentMethod,
-        subtotal: totalPrice,
-        tax,
-        shipping: shippingCost,
-        total: orderTotal,
+      const formattedShipping = {
+        firstName: shippingAddress.firstName,
+        lastName: shippingAddress.lastName,
+        address: shippingAddress.address1,
+        address2: shippingAddress.address2,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        zipCode: shippingAddress.postalCode,
+        phone: shippingAddress.phone,
+        country: shippingAddress.country,
       }
-
-      const orderResponse = await api.createOrder(orderData)
-
-      if (!orderResponse.success || !orderResponse.data?.id) {
-        throw new Error(orderResponse.error || 'Failed to create order')
-      }
-
-      const orderId = orderResponse.data.id
 
       if (paymentMethod === 'PESAPAL') {
-        const pesapalResponse = await api.initiatePesapalPayment(orderId)
+        // NEW FLOW: initiate payment WITHOUT creating order
+        const checkoutData = {
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.product?.price || 0,
+          })),
+          shippingAddress: formattedShipping,
+          selectedShippingOption: null,
+          paymentMethod: 'PESAPAL',
+        }
 
-        if (pesapalResponse.redirect_url || pesapalResponse.data?.redirect_url) {
-          const redirectUrl =
-            pesapalResponse.redirect_url || pesapalResponse.data?.redirect_url
+        const response = await api.initiateCheckoutPayment(checkoutData)
+
+        if (response.success && response.redirectUrl) {
           clearCart()
           router.replace({
             pathname: '/payment-webview',
-            params: { url: redirectUrl, orderId },
+            params: { url: response.redirectUrl, paymentReference: response.paymentReference },
           })
         } else {
-          clearCart()
-          Alert.alert(
-            'Order Placed!',
-            'Your order has been placed. Our team will contact you for payment.',
-            [{ text: 'View Orders', onPress: () => router.replace('/(tabs)/orders') }]
-          )
+          throw new Error(response.error || 'Failed to initiate payment')
         }
       } else {
+        // COD / other — create order directly
+        const orderData = {
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.product?.price || 0,
+          })),
+          shippingAddress: formattedShipping,
+          billingAddress: formattedShipping,
+          paymentMethod,
+          subtotal: totalPrice,
+          tax,
+          shipping: shippingCost,
+          total: orderTotal,
+        }
+
+        const orderResponse = await api.createOrder(orderData)
+
+        if (!orderResponse.success || !orderResponse.data?.id) {
+          throw new Error(orderResponse.error || 'Failed to create order')
+        }
+
         clearCart()
         Alert.alert(
           'Order Placed!',
-          `Your order has been placed. Please transfer KES ${orderTotal.toLocaleString()} to our bank account.\n\nOrder #${orderResponse.data?.orderNumber || orderId}`,
+          `Your order has been placed.\n\nOrder #${orderResponse.data?.orderNumber || orderResponse.data?.id}`,
           [{ text: 'View Orders', onPress: () => router.replace('/(tabs)/orders') }]
         )
       }

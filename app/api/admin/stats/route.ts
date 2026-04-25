@@ -45,10 +45,11 @@ export async function GET() {
     stats.totalOrders = totalOrders
     stats.pendingApprovals = pendingProducts
 
-    // Safe revenue calc
+    // Safe revenue calc — ONLY count orders with paymentStatus = PAID
     try {
       const revenueResult = await prisma.order.aggregate({
-        _sum: { total: true }
+        _sum: { total: true },
+        where: { paymentStatus: "PAID" }
       })
       stats.totalRevenue = Number(revenueResult._sum.total || 0)
     } catch (revenueError) {
