@@ -13,6 +13,20 @@ export interface PesapalConfig {
 // Determine environment from env var (default to sandbox for safety)
 const isProduction = process.env.PESAPAL_ENVIRONMENT === 'production'
 
+// Debug: log env state at module load (only once)
+if (typeof window === 'undefined') {
+  console.log('[Pesapal Config] Environment check:', {
+    PESAPAL_ENVIRONMENT: process.env.PESAPAL_ENVIRONMENT,
+    isProduction,
+    keyPresent: !!process.env.PESAPAL_CONSUMER_KEY,
+    keyLength: process.env.PESAPAL_CONSUMER_KEY?.length || 0,
+    secretPresent: !!process.env.PESAPAL_CONSUMER_SECRET,
+    secretLength: process.env.PESAPAL_CONSUMER_SECRET?.length || 0,
+    callbackUrl: process.env.PESAPAL_CALLBACK_URL,
+    ipnUrl: process.env.PESAPAL_IPN_URL,
+  })
+}
+
 // Correct URLs based on Pesapal official documentation
 export const pesapalConfig: PesapalConfig = {
   consumerKey: process.env.PESAPAL_CONSUMER_KEY || '',
@@ -108,11 +122,12 @@ export class PesapalService {
 
     // Check if Pesapal returned an error object instead of token
     if (data.error || data.status === 'error' || data.status === 'failed') {
-      const errorMsg = data.error || data.message || data.status_description || JSON.stringify(data)
+      const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : (data.error || data.message || data.status_description || JSON.stringify(data))
       console.error('Pesapal auth returned error object:', data)
       throw new Error(
         `Pesapal auth failed: ${errorMsg}. ` +
-        `This usually means your Consumer Key/Secret is invalid or the credentials are not registered for this environment (${isProduction ? 'production' : 'sandbox'}).`
+        `This usually means your Consumer Key/Secret is invalid or the credentials are not registered for this environment (${isProduction ? 'production' : 'sandbox'}). ` +
+        `Full response: ${JSON.stringify(data)}`
       )
     }
 
