@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const orderData: any = {
       id: order.orderNumber,
       currency,
-      amount: order.total.toString(),
+      amount: Number(order.total).toFixed(2),
       description: `Order #${order.orderNumber} - Enkaji Marketplace`,
       callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
       notification_id: order.id,
@@ -40,20 +40,19 @@ export async function POST(request: NextRequest) {
         email_address: user.email,
         phone_number: user.phone || '',
         country_code: 'KE',
-        first_name: user.firstName || '',
-        last_name: user.lastName || '',
-        line_1: shippingAddr?.address1 || shippingAddr?.line_1 || '',
+        first_name: user.firstName || 'Customer',
+        middle_name: '',
+        last_name: user.lastName || 'Customer',
+        line_1: shippingAddr?.address1 || shippingAddr?.line_1 || 'Nairobi',
+        line_2: shippingAddr?.address2 || shippingAddr?.line_2 || '',
         city: shippingAddr?.city || 'Nairobi',
         state: shippingAddr?.state || 'Nairobi',
-        postal_code: shippingAddr?.postalCode || shippingAddr?.zip_code || '',
+        postal_code: shippingAddr?.postalCode || shippingAddr?.zip_code || '00100',
+        zip_code: shippingAddr?.zipCode || shippingAddr?.postalCode || '00100'
       }
     }
 
     const response = await pesapalService.submitOrder(orderData)
-
-    if (response.error) {
-      return NextResponse.json({ error: response.error }, { status: 400 })
-    }
 
     // Save Pesapal tracking ID
     await prisma.pesapalPayment.create({
@@ -76,4 +75,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message || 'Failed to submit order' }, { status: 500 })
   }
 }
-

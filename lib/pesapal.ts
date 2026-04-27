@@ -203,7 +203,7 @@ export class PesapalService {
       notification_id: orderData.notification_id || this.ipnId
     }
 
-    console.log('Submitting to Pesapal:', JSON.stringify(payload).substring(0, 300))
+    console.log('Submitting to Pesapal:', JSON.stringify(payload, null, 2))
 
     const response = await fetch(`${this.config.baseUrl}/api/Transactions/SubmitOrderRequest`, {
       method: 'POST',
@@ -216,27 +216,28 @@ export class PesapalService {
     })
 
     const responseText = await response.text()
-    console.log('Pesapal submit response:', response.status, responseText.substring(0, 200))
+    console.log('Pesapal submit response:', response.status, responseText.substring(0, 1000))
 
-    if (!response.ok) {
-      let error: any = { error: responseText }
-      try {
-        if (responseText.trim()) {
-          error = JSON.parse(responseText)
-        }
-      } catch {}
-      throw new Error(`Pesapal submit failed (${response.status}): ${error.error || error.message || responseText.substring(0,200)}`)
-    }
-
-    if (!responseText.trim()) {
-      throw new Error('Pesapal submit returned empty response')
-    }
-
+    let data: any
     try {
-      return JSON.parse(responseText)
+      data = responseText.trim() ? JSON.parse(responseText) : {}
     } catch {
-      throw new Error(`Invalid JSON response from Pesapal: ${responseText.substring(0, 200)}`)
+      throw new Error(`Invalid JSON response from Pesapal: ${responseText.substring(0, 500)}`)
     }
+
+    // Pesapal can return HTTP 200 with an error body, so always check for errors
+    if (!response.ok || data.error || data.status === 'error' || data.status === 'failed') {
+      const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : (data.error || data.message || data.status_description || JSON.stringify(data))
+      console.error('Pesapal submit error response:', data)
+      throw new Error(`Pesapal submit failed (${response.status}): ${errorMsg}`)
+    }
+
+    if (!data.redirect_url) {
+      console.error('Pesapal submit missing redirect_url. Response:', data)
+      throw new Error(`Pesapal submit failed: No redirect_url in response. Keys: ${Object.keys(data).join(', ')}`)
+    }
+
+    return data
   }
 
   async getTransactionStatus(orderTrackingId: string): Promise<any> {

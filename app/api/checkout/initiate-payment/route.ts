@@ -79,27 +79,27 @@ export async function POST(request: Request) {
 
     console.log(`Shipping calc: zone=${zone.id}, weight=${totalWeight.toFixed(1)}kg, cost=KES${shippingCost}, total=KES${grandTotal}`)
 
-    // Store payment details temporarily (will be used to create order after payment)
-    // We'll use a simple JSON structure stored in memory or cache
-    // For now, we'll pass it through Pesapal's IPN callback
-    
-    // Create Pesapal order (without creating actual order in our system)
+    // Format amount as string with 2 decimal places (Pesapal V3 requirement)
     const pesapalOrder = {
       id: paymentReference,
       currency: "KES",
-      amount: grandTotal,
+      amount: grandTotal.toFixed(2),
       description: `Order payment for ${items.length} item(s)`,
-      callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+      callback_url: process.env.PESAPAL_CALLBACK_URL || `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
       notification_id: process.env.PESAPAL_IPN_ID, // Your IPN ID
       billing_address: {
         email_address: user.email,
-        phone_number: shippingAddress?.phone || '',
+        phone_number: shippingAddress?.phone || user.phone || '',
         country_code: "KE",
-        first_name: user.firstName || '',
-        last_name: user.lastName || '',
-        line_1: shippingAddress?.address || '',
-        city: shippingAddress?.city || '',
-        state: shippingAddress?.state || '',
+        first_name: user.firstName || 'Customer',
+        middle_name: '',
+        last_name: user.lastName || 'Customer',
+        line_1: shippingAddress?.address || shippingAddress?.line_1 || 'Nairobi',
+        line_2: shippingAddress?.address2 || shippingAddress?.line_2 || '',
+        city: shippingAddress?.city || 'Nairobi',
+        state: shippingAddress?.state || 'Nairobi',
+        postal_code: shippingAddress?.postalCode || shippingAddress?.zip_code || '00100',
+        zip_code: shippingAddress?.zipCode || shippingAddress?.postalCode || '00100'
       }
     }
 
