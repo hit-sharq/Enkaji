@@ -87,22 +87,16 @@ export class PesapalService {
     console.log(`[Pesapal] Base URL: ${this.config.baseUrl}`)
     console.log(`[Pesapal] Consumer Key present: ${!!this.config.consumerKey}`)
 
-    const timestamp = new Date().toISOString()
-    const signature = this.generateSignature(
-      'POST',
-      '/api/Auth/RequestToken',
-      timestamp,
-      this.config.consumerKey
-    )
-
     const response = await fetch(`${this.config.baseUrl}/api/Auth/RequestToken`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'pesapal-request-date': timestamp,
-        'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`
-      }
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        consumer_key: this.config.consumerKey,
+        consumer_secret: this.config.consumerSecret
+      })
     })
 
     const responseText = await response.text()
@@ -146,21 +140,12 @@ export class PesapalService {
 
   async registerIPN(url: string): Promise<string> {
     const accessToken = await this.getAccessToken()
-    const timestamp = new Date().toISOString()
-    const signature = this.generateSignature(
-      'POST',
-      '/api/URLSetup/RegisterIPN',
-      timestamp,
-      this.config.consumerKey
-    )
 
     const response = await fetch(`${this.config.baseUrl}/api/URLSetup/RegisterIPN`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'pesapal-request-date': timestamp,
-        'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
         'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify({
@@ -199,14 +184,6 @@ export class PesapalService {
 
   async submitOrder(orderData: any): Promise<any> {
     const accessToken = await this.getAccessToken()
-    const timestamp = new Date().toISOString()
-
-    const signature = this.generateSignature(
-      'POST',
-      '/api/Transactions/SubmitOrderRequest',
-      timestamp,
-      this.config.consumerKey
-    )
 
     // Ensure required notification_id is present
     if (!orderData.notification_id && !this.ipnId) {
@@ -233,8 +210,6 @@ export class PesapalService {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'pesapal-request-date': timestamp,
-        'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
         'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify(payload)
@@ -266,14 +241,6 @@ export class PesapalService {
 
   async getTransactionStatus(orderTrackingId: string): Promise<any> {
     const accessToken = await this.getAccessToken()
-    const timestamp = new Date().toISOString()
-
-    const signature = this.generateSignature(
-      'GET',
-      `/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
-      timestamp,
-      this.config.consumerKey
-    )
 
     const response = await fetch(
       `${this.config.baseUrl}/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
@@ -282,8 +249,6 @@ export class PesapalService {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'pesapal-request-date': timestamp,
-          'pesapal-authorization': `Pesapal ${this.config.consumerKey}:${signature}`,
           'Authorization': `Bearer ${accessToken}`
         }
       }

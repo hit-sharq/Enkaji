@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import crypto from "crypto"
 
 export async function GET() {
   try {
@@ -11,22 +10,17 @@ export async function GET() {
       ? 'https://pay.pesapal.com/v3'
       : 'https://cybqa.pesapal.com/pesapalv3'
     
-    // Test credentials
-    const timestamp = new Date().toISOString()
-    const message = `POST/api/Auth/RequestToken${timestamp}${consumerKey}`
-    const signature = crypto
-      .createHmac('sha256', consumerSecret)
-      .update(message)
-      .digest('base64')
-    
+    // Test credentials using Pesapal V3 body-based auth
     const response = await fetch(`${baseUrl}/api/Auth/RequestToken`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'pesapal-request-date': timestamp,
-        'pesapal-authorization': `Pesapal ${consumerKey}:${signature}`
-      }
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        consumer_key: consumerKey,
+        consumer_secret: consumerSecret
+      })
     })
     
     const responseText = await response.text()
@@ -50,9 +44,10 @@ export async function GET() {
       httpStatus: response.status,
       response: data,
       requestDetails: {
-        timestamp,
-        message,
-        signaturePreview: signature.slice(0, 20) + '...',
+        bodySent: {
+          consumer_key: consumerKey.slice(0, 10) + '...',
+          consumer_secret_present: !!consumerSecret
+        }
       }
     })
   } catch (error) {
@@ -62,4 +57,3 @@ export async function GET() {
     }, { status: 500 })
   }
 }
-
