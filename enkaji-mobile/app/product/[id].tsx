@@ -15,7 +15,7 @@ import {
   Platform,
   FlatList,
 } from 'react-native'
-import { useRouter, useLocalSearchParams, Stack } from 'expo-router'
+import { useRouter, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useCartStore, useFavoritesStore, useAuthStore } from '@/lib/store'
 import { Product, Review } from '@/types'
@@ -23,6 +23,7 @@ import api from '@/lib/api'
 import { Colors, PLACEHOLDER_IMAGE } from '@/lib/theme'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ImageCarousel } from '@/components/product/image-carousel'
+import { shareProduct } from '@/lib/share'
 
 const { width } = Dimensions.get('window')
 
@@ -132,6 +133,11 @@ export default function ProductDetailScreen() {
     }
   }
 
+  const handleShare = async () => {
+    if (!product) return
+    await shareProduct(product)
+  }
+
   const handleSubmitReview = async () => {
     if (!product) return
     if (!isAuthenticated) {
@@ -208,9 +214,14 @@ export default function ProductDetailScreen() {
           headerShadowVisible: false,
           headerTintColor: Colors.text.primary,
           headerRight: () => (
-            <TouchableOpacity onPress={handleToggleFavorite} style={styles.headerButton}>
-              <Feather name="heart" size={22} color={favorited ? '#EF4444' : Colors.text.tertiary} />
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              <TouchableOpacity onPress={handleShare} style={styles.headerButton}>
+                <Feather name="share-2" size={22} color={Colors.text.tertiary} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleToggleFavorite} style={styles.headerButton}>
+                <Feather name="heart" size={22} color={favorited ? '#EF4444' : Colors.text.tertiary} />
+              </TouchableOpacity>
+            </View>
           ),
         }}
       />
@@ -508,10 +519,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
   },
-  backBtnText: {
-    color: Colors.text.white,
-    fontWeight: '600',
-  },
+   backBtnText: {
+     color: Colors.text.white,
+     fontWeight: '600',
+   },
+   headerButtons: {
+     flexDirection: 'row',
+     gap: 4,
+   },
    headerButton: {
      padding: 8,
    },
