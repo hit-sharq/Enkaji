@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search")
     const minPrice = searchParams.get("minPrice")
     const maxPrice = searchParams.get("maxPrice")
+    const minRating = searchParams.get("minRating")
+    const location = searchParams.get("location") // city or region
     const featured = searchParams.get("featured")
     const sortBy = searchParams.get("sortBy") || "newest"
     const sortOrder = searchParams.get("sortOrder") || "desc"
@@ -40,6 +42,20 @@ const where: any = {
       where.price = {}
       if (minPrice) where.price.gte = Number.parseFloat(minPrice)
       if (maxPrice) where.price.lte = Number.parseFloat(maxPrice)
+    }
+
+    if (minRating) {
+      where.avgRating = { gte: Number.parseFloat(minRating) }
+    }
+
+    if (location) {
+      // Filter by seller's location (city or county)
+      where.seller = {
+        OR: [
+          { city: { contains: location, mode: "insensitive" } },
+          { county: { contains: location, mode: "insensitive" } },
+        ],
+      }
     }
 
     if (featured === "true") {
@@ -81,6 +97,8 @@ const where: any = {
               id: true,
               firstName: true,
               lastName: true,
+              city: true,
+              county: true,
             },
           },
           _count: {
