@@ -155,12 +155,12 @@ export default function ServiceDetailScreen() {
       <View style={styles.reviewHeader}>
         <View style={styles.reviewerAvatar}>
           <Text style={styles.reviewerInitial}>
-            {review.customer.firstName?.charAt(0) || 'A'}
+            {review.customer?.firstName?.charAt(0) || review.customerName?.charAt(0) || 'A'}
           </Text>
         </View>
         <View style={styles.reviewMeta}>
           <Text style={styles.reviewerName}>
-            {review.customer.firstName || 'Anonymous'} {review.customer.lastName || ''}
+            {review.customer?.firstName || review.customerName || 'Anonymous'} {review.customer?.lastName || ''}
           </Text>
           <Text style={styles.reviewDate}>
             {new Date(review.createdAt).toLocaleDateString()}

@@ -103,9 +103,11 @@ export default function CheckoutScreen() {
             state: shippingAddress.state,
           },
         })
-        if (response.success && response.data?.shipping?.options?.length > 0) {
-          const recommended = response.data.shipping.options.find((o: any) => o.isRecommended)
-          setShippingCost(recommended?.price || response.data.shipping.options[0].price)
+        // Backend returns {success, data} - check accordingly
+        const result = response as any
+        if (result?.success && result.data?.shipping?.options?.length > 0) {
+          const recommended = result.data.shipping.options.find((o: any) => o.isRecommended)
+          setShippingCost(recommended?.price || result.data.shipping.options[0].price)
         } else {
           // Fallback: free shipping over 5000, else 500
           setShippingCost(totalPrice > 5000 ? 0 : 500)
@@ -170,14 +172,16 @@ export default function CheckoutScreen() {
 
         const response = await api.initiateCheckoutPayment(checkoutData)
 
-        if (response.success && response.redirectUrl) {
+        // Backend returns {success, redirectUrl, paymentReference, ...}
+        const result = response as any
+        if (result?.success && result.redirectUrl) {
           clearCart()
           router.replace({
             pathname: '/payment-webview',
-            params: { url: response.redirectUrl, paymentReference: response.paymentReference },
+            params: { url: result.redirectUrl, paymentReference: result.paymentReference },
           })
         } else {
-          throw new Error(response.error || 'Failed to initiate payment')
+          throw new Error(result?.error || 'Failed to initiate payment')
         }
       } else {
         // COD / other — create order directly
@@ -196,16 +200,16 @@ export default function CheckoutScreen() {
           total: orderTotal,
         }
 
-        const orderResponse = await api.createOrder(orderData)
+        const order = await api.createOrder(orderData)
 
-        if (!orderResponse.success || !orderResponse.data?.id) {
-          throw new Error(orderResponse.error || 'Failed to create order')
+        if (!order?.id) {
+          throw new Error('Failed to create order. Please try again.')
         }
 
         clearCart()
         Alert.alert(
           'Order Placed!',
-          `Your order has been placed.\n\nOrder #${orderResponse.data?.orderNumber || orderResponse.data?.id}`,
+          `Your order has been placed.\n\nOrder #${order.orderNumber || order.id}`,
           [{ text: 'View Orders', onPress: () => router.replace('/(tabs)/orders') }]
         )
       }

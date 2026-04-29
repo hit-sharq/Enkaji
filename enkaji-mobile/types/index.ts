@@ -223,6 +223,7 @@ export interface ServiceReview {
     lastName: string | null
     imageUrl: string | null
   }
+  customerName?: string  // Used by service detail endpoint (embedded reviews)
   rating: number
   title: string | null
   comment: string | null
