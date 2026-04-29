@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
 } from 'react-native'
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
@@ -21,6 +22,7 @@ import { Product, Review } from '@/types'
 import api from '@/lib/api'
 import { Colors, PLACEHOLDER_IMAGE } from '@/lib/theme'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { ImageCarousel } from '@/components/product/image-carousel'
 
 const { width } = Dimensions.get('window')
 
@@ -31,7 +33,6 @@ export default function ProductDetailScreen() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [showFullDesc, setShowFullDesc] = useState(false)
 
@@ -215,43 +216,8 @@ export default function ProductDetailScreen() {
       />
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Image Gallery */}
-          <View style={styles.imageWrapper}>
-            <Image
-              source={{ uri: images[selectedImageIndex] }}
-              style={styles.mainImage}
-              resizeMode="cover"
-            />
-            {discount > 0 && (
-              <View style={styles.discountBadge}>
-                <Text style={styles.discountText}>-{discount}% OFF</Text>
-              </View>
-            )}
-            {product.inventory <= 5 && product.inventory > 0 && (
-              <View style={styles.stockBadge}>
-                <Text style={styles.stockText}>Only {product.inventory} left</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Thumbnail Strip */}
-          {images.length > 1 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.thumbnailContainer}
-            >
-              {images.map((img, index) => (
-                <TouchableOpacity key={index} onPress={() => setSelectedImageIndex(index)}>
-                  <Image
-                    source={{ uri: img }}
-                    style={[styles.thumbnail, selectedImageIndex === index && styles.thumbnailActive]}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          )}
+          {/* Image Gallery Carousel */}
+          <ImageCarousel images={images} productName={product.name} />
 
           {/* Product Info */}
           <View style={styles.infoCard}>
@@ -546,66 +512,11 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     fontWeight: '600',
   },
-  headerButton: {
-    padding: 8,
-  },
-  // Image
-  imageWrapper: {
-    position: 'relative',
-    backgroundColor: Colors.backgroundLight,
-  },
-  mainImage: {
-    width,
-    height: width * 0.85,
-    backgroundColor: Colors.backgroundLight,
-  },
-  discountBadge: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    backgroundColor: Colors.primary,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  discountText: {
-    color: Colors.text.white,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  stockBadge: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: '#F59E0B',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  stockText: {
-    color: Colors.text.white,
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  thumbnailContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 8,
-  },
-  thumbnail: {
-    width: 64,
-    height: 64,
-    borderRadius: 10,
-    marginRight: 8,
-    backgroundColor: Colors.backgroundLight,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  thumbnailActive: {
-    borderColor: Colors.primary,
-  },
-  // Info Card
-  infoCard: {
+   headerButton: {
+     padding: 8,
+   },
+   // Info Card
+   infoCard: {
     backgroundColor: Colors.background,
     marginHorizontal: 0,
     padding: 20,
