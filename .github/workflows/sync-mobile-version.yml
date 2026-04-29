@@ -28,8 +28,8 @@ jobs:
           echo "$BUILD_DATA" > build.json
           
           # Extract android versionCode using Python
-          ANDROID_VERSION=$(python3 << 'PYEOF'
-import json
+          ANDROID_VERSION=$(python3 -c "
+import json, sys
 try:
     with open('build.json') as f:
         data = json.load(f)
@@ -48,11 +48,10 @@ try:
         print(1)
 except Exception:
     print(1)
-PYEOF
-)
+")
           
           # Extract app version string using Python
-          APP_VERSION=$(python3 << 'PYEOF'
+          APP_VERSION=$(python3 -c "
 import json
 try:
     with open('build.json') as f:
@@ -68,8 +67,7 @@ try:
         print('1.0.0')
 except Exception:
     print('1.0.0')
-PYEOF
-)
+")
           
           echo "android_version=$ANDROID_VERSION" >> $GITHUB_OUTPUT
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
@@ -91,14 +89,10 @@ PYEOF
             local value="$2"
             local target="production"
             
-            # First, try to pull existing value to check if it exists
-            existing=$(vercel env pull "$key" "$target" --token "$VERCEL_TOKEN" 2>/dev/null || echo "")
-            if [ -n "$existing" ]; then
-              # Remove then add to update
-              vercel env rm "$key" "$target" --token "$VERCEL_TOKEN" --yes 2>/dev/null || true
-            fi
+            # Check if exists and remove
+            vercel env rm "$key" "$target" --token "$VERCEL_TOKEN" --yes 2>/dev/null || true
             
-            # Add the new value
+            # Add the new value - try without scope first, then with team scope
             vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --target "$target" 2>/dev/null || \
             vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --scope "$VERCEL_TEAM_ID" --target "$target"
           }
