@@ -91,7 +91,8 @@ export interface Category {
   name: string
   slug: string
   description: string | null
-  imageUrl: string | null
+  imageUrl?: string
+  productCount?: number
   parentId: string | null
   children?: Category[]
   createdAt: string
@@ -104,6 +105,8 @@ export interface Product {
   name: string
   description: string
   price: number
+  originalPrice?: number
+  imageUrl?: string
   comparePrice: number | null
   sku: string | null
   inventory: number
@@ -271,13 +274,17 @@ export interface Booking {
 // Cart Item
 export interface CartItem {
   id: string
-  userId: string
+  userId?: string
   productId: string
   product: Product
   quantity: number
-  createdAt: string
-  updatedAt: string
+  createdAt?: string
+  updatedAt?: string
 }
+
+// Client-side CartItem (optimistic)
+export type ClientCartItem = Omit<CartItem, 'userId' | 'createdAt' | 'updatedAt'>;
+
 
 // Order
 export interface Order {
@@ -347,11 +354,15 @@ export interface Address {
 // Favorite
 export interface Favorite {
   id: string
-  userId: string
+  userId?: string
   productId: string
   product: Product
-  createdAt: string
+  createdAt?: string
 }
+
+// Client-side Favorite (optimistic)
+export type ClientFavorite = Omit<Favorite, 'userId' | 'createdAt'>;
+
 
 // Review
 export interface Review {
@@ -530,5 +541,6 @@ export interface AuthUser {
   lastName: string | null
   imageUrl: string | null
   role: UserRole
+  location?: string
 }
 

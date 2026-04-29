@@ -21,6 +21,8 @@ const ENKAJI_COLORS = {
   background: '#FFFFFF',
   backgroundSecondary: '#F8FAFC',
   backgroundLight: '#F1F5F9',
+  card: '#F9FAFB',
+  dangerLight: '#FEF2F2',
   
   text: {
     primary: '#0F172A',
