@@ -1,5 +1,6 @@
-// Zustand Store for Enkaji Mobile App
 import { create } from 'zustand'
+import { storageService } from '@/lib/storage'
+import { syncService } from '@/lib/sync'
 import { 
   CartItem, 
   Product, 
