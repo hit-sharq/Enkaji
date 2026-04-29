@@ -4,14 +4,15 @@ import { StatusBar } from 'expo-status-bar'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import * as SecureStore from 'expo-secure-store'
-import { View, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, ActivityIndicator, StyleSheet, AppState } from 'react-native'
 import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { Colors } from '@/lib/theme'
+import { Colors, PLACEHOLDER_IMAGE } from '@/lib/theme'
 import { useAuthStore } from '@/lib/store'
 import { useAppUpdates } from '@/hooks/use-app-updates'
 import { UpdateBanner } from '@/components/update-banner'
 import { NotificationProvider } from '@/hooks/use-notifications'
+import { useDeepLinking } from '@/hooks/use-deep-linking'
 import api from '@/lib/api'
 import type { UserRole } from '@/types'
 
@@ -98,6 +99,9 @@ function RootLayoutContent() {
   
   // Initialize app update checking
   useAppUpdates()
+
+  // Initialize deep linking
+  useDeepLinking()
 
   useEffect(() => {
     if (isLoaded && fontsLoaded) {

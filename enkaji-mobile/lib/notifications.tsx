@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications'
+import * as Linking from 'expo-linking'
 import { Platform } from 'react-native'
 import api from '@/lib/api'
 
@@ -76,10 +77,9 @@ class NotificationService {
     const receivedSubscription = Notifications.addNotificationReceivedListener((notification) => {
       console.log('Notification received:', notification)
       this.updateBadgeCount()
-      this.notifyListeners()
     })
 
-    // Listener for user tapping on notification
+    // Listener for user tapping on notification - handles deep linking
     const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
       console.log('User tapped notification:', response)
       this.handleNotificationTap(response.notification)
@@ -91,6 +91,28 @@ class NotificationService {
     )
   }
 
+  private async handleNotificationTap(notification: Notifications.Notification) {
+    const data = notification.request.content.data
+    
+    // Build deep link URL based on notification type
+    let url = '/'
+    if (data.type === 'order') {
+      url = `/orders/${data.orderId || ''}`
+    } else if (data.type === 'message') {
+      url = `/messages/${data.threadId || ''}`
+    } else if (data.type === 'product') {
+      url = `/product/${data.productId || ''}`
+    } else if (data.url) {
+      url = data.url
+    }
+
+    // Use Linking to navigate (works with deep linking setup)
+    const deepLink = Linking.createURL(url)
+    Linking.openURL(deepLink).catch(err => {
+      console.error('Failed to open deep link:', err)
+    })
+  }
+
   private async updateBadgeCount() {
     try {
       const response = await api.get<{ count: number }>('/api/notifications/unread-count')
@@ -98,18 +120,6 @@ class NotificationService {
     } catch (error) {
       console.warn('Failed to update badge count:', error)
     }
-  }
-
-  private handleNotificationTap(notification: Notifications.Notification) {
-    // Navigate based on notification type/data
-    const data = notification.request.content.data
-    // Navigation handled by main app via listener
-    this.notifyListeners('tap', data)
-  }
-
-  private notifyListeners(event?: string, data?: Record<string, any>) {
-    // Emit to any subscribers (e.g., to refresh notification list)
-    // Could use EventEmitter or state management
   }
 
   async scheduleLocalNotification(title: string, body: string, data?: Record<string, any>, secondsFromNow = 1) {

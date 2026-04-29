@@ -12,43 +12,64 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-     "ios": {
-       "supportsTablet": true,
-       "bundleIdentifier": "com.enkaji.mobile",
-       "infoPlist": {
-         "ITSAppUsesNonExemptEncryption": false,
-         "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
-         "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
-       },
-       "buildNumber": "3"
-     },
-     "android": {
-       "adaptiveIcon": {
-         "foregroundImage": "./assets/favicon.png",
-         "backgroundColor": "#ffffff"
-       },
-       "package": "com.enkaji.mobile",
-       "permissions": [
-         "ACCESS_FINE_LOCATION"
-       ],
-       "versionCode": 3
-     },
+    "android": {
+        "adaptiveIcon": {
+          "foregroundImage": "./assets/favicon.png",
+          "backgroundColor": "#ffffff"
+        },
+        "package": "com.enkaji.mobile",
+        "permissions": [
+          "ACCESS_FINE_LOCATION"
+        ],
+        "versionCode": 3,
+        "intentFilters": [
+          {
+            "action": "VIEW",
+            "data": [
+              {
+                "scheme": "https",
+                "host": "enkaji.vercel.app",
+                "pathPrefix": "/"
+              },
+              {
+                "scheme": "https",
+                "host": "www.enkaji.vercel.app",
+                "pathPrefix": "/"
+              },
+              {
+                "scheme": "enkaji"
+              }
+            ],
+            "category": ["BROWSABLE", "DEFAULT"]
+          }
+        ]
+      },
     "web": {
       "bundler": "metro",
       "output": "single",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-secure-store",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
+     "plugins": [
+       "expo-router",
+       "expo-secure-store",
+       [
+         "expo-splash-screen",
+         {
+           "image": "./assets/splash-icon.png",
+           "imageWidth": 200,
+           "resizeMode": "contain",
+           "backgroundColor": "#ffffff"
+         }
+       ]
+     ],
+     "web": {
+       "bundler": "metro",
+       "output": "server",
+       "favicon": "./assets/favicon.png"
+     },
+     "experiments": {
+       "typedRoutes": true
+     }
       ]
     ],
     "experiments": {
