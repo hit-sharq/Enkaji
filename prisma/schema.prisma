@@ -57,7 +57,40 @@ model User {
   messageThreadsAsA MessageThread[]     @relation("ThreadParticipantA")
   messageThreadsAsB MessageThread[]     @relation("ThreadParticipantB")
 
+  // Notifications
+  notifications     Notification[]
+  pushTokens        PushToken[]
+
   @@map("users")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // 'order', 'payment', 'promo', 'system', 'message', 'booking'
+  title     String
+  body      String
+  data      Json?    // Additional data (orderId, etc.)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+  @@index([userId, createdAt])
+  @@index([userId, read])
+}
+
+model PushToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform  String   // 'ios', 'android'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("push_tokens")
+  @@index([userId])
 }
 
 model ArtisanProfile {

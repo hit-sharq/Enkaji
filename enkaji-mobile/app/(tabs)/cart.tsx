@@ -99,7 +99,6 @@ export default function CartScreen() {
           price: item.product.price
         })),
         shippingAddress: {
-          // Use saved address or prompt
           firstName: user.firstName || '',
           lastName: user.lastName || '',
           address1: '',
@@ -109,12 +108,13 @@ export default function CartScreen() {
           country: 'Kenya',
           phone: ''
         },
-        paymentMethod: 'pesapal_mpesa'
+        selectedShippingOption: selectedShipping,
+        paymentMethod: 'PESAPAL'
       })
 
       router.push({
         pathname: '/payment-webview',
-        params: { url: checkoutData.checkoutUrl }
+        params: { url: checkoutData.redirectUrl }
       })
     } catch (error) {
       Alert.alert('Checkout Failed', 'Unable to start checkout. Please try again.')

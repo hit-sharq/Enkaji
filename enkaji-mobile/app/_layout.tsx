@@ -11,6 +11,7 @@ import { Colors } from '@/lib/theme'
 import { useAuthStore } from '@/lib/store'
 import { useAppUpdates } from '@/hooks/use-app-updates'
 import { UpdateBanner } from '@/components/update-banner'
+import { NotificationProvider } from '@/hooks/use-notifications'
 import api from '@/lib/api'
 import type { UserRole } from '@/types'
 
@@ -369,7 +370,9 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
       <SafeAreaProvider>
-        <RootLayoutContent />
+        <NotificationProvider>
+          <RootLayoutContent />
+        </NotificationProvider>
       </SafeAreaProvider>
     </ClerkProvider>
   )

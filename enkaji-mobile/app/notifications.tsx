@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -6,27 +6,22 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useAuth } from '@clerk/clerk-expo'
 import { Colors } from '@/lib/theme'
+import { useNotifications } from '@/hooks/use-notifications'
 
-interface Notification {
-  id: string
-  title: string
-  body: string
-  type: 'order' | 'payment' | 'promo' | 'system'
-  read: boolean
-  time: string
-}
-
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, string> = {
   order: 'shopping-bag',
   payment: 'credit-card',
   promo: 'tag',
   system: 'bell',
+  message: 'message-circle',
+  booking: 'calendar',
 }
 
 const COLOR_MAP: Record<string, string> = {
@@ -34,48 +29,32 @@ const COLOR_MAP: Record<string, string> = {
   payment: '#22c55e',
   promo: '#f59e0b',
   system: '#6366f1',
+  message: '#3b82f6',
+  booking: '#8b5cf6',
 }
 
 export default function NotificationsScreen() {
   const router = useRouter()
   const { isSignedIn } = useAuth()
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      title: 'Order Confirmed',
-      body: 'Your order #ORD-001 has been confirmed and is being processed.',
-      type: 'order',
-      read: false,
-      time: '2 hours ago',
-    },
-    {
-      id: '2',
-      title: 'Payment Received',
-      body: 'Payment of KES 2,500 received for order #ORD-001.',
-      type: 'payment',
-      read: false,
-      time: '2 hours ago',
-    },
-    {
-      id: '3',
-      title: 'Welcome to Enkaji!',
-      body: 'Thank you for joining Kenya\'s premier B2B marketplace. Start exploring products today.',
-      type: 'system',
-      read: true,
-      time: '1 day ago',
-    },
-  ])
-  const [isLoading] = useState(false)
+  const { notifications, unreadCount, isLoading, refresh, markAsRead, markAllAsRead, deleteNotification } =
+    useNotifications()
+  const [refreshing, setRefreshing] = useState(false)
 
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+  const onRefresh = async () => {
+    setRefreshing(true)
+    await refresh()
+    setRefreshing(false)
   }
 
-  const markRead = (id: string) => {
-    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n))
-  }
+  const handleNotificationPress = (notification: any) => {
+    // Mark as read immediately
+    if (!notification.read) {
+      markAsRead(notification.id)
+    }
 
-  const unreadCount = notifications.filter((n) => !n.read).length
+    // Navigate based on notification type/data
+    // Navigation logic would go here
+  }
 
   if (!isSignedIn) {
     return (
@@ -105,7 +84,7 @@ export default function NotificationsScreen() {
           Notifications {unreadCount > 0 ? `(${unreadCount})` : ''}
         </Text>
         {unreadCount > 0 ? (
-          <TouchableOpacity onPress={markAllRead}>
+          <TouchableOpacity onPress={markAllAsRead}>
             <Text style={styles.markAll}>Mark all read</Text>
           </TouchableOpacity>
         ) : (
@@ -113,40 +92,51 @@ export default function NotificationsScreen() {
         )}
       </View>
 
-      {isLoading ? (
-        <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 40 }} />
-      ) : notifications.length === 0 ? (
-        <View style={styles.empty}>
-          <Feather name="bell" size={60} color={Colors.border} />
-          <Text style={styles.emptyTitle}>No notifications yet</Text>
-          <Text style={styles.emptySubtitle}>You'll see order updates and promotions here</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={notifications}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.card, !item.read && styles.cardUnread]}
-              onPress={() => markRead(item.id)}
-              activeOpacity={0.8}
-            >
-              <View style={[styles.iconBox, { backgroundColor: COLOR_MAP[item.type] + '20' }]}>
-                <Feather name={ICON_MAP[item.type]} size={20} color={COLOR_MAP[item.type]} />
+      <FlatList
+        data={notifications}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Colors.primary]} />
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[styles.card, !item.read && styles.cardUnread]}
+            onPress={() => handleNotificationPress(item)}
+            activeOpacity={0.8}
+          >
+            <View style={[styles.iconBox, { backgroundColor: COLOR_MAP[item.type] + '20' }]}>
+              <Feather name={ICON_MAP[item.type] || 'bell'} size={20} color={COLOR_MAP[item.type]} />
+            </View>
+            <View style={styles.cardContent}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                {!item.read && <View style={styles.dot} />}
               </View>
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{item.title}</Text>
-                  {!item.read && <View style={styles.dot} />}
-                </View>
-                <Text style={styles.cardBody} numberOfLines={2}>{item.body}</Text>
-                <Text style={styles.cardTime}>{item.time}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      )}
+              <Text style={styles.cardBody} numberOfLines={2}>
+                {item.body}
+              </Text>
+              <Text style={styles.cardTime}>
+                {new Date(item.createdAt).toLocaleDateString('en-KE', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Feather name="bell" size={60} color={Colors.border} />
+            <Text style={styles.emptyTitle}>No notifications yet</Text>
+            <Text style={styles.emptySubtitle}>
+              You'll see order updates, messages, and promotions here
+            </Text>
+          </View>
+        }
+      />
     </SafeAreaView>
   )
 }
