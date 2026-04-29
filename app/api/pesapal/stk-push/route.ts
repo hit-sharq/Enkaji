@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
+import { appConfig } from "@/lib/app-config"
 import { z } from "zod"
 
 // ============================================================================
@@ -82,8 +83,8 @@ export async function POST(request: NextRequest) {
         id: orderId,
         currency: order.currency || "KES",
         amount: amount,
-        description: description || `Payment for order ${order.orderNumber}`,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+        description: description || `Payment for order ${order.orderNumber} — ${appConfig.APP_NAME}`,
+        callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
         notification_id: orderId,
         billing_address: {
           email_address: user.email,
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
       orderId,
       amount,
       phoneNumber: normalizedPhone,
-      redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/orders/${orderId}?payment=pending`,
+      redirectUrl: `${appConfig.APP_URL}/orders/${orderId}?payment=pending`,
       status: "PENDING"
     })
 
@@ -241,4 +242,3 @@ function normalizePhoneNumber(phone: string): string {
   // Return as-is if we can't determine format
   return phone.startsWith('+') ? phone : '+' + cleaned
 }
-

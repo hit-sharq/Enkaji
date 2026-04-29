@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 import { pesapalService } from "@/lib/pesapal"
 import { detectShippingZone, getShippingOptions } from "@/lib/shipping-enhanced"
+import { appConfig } from "@/lib/app-config"
 import type { ShippingOption } from "@/types/shipping"
 
 // This endpoint initiates payment WITHOUT creating an order
@@ -84,8 +85,8 @@ export async function POST(request: Request) {
       id: paymentReference,
       currency: "KES",
       amount: grandTotal.toFixed(2),
-      description: `Order payment for ${items.length} item(s)`,
-      callback_url: process.env.PESAPAL_CALLBACK_URL || `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+      description: `Order payment for ${items.length} item(s) — ${appConfig.APP_NAME}`,
+      callback_url: process.env.PESAPAL_CALLBACK_URL || `${appConfig.APP_URL}/api/pesapal/callback`,
       notification_id: process.env.PESAPAL_IPN_ID, // Your IPN ID
       billing_address: {
         email_address: user.email,

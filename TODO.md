@@ -1,25 +1,66 @@
-<!-- # Fix Plan — Pesapal Auth & Order Totals Consistency
+# Payment Prompt System Name Integration
 
-## Issue 1: Pesapal Auth Failed
-- [x] 1.1 Add credential validation in `lib/pesapal.ts`
-- [x] 1.2 Improve error handling in `getAccessToken()` to surface Pesapal's actual error field
-- [x] 1.3 Add debug logging for environment mode and credential presence
+## Task
+Make all payment prompts and email templates dynamically use the system name via centralized config.
 
-## Issue 2: Inconsistent Order Totals
-- [x] 2.1 Create shared `hooks/use-order-totals.ts` hook
-- [x] 2.2 Update `components/cart/cart-summary.tsx` to use shared hook and enhanced shipping
-- [x] 2.3 Update `components/checkout/order-summary.tsx` to use shared hook
-- [x] 2.4 Update `components/checkout/checkout-form.tsx` to use shared hook and remove inline hardcoded summary
-- [x] 2.5 Update `app/checkout/page.tsx` to pass consistent subtotal
-- [x] 2.6 Update `app/api/checkout/initiate-payment/route.ts` to align totals with frontend
-- [x] 2.7 Update `app/api/pesapal/ipn/route.ts` to create orders from checkout sessions
-- [x] 2.8 Update `app/api/pesapal/callback/route.ts` to create orders from checkout sessions
+## Steps
+- [x] 1. Understand current hardcoded names across payment & email files
+- [x] 2. Create plan for centralized app config
+- [x] 3. Create `lib/app-config.ts` with centralized config
+- [x] 4. Update `app/api/checkout/initiate-payment/route.ts` description
+- [x] 5. Update `app/api/pesapal/submit-order/route.ts` description
+- [x] 6. Update `app/api/pesapal/stk-push/route.ts` description
+- [x] 7. Update `app/api/subscriptions/route.ts` description
+- [x] 8. Update `app/api/seller/subscription/route.ts` description
+- [x] 9. Update `app/api/seller/register/route.ts` descriptions
+- [x] 10. Update `lib/email.ts` templates (FROM, subjects, footers, URLs)
+- [x] 11. Update `app/api/pesapal/callback/route.ts` inline emails
+- [x] 12. Update `app/api/pesapal/ipn/route.ts` (uses shared email functions)
+- [x] 13. Verify no remaining hardcoded "Enkaji" references in payment descriptions
 
-## Issue 3: Revenue Calculation Accuracy
-- [x] 3.1 Update `app/api/admin/stats/route.ts` to filter revenue by `paymentStatus: "PAID"` (already correct)
-- [x] 3.2 Update mobile API client (`enkaji-mobile/lib/api.ts`) to support new checkout flow
+---
 
-## Follow-up
-- [ ] Fix mobile checkout file (`enkaji-mobile/app/checkout.tsx`) — file got corrupted during editing, needs manual cleanup of JSX closing tags
-- [ ] Test checkout flow end-to-end
-- [ ] Verify shipping totals match across cart, checkout, and API -->
+## What Was Done
+
+### Created `lib/app-config.ts`
+Centralized config with:
+- `APP_NAME` — from `NEXT_PUBLIC_APP_NAME` env, fallback `"Enkaji Trade"`
+- `APP_FULL_NAME` — derived as `${APP_NAME} Kenya`
+- `APP_TAGLINE` — from `APP_TAGLINE` env
+- `APP_URL` — from `NEXT_PUBLIC_APP_URL` env
+- `EMAIL_FROM` — from `EMAIL_FROM` env, derived from app name
+- `SUPPORT_EMAIL` — from `SUPPORT_EMAIL` env
+- `SELLER_DASHBOARD_URL` and `SELLERS_URL` — derived from `APP_URL`
+
+### Updated Payment Descriptions
+- `app/api/checkout/initiate-payment/route.ts` — `"Order payment for N item(s) — Enkaji Trade"`
+- `app/api/pesapal/submit-order/route.ts` — `"Order #XXXX — Enkaji Trade"`
+- `app/api/pesapal/stk-push/route.ts` — `"Payment for order #XXXX — Enkaji Trade"`
+- `app/api/subscriptions/route.ts` — `"Premium Seller Subscription — Enkaji Trade Kenya"`
+- `app/api/seller/subscription/route.ts` — same
+- `app/api/seller/register/route.ts` — same
+
+### Updated Email Templates (`lib/email.ts`)
+- `FROM` address now uses `appConfig.EMAIL_FROM`
+- All email subjects use `appConfig.APP_NAME` or `appConfig.APP_FULL_NAME`
+- All footers use `appConfig.APP_TAGLINE`
+- All hardcoded URLs (`https://enkaji.co.ke/...`) replaced with `appConfig.*` URLs
+- Support email uses `appConfig.SUPPORT_EMAIL`
+
+### Updated Callback Routes
+- `app/api/pesapal/callback/route.ts` — subscription activation email uses appConfig branding
+- `app/api/pesapal/ipn/route.ts` — uses updated shared email functions
+
+---
+
+## Environment Variables
+Optional `.env` variables to override defaults:
+```
+NEXT_PUBLIC_APP_NAME="Your Brand"
+APP_TAGLINE="Your Tagline"
+NEXT_PUBLIC_APP_URL="https://yourdomain.com"
+EMAIL_FROM="Your Brand <noreply@yourdomain.com>"
+SUPPORT_EMAIL="support@yourdomain.com"
+```
+
+If not set, everything falls back to `"Enkaji Trade"` defaults.

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { handleApiError, AuthenticationError, ValidationError } from "@/lib/errors"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
+import { appConfig } from "@/lib/app-config"
 
 export const dynamic = 'force-dynamic'
 
@@ -131,19 +132,19 @@ export async function POST(request: NextRequest) {
     // Normalize phone number
     const normalizedPhone = normalizePhoneNumber(phoneNumber)
 
-    // Create subscription record with PENDING status
+    // Create subscription record with UNPAID status (pending payment)
     const subscription = await prisma.sellerSubscription.upsert({
       where: { sellerId: user.id },
       update: {
         plan: planType as any,
-        status: "PENDING",
+        status: "UNPAID",
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       },
       create: {
         sellerId: user.id,
         plan: planType as any,
-        status: "PENDING",
+        status: "UNPAID",
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
@@ -154,8 +155,8 @@ export async function POST(request: NextRequest) {
       id: `SUB-${subscription.id}-${Date.now()}`,
       currency: "KES",
       amount: plan.price,
-      description: `${plan.name} Subscription - Enkaji Trade Kenya`,
-      callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+      description: `${plan.name} Subscription — ${appConfig.APP_FULL_NAME}`,
+      callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
       notification_id: subscription.id,
       billing_address: {
         email_address: user.email,
@@ -200,9 +201,9 @@ export async function POST(request: NextRequest) {
       subscription: {
         id: subscription.id,
         plan: planType,
-        status: "PENDING"
+        status: "UNPAID"
       },
-      redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+      redirectUrl: pesapalResponse.redirect_url || `${appConfig.APP_URL}/seller/subscription?payment=pending`,
       trackingId: pesapalResponse.order_tracking_id
     })
   } catch (error) {

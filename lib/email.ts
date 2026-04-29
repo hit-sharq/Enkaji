@@ -1,7 +1,8 @@
 import { Resend } from 'resend'
+import { appConfig } from './app-config'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = process.env.EMAIL_FROM || 'Enkaji Trade <noreply@enkaji.co.ke>'
+const FROM = appConfig.EMAIL_FROM
 
 export async function sendEmail(to: string, subject: string, html: string) {
   if (!process.env.RESEND_API_KEY) {
@@ -36,7 +37,7 @@ export function orderConfirmationEmail(order: {
     </table>
     <p><strong>Total:</strong> KES ${order.total}</p>
     <p><strong>Shipping to:</strong> ${order.shippingAddress}</p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Connecting Kenya's Market</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }
 
@@ -55,21 +56,21 @@ export function deliveryStatusEmail(delivery: {
   const msg = statusMessages[delivery.status] || `Your delivery status is now: ${delivery.status}`
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-    <h2 style="color:#8B2635">Lumyn Delivery Update — ${delivery.deliveryNumber}</h2>
+    <h2 style="color:#8B2635">Delivery Update — ${delivery.deliveryNumber}</h2>
     <p>Hello ${delivery.customerName},</p>
     <p>${msg}</p>
     ${delivery.driverName ? `<p><strong>Driver:</strong> ${delivery.driverName}</p>` : ''}
-    <p style="color:#666;font-size:12px">Lumyn Flow — Fast Delivery in Nairobi</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }
 
 export function driverApprovedEmail(driver: { fullName: string }) {
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-    <h2 style="color:#8B2635">Welcome to Lumyn Flow, ${driver.fullName}!</h2>
+    <h2 style="color:#8B2635">Welcome to ${appConfig.APP_NAME}, ${driver.fullName}!</h2>
     <p>Your driver account has been approved. You can now log in and start accepting deliveries.</p>
     <p>Set yourself as <strong>Available</strong> from the app to start receiving job offers.</p>
-    <p style="color:#666;font-size:12px">Lumyn Flow — Fast Delivery in Nairobi</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }
 
@@ -77,7 +78,7 @@ export function productApprovalEmail(sellerName: string, approved: boolean, prod
   const status = approved ? 'APPROVED' : 'REJECTED'
   const color = approved ? '#28a745' : '#dc3545'
   const message = approved 
-    ? 'Your product has been approved and is now live on Enkaji!'
+    ? `Your product has been approved and is now live on ${appConfig.APP_NAME}!`
     : `Your product submission has been reviewed. Reason: ${reason || 'Needs improvements'}`
 
   return `
@@ -86,8 +87,8 @@ export function productApprovalEmail(sellerName: string, approved: boolean, prod
     <p>Hi ${sellerName},</p>
     <p>${message}</p>
     ${reason && !approved ? `<p><strong>Feedback:</strong> ${reason}</p>` : ''}
-    <p>Login to <a href="https://enkaji.co.ke/sellers">Enkaji Sellers</a> dashboard to view/manage products.</p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+    <p>Login to <a href="${appConfig.SELLERS_URL}">${appConfig.APP_NAME} Sellers</a> dashboard to view/manage products.</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME}</p>
   </div>`
 }
 
@@ -100,17 +101,17 @@ export function sellerVerifiedEmail(sellerName: string, businessName: string) {
     <div style="background:#d4edda;padding:16px;border-radius:8px;margin:16px 0;border-left:4px solid #28a745">
       <p style="margin:0"><strong>You can now:</strong></p>
       <ul style="margin:8px 0 0 0;padding-left:20px">
-        <li>List and sell products on Enkaji</li>
+        <li>List and sell products on ${appConfig.APP_NAME}</li>
         <li>Receive orders from customers</li>
         <li>Get paid for your sales</li>
         <li>Access seller analytics and insights</li>
       </ul>
     </div>
     
-    <p><a href="https://enkaji.co.ke/dashboard" style="display:inline-block;background:#28a745;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Start Selling</a></p>
+    <p><a href="${appConfig.SELLER_DASHBOARD_URL}" style="display:inline-block;background:#28a745;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Start Selling</a></p>
     
-    <p>Welcome to the Enkaji seller community!</p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Connecting Kenya's Market</p>
+    <p>Welcome to the ${appConfig.APP_NAME} seller community!</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }
 
@@ -121,8 +122,8 @@ export function bulkOrderNotificationEmail(sellerName: string, bulkOrder: { titl
     <p>Hi ${sellerName},</p>
     <p>You have a new bulk order request for <strong>${bulkOrder.title}</strong></p>
     <p><strong>Total Value:</strong> KES ${bulkOrder.totalAmount.toLocaleString()}</p>
-    <p>Login to your <a href="https://enkaji.co.ke/sellers">seller dashboard</a> to review and respond.</p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+    <p>Login to your <a href="${appConfig.SELLERS_URL}">seller dashboard</a> to review and respond.</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME}</p>
   </div>`
 }
 
@@ -146,18 +147,18 @@ export function paymentCallbackEmail(
     <p>Hi ${customerName},</p>
     <p>${message}</p>
     <p><strong>Method:</strong> ${method}</p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Secure Payments</p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME} — Secure Payments</p>
   </div>`
 }
 
 export function sellerRegistrationEmail(sellerName: string, businessName: string) {
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-    <h2 style="color:#8B2635">🎉 Welcome to Enkaji Trade, ${sellerName}!</h2>
+    <h2 style="color:#8B2635">🎉 Welcome to ${appConfig.APP_NAME}, ${sellerName}!</h2>
     <p>Your seller account for <strong>${businessName}</strong> has been created successfully.</p>
     
     <h3 style="color:#333;margin-top:24px">Next Steps: Legal Verification</h3>
-    <p>To complete your seller verification and start selling on Enkaji, please provide the following documents:</p>
+    <p>To complete your seller verification and start selling on ${appConfig.APP_NAME}, please provide the following documents:</p>
     
     <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin:16px 0">
       <h4 style="margin:0 0 12px 0;color:#8B2635">Required Documents:</h4>
@@ -169,7 +170,7 @@ export function sellerRegistrationEmail(sellerName: string, businessName: string
       </ul>
     </div>
     
-    <p>You can upload these documents from your <a href="https://enkaji.co.ke/dashboard">seller dashboard</a> under the "Legal Verification" section.</p>
+    <p>You can upload these documents from your <a href="${appConfig.SELLER_DASHBOARD_URL}">seller dashboard</a> under the "Legal Verification" section.</p>
     
     <h3 style="color:#333;margin-top:24px">While You Wait</h3>
     <p>You can start preparing your store:</p>
@@ -179,9 +180,9 @@ export function sellerRegistrationEmail(sellerName: string, businessName: string
       <li>Set up your payment preferences</li>
     </ul>
     
-    <p><a href="https://enkaji.co.ke/dashboard" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
+    <p><a href="${appConfig.SELLER_DASHBOARD_URL}" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
     
-    <p>If you have any questions, contact us at <a href="mailto:support@enkaji.co.ke">support@enkaji.co.ke</a></p>
-    <p style="color:#666;font-size:12px">Enkaji Trade Kenya — Connecting Kenya's Market</p>
+    <p>If you have any questions, contact us at <a href="mailto:${appConfig.SUPPORT_EMAIL}">${appConfig.SUPPORT_EMAIL}</a></p>
+    <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }

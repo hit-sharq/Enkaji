@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
 import { sendEmail, paymentCallbackEmail } from "@/lib/email"
+import { appConfig } from "@/lib/app-config"
 import type { User } from "@prisma/client"
 
 // ============================================================================
@@ -169,7 +170,7 @@ export async function POST(request: NextRequest) {
 // ============================================================================
 
 export async function GET(request: NextRequest) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || `https://${request.headers.get("host")}`
+  const appUrl = appConfig.APP_URL || `https://${request.headers.get("host")}`
 
   try {
     const { searchParams } = new URL(request.url)
@@ -534,14 +535,14 @@ async function handleSubscriptionPayment(
       const sellerName = `${subscription.seller.firstName || ''} ${subscription.seller.lastName || ''}`.trim() || 'Seller'
       await sendEmail(
         subscription.seller.email,
-        `Subscription Activated — Enkaji Trade`,
+        `Subscription Activated — ${appConfig.APP_NAME}`,
         `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
           <h2 style="color:#28a745">✅ Subscription Activated!</h2>
           <p>Hi ${sellerName},</p>
           <p>Your <strong>${subscription.plan}</strong> subscription has been activated successfully.</p>
           <p>You can now access all the features of your plan.</p>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
-          <p style="color:#666;font-size:12px">Enkaji Trade Kenya</p>
+          <p><a href="${appConfig.SELLER_DASHBOARD_URL}" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
+          <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME}</p>
         </div>`
       )
 

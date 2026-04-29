@@ -5,6 +5,7 @@ import { handleApiError } from "@/lib/errors"
 import { generateUniqueSlug } from "@/lib/slug"
 import { sendEmail, sellerRegistrationEmail } from "@/lib/email"
 import { pesapalService } from "@/lib/pesapal"
+import { appConfig } from "@/lib/app-config"
 
 export async function POST(req: NextRequest) {
   try {
@@ -98,7 +99,7 @@ export async function POST(req: NextRequest) {
       const sellerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Seller'
       await sendEmail(
         user.email,
-        `Welcome to Enkaji Trade — ${businessName}`,
+        `Welcome to ${appConfig.APP_NAME} — ${businessName}`,
         sellerRegistrationEmail(sellerName, businessName)
       )
 
@@ -108,8 +109,8 @@ export async function POST(req: NextRequest) {
           id: `SUB-${subscription.id}-${Date.now()}`,
           currency: "KES",
           amount: selectedPlan.price,
-          description: `${plan} Subscription - Enkaji Trade Kenya`,
-          callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+          description: `${plan} Subscription — ${appConfig.APP_FULL_NAME}`,
+          callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
           notification_id: subscription.id,
           billing_address: {
             email_address: user.email,
@@ -155,7 +156,7 @@ export async function POST(req: NextRequest) {
           sellerProfile,
           isExisting: false,
           requiresPayment: true,
-          redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+          redirectUrl: pesapalResponse.redirect_url || `${appConfig.APP_URL}/seller/subscription?payment=pending`,
           trackingId: pesapalResponse.order_tracking_id
         })
       }
@@ -235,7 +236,7 @@ export async function POST(req: NextRequest) {
     const sellerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Seller'
     await sendEmail(
       user.email,
-      `Welcome to Enkaji Trade — ${businessName}`,
+      `Welcome to ${appConfig.APP_NAME} — ${businessName}`,
       sellerRegistrationEmail(sellerName, businessName)
     )
 
@@ -245,8 +246,8 @@ export async function POST(req: NextRequest) {
         id: `SUB-${subscription.id}-${Date.now()}`,
         currency: "KES",
         amount: selectedPlan.price,
-        description: `${plan} Subscription - Enkaji Trade Kenya`,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+        description: `${plan} Subscription — ${appConfig.APP_FULL_NAME}`,
+        callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
         notification_id: subscription.id,
         billing_address: {
           email_address: user.email,
@@ -292,7 +293,7 @@ export async function POST(req: NextRequest) {
         sellerProfile,
         isExisting: false,
         requiresPayment: true,
-        redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+        redirectUrl: pesapalResponse.redirect_url || `${appConfig.APP_URL}/seller/subscription?payment=pending`,
         trackingId: pesapalResponse.order_tracking_id
       })
     }

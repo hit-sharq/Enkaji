@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { handleApiError, AuthenticationError, ValidationError } from "@/lib/errors"
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
+import { appConfig } from "@/lib/app-config"
 
 export const dynamic = 'force-dynamic'
 
@@ -181,8 +182,8 @@ export async function POST(request: NextRequest) {
       id: `SUB-${subscription.id}-${Date.now()}`,
       currency: "KES",
       amount: plan.price,
-      description: `${plan.name} Subscription - Enkaji Trade Kenya`,
-      callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+      description: `${plan.name} Subscription — ${appConfig.APP_FULL_NAME}`,
+      callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
       notification_id: subscription.id,
       billing_address: {
         email_address: user.email,
@@ -229,7 +230,7 @@ export async function POST(request: NextRequest) {
         plan: planType,
         status: "PENDING"
       },
-      redirectUrl: pesapalResponse.redirect_url || `${process.env.NEXT_PUBLIC_APP_URL}/seller/subscription?payment=pending`,
+      redirectUrl: pesapalResponse.redirect_url || `${appConfig.APP_URL}/seller/subscription?payment=pending`,
       trackingId: pesapalResponse.order_tracking_id
     })
   } catch (error) {

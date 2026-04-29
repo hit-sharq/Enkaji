@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { pesapalService } from '@/lib/pesapal'
 import { getCurrentUser } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { appConfig } from '@/lib/app-config'
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,8 +34,8 @@ export async function POST(request: NextRequest) {
       id: order.orderNumber,
       currency,
       amount: Number(order.total).toFixed(2),
-      description: `Order #${order.orderNumber} - Enkaji Marketplace`,
-      callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
+      description: `Order #${order.orderNumber} — ${appConfig.APP_NAME}`,
+      callback_url: `${appConfig.APP_URL}/api/pesapal/callback`,
       notification_id: order.id,
       billing_address: {
         email_address: user.email,
