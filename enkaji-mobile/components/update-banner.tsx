@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
+import * as Updates from "expo-updates"
 import { useAppUpdates } from "@/hooks/use-app-updates"
 import { Colors } from "@/lib/theme"
 
@@ -12,20 +13,16 @@ export function UpdateBanner() {
     <View style={styles.container}>
       <View style={styles.content}>
         <FontAwesome name="refresh" size={16} color={Colors.text.white} />
-        <Text style={styles.text}>
-          {updateInfo.isForceUpdate
-            ? "Critical update required"
-            : `Update available (build ${updateInfo.latestBuild})`}
-        </Text>
+        <Text style={styles.text}>Update available</Text>
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => checkForUpdates(false)}
+        onPress={() => Updates.reloadAsync()}
         disabled={checking}
       >
         <FontAwesome name="download" size={16} color={Colors.text.white} />
         <Text style={styles.buttonText}>
-          {checking ? "Checking..." : "Update"}
+          {checking ? "Checking..." : "Restart Now"}
         </Text>
       </TouchableOpacity>
     </View>
