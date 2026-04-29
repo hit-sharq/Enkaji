@@ -17,7 +17,7 @@ jobs:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: |
           npm install -g eas-cli
-          BUILD_DATA=$(eas build:list --profile production --limit 1 --json)
+          BUILD_DATA=$(eas build:list --profile preview --limit 1 --json)
           echo "$BUILD_DATA" > build.json
           ANDROID_VERSION=$(python3 -c "import json; d=json.load(open('build.json')); print(d[0].get('androidVersion') if d and len(d)>0 and d[0].get('androidVersion') is not None else int(str(d[0].get('iosBuildNumber','1')).split('.')[0]) if d and len(d)>0 else 1)")
           APP_VERSION=$(python3 -c "import json; d=json.load(open('build.json')); print(d[0].get('appVersion') if d and len(d)>0 and d[0].get('appVersion') else '1.0.0')")
