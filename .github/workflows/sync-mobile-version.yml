@@ -2,7 +2,6 @@ name: Sync Mobile Version to Vercel
 
 on:
   schedule:
-    # Run every 30 minutes to sync latest mobile build number to Vercel
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
@@ -17,86 +16,29 @@ jobs:
         env:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: |
-          # Install EAS CLI
           npm install -g eas-cli
-          
-          # Fetch latest successful production build as JSON
           BUILD_DATA=$(eas build:list --profile production --limit 1 --json)
-          echo "Build list: $BUILD_DATA"
-          
-          # Save to file for Python parsing
           echo "$BUILD_DATA" > build.json
-          
-          # Extract android versionCode using Python
-          ANDROID_VERSION=$(python3 -c "
-import json, sys
-try:
-    with open('build.json') as f:
-        data = json.load(f)
-    if data and isinstance(data, list) and len(data) > 0:
-        build = data[0]
-        av = build.get('androidVersion')
-        if av is not None:
-            print(av)
-        else:
-            ib = build.get('iosBuildNumber', '1')
-            try:
-                print(int(str(ib).split('.')[0]))
-            except:
-                print(1)
-    else:
-        print(1)
-except Exception:
-    print(1)
-")
-          
-          # Extract app version string using Python
-          APP_VERSION=$(python3 -c "
-import json
-try:
-    with open('build.json') as f:
-        data = json.load(f)
-    if data and isinstance(data, list) and len(data) > 0:
-        build = data[0]
-        av = build.get('appVersion')
-        if av:
-            print(av)
-        else:
-            print('1.0.0')
-    else:
-        print('1.0.0')
-except Exception:
-    print('1.0.0')
-")
-          
+          ANDROID_VERSION=$(python3 -c "import json; d=json.load(open('build.json')); print(d[0].get('androidVersion') if d and len(d)>0 and d[0].get('androidVersion') is not None else int(str(d[0].get('iosBuildNumber','1')).split('.')[0]) if d and len(d)>0 else 1)")
+          APP_VERSION=$(python3 -c "import json; d=json.load(open('build.json')); print(d[0].get('appVersion') if d and len(d)>0 and d[0].get('appVersion') else '1.0.0')")
           echo "android_version=$ANDROID_VERSION" >> $GITHUB_OUTPUT
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Update Vercel environment variables
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
           BUILD_NUMBER: ${{ steps.eas.outputs.android_version }}
           APP_VERSION: ${{ steps.eas.outputs.app_version }}
         run: |
-          # Install Vercel CLI
           npm install -g vercel@latest
-          
-          # Function to set env var (overwrites if exists)
           set_env() {
             local key="$1"
             local value="$2"
-            local target="production"
-            
-            # Check if exists and remove
-            vercel env rm "$key" "$target" --token "$VERCEL_TOKEN" --yes 2>/dev/null || true
-            
-            # Add the new value - try without scope first, then with team scope
-            vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --target "$target" 2>/dev/null || \
-            vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --scope "$VERCEL_TEAM_ID" --target "$target"
+            vercel env rm "$key" production --token "$VERCEL_TOKEN" --yes 2>/dev/null || true
+            vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --target production 2>/dev/null || \
+            vercel env add "$key" "$value" --token "$VERCEL_TOKEN" --scope "$VERCEL_TEAM_ID" --target production
           }
-          
           set_env "NEXT_PUBLIC_BUILD_NUMBER" "$BUILD_NUMBER"
           set_env "NEXT_PUBLIC_APP_VERSION" "$APP_VERSION"
           echo "Version sync complete."
