@@ -13,63 +13,65 @@
       "backgroundColor": "#ffffff"
     },
     "android": {
-        "adaptiveIcon": {
-          "foregroundImage": "./assets/favicon.png",
-          "backgroundColor": "#ffffff"
-        },
-        "package": "com.enkaji.mobile",
-        "permissions": [
-          "ACCESS_FINE_LOCATION"
-        ],
-        "versionCode": 3,
-        "intentFilters": [
-          {
-            "action": "VIEW",
-            "data": [
-              {
-                "scheme": "https",
-                "host": "enkaji.vercel.app",
-                "pathPrefix": "/"
-              },
-              {
-                "scheme": "https",
-                "host": "www.enkaji.vercel.app",
-                "pathPrefix": "/"
-              },
-              {
-                "scheme": "enkaji"
-              }
-            ],
-            "category": ["BROWSABLE", "DEFAULT"]
-          }
-        ]
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/favicon.png",
+        "backgroundColor": "#ffffff"
       },
+      "package": "com.enkaji.mobile",
+      "permissions": ["ACCESS_FINE_LOCATION"],
+      "versionCode": 3,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "enkaji.vercel.app",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.enkaji.vercel.app",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "enkaji"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.enkaji.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
+      },
+      "buildNumber": "3",
+      "associatedDomains": [
+        "applinks:enkaji.vercel.app",
+        "applinks:www.enkaji.vercel.app"
+      ]
+    },
     "web": {
       "bundler": "metro",
-      "output": "single",
+      "output": "server",
       "favicon": "./assets/favicon.png"
     },
-     "plugins": [
-       "expo-router",
-       "expo-secure-store",
-       [
-         "expo-splash-screen",
-         {
-           "image": "./assets/splash-icon.png",
-           "imageWidth": 200,
-           "resizeMode": "contain",
-           "backgroundColor": "#ffffff"
-         }
-       ]
-     ],
-     "web": {
-       "bundler": "metro",
-       "output": "server",
-       "favicon": "./assets/favicon.png"
-     },
-     "experiments": {
-       "typedRoutes": true
-     }
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
       ]
     ],
     "experiments": {
