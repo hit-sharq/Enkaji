@@ -6,7 +6,11 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "autoIncrement": true
+      },
+      "ios": {
+        "autoIncrement": true
       },
       "env": {
         "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
@@ -14,7 +18,11 @@
     },
     "production": {
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "autoIncrement": true
+      },
+      "ios": {
+        "autoIncrement": true
       },
       "env": {
         "NPM_CONFIG_LEGACY_PEER_DEPS": "true"

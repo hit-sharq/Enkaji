@@ -12,25 +12,27 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.enkaji.mobile",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/favicon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.enkaji.mobile",
-      "permissions": [
-        "ACCESS_FINE_LOCATION"
-      ]
-    },
+     "ios": {
+       "supportsTablet": true,
+       "bundleIdentifier": "com.enkaji.mobile",
+       "infoPlist": {
+         "ITSAppUsesNonExemptEncryption": false,
+         "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
+         "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
+       },
+       "buildNumber": "3"
+     },
+     "android": {
+       "adaptiveIcon": {
+         "foregroundImage": "./assets/favicon.png",
+         "backgroundColor": "#ffffff"
+       },
+       "package": "com.enkaji.mobile",
+       "permissions": [
+         "ACCESS_FINE_LOCATION"
+       ],
+       "versionCode": 3
+     },
     "web": {
       "bundler": "metro",
       "output": "single",

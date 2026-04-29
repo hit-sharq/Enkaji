@@ -1,59 +1,44 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server'
 
-// This endpoint returns the latest mobile app version info
-// The mobile app polls this to check if a new APK is required
-
-interface VersionInfo {
-  version: string
-  buildNumber: number
-  minRequiredBuild: number
-  apkUrl: string | null
-  releaseNotes: string
-  forceUpdate: boolean
-  publishedAt: string
+function getEnvNumber(key: string, fallback: number): number {
+  const val = process.env[key]
+  const num = Number(val)
+  return Number.isNaN(num) ? fallback : num
 }
 
-// Update these values when you release a new APK
-const LATEST_VERSION: VersionInfo = {
-  version: "1.0.0",
-  buildNumber: 1,
-  minRequiredBuild: 1, // If user's build < this, force update
-  apkUrl: process.env.NEXT_PUBLIC_APK_DOWNLOAD_URL || null,
-  releaseNotes: "Initial release",
-  forceUpdate: false,
-  publishedAt: new Date().toISOString(),
+function getEnvString(key: string, fallback: string): string {
+  return process.env[key] || fallback
 }
 
-export async function GET() {
-  return NextResponse.json({
-    success: true,
-    data: LATEST_VERSION,
-  })
-}
-
-// Admin endpoint to update version info (protected in production)
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    // In production, add admin auth check here
-    
-    // Update the version info
-    Object.assign(LATEST_VERSION, {
-      ...body,
-      publishedAt: new Date().toISOString(),
-    })
-    
-    return NextResponse.json({
-      success: true,
-      data: LATEST_VERSION,
-      message: "Version info updated. New APK will be required for all users.",
-    })
+    const versionData = {
+      version: body.version || getEnvString('NEXT_PUBLIC_APP_VERSION', '1.0.0'),
+      buildNumber: Number(body.buildNumber) || getEnvNumber('NEXT_PUBLIC_BUILD_NUMBER', 1),
+      minRequiredBuild: Number(body.minRequiredBuild) || getEnvNumber('NEXT_PUBLIC_MIN_REQUIRED_BUILD', 1),
+      apkUrl: body.apkUrl || getEnvString('NEXT_PUBLIC_APK_DOWNLOAD_URL', 'https://expo.dev/artifacts/eas/vmSxSYvCbc3HveLYLbunxe.apk'),
+      releaseNotes: body.releaseNotes || getEnvString('NEXT_PUBLIC_RELEASE_NOTES', 'App update available'),
+    }
+
+    console.log('Mobile version updated:', versionData)
+
+    return NextResponse.json({ success: true, data: versionData })
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to update version" },
-      { status: 500 }
-    )
+    console.error('Version update failed:', error)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
 
+export async function GET() {
+  const currentVersion = {
+    version: getEnvString('NEXT_PUBLIC_APP_VERSION', '1.0.0'),
+    buildNumber: getEnvNumber('NEXT_PUBLIC_BUILD_NUMBER', 1),
+    minRequiredBuild: getEnvNumber('NEXT_PUBLIC_MIN_REQUIRED_BUILD', 1),
+    apkUrl: getEnvString('NEXT_PUBLIC_APK_DOWNLOAD_URL', 'https://expo.dev/artifacts/eas/vmSxSYvCbc3HveLYLbunxe.apk'),
+    releaseNotes: getEnvString('NEXT_PUBLIC_RELEASE_NOTES', 'App update available'),
+  }
+  
+  return NextResponse.json({ success: true, data: currentVersion })
+}
