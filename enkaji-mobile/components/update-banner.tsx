@@ -6,7 +6,7 @@ import { Colors } from "@/lib/theme"
 export function UpdateBanner() {
   const { updateInfo, checking, checkForUpdates } = useAppUpdates()
 
-  if (!updateInfo?.hasNativeUpdate) return null
+  if (!updateInfo?.hasOtaUpdate) return null
 
   return (
     <View style={styles.container}>
