@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { Alert, AppState } from "react-native"
 import * as Updates from "expo-updates"
 import api from "@/lib/api"
-import pkg from '../../package.json'
+import pkg from '../package.json'
 import semver from 'semver'
 
 export function useAppUpdates() {

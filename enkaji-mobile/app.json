@@ -2,7 +2,7 @@
   "expo": {
     "name": "Enkaji",
     "slug": "enkaji-mobile",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/favicon.png",
     "scheme": "enkaji",
@@ -19,7 +19,7 @@
       },
       "package": "com.enkaji.mobile",
       "permissions": ["ACCESS_FINE_LOCATION"],
-      "versionCode": 3,
+      "versionCode": 4,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -50,7 +50,7 @@
         "NSLocationWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Enkaji needs your location to auto-fill your shipping address for faster checkout."
       },
-      "buildNumber": "3",
+      "buildNumber": "4",
       "associatedDomains": [
         "applinks:enkaji.vercel.app",
         "applinks:www.enkaji.vercel.app"
