@@ -120,19 +120,24 @@ export function ProductForm({ categories, product }: ProductFormProps) {
         body: JSON.stringify(productData),
       })
 
-      if (response.ok) {
+if (response.ok) {
         toast({
           title: product ? "Product updated!" : "Product created!",
           description: "Your product has been saved successfully.",
         })
         router.push("/dashboard")
       } else {
-        throw new Error("Failed to save product")
+        // Try to get the actual error message from API response
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData?.error || "Failed to save product. Please try again."
+        throw new Error(errorMessage)
       }
-    } catch (error) {
+} catch (error) {
+      // Show the actual error message from API or the caught error
+      const errorMessage = error instanceof Error ? error.message : "Failed to save product. Please try again."
       toast({
         title: "Error",
-        description: "Failed to save product. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {

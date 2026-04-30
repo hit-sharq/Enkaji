@@ -61,7 +61,7 @@ export default function SubscriptionPage() {
     }
   }
 
-  const handleSubscribe = async (planType: string) => {
+const handleSubscribe = async (planType: string) => {
     if (plans[planType].price === 0) {
       // Free plan - activate immediately
       setSubscribing(true)
@@ -73,8 +73,14 @@ export default function SubscriptionPage() {
         })
 
         if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.error || "Failed to subscribe")
+          let errorMessage = "Failed to subscribe"
+          try {
+            const error = await response.json()
+            errorMessage = error.error || errorMessage
+          } catch {
+            errorMessage = `Server error: ${response.status}`
+          }
+          throw new Error(errorMessage)
         }
 
         toast({
@@ -97,7 +103,7 @@ export default function SubscriptionPage() {
     }
   }
 
-  const handlePayment = async () => {
+const handlePayment = async () => {
     if (!selectedPlan || !phoneNumber) {
       toast({
         title: "Error",
@@ -116,8 +122,14 @@ export default function SubscriptionPage() {
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || "Failed to initiate payment")
+        let errorMessage = "Failed to initiate payment"
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch {
+          errorMessage = `Server error: ${response.status}`
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
@@ -219,33 +231,44 @@ export default function SubscriptionPage() {
         </Card>
       )}
 
-      {/* Available Plans */}
+{/* Available Plans - Horizontal Scroll on Mobile */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Available Plans</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Horizontal scroll container for mobile */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 md:overflow-visible gap-4 pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:gap-6 snap-x snap-mandatory">
           {Object.entries(plans).map(([planType, plan]) => (
             <Card 
               key={planType} 
-              className={`relative ${currentPlan === planType && isActive ? 'border-primary' : ''}`}
+              className={`relative min-w-[280px] md:min-w-0 snap-center ${
+                currentPlan === planType && isActive ? 'border-primary shadow-md shadow-primary/20' : ''
+              }`}
             >
               {currentPlan === planType && isActive && (
-                <Badge className="absolute -top-2 right-4">Current Plan</Badge>
+                <Badge className="absolute -top-2 right-4 bg-green-600">Current Plan</Badge>
               )}
-              <CardHeader>
-                <CardTitle>{plan.name}</CardTitle>
-                <CardDescription>
+              {planType === 'PREMIUM' && (
+                <Badge className="absolute -top-2 left-4 bg-orange-500">Popular</Badge>
+              )}
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2">
+                  {planType === 'BASIC' && <Package className="h-5 w-5" />}
+                  {planType === 'PREMIUM' && <CreditCard className="h-5 w-5 text-orange-500" />}
+                  {planType === 'ENTERPRISE' && <AlertCircle className="h-5 w-5" />}
+                  {plan.name}
+                </CardTitle>
+                <CardDescription className="mt-2">
                   <span className="text-3xl font-bold">
                     {plan.price === 0 ? "Free" : `KSh ${plan.price}`}
                   </span>
-                  {plan.price > 0 && <span className="text-muted-foreground">/month</span>}
+                  {plan.price > 0 && <span className="text-muted-foreground text-sm">/month</span>}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 mb-6">
+                <ul className="space-y-2 mb-4">
                   {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <span className="text-sm">{feature}</span>
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -253,7 +276,7 @@ export default function SubscriptionPage() {
                   className="w-full"
                   onClick={() => handleSubscribe(planType)}
                   disabled={subscribing || (currentPlan === planType && isActive)}
-                  variant={currentPlan === planType && isActive ? "outline" : "default"}
+                  variant={currentPlan === planType && isActive ? "outline" : planType === 'PREMIUM' ? "default" : "secondary"}
                 >
                   {subscribing && selectedPlan === planType ? (
                     <>

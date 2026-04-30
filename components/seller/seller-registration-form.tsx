@@ -79,9 +79,15 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to create seller profile")
+if (!response.ok) {
+        let errorMessage = "Failed to create seller profile"
+        try {
+          const errorData = await response.json()
+          errorMessage = errorData.error || errorMessage
+        } catch {
+          errorMessage = `Server error: ${response.status}`
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
