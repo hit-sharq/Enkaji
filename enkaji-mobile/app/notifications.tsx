@@ -105,8 +105,8 @@ export default function NotificationsScreen() {
             onPress={() => handleNotificationPress(item)}
             activeOpacity={0.8}
           >
-            <View style={[styles.iconBox, { backgroundColor: COLOR_MAP[item.type] + '20' }]}>
-              <Feather name={ICON_MAP[item.type] || 'bell'} size={20} color={COLOR_MAP[item.type]} />
+             <View style={[styles.iconBox, { backgroundColor: COLOR_MAP[item.type] + '20' }]}>
+               <Feather name={(ICON_MAP[item.type] || 'bell') as any} size={20} color={COLOR_MAP[item.type]} />
             </View>
             <View style={styles.cardContent}>
               <View style={styles.cardHeader}>

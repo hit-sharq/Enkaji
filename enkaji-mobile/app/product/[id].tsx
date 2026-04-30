@@ -270,7 +270,7 @@ export default function ProductDetailScreen() {
             {/* Seller */}
             <TouchableOpacity style={styles.sellerRow}>
               <View style={styles.sellerIconBg}>
-                <Feather name="store" size={14} color={Colors.primary} />
+                <Feather name={("store" as any)} size={14} color={Colors.primary} />
               </View>
               <Text style={styles.sellerName}>
                 {product.seller?.sellerProfile?.businessName || 'Enkaji Seller'}

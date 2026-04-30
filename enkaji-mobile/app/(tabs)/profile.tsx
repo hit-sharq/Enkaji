@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useAuth } from '@clerk/clerk-expo'
 import { useAuthStore } from '@/lib/store'
+import { useRBAC } from '@/lib/rbac'
 import api from '@/lib/api'
 import { Colors } from '@/lib/theme'
 
@@ -21,7 +22,8 @@ const PLACEHOLDER_IMAGE = 'https://placehold.co/200x200/e5e5e5/666666?text=User'
 export default function ProfileScreen() {
   const router = useRouter()
   const { isSignedIn, signOut } = useAuth()
-  const { user, setUser, logout } = useAuthStore()
+  const { user, setUser, logout, isSellerApproved } = useAuthStore()
+  const { canAccessSeller, canAccessAdmin } = useRBAC()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSignOut = async () => {
@@ -41,6 +43,15 @@ export default function ProfileScreen() {
         },
       ]
     )
+  }
+
+  const handleSellerAccess = () => {
+    const access = canAccessSeller()
+    if (!access.canAccess) {
+      Alert.alert('Access Denied', access.message)
+      return
+    }
+    router.push('/seller/dashboard')
   }
 
   const menuItems = [
@@ -68,14 +79,13 @@ export default function ProfileScreen() {
       onPress: () => router.push('/notifications'),
       show: true 
     },
-
     { 
       icon: 'layout', 
-      label: 'Seller Dashboard', 
-      onPress: () => router.push('/seller/dashboard'),
-      show: user?.role === 'SELLER' || user?.role === 'ADMIN'
+      label: 'Seller Dashboard',
+      onPress: handleSellerAccess,
+      show: user?.role === 'SELLER' || user?.role === 'ADMIN',
+      badge: isSellerApproved ? null : 'Pending'
     },
-
     { 
       icon: 'settings', 
       label: 'Settings', 

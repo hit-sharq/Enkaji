@@ -113,14 +113,13 @@ export default function SearchScreen() {
     setLoading(true)
     setHasSearched(true)
     try {
-      const response = await api.getProducts({ 
-        search: query, 
-        limit: '24',
-        minPrice: minPriceInput || undefined,
-        maxPrice: maxPriceInput || undefined,
-        minRating: minRating > 0 ? minRating.toString() : undefined,
-        location: locationInput.trim() || undefined,
-      })
+       const response = await api.getProducts({ 
+         search: query, 
+         limit: 24,
+         minPrice: minPriceInput ? Number(minPriceInput) : undefined,
+         maxPrice: maxPriceInput ? Number(maxPriceInput) : undefined,
+         location: locationInput.trim() || undefined,
+       })
       if (response.products) {
         setSearchResults(response.products)
       }

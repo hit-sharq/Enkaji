@@ -9,20 +9,12 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 })
 
 export type NotificationType = 'order' | 'payment' | 'promo' | 'system' | 'message' | 'booking'
-
-export interface PushNotification {
-  id: string
-  title: string
-  body: string
-  type: NotificationType
-  data?: Record<string, any>
-  read: boolean
-  createdAt: string
-}
 
 class NotificationService {
   pushToken: string | null = null
@@ -44,9 +36,7 @@ class NotificationService {
     }
 
     // Get push token
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      experienceId: '@hit-sharq/enkaji-mobile',
-    })
+    const tokenData = await Notifications.getExpoPushTokenAsync()
     this.pushToken = tokenData.data
 
     // Register token with backend (if user is logged in)
@@ -63,10 +53,7 @@ class NotificationService {
 
   private async registerTokenWithBackend() {
     try {
-      await api.post('/api/notifications/token', {
-        token: this.pushToken,
-        platform: Platform.OS,
-      })
+      await api.registerNotificationToken(this.pushToken!, Platform.OS)
     } catch (error) {
       console.warn('Failed to register push token:', error)
     }
@@ -92,7 +79,7 @@ class NotificationService {
   }
 
   private async handleNotificationTap(notification: Notifications.Notification) {
-    const data = notification.request.content.data
+    const data = notification.request.content.data as any
     
     // Build deep link URL based on notification type
     let url = '/'
@@ -115,7 +102,7 @@ class NotificationService {
 
   private async updateBadgeCount() {
     try {
-      const response = await api.get<{ count: number }>('/api/notifications/unread-count')
+      const response = await api.getUnreadNotificationCount()
       await Notifications.setBadgeCountAsync(response.count)
     } catch (error) {
       console.warn('Failed to update badge count:', error)
@@ -130,7 +117,10 @@ class NotificationService {
         data,
         sound: true,
       },
-      trigger: { seconds: secondsFromNow },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: secondsFromNow,
+      },
     })
   }
 
@@ -147,6 +137,16 @@ class NotificationService {
     this.listeners.forEach((cleanup) => cleanup())
     this.listeners = []
   }
+}
+
+export type PushNotification = {
+  id: string
+  title: string
+  body: string
+  type: NotificationType
+  data?: Record<string, any>
+  read: boolean
+  createdAt: string
 }
 
 export const notificationService = new NotificationService()

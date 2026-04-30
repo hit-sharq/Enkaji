@@ -55,9 +55,10 @@ export function useViewportObserver<T>(
 ) {
   const [visibleRange, setVisibleRange] = useState<[number, number]>([0, 10])
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const enabled = options?.enabled
 
   useEffect(() => {
-    if (!options?.enabled || typeof window === 'undefined') return
+    if (!enabled || typeof window === 'undefined') return
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -83,7 +84,7 @@ export function useViewportObserver<T>(
     return () => {
       observerRef.current?.disconnect()
     }
-  }, [options.enabled])
+   }, [enabled])
 
   const observe = useCallback((element: HTMLElement | null, index: number) => {
     if (observerRef.current && element) {

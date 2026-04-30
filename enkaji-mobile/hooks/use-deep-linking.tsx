@@ -34,20 +34,20 @@ export function useDeepLinking() {
 
       // Seller/dashboard
       if (path.startsWith('/seller/') || path.startsWith('/shop/')) {
-        const sellerId = path.split('/').pop()
-        if (sellerId) {
-          router.push(`/seller/${sellerId}`)
-          return true
-        }
+         const sellerId = path.split('/').pop()
+         if (sellerId) {
+           router.push(`/seller/${sellerId}` as any)
+           return true
+         }
       }
 
       // Messages
       if (path.startsWith('/messages/')) {
-        const threadId = path.split('/').pop()
-        if (threadId) {
-          router.push(`/messages/${threadId}`)
-          return true
-        }
+         const threadId = path.split('/').pop()
+         if (threadId) {
+           router.push(`/messages/${threadId}` as any)
+           return true
+         }
       }
 
       // Checkout

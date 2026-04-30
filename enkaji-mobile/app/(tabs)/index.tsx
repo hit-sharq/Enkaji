@@ -12,12 +12,17 @@ import {
   TextInput,
 } from 'react-native'
 import { useRouter } from 'expo-router'
-import { Feather } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useProductsStore } from '@/lib/store'
+import { useProductsStore, useCartStore } from '@/lib/store'
 import { Product, Category } from '@/types'
 import api from '@/lib/api'
 import { Colors, PLACEHOLDER_IMAGE } from '@/lib/theme'
+import { ProductCard } from '@/components/ProductCard'
+import { CategoryCard } from '@/components/CategoryCard'
+import { SearchBar } from '@/components/SearchBar'
+import { Toast } from '@/components/Toast'
+import { LoadingSkeletons } from '@/components/LoadingSkeletons'
 
 const PROMO_BANNERS = [
   { title: 'New Arrivals', subtitle: 'Discover fresh products', bg: Colors.primary },
@@ -28,9 +33,13 @@ const PROMO_BANNERS = [
 export default function HomeScreen() {
   const router = useRouter()
   const { featuredProducts, categories, setFeaturedProducts, setCategories, isLoading, setLoading } = useProductsStore()
+  const { addItem } = useCartStore()
   const [refreshing, setRefreshing] = useState(false)
   const [activeBanner, setActiveBanner] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info')
 
   useEffect(() => {
     loadData()
@@ -54,7 +63,8 @@ export default function HomeScreen() {
       if (categoriesRes.categories) setCategories(categoriesRes.categories)
       else if (Array.isArray(categoriesRes)) setCategories(categoriesRes)
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error('[v0] Error loading data:', error)
+      showToastMessage('Failed to load products', 'error')
     } finally {
       setLoading(false)
     }
@@ -69,6 +79,23 @@ export default function HomeScreen() {
   const handleSearch = () => {
     if (searchQuery.trim()) router.push(`/search?q=${searchQuery}`)
     else router.push('/search')
+  }
+
+  const showToastMessage = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToastMessage(message)
+    setToastType(type)
+    setShowToast(true)
+  }
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      id: `cart-${product.id}-${Date.now()}`,
+      productId: product.id,
+      product,
+      quantity: 1,
+      createdAt: new Date().toISOString(),
+    })
+    showToastMessage(`${product.name} added to cart`, 'success')
   }
 
   const renderProductCard = ({ item }: { item: Product }) => {

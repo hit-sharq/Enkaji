@@ -100,7 +100,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
       description: formData.get("description"),
       price: formData.get("price"),
       inventory: formData.get("inventory"),
-      categoryId: formData.get("categoryId"),
+      categoryId, // <-- use state directly
       weight: weightValue ? parseFloat(weightValue) : null,
       images,
     }
@@ -206,21 +206,26 @@ export function ProductForm({ categories, product }: ProductFormProps) {
             </p>
           </div>
 
-          <div>
-            <Label htmlFor="categoryId">Category *</Label>
-            <Select name="categoryId" defaultValue={product?.categoryId || ""} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+           <div>
+             <Label htmlFor="categoryId">Category *</Label>
+             <Select 
+               name="categoryId" 
+               value={categoryId} 
+               onValueChange={setCategoryId}
+               required
+             >
+               <SelectTrigger>
+                 <SelectValue placeholder="Select a category" />
+               </SelectTrigger>
+               <SelectContent>
+                 {categories.map((category) => (
+                   <SelectItem key={category.id} value={category.id}>
+                     {category.name}
+                   </SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
+           </div>
 
           <div>
             <Label>Product Images *</Label>

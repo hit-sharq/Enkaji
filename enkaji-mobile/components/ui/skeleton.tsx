@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated'
 
 interface SkeletonProps {
-  width?: number | string
+  width?: number | `${number}%`
   height?: number
   borderRadius?: number
   style?: ViewStyle

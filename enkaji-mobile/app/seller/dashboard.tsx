@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import { useAuthStore } from '@/lib/store'
+import { useRBAC } from '@/lib/rbac'
 import api from '@/lib/api'
 import { Colors } from '@/lib/theme'
 
@@ -67,7 +68,8 @@ const QUICK_ACTIONS = [
 
 export default function SellerDashboardScreen() {
   const router = useRouter()
-  const { user } = useAuthStore()
+  const { user, isSellerApproved } = useAuthStore()
+  const { canAccessSeller } = useRBAC()
   const [stats, setStats] = useState<SellerStats>({
     totalProducts: 0,
     totalOrders: 0,
@@ -76,10 +78,24 @@ export default function SellerDashboardScreen() {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [accessDenied, setAccessDenied] = useState(false)
 
   useEffect(() => {
-    loadDashboard()
+    checkAccess()
   }, [])
+
+  const checkAccess = async () => {
+    const access = canAccessSeller()
+    if (!access.canAccess) {
+      Alert.alert('Access Denied', access.message, [
+        { text: 'OK', onPress: () => router.back() }
+      ])
+      setAccessDenied(true)
+      setIsLoading(false)
+      return
+    }
+    loadDashboard()
+  }
 
   const loadDashboard = async () => {
     setIsLoading(true)
@@ -105,6 +121,10 @@ export default function SellerDashboardScreen() {
     setRefreshing(false)
   }
 
+  if (accessDenied) {
+    return null
+  }
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -115,6 +135,7 @@ export default function SellerDashboardScreen() {
   }
 
   const firstName = user?.firstName || 'Seller'
+  const approvalStatus = !isSellerApproved ? ' (Pending Approval)' : ''
 
   return (
     <ScrollView
@@ -149,7 +170,7 @@ export default function SellerDashboardScreen() {
             <TouchableOpacity
               key={card.key}
               style={styles.statCard}
-              onPress={() => card.route ? router.push(card.route) : null}
+               onPress={() => card.route ? router.push(card.route as any) : null}
               activeOpacity={card.route ? 0.85 : 1}
             >
               <View style={[styles.statIconBg, { backgroundColor: card.color + '18' }]}>
@@ -176,9 +197,9 @@ export default function SellerDashboardScreen() {
               key={i}
               style={styles.actionItem}
               onPress={() =>
-                action.route
-                  ? router.push(action.route)
-                  : Alert.alert('Coming Soon', `${action.label} coming soon!`)
+                 action.route
+                   ? router.push(action.route as any)
+                   : Alert.alert('Coming Soon', `${action.label} coming soon!`)
               }
             >
               <View style={[styles.actionIconBg, { backgroundColor: action.color + '18' }]}>

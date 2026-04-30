@@ -1,4 +1,4 @@
-import { useSharedValue, withSpring, withTiming, runOnJS } from 'react-native-reanimated'
+import { useSharedValue, withSpring, withTiming, runOnJS, withSequence } from 'react-native-reanimated'
 import { useEffect, useRef } from 'react'
 
 interface UseAnimationsReturn {

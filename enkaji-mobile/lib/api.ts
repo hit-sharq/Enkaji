@@ -47,16 +47,17 @@ class ApiClient {
     this.token = token
   }
 
-  // Products
-  async getProducts(params?: {
-    category?: string
-    search?: string
-    minPrice?: number
-    maxPrice?: number
-    sortBy?: string
-    page?: number
-    limit?: number
-  }) {
+   // Products
+   async getProducts(params?: {
+     category?: string
+     search?: string
+     minPrice?: number
+     maxPrice?: number
+     sortBy?: string
+     page?: number
+     limit?: number
+     location?: string
+   }) {
     const response = await this.client.get('/api/products', { params })
     return response.data
   }
@@ -150,6 +151,12 @@ class ApiClient {
       orderId,
       currency: 'KES',
     })
+    return response.data
+  }
+
+  // Get payment status
+  async getPaymentStatus(merchantReference: string) {
+    const response = await this.client.get(`/api/pesapal/order-status?reference=${merchantReference}`)
     return response.data
   }
 
@@ -261,10 +268,15 @@ class ApiClient {
     return response.data
   }
 
-  async getSellerPayouts() {
-    const response = await this.client.get('/api/seller/payouts')
-    return response.data
-  }
+   async getSellerPayouts() {
+     const response = await this.client.get('/api/seller/payouts')
+     return response.data
+   }
+
+   async getSellerAnalytics(params?: { timeframe?: 'week' | 'month' | 'year' }) {
+     const response = await this.client.get('/api/seller/analytics', { params })
+     return response.data
+   }
 
   async requestPayout(data: { amount: number; method: string }) {
     const response = await this.client.post('/api/seller/payouts/request', data)
@@ -487,9 +499,52 @@ class ApiClient {
     return response.data
   }
 
-  async getMyServices() {
-    const response = await this.client.get('/api/services?my=true')
-    return response.data
+   async getMyServices() {
+     const response = await this.client.get('/api/services?my=true')
+     return response.data
+   }
+
+   // Notifications
+   async registerNotificationToken(token: string, platform: string) {
+     const response = await this.client.post('/api/notifications/token', { token, platform })
+     return response.data
+   }
+
+   async getUnreadNotificationCount() {
+     const response = await this.client.get('/api/notifications/unread-count')
+     return response.data
+   }
+
+   // App Version Management
+  async checkAppVersion() {
+    try {
+      const response = await this.client.get('/api/app-version')
+      return response.data
+    } catch (error) {
+      console.log('[v0] Version check failed (optional):', error)
+      return { latestVersion: null, forceUpdate: false }
+    }
+  }
+
+  async getAppUpdateNotes() {
+    try {
+      const response = await this.client.get('/api/app-update-notes')
+      return response.data
+    } catch (error) {
+      return { notes: [] }
+    }
+  }
+
+  async reportUpdateEvent(event: 'update_checked' | 'update_downloaded' | 'update_installed', data?: any) {
+    try {
+      await this.client.post('/api/app-update-events', {
+        event,
+        timestamp: new Date().toISOString(),
+        ...data,
+      })
+    } catch (error) {
+      console.log('[v0] Failed to report update event:', error)
+    }
   }
 }
 

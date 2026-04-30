@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { Platform } from 'react-native'
+import { File, Directory, Paths } from 'expo-file-system'
 
 export interface ImageUploadResult {
   url: string
@@ -44,13 +45,13 @@ export class ImageUploadService {
       selectionLimit: maxImages,
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync(options)
+     const result = await ImagePicker.launchImageLibraryAsync(options)
 
-    if (result.canceled) {
-      throw new Error('No image selected')
-    }
+     if (result.canceled) {
+       throw new Error('No image selected')
+     }
 
-    return result.selected as ImagePicker.ImagePickerAsset[]
+     return result.assets
   }
 
   /**
@@ -62,17 +63,17 @@ export class ImageUploadService {
       throw new Error('Camera permission required')
     }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images'],
-      allowsEditing: false,
-      quality: 1,
-    })
+     const result = await ImagePicker.launchCameraAsync({
+       mediaTypes: ['images'],
+       allowsEditing: false,
+       quality: 1,
+     })
 
-    if (result.canceled) {
-      throw new Error('No photo taken')
-    }
+     if (result.canceled) {
+       throw new Error('No photo taken')
+     }
 
-    return result.selected as ImagePicker.ImagePickerAsset
+     return result.assets[0]
   }
 
   /**
@@ -97,17 +98,19 @@ export class ImageUploadService {
       throw new Error('Image file not found')
     }
 
-    // For local file:// URIs, we can resize using FileSystem
-    if (uri.startsWith('file://')) {
-      const compressed = await FileSystem.createCacheUriAsync('compressed-image')
-      await FileSystem.copyAsync({
-        from: uri,
-        to: compressed,
-      })
+     // For local file:// URIs, we can copy to cache using File API
+     if (uri.startsWith('file://')) {
+       // Create a unique cache file path
+       const compressedFile = new File(Paths.cache, `compressed-${Date.now()}.jpg`)
+       // Copy the original file to cache
+       await FileSystem.copyAsync({
+         from: uri,
+         to: compressedFile.uri,
+       })
 
-      // Note: expo-image-picker already auto-compresses based on quality
-      // This is a basic implementation; for advanced compression use `expo-image`
-      return compressed
+       // Note: expo-image-picker already auto-compresses based on quality
+       // This is a basic implementation; for advanced compression use `expo-image`
+       return compressedFile.uri
     }
 
     return uri

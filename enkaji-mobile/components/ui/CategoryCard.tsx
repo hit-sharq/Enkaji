@@ -10,7 +10,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <Link href={`/categories/${category.slug}`} asChild>
+    <Link href={`/search?category=${encodeURIComponent(category.slug)}`} asChild>
       <TouchableOpacity style={styles.card}>
         <View style={styles.imageContainer}>
           <Image 

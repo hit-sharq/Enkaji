@@ -17,23 +17,63 @@ import {
   ServiceCategory
 } from '@/types'
 
-// Auth Store
+// Auth Store - Enhanced with role-based access
 interface AuthState {
   user: AuthUser | null
   isLoading: boolean
   isAuthenticated: boolean
+  sellerProfile: any | null
+  artisanProfile: any | null
+  isSellerApproved: boolean
+  isArtisanApproved: boolean
   setUser: (user: AuthUser | null) => void
   setLoading: (loading: boolean) => void
+  setSellerProfile: (profile: any) => void
+  setArtisanProfile: (profile: any) => void
   logout: () => void
+  canAccessSeller: () => boolean
+  canAccessArtisan: () => boolean
+  canAccessAdmin: () => boolean
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isLoading: true,
   isAuthenticated: false,
+  sellerProfile: null,
+  artisanProfile: null,
+  isSellerApproved: false,
+  isArtisanApproved: false,
   setUser: (user) => set({ user, isAuthenticated: !!user }),
   setLoading: (isLoading) => set({ isLoading }),
-  logout: () => set({ user: null, isAuthenticated: false }),
+  setSellerProfile: (profile) => set({ 
+    sellerProfile: profile,
+    isSellerApproved: profile?.isVerified || profile?.isApproved || false
+  }),
+  setArtisanProfile: (profile) => set({ 
+    artisanProfile: profile,
+    isArtisanApproved: profile?.isApproved || false
+  }),
+  logout: () => set({ 
+    user: null, 
+    isAuthenticated: false,
+    sellerProfile: null,
+    artisanProfile: null,
+    isSellerApproved: false,
+    isArtisanApproved: false
+  }),
+  canAccessSeller: () => {
+    const state = get()
+    return (state.user?.role === 'SELLER' || state.user?.role === 'ADMIN') && state.isSellerApproved
+  },
+  canAccessArtisan: () => {
+    const state = get()
+    return (state.user?.role === 'ARTISAN' || state.user?.role === 'ADMIN') && state.isArtisanApproved
+  },
+  canAccessAdmin: () => {
+    const state = get()
+    return state.user?.role === 'ADMIN'
+  },
 }))
 
 // Cart Store
@@ -250,4 +290,36 @@ export const useUIStore = create<UIState>((set) => ({
   setSearchVisible: (isSearchVisible) => set({ isSearchVisible }),
   setSearchQuery: (searchQuery) => set({ searchQuery }),
   setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
+}))
+
+// Analytics Store - For seller/admin insights
+interface AnalyticsState {
+  salesData: any[]
+  revenueSummary: { total: number; pending: number; paid: number } | null
+  ordersData: any[]
+  customersData: any[]
+  isLoading: boolean
+  setSalesData: (data: any[]) => void
+  setRevenueSummary: (data: any) => void
+  setOrdersData: (data: any[]) => void
+  setCustomersData: (data: any[]) => void
+  setLoading: (loading: boolean) => void
+  addAnalyticsEvent: (event: string, properties?: any) => void
+}
+
+export const useAnalyticsStore = create<AnalyticsState>((set) => ({
+  salesData: [],
+  revenueSummary: null,
+  ordersData: [],
+  customersData: [],
+  isLoading: false,
+  setSalesData: (salesData) => set({ salesData }),
+  setRevenueSummary: (revenueSummary) => set({ revenueSummary }),
+  setOrdersData: (ordersData) => set({ ordersData }),
+  setCustomersData: (customersData) => set({ customersData }),
+  setLoading: (isLoading) => set({ isLoading }),
+  addAnalyticsEvent: (event: string, properties?: any) => {
+    // Send to analytics service
+    console.log('[v0] Analytics:', { event, properties, timestamp: new Date().toISOString() })
+  },
 }))

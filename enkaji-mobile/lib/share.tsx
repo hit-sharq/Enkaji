@@ -1,6 +1,5 @@
-import * as Sharing from 'expo-sharing'
 import * as Clipboard from 'expo-clipboard'
-import { Alert, Platform } from 'react-native'
+import { Alert } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Product } from '@/types'
 
@@ -9,25 +8,13 @@ export async function shareProduct(product: Product) {
   const message = `Check out ${product.name} on Enkaji!\n\nKES ${product.price.toLocaleString()}\n${product.description?.slice(0, 100)}...\n\n${url}`
 
   try {
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(url, {
-        message,
-        // For Android, set the Dialog title
-        dialogTitle: `Share ${product.name}`,
-        // For iOS, set the subject of the share
-        subject: product.name,
-        // UTI for iOS (uniform type identifier) for text
-        contentType: 'text/plain',
-      })
-    } else {
-      // Fallback: copy to clipboard
-      await Clipboard.setStringAsync(url)
-      Alert.alert(
-        'Link Copied',
-        'Product link copied to clipboard. Share it anywhere!',
-        [{ text: 'OK' }]
-      )
-    }
+    // Copy to clipboard as primary sharing mechanism
+    await Clipboard.setStringAsync(message)
+    Alert.alert(
+      'Link Copied',
+      'Product link copied to clipboard. Share it anywhere!',
+      [{ text: 'OK' }]
+    )
   } catch (error) {
     console.error('Share failed:', error)
     Alert.alert('Error', 'Failed to share product. Please try again.')
@@ -35,12 +22,12 @@ export async function shareProduct(product: Product) {
 }
 
 export function createProductUrl(productId: string): string {
-  const url = Linking.createURL(`/product/${productId}`, {
-    scheme: 'enkaji',
-    host: 'enkaji.vercel.app',
-  })
-  // Also support web fallback
-  return `https://enkaji.vercel.app/product/${productId}`
+  // Deep link for opening the app
+  const deepLink = Linking.createURL(`/product/${productId}`)
+  // Web fallback URL
+  const webUrl = `https://enkaji.vercel.app/product/${productId}`
+  // Return the web URL as the primary shareable link (works everywhere)
+  return webUrl
 }
 
 export async function copyToClipboard(text: string) {

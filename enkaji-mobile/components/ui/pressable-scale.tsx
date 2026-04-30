@@ -106,9 +106,9 @@ export function PressableHaptic({
   onPress,
   ...props
 }: PressableHapticProps) {
-  const handlePress = () => {
+  const handlePress = (event?: any) => {
     triggerHaptic(hapticType)
-    onPress?.()
+    onPress?.(event as any)
   }
 
   return (
@@ -122,11 +122,15 @@ export function PressableHaptic({
 }
 
 // Bounce button
+interface PressableBounceProps extends Omit<PressableScaleProps, 'scaleTo' | 'scaleFrom'> {
+  bounceAmount?: number
+}
+
 export function PressableBounce({
   children,
   bounceAmount = 10,
   ...props
-}: Omit<PressableScaleProps, 'scaleTo' | 'scaleFrom'>) {
+}: PressableBounceProps) {
   const translateY = useSharedValue(0)
 
   const handlePressIn = () => {
@@ -169,6 +173,7 @@ export function PressableRipple({
       {...props}
       style={style}
       activeOpacity={0.8}
+      // @ts-expect-error - android_ripple is valid at runtime
       android_ripple={{ color: rippleColor, borderless: false }}
     >
       {children}
