@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       0
     )
     const orderValue = items.reduce(
-      (sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 1),
+      (sum: number, item: any) => sum + (item.value || 0),
       0
     )
 

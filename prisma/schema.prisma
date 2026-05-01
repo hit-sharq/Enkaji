@@ -163,8 +163,8 @@ model Product {
   seller        User        @relation(fields: [sellerId], references: [id])
   tags          String[]
   specifications Json?
-  isActive      Boolean     @default(true)
-  isShopApproved Boolean    @default(false)
+isActive      Boolean     @default(true)
+  isShopApproved Boolean    @default(true) // Auto-approve products to appear in shop
   isFeatured    Boolean     @default(false)
   weight        Decimal?
   dimensions    Json?       // {length, width, height}

@@ -32,25 +32,11 @@ export default function PaymentWebViewScreen() {
     const status = params.get('payment_status') || url.pathname.includes('success') ? 'COMPLETED' : 'FAILED'
 
     if (currentUrl.includes('/api/pesapal/callback') || status === 'COMPLETED' || url.searchParams.has('success')) {
-      Alert.alert(
-        'Payment Successful!',
-        `Order payment completed. Check your orders.`,
-        [
-          {
-            text: 'View Orders',
-            onPress: () => router.replace('/(tabs)/orders'),
-          },
-        ]
-      )
+      // Payment successful - navigate to order screen immediately
+      router.replace({ pathname: '/(tabs)/orders', params: { paymentSuccess: 'true' } })
     } else if (status === 'FAILED' || url.searchParams.has('cancel')) {
-      Alert.alert(
-        'Payment Failed/Cancelled',
-        'Payment not completed. Cart items preserved.',
-        [
-          { text: 'Try Again', onPress: () => router.back() },
-          { text: 'Cart', onPress: () => router.replace('/(tabs)/cart') },
-        ]
-      )
+      // Payment failed - go back to cart
+      router.replace('/(tabs)/cart')
     }
   }
 

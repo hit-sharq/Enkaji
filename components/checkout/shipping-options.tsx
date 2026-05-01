@@ -85,19 +85,20 @@ export function ShippingOptions({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            items: cartItems.map(item => ({
-              id: item.id,
-              weight: item.weight || 0.5,
-              value: item.price * item.quantity,
-            })),
-            destination: {
-              country: destination.country,
-              city: destination.city,
-              state: destination.state,
-            },
-            cod: showCod,
-          }),
+           body: JSON.stringify({
+             items: cartItems.map(item => ({
+               id: item.id,
+               weight: item.weight || 0.5,
+               quantity: item.quantity,
+               value: item.price * item.quantity,
+             })),
+             destination: {
+               country: destination.country,
+               city: destination.city,
+               state: destination.state,
+             },
+             cod: showCod,
+           }),
         })
 
         if (!response.ok) {

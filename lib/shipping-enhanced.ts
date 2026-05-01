@@ -231,7 +231,7 @@ export function generateShippingQuote(request: ShippingQuoteRequest): ShippingQu
 
   // Calculate total weight
   const totalWeight = calculateTotalWeight(
-    items.map(i => ({ weight: i.weight, quantity: 1 }))
+    items.map(i => ({ weight: i.weight, quantity: i.quantity || 1 }))
   )
 
   // Calculate order value

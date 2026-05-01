@@ -91,18 +91,19 @@ export default function CheckoutScreen() {
       }
       setShippingLoading(true)
       try {
-        const response = await api.calculateShipping({
-          items: items.map((item) => ({
-            id: item.productId,
-            weight: item.product?.weight || 0.5,
-            value: (item.product?.price || 0) * item.quantity,
-          })),
-          destination: {
-            country: shippingAddress.country,
-            city: shippingAddress.city,
-            state: shippingAddress.state,
-          },
-        })
+         const response = await api.calculateShipping({
+           items: items.map((item) => ({
+             id: item.productId,
+             weight: item.product?.weight || 0.5,
+             quantity: item.quantity,
+             value: (item.product?.price || 0) * item.quantity,
+           })),
+           destination: {
+             country: shippingAddress.country,
+             city: shippingAddress.city,
+             state: shippingAddress.state,
+           },
+         })
         // Backend returns {success, data} - check accordingly
         const result = response as any
         if (result?.success && result.data?.shipping?.options?.length > 0) {
