@@ -59,7 +59,7 @@ const where: any = {
     }
 
     if (featured === "true") {
-      where.isFeatured = true
+      where.featured = true
     }
 
     // Map sortBy values to actual database fields

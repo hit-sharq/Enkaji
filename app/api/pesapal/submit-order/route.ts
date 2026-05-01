@@ -53,26 +53,42 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    console.log('[Pesapal API] Submitting order data:', JSON.stringify(orderData, null, 2))
+
     const response = await pesapalService.submitOrder(orderData)
 
-    // Save Pesapal tracking ID
-    await prisma.pesapalPayment.create({
-      data: {
-        orderId: order.id,
-        userId: user.id,
-        amount: order.total,
-        currency,
-        pesapalTrackingId: response.order_tracking_id,
-        pesapalMerchantRef: response.merchant_reference,
-        status: 'PENDING'
-      }
-    })
+    console.log('[Pesapal API] Pesapal response:', JSON.stringify(response, null, 2))
 
-    return NextResponse.json(response)
+    // Save Pesapal tracking ID
+    if (response.order_tracking_id) {
+      await prisma.pesapalPayment.create({
+        data: {
+          orderId: order.id,
+          userId: user.id,
+          amount: order.total,
+          currency,
+          pesapalTrackingId: response.order_tracking_id,
+          pesapalMerchantRef: response.merchant_reference || '',
+          status: 'PENDING'
+        }
+      }).catch(err => {
+        console.warn('[Pesapal API] Failed to save Pesapal payment record:', err.message)
+        // Don't fail the whole request if we can't save the record
+      })
+    }
+
+    // Return the response including redirect_url
+    return NextResponse.json({
+      redirect_url: response.redirect_url,
+      order_tracking_id: response.order_tracking_id,
+      merchant_reference: response.merchant_reference
+    })
 
   }
   catch (error: any) {
-    console.error('Error submitting Pesapal order:', error)
-    return NextResponse.json({ error: error.message || 'Failed to submit order' }, { status: 500 })
+    console.error('[Pesapal API] Error submitting Pesapal order:', error)
+    const errorMessage = error.message || 'Failed to submit order'
+    console.error('[Pesapal API] Full error:', error)
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }

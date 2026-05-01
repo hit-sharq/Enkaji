@@ -79,9 +79,13 @@ export function FeaturedProducts() {
       if (response.ok) {
         const data = await response.json()
         setProducts(data.products || [])
+      } else {
+        console.error("Featured products fetch failed:", response.status)
+        setProducts([])
       }
     } catch (error) {
-      console.error("[v0] Failed to fetch featured products:", error)
+      console.error("Failed to fetch featured products:", error)
+      setProducts([])
     } finally {
       setLoading(false)
     }

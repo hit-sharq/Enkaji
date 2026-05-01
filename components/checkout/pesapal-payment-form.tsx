@@ -88,6 +88,7 @@ export function PesapalPaymentForm({
       setStep("processing")
 
       // Submit order to Pesapal
+      console.log("[Pesapal Form] Submitting payment for order:", orderId)
       const response = await fetch("/api/pesapal/submit-order", {
         method: "POST",
         headers: {
@@ -102,17 +103,21 @@ export function PesapalPaymentForm({
 
       const data = await response.json()
 
+      console.log("[Pesapal Form] Submit-order response:", response.status, data)
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to submit order")
       }
 
       // If we have a redirect URL, redirect to Pesapal
       if (data.redirect_url) {
+        console.log("[Pesapal Form] Redirecting to Pesapal:", data.redirect_url)
         // Store order info for callback handling
         sessionStorage.setItem(`pesapal_order_${orderId}`, JSON.stringify({
           orderId,
           amount,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          trackingId: data.order_tracking_id
         }))
 
         // Redirect to Pesapal payment page
@@ -120,21 +125,19 @@ export function PesapalPaymentForm({
         return
       }
 
-      // For M-Pesa, show pending status
-      if (selectedMethod === "mpesa" || selectedMethod === "airtel") {
-        setStep("complete")
-        onSuccess({
-          orderId,
-          status: "PENDING",
-          method: selectedMethod,
-          message: "Please complete the payment on your phone"
-        })
-      }
+      // If no redirect URL, something went wrong
+      console.error("[Pesapal Form] No redirect_url in response:", data)
+      throw new Error("Payment gateway returned no redirect URL. Please try again.")
 
     } catch (error) {
-      console.error("[Pesapal] Payment error:", error)
+      console.error("[Pesapal Form] Payment error:", error)
       setStep("select")
       const errorMessage = error instanceof Error ? error.message : "Payment failed"
+      toast({
+        title: "Payment Error",
+        description: errorMessage,
+        variant: "destructive"
+      })
       onError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -156,6 +159,7 @@ export function PesapalPaymentForm({
     try {
       setStep("processing")
 
+      console.log("[Pesapal Form] Submitting with phone number for:", selectedMethod)
       // Submit order with phone number for M-Pesa/Airtel
       const response = await fetch("/api/pesapal/submit-order", {
         method: "POST",
@@ -172,16 +176,21 @@ export function PesapalPaymentForm({
 
       const data = await response.json()
 
+      console.log("[Pesapal Form] Submit response:", response.status, data)
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to submit order")
       }
 
       // For mobile money, redirect or show pending
       if (data.redirect_url) {
+        console.log("[Pesapal Form] Redirecting to Pesapal with phone method")
         window.location.href = data.redirect_url
         return
       }
 
+      // If no redirect URL, show pending status
+      console.warn("[Pesapal Form] No redirect_url returned, showing pending status")
       setStep("complete")
       onSuccess({
         orderId,
@@ -191,9 +200,14 @@ export function PesapalPaymentForm({
       })
 
     } catch (error) {
-      console.error("[Pesapal] Payment error:", error)
+      console.error("[Pesapal Form] Payment error:", error)
       setStep("phone")
       const errorMessage = error instanceof Error ? error.message : "Payment failed"
+      toast({
+        title: "Payment Error",
+        description: errorMessage,
+        variant: "destructive"
+      })
       onError(errorMessage)
     } finally {
       setIsLoading(false)
