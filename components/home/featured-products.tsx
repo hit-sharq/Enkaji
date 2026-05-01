@@ -75,13 +75,13 @@ export function FeaturedProducts() {
 
   const fetchFeaturedProducts = useCallback(async () => {
     try {
-      const response = await fetch("/api/products?featured=true&limit=4&status=APPROVED")
+      const response = await fetch("/api/products?featured=true&limit=4")
       if (response.ok) {
         const data = await response.json()
         setProducts(data.products || [])
       }
     } catch (error) {
-      console.error("Failed to fetch featured products:", error)
+      console.error("[v0] Failed to fetch featured products:", error)
     } finally {
       setLoading(false)
     }

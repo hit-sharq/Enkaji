@@ -4,7 +4,6 @@ import { getCurrentUser } from "@/lib/auth"
 import { productSchema } from "@/lib/validation"
 import { handleApiError, ValidationError, AuthenticationError } from "@/lib/error"
 import { apiRateLimit } from "@/lib/rate-limit"
-import { ZodError } from "zod"
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +24,7 @@ export async function GET(request: NextRequest) {
 
 const where: any = {
       isActive: true,
-      // Show all active products on shop page (no admin approval required)
+      isShopApproved: true, // Only show shop-approved products
     }
 
     if (category) {
@@ -195,22 +194,13 @@ export async function POST(request: NextRequest) {
       throw new ValidationError(`You have reached the maximum number of products (${maxProducts}) for your ${subscription.plan} plan. Please upgrade to add more products.`)
     }
 
-     const body = await request.json()
+    const body = await request.json()
 
-     // Debug: Log the received data
-     console.log("Received product data:", body)
-     console.log("Category ID from body:", body.categoryId)
+    // Debug: Log the received data
+    console.log("Received product data:", body)
+    console.log("Category ID received:", body.categoryId)
 
-     let validatedData: any
-     try {
-       validatedData = productSchema.parse(body)
-     } catch (error) {
-       if (error instanceof ZodError) {
-         const errors = error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
-         throw new ValidationError(`Validation failed: ${errors}`)
-       }
-       throw error
-     }
+    const validatedData = productSchema.parse(body)
 
     // Check if category exists
     const category = await prisma.category.findUnique({
