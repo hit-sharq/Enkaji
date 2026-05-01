@@ -82,57 +82,62 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       break
   }
 
-  // Get products
-  const products = await db.product.findMany({
-    where,
-    orderBy,
-    include: {
-      seller: {
-        include: {
-          sellerProfile: true,
-        },
-      },
-      category: true,
-      _count: {
-        select: {
-          reviews: true,
-        },
-      },
-    },
-    take: 50, // Limit to 50 products per page
-  })
+   // Get products
+   const products = await db.product.findMany({
+     where,
+     orderBy,
+     include: {
+       seller: {
+         include: {
+           sellerProfile: true,
+         },
+       },
+       category: true,
+       _count: {
+         select: {
+           reviews: true,
+         },
+       },
+     },
+     take: 50, // Limit to 50 products per page
+   })
 
-  // Calculate average rating for each product
-  const productsWithRatings = await Promise.all(
-    products.map(async (product) => {
-      const avgRating = await db.review.aggregate({
-        where: { productId: product.id },
-        _avg: { rating: true },
-      })
-      
-      // Transform the product data to match the Product interface
-      return {
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        price: product.price.toNumber(),
-        images: product.images || [],
-        category: {
-          id: product.category.id,
-          name: product.category.name,
-        },
-        seller: {
-          firstName: product.seller.firstName || 'Unknown',
-          lastName: product.seller.lastName || 'Seller',
-          imageUrl: product.seller.imageUrl,
-        },
-        _count: {
-          reviews: product._count.reviews,
-        },
-        avgRating: avgRating._avg.rating || 0,
-      }
-    }),
-  )
+   // Calculate average rating and flatten seller data
+   const productsWithRatings = await Promise.all(
+     products.map(async (product) => {
+       const avgRatingResult = await db.review.aggregate({
+         where: { productId: product.id },
+         _avg: { rating: true },
+       })
+       const avgRating = avgRatingResult._avg.rating || 0
+       
+       // Build product object matching ProductCard's Product interface
+       return {
+         id: product.id,
+         name: product.name,
+         description: product.description,
+         price: product.price.toNumber(),
+         images: product.images || [],
+         category: {
+           id: product.category.id,
+           name: product.category.name,
+           slug: product.category.slug,
+         },
+         seller: {
+           firstName: product.seller.firstName || 'Unknown',
+           lastName: product.seller.lastName || 'Seller',
+           imageUrl: product.seller.imageUrl,
+           businessName: product.seller.sellerProfile?.businessName || undefined,
+           location: product.seller.sellerProfile?.location || undefined,
+           isVerified: product.seller.sellerProfile?.isVerified || false,
+         },
+         _count: {
+           reviews: product._count.reviews,
+         },
+         avgRating,
+       }
+     }),
+   )
 
   return (
     <div className="min-h-screen">

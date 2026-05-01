@@ -58,9 +58,9 @@ const where: any = {
       }
     }
 
-    if (featured === "true") {
-      where.featured = true
-    }
+     if (featured === "true") {
+       where.isFeatured = true
+     }
 
     // Map sortBy values to actual database fields
     const sortMapping: { [key: string]: string } = {
@@ -81,48 +81,81 @@ const where: any = {
     if (sortBy === "price-high") actualSortOrder = "desc"
     if (sortBy === "name") actualSortOrder = "asc"
 
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        include: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-          seller: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              city: true,
-              county: true,
-            },
-          },
-          _count: {
-            select: {
-              favorites: true,
-              reviews: true,
-            },
-          },
-        },
-        orderBy: {
-          [actualSortField]: actualSortOrder,
-        },
-        skip,
-        take: limit,
-      }),
-      prisma.product.count({ where }),
-    ])
+     const [products, total] = await Promise.all([
+       prisma.product.findMany({
+         where,
+         include: {
+           category: {
+             select: {
+               id: true,
+               name: true,
+               slug: true,
+             },
+           },
+           seller: {
+             select: {
+               id: true,
+               firstName: true,
+               lastName: true,
+               imageUrl: true,
+               sellerProfile: {
+                 select: {
+                   businessName: true,
+                   location: true,
+                   isVerified: true,
+                 },
+               },
+             },
+           },
+           _count: {
+             select: {
+               favorites: true,
+               reviews: true,
+             },
+           },
+         },
+         orderBy: {
+           [actualSortField]: actualSortOrder,
+         },
+         skip,
+         take: limit,
+       }),
+       prisma.product.count({ where }),
+     ])
 
-    const serializedProducts = products.map((product) => ({
-      ...product,
-      price: Number(product.price),
-      comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
-      weight: product.weight ? Number(product.weight) : null,
-    }))
+     // Pre-load avgRating and flatten seller profile
+     const productsWithRating = await Promise.all(
+       products.map(async (product) => {
+         const avgRating = await prisma.review.aggregate({
+           where: { productId: product.id },
+           _avg: { rating: true },
+         })
+         
+         // Flatten seller profile fields
+         const seller = {
+           id: product.seller.id,
+           firstName: product.seller.firstName,
+           lastName: product.seller.lastName,
+           imageUrl: product.seller.imageUrl,
+           businessName: product.seller.sellerProfile?.businessName || null,
+           location: product.seller.sellerProfile?.location || null,
+           isVerified: product.seller.sellerProfile?.isVerified || false,
+         }
+         
+         return {
+           ...product,
+           seller,
+           avgRating: avgRating._avg.rating || 0,
+         }
+       })
+     )
+
+     const serializedProducts = productsWithRating.map((product) => ({
+       ...product,
+       price: Number(product.price),
+       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
+       weight: product.weight ? Number(product.weight) : null,
+     }))
 
     const totalPages = Math.ceil(total / limit)
 
