@@ -81,47 +81,18 @@ export default function CartScreen() {
     return totalPrice + shipping
   }
 
-  const handleCheckout = async () => {
-    if (!user) {
-      Alert.alert('Login Required', 'Please log in to checkout')
-      router.push('/sign-in')
-      return
-    }
-
-    if (items.length === 0) return
-
-    try {
-      setLoading(true)
-      const checkoutData = await api.initiateCheckoutPayment({
-        items: items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.product.price
-        })),
-        shippingAddress: {
-          firstName: user.firstName || '',
-          lastName: user.lastName || '',
-          address1: '',
-          city: 'Nairobi',
-          state: 'Nairobi',
-          postalCode: '',
-          country: 'Kenya',
-          phone: ''
-        },
-        selectedShippingOption: selectedShipping,
-        paymentMethod: 'PESAPAL'
-      })
-
-      router.push({
-        pathname: '/payment-webview',
-        params: { url: checkoutData.redirectUrl }
-      })
-    } catch (error) {
-      Alert.alert('Checkout Failed', 'Unable to start checkout. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
+   const handleCheckout = async () => {
+     if (!user) {
+       Alert.alert('Login Required', 'Please log in to checkout')
+       router.push('/sign-in')
+       return
+     }
+ 
+     if (items.length === 0) return
+ 
+     // Navigate to checkout screen to enter shipping details
+     router.push('/checkout')
+   }
 
   const handleClearCart = () => {
     Alert.alert(
