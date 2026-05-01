@@ -73,12 +73,12 @@ export default async function ShopPage({
           <div className="max-w-3xl">
             <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">Discover Quality Products</h1>
             <p className="text-xl text-blue-100 mb-6">
-              Browse through {productsCount.toLocaleString()}+ products from verified suppliers across Kenya
+              Browse through {productsCount.toLocaleString()}+ products from verified sellers across Kenya
             </p>
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span>Verified Suppliers</span>
+                <span>Verified Sellers</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>

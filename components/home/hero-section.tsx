@@ -33,7 +33,7 @@ export const HeroSection = memo(function HeroSection() {
                 </span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg">
-                Connect with verified suppliers, discover quality products, and grow your business through Kenya's most
+                Connect with verified sellers, discover quality products, and grow your business through Kenya's most
                 trusted B2B marketplace platform.
               </p>
             </div>
@@ -46,7 +46,7 @@ export const HeroSection = memo(function HeroSection() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-enkaji-ochre">5K+</div>
-                <div className="text-sm text-gray-600">Suppliers</div>
+                <div className="text-sm text-gray-600">Sellers</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-enkaji-green">47</div>

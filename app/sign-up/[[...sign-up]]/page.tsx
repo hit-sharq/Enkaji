@@ -4,7 +4,7 @@ import AuthLayout from "@/components/auth/auth-layout"
 
 export const metadata = {
   title: "Create account • Enkaji Trade Kenya",
-  description: "Join Enkaji to buy, sell, or register as an artisan or supplier.",
+  description: "Join Enkaji to buy, sell, or register as a seller. Create your account in minutes and start trading with verified Kenyan businesses.",
 }
 
 export default function SignUpPage() {

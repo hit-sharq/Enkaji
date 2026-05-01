@@ -42,8 +42,8 @@ export function SellerGrid({ sellers }: SellerGridProps) {
       <div className="text-center py-12">
         <div className="max-w-md mx-auto">
           <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No suppliers found</h3>
-          <p className="text-gray-600 mb-6">Try adjusting your filters or search terms to find more suppliers.</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No sellers found</h3>
+          <p className="text-gray-600 mb-6">Try adjusting your filters or search terms to find more sellers.</p>
           <Button variant="outline" onClick={() => window.location.reload()}>
             Reset Filters
           </Button>
@@ -58,7 +58,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
         const displayName =
           seller.sellerProfile?.businessName ||
           `${seller.firstName || ""} ${seller.lastName || ""}`.trim() ||
-          "Unnamed Supplier"
+          "Unnamed Seller"
 
         const featuredProducts = seller.products.slice(0, 3)
 

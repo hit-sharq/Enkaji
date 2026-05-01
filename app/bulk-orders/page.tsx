@@ -37,7 +37,7 @@ export default function BulkOrdersPage() {
               <CardTitle>Direct Connection</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 text-center">Connect directly with verified manufacturers and suppliers</p>
+              <p className="text-gray-600 text-center">Connect directly with verified manufacturers and sellers</p>
             </CardContent>
           </Card>
           <Card>
@@ -163,7 +163,7 @@ export default function BulkOrdersPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold">Get Multiple Quotes</h4>
-                    <p className="text-gray-600 text-sm">Receive quotes from verified suppliers within 24 hours</p>
+                    <p className="text-gray-600 text-sm">Receive quotes from verified sellers within 24 hours</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -172,7 +172,7 @@ export default function BulkOrdersPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold">Compare & Choose</h4>
-                    <p className="text-gray-600 text-sm">Compare prices, terms, and supplier profiles</p>
+                    <p className="text-gray-600 text-sm">Compare prices, terms, and seller profiles</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -215,7 +215,7 @@ export default function BulkOrdersPage() {
               <CardContent className="space-y-2">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">Verified suppliers only</span>
+                  <span className="text-sm">Verified sellers only</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />

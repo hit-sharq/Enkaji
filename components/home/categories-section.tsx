@@ -119,7 +119,7 @@ export function CategoriesSection() {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Find suppliers and products across Kenya's key business sectors
+            Find sellers and products across Kenya's key business sectors
           </p>
         </div>
 

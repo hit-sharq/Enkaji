@@ -12,7 +12,7 @@ const features = [
   {
     icon: ShoppingBag,
     title: "Browse & Shop",
-    desc: "Access thousands of verified Kenyan suppliers and artisans from anywhere.",
+    desc: "Access thousands of verified Kenyan sellers and artisans from anywhere.",
   },
   {
     icon: CreditCard,

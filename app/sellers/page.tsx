@@ -186,7 +186,7 @@ export default async function SellersPage({
       <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Discover Trusted Suppliers</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Discover Trusted Sellers</h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8">
               Connect with verified businesses across Kenya for all your procurement needs
             </p>
@@ -198,7 +198,7 @@ export default async function SellersPage({
                   <Users className="w-6 h-6 text-blue-200 mr-2" />
                   <span className="text-3xl font-bold">{stats.totalSellers}</span>
                 </div>
-                <p className="text-blue-200">Total Suppliers</p>
+                <p className="text-blue-200">Total Sellers</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
@@ -242,7 +242,7 @@ export default async function SellersPage({
               <div className="mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{sellers.length} Suppliers Found</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{sellers.length} Sellers Found</h2>
                     {searchParams.search && <p className="text-gray-600 mt-1">Results for "{searchParams.search}"</p>}
                   </div>
                 </div>

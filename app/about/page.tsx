@@ -30,7 +30,7 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/sellers">
                   <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
-                    Browse Suppliers
+                    Browse Sellers
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
@@ -40,7 +40,7 @@ export default function AboutPage() {
                     variant="outline"
                     className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 bg-transparent"
                   >
-                    Join as Supplier
+                    Join as Seller
                   </Button>
                 </Link>
               </div>
@@ -54,7 +54,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="text-4xl font-bold text-blue-900 mb-2">5,000+</div>
-                <div className="text-lg font-semibold text-gray-700 mb-2">Verified Suppliers</div>
+                <div className="text-lg font-semibold text-gray-700 mb-2">Verified Sellers</div>
                 <p className="text-gray-600 text-sm">Across all business sectors</p>
               </div>
               <div className="text-center">
@@ -89,7 +89,7 @@ export default function AboutPage() {
                   <p>
                     Founded in 2024, Enkaji Trade Kenya emerged from a vision to digitize and streamline
                     business-to-business commerce across Kenya. We recognized the immense potential of Kenyan businesses
-                    and the need for a unified platform to connect suppliers with buyers.
+                    and the need for a unified platform to connect sellers with buyers.
                   </p>
                   <p>
                     Our platform bridges the gap between traditional commerce and digital innovation, providing
@@ -223,7 +223,7 @@ export default function AboutPage() {
                 </div>
                 <div className="text-3xl font-bold text-green-600 mb-2">15,000+</div>
                 <div className="text-lg font-semibold text-gray-700 mb-2">Business Partnerships</div>
-                <p className="text-gray-600">Successful connections made between suppliers and buyers</p>
+                <p className="text-gray-600">Successful connections made between sellers and buyers</p>
               </Card>
 
               <Card className="text-center p-8 border-0 shadow-lg bg-white">

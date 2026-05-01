@@ -188,11 +188,11 @@ export function FeaturedProducts() {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent">
-              Featured Suppliers
+              Featured Sellers
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Top-rated suppliers offering quality products for your business
+            Top-rated sellers offering quality products for your business
           </p>
         </div>
 

@@ -294,6 +294,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   return {
     title: `${category.name} - Enkaji Trade Kenya`,
-    description: `Browse ${category.name} products from verified suppliers in Kenya. Find quality products at competitive prices.`,
+    description: `Browse ${category.name} products from verified sellers in Kenya. Find quality products at competitive prices.`,
   }
 }

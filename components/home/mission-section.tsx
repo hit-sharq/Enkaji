@@ -13,9 +13,9 @@ const features = [
   },
   {
     icon: Users,
-    title: "Verified Suppliers",
+    title: "Verified Sellers",
     description:
-      "All suppliers undergo rigorous verification. Connect with trusted businesses across Kenya with confidence.",
+      "All sellers undergo rigorous verification. Connect with trusted businesses across Kenya with confidence.",
     color: "text-enkaji-green bg-enkaji-green/10",
   },
   {
@@ -45,7 +45,7 @@ export function MissionSection() {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            We're transforming B2B commerce in Kenya by connecting businesses with reliable suppliers, ensuring secure
+            We're transforming B2B commerce in Kenya by connecting businesses with reliable sellers, ensuring secure
             transactions, and facilitating growth across all sectors.
           </p>
         </div>

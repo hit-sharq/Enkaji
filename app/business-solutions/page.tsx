@@ -54,7 +54,7 @@ export default function BusinessSolutionsPage() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      Priority supplier matching
+                      Priority seller matching
                     </li>
                   </ul>
                   <Button className="w-full mt-4 bg-orange-600 hover:bg-orange-700">Learn More</Button>
@@ -64,14 +64,14 @@ export default function BusinessSolutionsPage() {
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <Users className="w-12 h-12 text-orange-500 mb-4" />
-                  <CardTitle>Supplier Network</CardTitle>
-                  <CardDescription>Access to Kenya's largest verified supplier network</CardDescription>
+                  <CardTitle>Seller Network</CardTitle>
+                  <CardDescription>Access to Kenya's largest verified seller network</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      10,000+ verified suppliers
+                      10,000+ verified sellers
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
@@ -79,7 +79,7 @@ export default function BusinessSolutionsPage() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      Supplier performance tracking
+                      Seller performance tracking
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />

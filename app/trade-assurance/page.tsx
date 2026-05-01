@@ -116,7 +116,7 @@ export default function TradeAssurancePage() {
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="text-center">
                   <Users className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                  <CardTitle>Supplier Verification</CardTitle>
+                  <CardTitle>Seller Verification</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-gray-600">
@@ -176,7 +176,7 @@ export default function TradeAssurancePage() {
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      Supplier performance tracking
+                      Seller performance tracking
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
@@ -211,9 +211,9 @@ export default function TradeAssurancePage() {
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl font-bold text-blue-600">1</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Choose Protected Suppliers</h3>
+                  <h3 className="font-semibold mb-2">Choose Protected Sellers</h3>
                   <p className="text-sm text-gray-600">
-                    Select from our verified suppliers with Trade Assurance coverage
+                    Select from our verified sellers with Trade Assurance coverage
                   </p>
                 </div>
                 <div className="text-center">
@@ -291,7 +291,7 @@ export default function TradeAssurancePage() {
                     ))}
                   </div>
                   <p className="text-gray-600 mb-4">
-                    "Trade Assurance gave us the confidence to work with new suppliers. The payment protection and
+                    "Trade Assurance gave us the confidence to work with new sellers. The payment protection and
                     quality guarantees are exactly what we needed."
                   </p>
                   <div className="flex items-center">

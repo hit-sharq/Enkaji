@@ -127,7 +127,7 @@ export function SellerFilters() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Filter className="w-5 h-5" />
-            Filter Suppliers
+            Filter Sellers
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -135,7 +135,7 @@ export function SellerFilters() {
           <div className="space-y-2">
             <Label htmlFor="search" className="flex items-center gap-2">
               <Search className="w-4 h-4" />
-              Search Suppliers
+              Search Sellers
             </Label>
             <Input
               id="search"
@@ -191,7 +191,7 @@ export function SellerFilters() {
             <Checkbox id="verified" checked={verified} onCheckedChange={(checked) => setVerified(checked === true)} />
             <Label htmlFor="verified" className="flex items-center gap-2 cursor-pointer">
               <Shield className="w-4 h-4 text-green-600" />
-              Verified suppliers only
+              Verified sellers only
             </Label>
           </div>
 

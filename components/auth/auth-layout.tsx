@@ -42,7 +42,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
               </div>
               <div>
                 <p className="font-medium">{"Verified sellers & artisans"}</p>
-                <p className="text-white/85 text-sm">{"Quality assurance and trusted profiles."}</p>
+                <p className="text-white/85 text-sm">{"Quality assurance and trusted seller profiles."}</p>
               </div>
             </li>
             <li className="flex items-start gap-3">
