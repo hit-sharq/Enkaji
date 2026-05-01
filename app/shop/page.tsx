@@ -26,6 +26,7 @@ async function getProductsCount() {
   return await db.product.count({
     where: {
       isActive: true,
+      isShopApproved: true,
     },
   })
 }
