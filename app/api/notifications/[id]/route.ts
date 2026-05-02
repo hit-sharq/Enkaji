@@ -1,30 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuth } from '@clerk/nextjs'
-import db from '@/lib/db'
+import { getCurrentUser } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
-    // Ensure notification belongs to user
-    const notification = await db.notification.findFirst({
-      where: { id, userId },
+    const notification = await prisma.notification.findFirst({
+      where: { id, userId: user.id },
     })
 
     if (!notification) {
       return NextResponse.json({ error: 'Notification not found' }, { status: 404 })
     }
 
-    // Mark as read
-    await db.notification.update({
+    await prisma.notification.update({
       where: { id },
       data: { read: true },
     })
@@ -38,26 +36,25 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
-    // Ensure notification belongs to user
-    const notification = await db.notification.findFirst({
-      where: { id, userId },
+    const notification = await prisma.notification.findFirst({
+      where: { id, userId: user.id },
     })
 
     if (!notification) {
       return NextResponse.json({ error: 'Notification not found' }, { status: 404 })
     }
 
-    await db.notification.delete({ where: { id } })
+    await prisma.notification.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
   } catch (error) {

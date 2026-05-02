@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuth } from '@clerk/nextjs'
-import db from '@/lib/db'
+import { getCurrentUser } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -16,18 +16,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Token required' }, { status: 400 })
     }
 
-    // Upsert push token for user
-    await db.user.update({
-      where: { clerkId: userId },
-      data: {
-        pushTokens: {
-          upsert: {
-            where: { token },
-            create: { token, platform: platform || 'unknown', createdAt: new Date() },
-            update: { platform: platform || 'unknown', updatedAt: new Date() },
-          },
-        },
-      },
+    await prisma.pushToken.upsert({
+      where: { token },
+      update: { platform: platform || 'unknown', updatedAt: new Date() },
+      create: { token, userId: user.id, platform: platform || 'unknown', createdAt: new Date() },
     })
 
     return NextResponse.json({ success: true })

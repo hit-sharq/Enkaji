@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuth } from '@clerk/nextjs'
-import db from '@/lib/db'
+import { getCurrentUser } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const { type, title, body: text, data, recipientId } = body
 
-    // Validate required fields
     if (!title || !text || !type) {
       return NextResponse.json(
         { error: 'Missing required fields: title, body, type' },
@@ -20,11 +19,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Determine recipient: if recipientId provided (admin/sender), use that, else current user
-    const targetUserId = recipientId || userId
+    const targetUserId = recipientId || user.id
 
-    // Create notification in database
-    const notification = await db.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId: targetUserId,
         type,
@@ -36,9 +33,6 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: Send push notification via FCM/APNs using recipient's push tokens
-    // For now, just store in DB; push will be sent separately
-
     return NextResponse.json({ success: true, data: notification })
   } catch (error) {
     console.error('Create notification failed:', error)
@@ -48,8 +42,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -57,15 +51,15 @@ export async function GET(request: NextRequest) {
     const limit = Number(searchParams.get('limit')) || 50
     const offset = Number(searchParams.get('offset')) || 0
 
-    const notifications = await db.notification.findMany({
-      where: { userId },
+    const notifications = await prisma.notification.findMany({
+      where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
     })
 
-    const total = await db.notification.count({ where: { userId } })
-    const unread = await db.notification.count({ where: { userId, read: false } })
+    const total = await prisma.notification.count({ where: { userId: user.id } })
+    const unread = await prisma.notification.count({ where: { userId: user.id, read: false } })
 
     return NextResponse.json({
       success: true,

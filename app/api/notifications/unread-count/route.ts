@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuth } from '@clerk/nextjs'
-import db from '@/lib/db'
+import { getCurrentUser } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = getAuth()
-    if (!userId) {
+    const user = await getCurrentUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const count = await db.notification.count({
-      where: { userId, read: false },
+    const count = await prisma.notification.count({
+      where: { userId: user.id, read: false },
     })
 
     return NextResponse.json({ success: true, data: { count } })
