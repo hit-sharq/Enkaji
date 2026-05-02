@@ -15,7 +15,7 @@ import { Colors } from '@/lib/theme'
 
 export default function PaymentWebViewScreen() {
   const router = useRouter()
-  const { url, orderId } = useLocalSearchParams<{ url: string; orderId: string }>()
+  const { url, paymentReference, orderId } = useLocalSearchParams<{ url: string; paymentReference?: string; orderId?: string }>()
   const webViewRef = useRef<WebView>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [canGoBack, setCanGoBack] = useState(false)
@@ -24,19 +24,45 @@ export default function PaymentWebViewScreen() {
     setCanGoBack(navState.canGoBack)
 
     const currentUrl = navState.url || ''
-    const url = new URL(currentUrl)
 
-    // Parse query params for Pesapal callback
-    const params = new URLSearchParams(url.search)
-    const orderTrackingId = params.get('orderTrackingId') || params.get('merchant_reference')
-    const status = params.get('payment_status') || url.pathname.includes('success') ? 'COMPLETED' : 'FAILED'
+    try {
+      const urlObj = new URL(currentUrl)
+      const path = urlObj.pathname
 
-    if (currentUrl.includes('/api/pesapal/callback') || status === 'COMPLETED' || url.searchParams.has('success')) {
-      // Payment successful - navigate to order screen immediately
-      router.replace({ pathname: '/(tabs)/orders', params: { paymentSuccess: 'true' } })
-    } else if (status === 'FAILED' || url.searchParams.has('cancel')) {
-      // Payment failed - go back to cart
-      router.replace('/(tabs)/cart')
+      // Skip internal API routes (backend)
+      if (path.startsWith('/api/')) {
+        return
+      }
+
+      // Check for payment cancellation in query params
+      if (urlObj.searchParams.has('cancel') || urlObj.searchParams.get('payment') === 'failed' || urlObj.searchParams.get('payment') === 'error') {
+        router.replace('/(tabs)/cart')
+        return
+      }
+
+      // Check for successful payment: orders page or payment-success page
+      if (path.startsWith('/orders/') || path.startsWith('/payment-success')) {
+        // Extract order ID: for /orders/:id the part after slash
+        const orderId = path.startsWith('/orders/') ? path.split('/orders/')[1]?.split('?')[0] : urlObj.searchParams.get('orderId')
+        if (orderId) {
+          router.replace({
+            pathname: '/payment-success',
+            params: { orderId }
+          })
+        } else {
+          router.replace('/(tabs)/orders')
+        }
+        return
+      }
+
+      // If we landed on payment-cancelled page
+      if (path.startsWith('/payment-cancelled')) {
+        router.replace('/(tabs)/cart')
+        return
+      }
+    } catch (e) {
+      // URL parsing may fail for some edge cases, ignore
+      console.error('Navigation parse error:', e)
     }
   }
 

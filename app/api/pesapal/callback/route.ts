@@ -360,13 +360,13 @@ async function createOrderFromPayment(
       return null
     }
     
-    // Find the checkout session for this payment reference
-    const checkoutSession = await prisma.checkoutSession.findFirst({
-      where: {
-        expiresAt: { gt: new Date() }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+     // Find the checkout session for this payment reference
+     const checkoutSession = await prisma.checkoutSession.findFirst({
+       where: {
+         paymentReference: merchantReference,
+         expiresAt: { gt: new Date() }
+       }
+     })
 
     if (!checkoutSession) {
       console.error(`[Callback] No checkout session found for payment: ${paymentReference}`)

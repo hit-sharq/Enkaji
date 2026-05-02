@@ -123,6 +123,7 @@ export async function POST(request: Request) {
         total: grandTotal,
         shippingZone: zone.id,
         shippingOption: shippingOption.id,
+        paymentReference, // Store payment reference for later lookup
         expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
       }
     })

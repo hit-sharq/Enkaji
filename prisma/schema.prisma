@@ -260,11 +260,14 @@ model CheckoutSession {
   total           Decimal
   shippingZone    String   // Detected shipping zone
   shippingOption  String   // Selected shipping option
+  paymentReference String? @unique // Payment reference from Pesapal (PAY-xxx)
   expiresAt       DateTime // Session expiry (30 minutes)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   @@map("checkout_sessions")
+  @@index([paymentReference])
+  @@index([userId, expiresAt])
 }
 
 model Favorite {
