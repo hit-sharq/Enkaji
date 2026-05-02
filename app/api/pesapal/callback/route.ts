@@ -187,60 +187,67 @@ export async function GET(request: NextRequest) {
     let paymentStatus: "completed" | "pending" | "failed" = "pending"
     let order = null
 
-    try {
-      const txStatus = await pesapalService.getTransactionStatus(orderTrackingId)
-      console.log("[Callback] PesaPal transaction status:", txStatus)
+try {
+       const txStatus = await pesapalService.getTransactionStatus(orderTrackingId)
+       console.log("[Callback] PesaPal transaction status:", txStatus)
 
-      const statusCode = txStatus.payment_status_code
+       const statusCode = txStatus.payment_status_code
+       const merchantRef = merchantReference
+       
+       // Check if this is a checkout payment (PAY- prefix) that needs order creation
+       const isCheckoutPayment = merchantRef?.startsWith('PAY-')
+       
+       // Try to find by order ID first, then by orderNumber
+       order = await prisma.order.findUnique({ where: { id: merchantRef } })
+       
+       if (!order) {
+         order = await prisma.order.findFirst({ where: { orderNumber: merchantRef } })
+       }
+       
+       // For checkout payments, create order if not found and payment succeeded
+       if (!order && isCheckoutPayment && statusCode === 1) {
+         console.log(`[Callback GET] Creating order from checkout session: ${merchantRef}`)
+         order = await createOrderFromPayment(merchantRef, statusCode, txStatus)
+       }
 
-      // Update order in database based on verified status
-      const merchantRef = merchantReference
-      
-      // Try to find by order ID first, then by orderNumber
-      order = await prisma.order.findUnique({ where: { id: merchantRef } })
-      
-      if (!order) {
-        order = await prisma.order.findFirst({ where: { orderNumber: merchantRef } })
-      }
+       if (order) {
+         const orderStatus = mapOrderStatus(statusCode)
+         const orderPaymentStatus = mapOrderPaymentStatus(statusCode)
 
-      if (order) {
-        const orderStatus = mapOrderStatus(statusCode)
-        const orderPaymentStatus = mapOrderPaymentStatus(statusCode)
+         await prisma.order.update({
+           where: { id: order.id },
+           data: {
+             status: orderStatus,
+             paymentStatus: orderPaymentStatus,
+           },
+         })
 
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            status: orderStatus,
-            paymentStatus: orderPaymentStatus,
-          },
-        })
+         // Update or create PesaPal payment record
+         const existingPayment = await prisma.pesapalPayment.findFirst({
+           where: { orderId: order.id },
+         })
+         const pesapalStatus = mapPesapalStatus(statusCode)
 
-        // Update or create PesaPal payment record
-        const existingPayment = await prisma.pesapalPayment.findFirst({
-          where: { orderId: order.id },
-        })
-        const pesapalStatus = mapPesapalStatus(statusCode)
+         if (existingPayment) {
+           await prisma.pesapalPayment.update({
+             where: { id: existingPayment.id },
+             data: {
+               pesapalTransactionId: txStatus.order_tracking_id,
+               status: pesapalStatus,
+               paymentStatusDescription: txStatus.payment_status_description,
+               paymentMethod: mapPaymentMethod(txStatus.payment_method),
+             },
+           })
+         }
+       }
 
-        if (existingPayment) {
-          await prisma.pesapalPayment.update({
-            where: { id: existingPayment.id },
-            data: {
-              pesapalTransactionId: txStatus.order_tracking_id,
-              status: pesapalStatus,
-              paymentStatusDescription: txStatus.payment_status_description,
-              paymentMethod: mapPaymentMethod(txStatus.payment_method),
-            },
-          })
-        }
-      }
-
-      if (statusCode === 1) paymentStatus = "completed"
-      else if (statusCode === 0) paymentStatus = "failed"
-      else paymentStatus = "pending"
-    } catch (verifyError) {
-      console.error("[Callback] Could not verify transaction with PesaPal:", verifyError)
-      // Still redirect to order page — IPN may update it later
-    }
+       if (statusCode === 1) paymentStatus = "completed"
+       else if (statusCode === 0) paymentStatus = "failed"
+       else paymentStatus = "pending"
+     } catch (verifyError) {
+       console.error("[Callback] Could not verify transaction with PesaPal:", verifyError)
+       // Still redirect to order page — IPN may update it later
+     }
 
     const redirectUrl = new URL(`${appUrl}/orders/${order?.id || merchantReference}`)
     redirectUrl.searchParams.set("payment", paymentStatus)
@@ -360,13 +367,13 @@ async function createOrderFromPayment(
       return null
     }
     
-     // Find the checkout session for this payment reference
-     const checkoutSession = await prisma.checkoutSession.findFirst({
-       where: {
-         paymentReference: merchantReference,
-         expiresAt: { gt: new Date() }
-       }
-     })
+// Find the checkout session for this payment reference
+      const checkoutSession = await prisma.checkoutSession.findFirst({
+        where: {
+          paymentReference: paymentReference,
+          expiresAt: { gt: new Date() }
+        }
+      })
 
     if (!checkoutSession) {
       console.error(`[Callback] No checkout session found for payment: ${paymentReference}`)

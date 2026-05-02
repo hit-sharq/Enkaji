@@ -173,13 +173,13 @@ export default function CheckoutScreen() {
 
         const response = await api.initiateCheckoutPayment(checkoutData)
 
-        // Backend returns {success, redirectUrl, paymentReference, ...}
+        // Backend returns {success, redirect_url, paymentReference, ...}
         const result = response as any
-        if (result?.success && result.redirectUrl) {
+        if (result?.success && (result.redirectUrl || result.redirect_url)) {
           clearCart()
           router.replace({
             pathname: '/payment-webview',
-            params: { url: result.redirectUrl, paymentReference: result.paymentReference },
+            params: { url: result.redirectUrl || result.redirect_url, paymentReference: result.paymentReference },
           })
         } else {
           throw new Error(result?.error || 'Failed to initiate payment')

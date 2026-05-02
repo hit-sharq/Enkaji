@@ -7,6 +7,8 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ScrollView,
+  Image,
+  Dimensions,
 } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -48,7 +50,7 @@ export default function PaymentSuccessScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#27ae60" />
+          <ActivityIndicator size="large" color={styles.colors.primary} />
           <Text style={styles.loadingText}>Processing your order...</Text>
         </View>
       </SafeAreaView>
@@ -58,15 +60,13 @@ export default function PaymentSuccessScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Success Icon */}
-        <View style={styles.iconContainer}>
-          <View style={styles.successIcon}>
-            <MaterialCommunityIcons
-              name="check-circle"
-              size={80}
-              color="#27ae60"
-            />
-          </View>
+        {/* Success Animation */}
+        <View style={styles.successAnimationContainer}>
+          <MaterialCommunityIcons
+            name="check-circle"
+            size={100}
+            color={styles.colors.success}
+          />
         </View>
 
         {/* Success Message */}
@@ -100,7 +100,7 @@ export default function PaymentSuccessScreen() {
                 <MaterialCommunityIcons
                   name="check-circle"
                   size={16}
-                  color="#27ae60"
+                  color={styles.colors.success}
                 />
                 <Text style={styles.badgeText}>Paid</Text>
               </View>
@@ -113,6 +113,15 @@ export default function PaymentSuccessScreen() {
               <Text style={styles.statusBadge}>{order.status}</Text>
             </View>
 
+            <View style={styles.divider} />
+
+            <View style={styles.orderRow}>
+              <Text style={styles.orderLabel}>Estimated Delivery</Text>
+              <Text style={styles.orderValue}>
+                3-5 business days
+              </Text>
+            </View>
+
             {order.items && order.items.length > 0 && (
               <>
                 <View style={styles.divider} />
@@ -120,14 +129,33 @@ export default function PaymentSuccessScreen() {
                 <Text style={styles.itemsTitle}>Items Ordered</Text>
                 {order.items.map((item, index) => (
                   <View key={index} style={styles.itemRow}>
-                    <Text style={styles.itemName} numberOfLines={2}>
-                      {item.product?.name || 'Product'}
-                    </Text>
-                    <View style={styles.itemQty}>
-                      <Text style={styles.itemQtyText}>x{item.quantity}</Text>
-                      <Text style={styles.itemPrice}>
-                        KES {Number(item.price * item.quantity).toLocaleString()}
+                    <View style={styles.itemImageContainer}>
+                      {item.product?.images && item.product?.images.length > 0 ? (
+                        <Image
+                          source={{ uri: item.product.images[0] }}
+                          style={styles.itemImage}
+                          fallback={require('@/assets/placeholder.png')}
+                        />
+                      ) : (
+                        <View style={[styles.itemImageContainer, styles.itemPlaceholder]}>
+                          <MaterialCommunityIcons
+                            name="package"
+                            size={24}
+                            color={styles.colors.text.muted}
+                          />
+                        </View>
+                      )}
+                    </View>
+                    <View style={styles.itemInfo}>
+                      <Text style={styles.itemName} numberOfLines={2}>
+                        {item.product?.name || 'Product'}
                       </Text>
+                      <View style={styles.itemDetails}>
+                        <Text style={styles.itemQtyText}>x{item.quantity}</Text>
+                        <Text style={styles.itemPrice}>
+                          KES {Number(item.price * item.quantity).toLocaleString()}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 ))}
@@ -138,7 +166,7 @@ export default function PaymentSuccessScreen() {
 
         {/* What's Next */}
         <View style={styles.infoBox}>
-          <MaterialCommunityIcons name="information" size={20} color="#3498db" />
+          <MaterialCommunityIcons name="information" size={20} color={styles.colors.info} />
           <View style={styles.infoContent}>
             <Text style={styles.infoTitle}>What's Next?</Text>
             <Text style={styles.infoText}>
@@ -170,17 +198,17 @@ export default function PaymentSuccessScreen() {
       {/* Action Buttons */}
       <View style={styles.footer}>
         <Pressable
-          style={styles.primaryButton}
+          style={[styles.primaryButton, styles.buttonFull]}
           onPress={() => router.replace('/(tabs)/orders')}
         >
-          <Text style={styles.primaryButtonText}>View My Orders</Text>
+          <Text style={styles.buttonText}>View My Orders</Text>
         </Pressable>
 
         <Pressable
-          style={styles.secondaryButton}
+          style={[styles.secondaryButton, styles.buttonFull]}
           onPress={() => router.replace('/(tabs)')}
         >
-          <Text style={styles.secondaryButtonText}>Continue Shopping</Text>
+          <Text style={styles.buttonText}>Continue Shopping</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -199,13 +227,13 @@ function ActionItem({
   return (
     <View style={styles.actionItem}>
       <View style={styles.actionIcon}>
-        <MaterialCommunityIcons name={icon as any} size={24} color="#3498db" />
+        <MaterialCommunityIcons name={icon as any} size={24} color={styles.colors.primary} />
       </View>
       <View style={styles.actionContent}>
         <Text style={styles.actionTitle}>{title}</Text>
         <Text style={styles.actionDescription}>{description}</Text>
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={20} color="#bdc3c7" />
+      <MaterialCommunityIcons name="chevron-right" size={20} color={styles.colors.text.muted} />
     </View>
   )
 }
@@ -216,8 +244,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   content: {
-    padding: 16,
-    paddingBottom: 120,
+    padding: 20,
+    paddingBottom: 100,
+  },
+  colors: {
+    primary: '#3498db',
+    success: '#27ae60',
+    info: '#3498db',
+    warning: '#f39c12',
+    error: '#e74c3c',
+    text: {
+      primary: '#2c3e50',
+      secondary: '#7f8c8d',
+      muted: '#bdc3c7',
+      white: '#ffffff',
+    },
+    background: '#ffffff',
+    cardBackground: '#ffffff',
+    divider: '#ecf0f1',
   },
   loadingContainer: {
     flex: 1,
@@ -225,21 +269,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 14,
+    marginTop: 16,
+    fontSize: 16,
     color: '#7f8c8d',
   },
-  iconContainer: {
+  successAnimationContainer: {
     alignItems: 'center',
-    marginVertical: 32,
-  },
-  successIcon: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#ecf0f1',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginVertical: 24,
   },
   title: {
     fontSize: 24,
@@ -249,36 +285,41 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#7f8c8d',
     textAlign: 'center',
     marginBottom: 24,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   orderCard: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   orderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   orderLabel: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#7f8c8d',
     fontWeight: '500',
   },
   orderValue: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: '#2c3e50',
   },
   orderAmount: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: '#27ae60',
   },
@@ -290,11 +331,11 @@ const styles = StyleSheet.create({
   badgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#ecf0f1',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    gap: 6,
+    backgroundColor: '#d5f5e3',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   badgeText: {
     fontSize: 12,
@@ -305,63 +346,82 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#f39c12',
-    backgroundColor: '#fff3cd',
-    paddingHorizontal: 8,
+    backgroundColor: '#fef9e7',
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 4,
-    overflow: 'hidden',
   },
   itemsTitle: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#2c3e50',
-    marginBottom: 8,
-    marginTop: 8,
+    marginBottom: 16,
+    marginTop: 16,
   },
   itemRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingVertical: 12,
+  },
+  itemImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8,
+    marginRight: 12,
+    overflow: 'hidden',
+  },
+  itemImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+  },
+  itemPlaceholder: {
+    backgroundColor: '#ecf0f1',
+  },
+  itemInfo: {
+    flex: 1,
   },
   itemName: {
-    flex: 1,
-    fontSize: 13,
-    color: '#7f8c8d',
+    fontSize: 14,
+    color: '#2c3e50',
+    marginBottom: 4,
   },
-  itemQty: {
-    alignItems: 'flex-end',
-    marginLeft: 8,
+  itemDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   itemQtyText: {
     fontSize: 12,
     color: '#7f8c8d',
   },
   itemPrice: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     color: '#2c3e50',
-    marginTop: 2,
   },
   infoBox: {
     flexDirection: 'row',
     backgroundColor: '#ecf0f1',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
     gap: 12,
+    alignItems: 'flex-start',
   },
   infoContent: {
     flex: 1,
   },
   infoTitle: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
     color: '#2c3e50',
     marginBottom: 4,
   },
   infoText: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#7f8c8d',
     lineHeight: 18,
   },
@@ -371,29 +431,31 @@ const styles = StyleSheet.create({
   actionItem: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
     gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   actionIcon: {
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#d6eaf8',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  actionContent: {
-    flex: 1,
-  },
   actionTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     color: '#2c3e50',
   },
   actionDescription: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#7f8c8d',
     marginTop: 2,
   },
@@ -406,29 +468,30 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#ecf0f1',
     padding: 16,
-    paddingBottom: 20,
+    paddingBottom: 24,
     gap: 12,
   },
   primaryButton: {
     backgroundColor: '#27ae60',
-    paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 16,
+    justifyContent: 'center',
     alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
   },
   secondaryButton: {
     backgroundColor: '#ecf0f1',
-    paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 16,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  secondaryButtonText: {
-    color: '#2c3e50',
+  buttonFull: {
+    width: '100%',
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
+    textAlign: 'center',
   },
 })

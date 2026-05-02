@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/seller/analytics
  * Get seller analytics data (orders, revenue, etc.)
@@ -57,7 +59,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Aggregate stats
-    const totalRevenue = sellerOrders.reduce((sum, item) => sum + Number(item.price * item.quantity), 0)
+    const totalRevenue = sellerOrders.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0)
     const orderCount = new Set(sellerOrders.map((item) => item.orderId)).size
     const avgOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0
 

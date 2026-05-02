@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
+export const dynamic = 'force-dynamic'
+
 /**
  * PUT /api/services/providers/profile
  * Update current user's service provider profile

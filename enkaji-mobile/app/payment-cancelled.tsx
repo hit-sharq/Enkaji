@@ -6,6 +6,8 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Image,
+  Dimensions,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -16,15 +18,13 @@ export default function PaymentCancelledScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Cancel Icon */}
-        <View style={styles.iconContainer}>
-          <View style={styles.cancelIcon}>
-            <MaterialCommunityIcons
-              name="close-circle"
-              size={80}
-              color="#e74c3c"
-            />
-          </View>
+        {/* Cancel Illustration */}
+        <View style={styles.illustrationContainer}>
+          <MaterialCommunityIcons
+            name="close-circle-outline"
+            size={100}
+            color={styles.colors.error}
+          />
         </View>
 
         {/* Cancel Message */}
@@ -33,12 +33,12 @@ export default function PaymentCancelledScreen() {
           Your payment was not completed. Your cart items are still saved, so you can complete your purchase anytime.
         </Text>
 
-        {/* Why This Happened */}
-        <View style={styles.reasonBox}>
-          <MaterialCommunityIcons name="alert" size={20} color="#f39c12" />
-          <View style={styles.reasonContent}>
-            <Text style={styles.reasonTitle}>What Happened?</Text>
-            <Text style={styles.reasonText}>
+        {/* What Happened */}
+        <View style={styles.infoBox}>
+          <MaterialCommunityIcons name="alert-circle" size={20} color={styles.colors.warning} />
+          <View style={styles.infoContent}>
+            <Text style={styles.infoTitle}>What Happened?</Text>
+            <Text style={styles.infoText}>
               The payment process was cancelled before completion. No charges have been made to your account.
             </Text>
           </View>
@@ -64,24 +64,24 @@ export default function PaymentCancelledScreen() {
           />
         </View>
 
-        {/* Tips */}
+        {/* Helpful Tips */}
         <View style={styles.tipsBox}>
-          <Text style={styles.tipsTitle}>Payment Tips:</Text>
+          <Text style={styles.tipsTitle}>Helpful Tips:</Text>
           <Tip
             icon="credit-card"
-            text="Ensure your payment details are correct"
+            text="Double-check your payment details"
           />
           <Tip
             icon="wifi"
-            text="Check your internet connection"
+            text="Ensure stable internet connection"
           />
           <Tip
-            icon="phone"
-            text="Try a different payment method"
+            icon="phone-outline"
+            text="Try a different payment method if available"
           />
           <Tip
             icon="headset"
-            text="Contact support if issues persist"
+            text="Contact support if problems continue"
           />
         </View>
       </ScrollView>
@@ -89,17 +89,17 @@ export default function PaymentCancelledScreen() {
       {/* Action Buttons */}
       <View style={styles.footer}>
         <Pressable
-          style={styles.primaryButton}
+          style={[styles.primaryButton, styles.buttonFull]}
           onPress={() => router.replace('/(tabs)/cart')}
         >
-          <Text style={styles.primaryButtonText}>Back to Cart</Text>
+          <Text style={styles.buttonText}>Return to Cart</Text>
         </Pressable>
 
         <Pressable
-          style={styles.secondaryButton}
+          style={[styles.secondaryButton, styles.buttonFull]}
           onPress={() => router.replace('/(tabs)')}
         >
-          <Text style={styles.secondaryButtonText}>Continue Shopping</Text>
+          <Text style={styles.buttonText}>Continue Shopping</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -131,7 +131,7 @@ function Step({
 function Tip({ icon, text }: { icon: string; text: string }) {
   return (
     <View style={styles.tipItem}>
-      <MaterialCommunityIcons name={icon as any} size={16} color="#3498db" />
+      <MaterialCommunityIcons name={icon as any} size={16} color={styles.colors.primary} />
       <Text style={styles.tipText}>{text}</Text>
     </View>
   )
@@ -143,20 +143,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   content: {
-    padding: 16,
-    paddingBottom: 120,
+    padding: 20,
+    paddingBottom: 100,
   },
-  iconContainer: {
-    alignItems: 'center',
-    marginVertical: 32,
+  colors: {
+    primary: '#3498db',
+    success: '#27ae60',
+    info: '#3498db',
+    warning: '#f39c12',
+    error: '#e74c3c',
+    text: {
+      primary: '#2c3e50',
+      secondary: '#7f8c8d',
+      muted: '#bdc3c7',
+      white: '#ffffff',
+    },
+    background: '#ffffff',
+    cardBackground: '#ffffff',
+    divider: '#ecf0f1',
   },
-  cancelIcon: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#ecf0f1',
-    justifyContent: 'center',
+  illustrationContainer: {
     alignItems: 'center',
+    marginVertical: 24,
   },
   title: {
     fontSize: 24,
@@ -166,45 +174,51 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#7f8c8d',
     textAlign: 'center',
     marginBottom: 24,
-    lineHeight: 20,
+    lineHeight: 22,
   },
-  reasonBox: {
+  infoBox: {
     flexDirection: 'row',
     backgroundColor: '#fff3cd',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
     gap: 12,
+    alignItems: 'flex-start',
   },
-  reasonContent: {
+  infoContent: {
     flex: 1,
   },
-  reasonTitle: {
-    fontSize: 13,
-    fontWeight: '700',
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: '600',
     color: '#2c3e50',
     marginBottom: 4,
   },
-  reasonText: {
-    fontSize: 12,
+  infoText: {
+    fontSize: 13,
     color: '#7f8c8d',
     lineHeight: 18,
   },
   stepsBox: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   stepsTitle: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#2c3e50',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   stepItem: {
     flexDirection: 'row',
@@ -229,7 +243,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stepTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     color: '#2c3e50',
   },
@@ -240,14 +254,19 @@ const styles = StyleSheet.create({
   },
   tipsBox: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   tipsTitle: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#2c3e50',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   tipItem: {
     flexDirection: 'row',
@@ -269,29 +288,30 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#ecf0f1',
     padding: 16,
-    paddingBottom: 20,
+    paddingBottom: 24,
     gap: 12,
   },
   primaryButton: {
     backgroundColor: '#3498db',
-    paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 16,
+    justifyContent: 'center',
     alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
   },
   secondaryButton: {
     backgroundColor: '#ecf0f1',
-    paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 16,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  secondaryButtonText: {
-    color: '#2c3e50',
+  buttonFull: {
+    width: '100%',
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
+    textAlign: 'center',
   },
 })
