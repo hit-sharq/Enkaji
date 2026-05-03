@@ -129,7 +129,7 @@ export default function ShippingAddressesScreen() {
           <ScrollView contentContainerStyle={styles.modalContent}>
             {[
               { key: 'label', label: 'Label (e.g. Home, Office)', placeholder: 'Home' },
-              { key: 'name', label: 'Full Name', placeholder: 'John Doe' },
+              { key: 'name', label: 'Full Name', placeholder: 'joshua mwendwa' },
               { key: 'phone', label: 'Phone', placeholder: '0712345678' },
               { key: 'address', label: 'Street Address', placeholder: '123 Kenyatta Ave' },
               { key: 'city', label: 'City / Town', placeholder: 'Nairobi' },

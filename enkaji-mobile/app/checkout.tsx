@@ -281,7 +281,7 @@ export default function CheckoutScreen() {
                 onChangeText={(text) =>
                   setShippingAddress({ ...shippingAddress, firstName: text })
                 }
-                placeholder="John"
+                placeholder="joshua"
                 placeholderTextColor={Colors.text.muted}
               />
             </View>
@@ -293,7 +293,7 @@ export default function CheckoutScreen() {
                 onChangeText={(text) =>
                   setShippingAddress({ ...shippingAddress, lastName: text })
                 }
-                placeholder="Doe"
+                placeholder="johnson"
                 placeholderTextColor={Colors.text.muted}
               />
             </View>

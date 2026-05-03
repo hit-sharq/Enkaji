@@ -397,7 +397,7 @@ export function TestimonialsManagement() {
                           id="name"
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="John Doe"
+                          placeholder="joshua mwendwa"
                         />
                       </div>
                       <div className="space-y-2">
