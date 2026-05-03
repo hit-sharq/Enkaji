@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -50,7 +49,7 @@ export default function PaymentSuccessScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={styles.colors.primary} />
+          <ActivityIndicator size="large" color="#3498db" />
           <Text style={styles.loadingText}>Processing your order...</Text>
         </View>
       </SafeAreaView>
@@ -65,7 +64,7 @@ export default function PaymentSuccessScreen() {
           <MaterialCommunityIcons
             name="check-circle"
             size={100}
-            color={styles.colors.success}
+            color="#27ae60"
           />
         </View>
 
@@ -100,7 +99,7 @@ export default function PaymentSuccessScreen() {
                 <MaterialCommunityIcons
                   name="check-circle"
                   size={16}
-                  color={styles.colors.success}
+                  color="#27ae60"
                 />
                 <Text style={styles.badgeText}>Paid</Text>
               </View>
@@ -110,7 +109,7 @@ export default function PaymentSuccessScreen() {
 
             <View style={styles.orderRow}>
               <Text style={styles.orderLabel}>Order Status</Text>
-              <Text style={styles.statusBadge}>{order.status}</Text>
+              <Text style={[styles.statusBadge, { color: colors.warning }]}>{order.status}</Text>
             </View>
 
             <View style={styles.divider} />
@@ -134,14 +133,13 @@ export default function PaymentSuccessScreen() {
                         <Image
                           source={{ uri: item.product.images[0] }}
                           style={styles.itemImage}
-                          fallback={require('@/assets/placeholder.png')}
                         />
                       ) : (
                         <View style={[styles.itemImageContainer, styles.itemPlaceholder]}>
                           <MaterialCommunityIcons
                             name="package"
                             size={24}
-                            color={styles.colors.text.muted}
+                            color="#bdc3c7"
                           />
                         </View>
                       )}
@@ -166,7 +164,7 @@ export default function PaymentSuccessScreen() {
 
         {/* What's Next */}
         <View style={styles.infoBox}>
-          <MaterialCommunityIcons name="information" size={20} color={styles.colors.info} />
+          <MaterialCommunityIcons name="information" size={20} color="#3498db" />
           <View style={styles.infoContent}>
             <Text style={styles.infoTitle}>What's Next?</Text>
             <Text style={styles.infoText}>
@@ -220,23 +218,40 @@ function ActionItem({
   title,
   description,
 }: {
-  icon: string
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name']
   title: string
   description: string
 }) {
   return (
     <View style={styles.actionItem}>
       <View style={styles.actionIcon}>
-        <MaterialCommunityIcons name={icon as any} size={24} color={styles.colors.primary} />
+        <MaterialCommunityIcons name={icon} size={24} color={colors.primary} />
       </View>
       <View style={styles.actionContent}>
         <Text style={styles.actionTitle}>{title}</Text>
         <Text style={styles.actionDescription}>{description}</Text>
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={20} color={styles.colors.text.muted} />
+      <MaterialCommunityIcons name="chevron-right" size={20} color="#bdc3c7" />
     </View>
   )
 }
+
+const colors = {
+  primary: '#3498db',
+  success: '#27ae60',
+  info: '#3498db',
+  warning: '#f39c12',
+  error: '#e74c3c',
+  text: {
+    primary: '#2c3e50',
+    secondary: '#7f8c8d',
+    muted: '#bdc3c7',
+    white: '#ffffff',
+  },
+  background: '#ffffff',
+  cardBackground: '#ffffff',
+  divider: '#ecf0f1',
+} as const;
 
 const styles = StyleSheet.create({
   container: {
@@ -247,22 +262,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100,
   },
-  colors: {
-    primary: '#3498db',
-    success: '#27ae60',
-    info: '#3498db',
-    warning: '#f39c12',
-    error: '#e74c3c',
-    text: {
-      primary: '#2c3e50',
-      secondary: '#7f8c8d',
-      muted: '#bdc3c7',
-      white: '#ffffff',
-    },
-    background: '#ffffff',
-    cardBackground: '#ffffff',
-    divider: '#ecf0f1',
-  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
   },
   successAnimationContainer: {
     alignItems: 'center',
@@ -280,19 +280,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: colors.text.primary,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 22,
   },
   orderCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBackground,
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,
@@ -310,22 +310,22 @@ const styles = StyleSheet.create({
   },
   orderLabel: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
     fontWeight: '500',
   },
   orderValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: colors.text.primary,
   },
   orderAmount: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#27ae60',
+    color: colors.success,
   },
   divider: {
     height: 1,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: colors.divider,
     marginVertical: 8,
   },
   badgeContainer: {
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#27ae60',
+    color: colors.success,
   },
   statusBadge: {
     fontSize: 12,
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   itemsTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: colors.text.primary,
     marginBottom: 16,
     marginTop: 16,
   },
@@ -379,14 +379,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   itemPlaceholder: {
-    backgroundColor: '#ecf0f1',
+    backgroundColor: colors.divider,
   },
   itemInfo: {
     flex: 1,
   },
   itemName: {
     fontSize: 14,
-    color: '#2c3e50',
+    color: colors.text.primary,
     marginBottom: 4,
   },
   itemDetails: {
@@ -395,16 +395,16 @@ const styles = StyleSheet.create({
   },
   itemQtyText: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
   },
   itemPrice: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: colors.text.primary,
   },
   infoBox: {
     flexDirection: 'row',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: colors.divider,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -417,12 +417,12 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: colors.text.primary,
     marginBottom: 4,
   },
   infoText: {
     fontSize: 13,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
     lineHeight: 18,
   },
   actionsList: {
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   },
   actionItem: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -449,14 +449,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  actionContent: {
+    flex: 1,
+  },
   actionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: colors.text.primary,
   },
   actionDescription: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: colors.text.secondary,
     marginTop: 2,
   },
   footer: {
@@ -464,22 +467,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
     borderTopWidth: 1,
-    borderTopColor: '#ecf0f1',
+    borderTopColor: colors.divider,
     padding: 16,
     paddingBottom: 24,
     gap: 12,
   },
   primaryButton: {
-    backgroundColor: '#27ae60',
+    backgroundColor: colors.success,
     borderRadius: 12,
     paddingVertical: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   secondaryButton: {
-    backgroundColor: '#ecf0f1',
+    backgroundColor: colors.divider,
     borderRadius: 12,
     paddingVertical: 16,
     justifyContent: 'center',
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    color: '#fff',
+    color: colors.text.white,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',

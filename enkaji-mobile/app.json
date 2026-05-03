@@ -59,7 +59,10 @@
     "web": {
       "bundler": "metro",
       "output": "server",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "notification": {
+        "vapidPublicKey": "BMKXz6dJ6J5pZ5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p5q5p"
+      }
     },
     "plugins": [
       "expo-router",

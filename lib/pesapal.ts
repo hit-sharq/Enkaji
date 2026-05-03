@@ -27,6 +27,12 @@ if (typeof window === 'undefined') {
   })
 }
 
+// Validate that credentials are present
+if (!process.env.PESAPAL_CONSUMER_KEY || !process.env.PESAPAL_CONSUMER_SECRET) {
+  console.error('[Pesapal] ERROR: Consumer key and secret must be configured in .env')
+  console.error('[Pesapal] Please set PESAPAL_CONSUMER_KEY and PESAPAL_CONSUMER_SECRET')
+}
+
 // Correct URLs based on Pesapal official documentation
 export const pesapalConfig: PesapalConfig = {
   consumerKey: process.env.PESAPAL_CONSUMER_KEY || '',

@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -23,7 +22,7 @@ export default function PaymentCancelledScreen() {
           <MaterialCommunityIcons
             name="close-circle-outline"
             size={100}
-            color={styles.colors.error}
+            color="#e74c3c"
           />
         </View>
 
@@ -35,7 +34,7 @@ export default function PaymentCancelledScreen() {
 
         {/* What Happened */}
         <View style={styles.infoBox}>
-          <MaterialCommunityIcons name="alert-circle" size={20} color={styles.colors.warning} />
+          <MaterialCommunityIcons name="alert-circle" size={20} color="#f39c12" />
           <View style={styles.infoContent}>
             <Text style={styles.infoTitle}>What Happened?</Text>
             <Text style={styles.infoText}>
@@ -131,7 +130,7 @@ function Step({
 function Tip({ icon, text }: { icon: string; text: string }) {
   return (
     <View style={styles.tipItem}>
-      <MaterialCommunityIcons name={icon as any} size={16} color={styles.colors.primary} />
+      <MaterialCommunityIcons name={icon as any} size={16} color="#3498db" />
       <Text style={styles.tipText}>{text}</Text>
     </View>
   )
@@ -145,22 +144,6 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingBottom: 100,
-  },
-  colors: {
-    primary: '#3498db',
-    success: '#27ae60',
-    info: '#3498db',
-    warning: '#f39c12',
-    error: '#e74c3c',
-    text: {
-      primary: '#2c3e50',
-      secondary: '#7f8c8d',
-      muted: '#bdc3c7',
-      white: '#ffffff',
-    },
-    background: '#ffffff',
-    cardBackground: '#ffffff',
-    divider: '#ecf0f1',
   },
   illustrationContainer: {
     alignItems: 'center',

@@ -26,8 +26,36 @@ const isPublicRoute = createRouteMatcher([
   "/api/pesapal(.*)",  // Allow Pesapal API routes to be public (they handle their own auth)
 ])
 
+// CORS origins for development and production
+const allowedOrigins = [
+  'http://localhost:8081',
+  'http://localhost:5000',
+  'https://enkaji.vercel.app',
+  'https://enkaji-amber.vercel.app',
+]
+
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false
+  return allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed.replace('https://', '')))
+}
+
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
+  const origin = req.headers.get('origin')
+  const isApiRoute = req.nextUrl.pathname.startsWith('/api')
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    const response = NextResponse.next()
+    if (origin && isAllowedOrigin(origin)) {
+      response.headers.set('Access-Control-Allow-Origin', origin)
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+      response.headers.set('Access-Control-Allow-Credentials', 'true')
+      response.headers.set('Access-Control-Max-Age', '86400')
+    }
+    return response
+  }
 
   // If user is signed in and tries to access sign-in/sign-up, redirect to dashboard
   if (userId && (req.nextUrl.pathname.startsWith("/sign-in") || req.nextUrl.pathname.startsWith("/sign-up"))) {
@@ -39,8 +67,16 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
-  // Apply security headers
+  // Apply security headers and CORS
   const response = NextResponse.next()
+
+  // Add CORS headers for API routes
+  if (origin && isAllowedOrigin(origin) && isApiRoute) {
+    response.headers.set('Access-Control-Allow-Origin', origin)
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+    response.headers.set('Access-Control-Allow-Credentials', 'true')
+  }
 
   // Security headers
   response.headers.set('X-Frame-Options', 'DENY')
@@ -48,20 +84,22 @@ export default clerkMiddleware(async (auth, req) => {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
 
-  // Content Security Policy
-  response.headers.set('Content-Security-Policy',
+  // Content Security Policy - relaxed for development
+  const cspDirectives =
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.clerk.com https://*.clerk.accounts.dev; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
     "img-src 'self' data: https: blob:; " +
-    "connect-src 'self' https://api.clerk.com https://*.clerk.accounts.dev https://api.cloudinary.com; " +
+    `connect-src 'self' ${origin || ''} https://api.clerk.com https://*.clerk.accounts.dev https://api.cloudinary.com; ` +
     "frame-src 'self' https://js.clerk.com https://*.clerk.accounts.dev; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
     "form-action 'self';"
-  )
 
+  response.headers.set('Content-Security-Policy', cspDirectives)
+
+  return response
 })
 
 export const config = {
