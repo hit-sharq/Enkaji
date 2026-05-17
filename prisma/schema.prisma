@@ -215,13 +215,14 @@ model Order {
   shippingAddress Json
   billingAddress  Json?
   
-  // Tracking
-  trackingNumber  String?
-  estimatedDelivery DateTime?
-  deliveredAt     DateTime?
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+   // Tracking
+   trackingNumber  String?
+   estimatedDelivery DateTime?
+   deliveredAt     DateTime?
+   cancelledAt     DateTime?
+   
+   createdAt       DateTime      @default(now())
+   updatedAt       DateTime      @updatedAt
   
   // Promo/coupon
   couponCode      String?

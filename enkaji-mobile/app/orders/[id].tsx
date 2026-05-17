@@ -254,24 +254,32 @@ export default function OrderDetailScreen() {
         </View>
 
         {/* Actions */}
-        {order.status === 'PENDING' && (
-          <View style={styles.actionsCard}>
-            <TouchableOpacity
-              style={styles.dangerBtn}
-              onPress={() => Alert.alert(
-                'Cancel Order',
-                'Are you sure you want to cancel this order?',
-                [
-                  { text: 'Keep Order', style: 'cancel' },
-                  { text: 'Cancel Order', style: 'destructive', onPress: () => {} },
-                ]
-              )}
-            >
-              <Feather name="x-circle" size={16} color={Colors.error} />
-              <Text style={styles.dangerBtnText}>Cancel Order</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+{order.status === 'PENDING' && (
+  <View style={styles.actionsCard}>
+    <TouchableOpacity
+      style={styles.dangerBtn}
+      onPress={() => Alert.alert(
+        'Cancel Order',
+        'Are you sure you want to cancel this order?',
+        [
+          { text: 'Keep Order', style: 'cancel' },
+          { text: 'Cancel Order', style: 'destructive', onPress: async () => {
+            try {
+              await api.updateOrder(order.id, { status: 'CANCELLED' });
+              Alert.alert('Success', 'Order has been cancelled');
+              router.back();
+            } catch (error) {
+              Alert.alert('Error', 'Failed to cancel order. Please try again.');
+            }
+          } },
+        ]
+      )}
+    >
+      <Feather name="x-circle" size={16} color={Colors.error} />
+      <Text style={styles.dangerBtnText}>Cancel Order</Text>
+    </TouchableOpacity>
+  </View>
+)}
 
         <View style={{ height: 30 }} />
       </ScrollView>

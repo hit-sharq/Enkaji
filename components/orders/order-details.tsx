@@ -131,9 +131,26 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
         </Badge>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Order Information */}
-        <div className="lg:col-span-2 space-y-6">
+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+         {/* Order Information */}
+         <div className="lg:col-span-2 space-y-6">
+           {/* Cancel Order Button (for pending orders) */}
+           {order.status === "PENDING" && (
+             <div className="mb-6">
+               <Button 
+                 onClick={() => {
+                   if (window.confirm('Are you sure you want to cancel this order?')) {
+                     // TODO: Implement cancel order API call
+                     alert('Cancel order functionality would be implemented here');
+                   }
+                 }}
+                 variant="destructive"
+                 size="sm"
+               >
+                 Cancel Order
+               </Button>
+             </div>
+           )}
           {/* Order Items */}
           <Card>
             <CardHeader>

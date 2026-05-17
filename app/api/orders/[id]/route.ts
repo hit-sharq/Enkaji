@@ -69,16 +69,33 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     const { status, trackingNumber } = await request.json()
 
-    // Check if user is seller for this order
-    const order = await prisma.order.findFirst({
-      where: {
-        id: params.id,
-        items: { some: { product: { sellerId: user.id } } },
-      },
-    })
+    // For cancellation, check if user is the buyer (not just seller)
+    let order
+    if (status === "CANCELLED") {
+      // Only the buyer can cancel their own order
+      order = await prisma.order.findFirst({
+        where: {
+          id: params.id,
+          userId: user.id, // Buyer can cancel their own order
+        },
+      })
+    } else {
+      // Check if user is seller for this order (for other status updates)
+      order = await prisma.order.findFirst({
+        where: {
+          id: params.id,
+          items: { some: { product: { sellerId: user.id } } },
+        },
+      })
+    }
 
     if (!order) {
       throw new NotFoundError("Order not found or unauthorized")
+    }
+
+    // Prevent cancellation of already cancelled or delivered orders
+    if (status === "CANCELLED" && ["CANCELLED", "REFUNDED", "DELIVERED"].includes(order.status)) {
+      return NextResponse.json({ error: "Cannot cancel order" }, { status: 400 })
     }
 
     const updatedOrder = await prisma.order.update({
@@ -87,6 +104,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         status,
         trackingNumber,
         updatedAt: new Date(),
+        // Set cancelledAt timestamp when cancelling
+        ...(status === "CANCELLED" && { cancelledAt: new Date() }),
       },
       include: {
         items: {
