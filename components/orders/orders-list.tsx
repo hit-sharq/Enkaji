@@ -55,15 +55,15 @@ export function OrdersList({ userId }: OrdersListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-enkaji-gold/20 text-enkaji-brown"
       case "CONFIRMED":
         return "bg-blue-100 text-blue-800"
       case "SHIPPED":
         return "bg-purple-100 text-purple-800"
       case "DELIVERED":
-        return "bg-green-100 text-green-800"
+        return "bg-enkaji-green/20 text-enkaji-green"
       case "CANCELLED":
-        return "bg-red-100 text-red-800"
+        return "bg-enkaji-red/15 text-enkaji-red"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -72,7 +72,7 @@ export function OrdersList({ userId }: OrdersListProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-enkaji-red" />
       </div>
     )
   }
@@ -87,7 +87,7 @@ export function OrdersList({ userId }: OrdersListProps) {
             You haven't placed any orders yet. Start shopping to see your orders here.
           </p>
           <Link href="/shop">
-            <Button className="bg-orange-600 hover:bg-orange-700">Start Shopping</Button>
+            <Button className="bg-enkaji-red text-white">Start Shopping</Button>
           </Link>
         </CardContent>
       </Card>

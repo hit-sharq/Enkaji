@@ -120,10 +120,10 @@ export function ShopFilters({ categories }: ShopFiltersProps) {
                 Filters
               </CardTitle>
               {activeFiltersCount > 0 && (
-                <Button variant="ghost" size="sm" onClick={clearFilters} className="text-red-600 hover:text-red-700">
-                  <X className="h-4 w-4 mr-1" />
-                  Clear All
-                </Button>
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-enkaji-brown hover:text-enkaji-brown/80">
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
               )}
             </div>
           </CardHeader>

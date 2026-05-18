@@ -27,20 +27,20 @@ const categoryColors = [
 ]
 
 const CategoriesSkeleton = () => (
-  <section className="py-20 bg-gradient-to-b from-white to-enkaji-cream/30">
+  <section className="py-12 md:py-20 bg-gradient-to-b from-white to-enkaji-cream/30">
     <div className="container mx-auto px-4">
-      <div className="text-center mb-16">
-        <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-4 animate-pulse"></div>
-        <div className="h-6 bg-gray-200 rounded-lg w-80 mx-auto animate-pulse"></div>
+      <div className="text-center mb-8 md:mb-16">
+        <div className="h-10 md:h-12 bg-gray-200 rounded-lg w-80 md:w-96 mx-auto mb-3 md:mb-4 animate-pulse"></div>
+        <div className="h-4 md:h-6 bg-gray-200 rounded-lg w-64 md:w-80 mx-auto animate-pulse"></div>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
         {Array.from({ length: 6 }, (_, i) => (
           <Card key={i} className="overflow-hidden border-0 shadow-lg">
-            <div className="h-48 bg-gray-200 animate-pulse"></div>
-            <CardContent className="p-6">
-              <div className="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+            <div className="h-28 md:h-48 bg-gray-200 animate-pulse"></div>
+            <CardContent className="p-3 md:p-6">
+              <div className="h-3 md:h-6 bg-gray-200 rounded mb-1 md:mb-2 animate-pulse"></div>
+              <div className="h-3 md:h-4 bg-gray-200 rounded mb-2 md:mb-4 animate-pulse w-2/3 md:w-auto"></div>
+              <div className="h-3 md:h-4 bg-gray-200 rounded w-16 md:w-32 animate-pulse"></div>
             </CardContent>
           </Card>
         ))}
@@ -76,27 +76,27 @@ export function CategoriesSection() {
       categories.map((category, index) => (
         <Card
           key={category.id}
-          className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+          className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
         >
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative h-28 md:h-48 overflow-hidden">
             <div
               className={`absolute inset-0 bg-gradient-to-br ${categoryColors[index % categoryColors.length]} opacity-80`}
             ></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-2xl font-bold text-white text-center px-4">{category.name}</h3>
+            <div className="absolute inset-0 flex items-center justify-center p-2">
+              <h3 className="text-sm md:text-2xl font-bold text-white text-center leading-tight line-clamp-2">{category.name}</h3>
             </div>
             {category._count && (
-              <div className="absolute bottom-3 right-3 bg-white/90 text-gray-900 px-2 py-1 rounded text-sm font-medium">
-                {category._count.products} products
+              <div className="absolute bottom-1.5 right-1.5 md:bottom-3 md:right-3 bg-white/90 text-gray-900 px-1.5 py-0.5 md:px-2 md:py-1 rounded text-[10px] md:text-sm font-medium">
+                {category._count.products}
               </div>
             )}
           </div>
-          <CardContent className="p-6">
-            <p className="text-gray-600 mb-4">{category.description}</p>
-            <Button asChild variant="ghost" className="p-0 h-auto text-enkaji-red hover:text-enkaji-red/80 group/btn">
+          <CardContent className="p-3 md:p-6">
+            <p className="text-gray-600 text-[10px] md:text-sm mb-1.5 md:mb-4 line-clamp-2">{category.description}</p>
+            <Button asChild variant="ghost" className="p-0 h-auto text-[10px] md:text-sm text-enkaji-red hover:text-enkaji-red/80 group/btn">
               <Link href={`/categories/${category.slug}`}>
-                Explore Category
-                <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                Explore
+                <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
               </Link>
             </Button>
           </CardContent>
@@ -110,22 +110,22 @@ export function CategoriesSection() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-enkaji-cream/30">
+    <section className="py-12 md:py-20 bg-gradient-to-b from-white to-enkaji-cream/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
             <span className="bg-gradient-to-r from-enkaji-red to-enkaji-ochre bg-clip-text text-transparent">
               Business Categories
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-xl text-gray-600 max-w-2xl mx-auto px-2 md:px-0">
             Find sellers and products across Kenya's key business sectors
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">{categoryCards}</div>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8">{categoryCards}</div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-8 md:mt-12">
           <Button
             asChild
             size="lg"

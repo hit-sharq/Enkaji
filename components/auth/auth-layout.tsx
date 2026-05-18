@@ -16,7 +16,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
     <main className="min-h-screen grid lg:grid-cols-2 bg-white">
       {/* Left panel - brand and benefits */}
       <div className="relative hidden lg:flex flex-col justify-between overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-rose-500 to-amber-500 opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-enkaji-red via-enkaji-gold to-enkaji-ochre opacity-90" />
         <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-black/10 blur-3xl" />
 
@@ -77,7 +77,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
         <div className="w-full max-w-md">
           <div className="mb-6 flex items-center justify-between lg:hidden">
             <Link href="/" className="inline-flex items-center gap-2 text-gray-900">
-              <div className="h-9 w-9 rounded-md bg-orange-500/10 text-orange-600 grid place-items-center">
+              <div className="h-9 w-9 rounded-md bg-enkaji-red/10 text-enkaji-red grid place-items-center">
                 <Store className="h-5 w-5" />
               </div>
               <span className="text-lg font-semibold">Enkaji</span>

@@ -70,7 +70,7 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button className="bg-orange-600 hover:bg-orange-700">Save Changes</Button>
+                  <Button className="bg-enkaji-red text-white">Save Changes</Button>
                 </CardContent>
               </Card>
             </TabsContent>

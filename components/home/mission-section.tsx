@@ -36,21 +36,21 @@ const features = [
 
 export function MissionSection() {
   return (
-    <section className="py-20 bg-gradient-to-b from-enkaji-cream/30 to-white">
+    <section className="py-10 md:py-20 bg-gradient-to-b from-enkaji-cream/30 to-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-6">
             <span className="bg-gradient-to-r from-enkaji-brown to-enkaji-green bg-clip-text text-transparent">
               Why Choose Enkaji
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            We're transforming B2B commerce in Kenya by connecting businesses with reliable sellers, ensuring secure
+          <p className="text-sm md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-2 md:px-0">
+            We&#39;re transforming B2B commerce in Kenya by connecting businesses with reliable sellers, ensuring secure
             transactions, and facilitating growth across all sectors.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-10 md:mb-16">
           {features.map((feature, index) => (
             <Card
               key={index}

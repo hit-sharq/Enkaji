@@ -30,10 +30,10 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="py-16 bg-red-800 text-white">
+    <section className="py-16 bg-enkaji-red text-white">
       <div className="container mx-auto px-4 text-center">
         <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-4">Stay Connected</h2>
-        <p className="text-xl mb-8 text-red-100 max-w-2xl mx-auto">
+        <p className="text-xl mb-8 text-enkaji-ochre/80 max-w-2xl mx-auto">
           Subscribe to our newsletter for updates on new products, artisan stories, and exclusive offers from the Enkaji
           community.
         </p>
@@ -50,7 +50,7 @@ export function NewsletterSection() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6"
+            className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-black font-semibold px-6"
           >
             {isLoading ? "Subscribing..." : "Subscribe"}
           </Button>

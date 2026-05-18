@@ -108,7 +108,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
   if (viewMode === "list") {
     return (
-      <Card className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-transparent hover:border-l-blue-500">
+        <Card className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-transparent hover:border-l-enkaji-red">
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
             {/* Image */}
@@ -143,7 +143,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
+                 <div className="text-2xl font-bold text-enkaji-red">{formatDualCurrency(product.price)}</div>
                 <div className="flex items-center gap-4">
                   {product.weight && (
                     <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -164,10 +164,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                     <AvatarImage src={product.seller.imageUrl || undefined} />
                     <AvatarFallback className="text-xs">{sellerInitials}</AvatarFallback>
                   </Avatar>
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm font-medium">{sellerName}</span>
-                      {product.seller.isVerified && <Verified className="h-3 w-3 text-blue-500" />}
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm font-medium">{sellerName}</span>
+                        {product.seller.isVerified && <Verified className="h-3 w-3 text-enkaji-green" />}
                     </div>
                     {product.seller.location && (
                       <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -233,16 +233,16 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
 
-        <div className="p-4 space-y-3">
-          <div>
-            <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-blue-600 transition-colors">
-              {product.name}
-            </h3>
+          <div className="p-4 space-y-3">
+            <div>
+              <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-enkaji-red transition-colors">
+                {product.name}
+              </h3>
             <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-blue-600">{formatDualCurrency(product.price)}</div>
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-enkaji-red">{formatDualCurrency(product.price)}</div>
             <div className="flex items-center gap-3">
               {product.weight && (
                 <div className="flex items-center gap-1 text-xs text-gray-600">
@@ -270,7 +270,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
                 <span className="text-sm text-gray-600 truncate">{sellerName}</span>
-                {product.seller.isVerified && <Verified className="h-3 w-3 text-blue-500 flex-shrink-0" />}
+                {product.seller.isVerified && <Verified className="h-3 w-3 text-enkaji-green flex-shrink-0" />}
               </div>
               {product.seller.location && (
                 <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -288,10 +288,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           <Button asChild className="flex-1">
             <Link href={`/products/${product.id}`}>View Details</Link>
           </Button>
-          <Button 
-            size="icon" 
-            variant="outline" 
-            className="hover:bg-blue-50 hover:border-blue-200 bg-transparent"
+            <Button 
+              size="icon" 
+              variant="outline"
+              className="hover:bg-enkaji-red/10 hover:border-enkaji-red/20 bg-transparent"
             onClick={handleAddToCart}
             disabled={isAdding}
           >

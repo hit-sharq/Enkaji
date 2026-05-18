@@ -58,7 +58,7 @@ export function CartItems() {
       <Card>
         <CardContent className="p-8 text-center">
           <p className="text-gray-500 text-lg">Your cart is empty</p>
-          <Button className="mt-4 bg-red-800 hover:bg-red-900">Continue Shopping</Button>
+          <Button className="mt-4 bg-enkaji-red text-white">Continue Shopping</Button>
         </CardContent>
       </Card>
     )
@@ -78,9 +78,9 @@ export function CartItems() {
                 className="rounded-md object-cover"
               />
 
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg">{item.name}</h3>
-                <p className="text-red-800 font-bold">KES {item.price.toLocaleString()}</p>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">{item.name}</h3>
+                  <p className="text-enkaji-red font-bold">KES {item.price.toLocaleString()}</p>
                 {item.weight && (
                   <p className="text-sm text-gray-500 flex items-center gap-1">
                     <Weight className="w-3 h-3" />
@@ -107,7 +107,7 @@ export function CartItems() {
                 variant="ghost"
                 size="sm"
                 onClick={() => removeItem(item.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-enkaji-brown hover:text-enkaji-brown/80"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

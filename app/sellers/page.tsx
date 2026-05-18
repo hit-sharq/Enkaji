@@ -183,11 +183,11 @@ export default async function SellersPage({
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
+      <section className="bg-gradient-to-br from-enkaji-red to-enkaji-brown text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Discover Trusted Sellers</h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8">
+            <p className="text-xl md:text-2xl text-white/85 mb-8">
               Connect with verified businesses across Kenya for all your procurement needs
             </p>
 
@@ -195,31 +195,31 @@ export default async function SellersPage({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Users className="w-6 h-6 text-blue-200 mr-2" />
+                  <Users className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.totalSellers}</span>
                 </div>
-                <p className="text-blue-200">Total Sellers</p>
+                <p className="text-white/70">Total Sellers</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <TrendingUp className="w-6 h-6 text-green-300 mr-2" />
+                  <TrendingUp className="w-6 h-6 text-enkaji-green/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.verifiedSellers}</span>
                 </div>
-                <p className="text-blue-200">Verified</p>
+                <p className="text-white/70">Verified</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <MapPin className="w-6 h-6 text-blue-200 mr-2" />
+                  <MapPin className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.locations}</span>
                 </div>
-                <p className="text-blue-200">Locations</p>
+                <p className="text-white/70">Locations</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Search className="w-6 h-6 text-blue-200 mr-2" />
+                  <Search className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.businessTypes}</span>
                 </div>
-                <p className="text-blue-200">Categories</p>
+                <p className="text-white/70">Categories</p>
               </div>
             </div>
           </div>

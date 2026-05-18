@@ -104,11 +104,11 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-enkaji-red to-enkaji-ochre rounded-lg flex items-center justify-center">
               <Store className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-gray-900">Enkaji Trade Kenya</span>
+              <span className="text-xl font-bold text-enkaji-brown">Enkaji Trade Kenya</span>
               <span className="text-xs text-gray-500 -mt-1">Kenya's B2B Marketplace</span>
             </div>
           </Link>
@@ -121,9 +121,9 @@ export function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products, sellers, and businesses across Kenya..."
-                className="pl-10 pr-4 h-10 w-full border-gray-300 focus:border-orange-500"
+                className="pl-10 pr-4 h-10 w-full border-gray-300 focus:border-enkaji-red"
               />
-              <Button type="submit" size="sm" className="absolute right-1 top-1 h-8 bg-orange-600 hover:bg-orange-700">
+              <Button type="submit" size="sm" className="absolute right-1 top-1 h-8 bg-enkaji-red hover:bg-enkaji-red text-white font-medium">
                 Search
               </Button>
             </div>
@@ -131,21 +131,21 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
-            <Link href="/shop" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+            <Link href="/shop" className="text-gray-700 hover:text-enkaji-ochre font-medium transition-colors">
               Shop
             </Link>
 
-            <Link href="/sellers" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+            <Link href="/sellers" className="text-gray-700 hover:text-enkaji-ochre font-medium transition-colors">
               Sellers
             </Link>
 
-            <Link href="/services" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+            <Link href="/services" className="text-gray-700 hover:text-enkaji-ochre font-medium transition-colors">
               Services
             </Link>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-gray-700 hover:text-orange-600 font-medium">
+                <Button variant="ghost" className="text-gray-700 hover:text-enkaji-ochre font-medium">
                   Categories
                 </Button>
               </DropdownMenuTrigger>
@@ -193,28 +193,28 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link href="/about" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">
+            <Link href="/about" className="text-gray-700 hover:text-enkaji-ochre font-medium transition-colors">
               About
             </Link>
 
             <Link href="/download">
-              <Button size="sm" className="bg-[#8B2635] hover:bg-[#7a1f2e] text-white font-medium flex items-center gap-1.5 rounded-full px-4">
+              <Button size="sm" className="bg-enkaji-red text-white font-medium flex items-center gap-1.5 rounded-full px-4">
                 <Smartphone className="w-4 h-4" />
                 Get App
               </Button>
             </Link>
 
-            {/* Cart */}
-            <Link href="/cart" className="relative">
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="w-5 h-5" />
-                {cartItemsCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-orange-500">
-                    {cartItemsCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
+             {/* Cart */}
+             <Link href="/cart" className="relative">
+               <Button variant="ghost" size="sm" className="relative">
+                 <ShoppingCart className="w-5 h-5" />
+                 {cartItemsCount > 0 && (
+                   <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-enkaji-ochre">
+                     {cartItemsCount}
+                   </Badge>
+                 )}
+               </Button>
+             </Link>
 
             {/* Favorites */}
             <Link href="/favorites">
@@ -260,7 +260,7 @@ export function Header() {
                   {isAdmin && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/admin" className="flex items-center text-blue-600">
+                        <Link href="/admin" className="flex items-center text-enkaji-red">
                           <Shield className="w-4 h-4 mr-2" />
                           Admin Panel
                         </Link>
@@ -281,7 +281,7 @@ export function Header() {
                       Settings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center text-red-600">
+                  <DropdownMenuItem className="flex items-center text-enkaji-brown">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
@@ -295,7 +295,7 @@ export function Header() {
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+                  <Button size="sm" className="bg-enkaji-red text-white">
                     Join Now
                   </Button>
                 </Link>
@@ -309,7 +309,7 @@ export function Header() {
               <Button variant="ghost" size="sm">
                 <ShoppingCart className="w-5 h-5" />
                 {cartItemsCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-orange-500">
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-enkaji-ochre">
                     {cartItemsCount}
                   </Badge>
                 )}
@@ -339,42 +339,42 @@ export function Header() {
                   <nav className="flex flex-col space-y-4">
                     <Link
                       href="/shop"
-                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       Shop
                     </Link>
                     <Link
                       href="/sellers"
-                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       Sellers
                     </Link>
                     <Link
                       href="/services"
-                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       Services
                     </Link>
                     <Link
                       href="/categories"
-                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       Categories
                     </Link>
                     <Link
                       href="/about"
-                      className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                      className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                       onClick={() => setIsOpen(false)}
                     >
                       About
                     </Link>
                     <Link
                       href="/download"
-                      className="flex items-center gap-2 font-medium py-2 text-[#8B2635]"
+                      className="flex items-center gap-2 font-medium py-2 text-enkaji-red"
                       onClick={() => setIsOpen(false)}
                     >
                       <Smartphone className="w-4 h-4" />
@@ -384,21 +384,21 @@ export function Header() {
                       <>
                         <Link
                           href="/dashboard"
-                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                           onClick={() => setIsOpen(false)}
                         >
                           My Account
                         </Link>
                         <Link
                           href="/orders"
-                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                           onClick={() => setIsOpen(false)}
                         >
                           My Orders
                         </Link>
                         <Link
                           href="/favorites"
-                          className="text-gray-700 hover:text-orange-600 font-medium py-2"
+                          className="text-gray-700 hover:text-enkaji-ochre font-medium py-2"
                           onClick={() => setIsOpen(false)}
                         >
                           Favorites
@@ -406,7 +406,7 @@ export function Header() {
                         {isAdmin && (
                           <Link
                             href="/admin"
-                            className="text-blue-600 hover:text-blue-700 font-medium py-2"
+                            className="text-enkaji-red hover:text-enkaji-red/80 font-medium py-2"
                             onClick={() => setIsOpen(false)}
                           >
                             Admin Panel
@@ -418,7 +418,7 @@ export function Header() {
 
                   <div className="border-t pt-4">
                     <Link href="/sell">
-                      <Button className="w-full mb-3 bg-orange-600 hover:bg-orange-700">Start Selling</Button>
+                      <Button className="w-full mb-3 bg-enkaji-red text-white">Start Selling</Button>
                     </Link>
                     {!isLoaded || !user ? (
                       <Link href="/sign-in">

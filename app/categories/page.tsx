@@ -83,7 +83,7 @@ export default async function CategoriesPage() {
     <div className="min-h-screen">
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+        <section className="bg-gradient-to-r from-enkaji-red to-enkaji-brown text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Browse All Categories</h1>
@@ -100,7 +100,7 @@ export default async function CategoriesPage() {
                       placeholder="Search categories..."
                       className="flex-1 pl-14 pr-4 h-12 text-lg border-0 bg-transparent text-gray-900 focus:ring-0"
                     />
-                    <Button className="h-10 px-6 bg-blue-600 hover:bg-blue-700 rounded-full">Search</Button>
+                    <Button className="h-10 px-6 bg-enkaji-red text-white rounded-full">Search</Button>
                   </div>
                 </div>
               </div>
@@ -119,15 +119,15 @@ export default async function CategoriesPage() {
                     <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group h-full">
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
-                          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors flex-shrink-0">
-                            <IconComponent className="w-6 h-6 text-blue-600" />
+                          <div className="w-12 h-12 bg-enkaji-red/10 rounded-lg flex items-center justify-center group-hover:bg-enkaji-red/20 transition-colors flex-shrink-0">
+                            <IconComponent className="w-6 h-6 text-enkaji-red" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                            <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-enkaji-red transition-colors">
                               {category.name}
                             </h3>
                             <p className="text-sm text-gray-500 mb-3">{category._count.products} products available</p>
-                            <div className="flex items-center text-blue-600 text-sm font-medium group-hover:text-blue-700">
+                            <div className="flex items-center text-enkaji-red text-sm font-medium group-hover:text-enkaji-red/80">
                               Browse products
                               <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                             </div>
@@ -162,7 +162,7 @@ export default async function CategoriesPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Can't Find What You're Looking For?</h2>
               <p className="text-xl text-gray-600 mb-8">Submit a request for quotation and let suppliers come to you</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-blue-600 hover:bg-blue-700 px-8 py-3">Post Buying Request</Button>
+                <Button className="bg-enkaji-red text-white px-8 py-3">Post Buying Request</Button>
                 <Button variant="outline" className="px-8 py-3 bg-transparent">
                   Contact Support
                 </Button>

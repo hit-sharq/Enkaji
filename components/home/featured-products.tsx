@@ -118,7 +118,7 @@ export function FeaturedProducts() {
                 alt={product.name}
                 width={300}
                 height={300}
-                className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-40 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 loading="lazy"
               />
@@ -134,41 +134,42 @@ export function FeaturedProducts() {
                 </div>
               )}
             </div>
-            <CardContent className="p-4">
-              <div className="mb-2">
-                <h3 className="font-semibold text-gray-900 line-clamp-2 mb-1">{product.name}</h3>
-                <p className="text-sm text-gray-600">{product.seller.businessName}</p>
+            <CardContent className="p-2 md:p-4">
+              <div className="mb-1.5 md:mb-2">
+                <h3 className="font-semibold text-gray-900 text-sm md:text-base line-clamp-2 mb-0.5 md:mb-1">{product.name}</h3>
+                <p className="text-[10px] md:text-sm text-gray-600">{product.seller.businessName}</p>
               </div>
 
-              <div className="flex items-center gap-1 mb-3">
+              <div className="flex items-center gap-1 mb-1.5 md:mb-3">
                 <div className="flex items-center">
                   {Array.from({ length: 5 }, (_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
+                      className={`w-3 h-3 md:w-4 md:h-4 ${
                         i < Math.floor(averageRating) ? "text-enkaji-gold fill-current" : "text-gray-300"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">({product._count?.reviews || 0})</span>
+                <span className="text-[10px] md:text-sm text-gray-600">({product._count?.reviews || 0})</span>
               </div>
 
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-enkaji-red">KSh {product.price.toLocaleString()}</span>
+              <div className="flex items-center justify-between mb-2 md:mb-4">
+                <div className="flex items-center gap-1 md:gap-2">
+                  <span className="text-base md:text-lg font-bold text-enkaji-red">KSh {product.price.toLocaleString()}</span>
                   {product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
+                    <span className="text-[10px] md:text-sm text-gray-500 line-through">
                       KSh {product.originalPrice.toLocaleString()}
                     </span>
                   )}
                 </div>
               </div>
 
-              <Button asChild className="w-full bg-enkaji-red hover:bg-enkaji-red/90 text-white group/btn">
+              <Button asChild className="w-full bg-enkaji-red hover:bg-enkaji-red/90 text-white group/btn h-8 md:h-10 text-xs md:text-sm">
                 <Link href={`/products/${product.id}`}>
-                  <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                  View Product
+                  <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 group-hover/btn:scale-110 transition-transform" />
+                  <span className="hidden md:inline">View Product</span>
+                  <span className="md:hidden">View</span>
                 </Link>
               </Button>
             </CardContent>
@@ -183,31 +184,31 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-10 md:py-20 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
             <span className="bg-gradient-to-r from-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent">
               Featured Sellers
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-xl text-gray-600 max-w-2xl mx-auto px-2 md:px-0">
             Top-rated sellers offering quality products for your business
           </p>
         </div>
 
         {products.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No featured products available at the moment.</p>
+          <div className="text-center py-8 md:py-12">
+            <p className="text-gray-600 text-sm md:text-lg">No featured products available at the moment.</p>
             <Button asChild className="mt-4 bg-enkaji-red hover:bg-enkaji-red/90">
               <Link href="/shop">Browse All Products</Link>
             </Button>
           </div>
         ) : (
           <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">{productCards}</div>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-8">{productCards}</div>
 
-            <div className="text-center mt-12">
+            <div className="text-center mt-8 md:mt-12">
               <Button
                 asChild
                 size="lg"

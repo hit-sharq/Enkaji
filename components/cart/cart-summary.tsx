@@ -101,7 +101,7 @@ export function CartSummary() {
 
         {items.length > 0 && !loading ? (
           <Link href="/checkout" className="block">
-            <Button className="w-full bg-red-800 hover:bg-red-900 text-white">Proceed to Checkout</Button>
+            <Button className="w-full bg-enkaji-red text-white">Proceed to Checkout</Button>
           </Link>
         ) : (
           <Button className="w-full bg-gray-300 cursor-not-allowed" disabled>
