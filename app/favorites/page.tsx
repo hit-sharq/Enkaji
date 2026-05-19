@@ -2,6 +2,8 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/auth"
 import FavoritesList from "@/components/favorites/favorites-list"
 
+export const dynamic = 'force-dynamic'
+
 export default async function FavoritesPage() {
   const user = await getCurrentUser()
 

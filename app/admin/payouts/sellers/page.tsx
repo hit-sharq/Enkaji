@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/components/ui/data-table';
 import { prisma } from '@/lib/db';
 
+export const dynamic = 'force-dynamic'
+
 interface PayoutRequest {
   id: string;
   seller: {

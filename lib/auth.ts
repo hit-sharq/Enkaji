@@ -97,7 +97,7 @@ export async function getCurrentUser() {
         user = await Promise.race([
           currentUser(),
           new Promise<never>(
-            (_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 8000), // Increased timeout to 8 seconds
+            (_, reject) => setTimeout(() => reject(new Error("Clerk API timeout")), 8000),
           ),
         ])
 
@@ -105,8 +105,14 @@ export async function getCurrentUser() {
         circuitBreakerState.isOpen = false
         break
       } catch (error) {
-        lastError = error as Error
+        lastError = error as Error & { digest?: string }
         console.log(`❌ Clerk API attempt ${attempt} failed:`, error)
+
+        // If this is a dynamic server usage error (no headers during build/static gen), return null immediately
+        if (lastError.digest === 'DYNAMIC_SERVER_USAGE' || lastError.message?.includes('headers')) {
+          console.log("⚡ Dynamic server usage error during build, returning null")
+          return null
+        }
 
         if (attempt < 3) {
           const delay = 500 * Math.pow(2, attempt - 1)

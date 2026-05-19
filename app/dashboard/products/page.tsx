@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Eye, Edit, Trash2, Package } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProductsPage() {
   const user = await getCurrentUser()
 

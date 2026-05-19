@@ -1,8 +1,15 @@
 import { Resend } from 'resend'
 import { appConfig } from './app-config'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let resend: Resend | null = null
 const FROM = appConfig.EMAIL_FROM
+
+function getResendClient() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 export async function sendEmail(to: string, subject: string, html: string) {
   if (!process.env.RESEND_API_KEY) {
@@ -10,7 +17,12 @@ export async function sendEmail(to: string, subject: string, html: string) {
     return
   }
   try {
-    const { error } = await resend.emails.send({ from: FROM, to, subject, html })
+    const client = getResendClient()
+    if (!client) {
+      console.log('[Email] No Resend client available, skipping email to', to, subject)
+      return
+    }
+    const { error } = await client.emails.send({ from: FROM, to, subject, html })
     if (error) console.error('[Email] Send error:', error)
   } catch (err) {
     console.error('[Email] Unexpected error:', err)

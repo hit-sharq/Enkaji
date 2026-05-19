@@ -7,6 +7,8 @@ import { UserRole } from "@prisma/client"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   let user
   let authError = false

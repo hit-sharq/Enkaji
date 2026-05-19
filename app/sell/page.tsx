@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Check } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 const subscriptionPlans = [
   {
     name: "Basic",
