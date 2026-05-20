@@ -31,6 +31,18 @@ const where: any = {
       where.categoryId = category
     }
 
+    const categoryName = searchParams.get("categoryName")
+    if (categoryName) {
+      where.category = {
+        name: { contains: categoryName, mode: "insensitive" }
+      }
+    }
+
+    const excludeId = searchParams.get("exclude")
+    if (excludeId) {
+      where.id = { not: excludeId }
+    }
+
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },

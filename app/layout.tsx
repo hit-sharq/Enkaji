@@ -36,10 +36,10 @@ export default function RootLayout({
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
           />
         </head>
-        <body className={inter.className}>
+        <body className={`${inter.className} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
             <CartProvider>
               <Header />

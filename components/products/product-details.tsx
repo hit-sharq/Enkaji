@@ -9,9 +9,12 @@ import { Separator } from "@/components/ui/separator"
 import { Heart, ShoppingCart, Star, Minus, Plus, User } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useCart } from "@/components/providers/cart-provider"
+import { useAuth } from "@clerk/nextjs"
 import { FavoriteButton } from "@/components/favorites/favorite-button"
 import { ReviewSummary } from "@/components/reviews/review-summary"
 import { ReviewCard } from "@/components/reviews/review-card"
+import { ProductReviewFormBanner } from "@/components/reviews/product-review-banner"
+import { SimilarProducts } from "./similar-products"
 
 interface ProductDetailsProps {
   product: {
@@ -67,6 +70,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
   const { toast } = useToast()
   const cartContext = useCart()
   const dispatch = cartContext?.dispatch
+  const { userId } = useAuth()
 
   // Fetch reviews from API
   useEffect(() => {
@@ -310,9 +314,36 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
         </div>
       </div>
 
-      {/* Reviews Section */}
+{/* Reviews Section */}
       <div className="space-y-6">
         <h2 className="font-playfair text-2xl font-bold">Customer Reviews</h2>
+
+<ProductReviewFormBanner
+           productId={product.id}
+           userId={userId}
+           onReviewSubmitted={() => {
+            // Refetch reviews after submission
+            const fetchReviews = async () => {
+              try {
+                const response = await fetch(`/api/reviews?productId=${product.id}`)
+                const data = await response.json()
+                if (response.ok) {
+                  setReviews(data.reviews || [])
+                  if (data.stats) {
+                    setSummary({
+                      averageRating: data.stats.averageRating || product.avgRating,
+                      totalReviews: data.stats.totalReviews || product._count.reviews,
+                      ratingDistribution: data.stats.ratingDistribution || ratingDistribution || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+                    })
+                  }
+                }
+              } catch (error) {
+                console.error("Error fetching reviews:", error)
+              }
+            }
+            fetchReviews()
+          }}
+        />
 
         {summary.totalReviews > 0 && (
           <ReviewSummary
@@ -338,6 +369,15 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
         ) : (
           <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
         )}
+
+        {/* Similar Products Section */}
+        <div className="mt-12">
+          <h2 className="font-playfair text-2xl font-bold mb-6">You May Also Like</h2>
+          <SimilarProducts
+            categoryName={product.category.name}
+            currentProductId={product.id}
+          />
+        </div>
       </div>
     </div>
   )
