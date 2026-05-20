@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Heart, ShoppingCart, Star, Minus, Plus, User } from "lucide-react"
+import { Heart, ShoppingCart, Star, Minus, Plus, User, ArrowLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@clerk/nextjs"
@@ -163,6 +163,18 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Button>
+      </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Product Images */}
         <div className="space-y-4">
