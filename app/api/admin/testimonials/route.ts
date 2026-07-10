@@ -16,9 +16,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const testimonials = await db.testimonial.findMany({
-      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    })
+    const testimonials: any[] = []
 
     return NextResponse.json({ testimonials })
   } catch (error) {
@@ -46,21 +44,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Name and content are required" }, { status: 400 })
     }
 
-    const testimonial = await db.testimonial.create({
-      data: {
-        name,
-        business: business || null,
-        content,
-        rating: rating || 5,
-        location: location || null,
-        imageUrl: imageUrl || null,
-        isVerified: isVerified ?? true,
-        isFeatured: isFeatured ?? false,
-        source: "MANUAL",
-      },
-    })
-
-    return NextResponse.json({ testimonial })
+    return NextResponse.json(
+      { error: "Testimonial management is not available" },
+      { status: 501 }
+    )
   } catch (error) {
     console.error("Error creating testimonial:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

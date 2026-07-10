@@ -56,7 +56,7 @@ export async function GET(request: Request) {
     ).length
 
     // Revenue counts all paid/confirmed orders (not just delivered)
-    const revenueStatuses = [
+    const revenueStatuses: OrderStatus[] = [
       OrderStatus.CONFIRMED,
       OrderStatus.PROCESSING,
       OrderStatus.SHIPPED,
@@ -75,6 +75,13 @@ export async function GET(request: Request) {
         return sum + sellerItems.reduce((itemSum, item) => itemSum + Number(item.total), 0)
       }, 0)
 
+    const clearanceProducts = products.filter((product) => product.isClearance)
+    const clearanceItems = orders.flatMap((order) => order.items.filter((item) => item.product.isClearance))
+    const clearanceSales = clearanceItems.reduce((sum, item) => sum + item.quantity, 0)
+    const clearanceRevenue = clearanceItems.reduce((sum, item) => sum + Number(item.total), 0)
+    const clearanceViews = clearanceProducts.reduce((sum, product) => sum + (product.clearanceViews ?? 0), 0)
+    const clearanceInventory = clearanceProducts.reduce((sum, product) => sum + product.inventory, 0)
+
     return NextResponse.json({
       totalProducts,
       totalOrders,
@@ -83,6 +90,14 @@ export async function GET(request: Request) {
       totalRevenue,
       products,
       orders,
+      clearanceStats: {
+        totalClearanceListings: clearanceProducts.length,
+        totalViews: clearanceViews,
+        totalSales: clearanceSales,
+        inventoryRemaining: clearanceInventory,
+        revenueGenerated: clearanceRevenue,
+      },
+      clearanceProducts,
     })
   } catch (error) {
     console.error("Error fetching seller dashboard:", error)

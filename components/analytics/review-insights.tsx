@@ -114,7 +114,7 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
               <CardTitle>Review Insights</CardTitle>
               <CardDescription>Detailed analysis of customer reviews and feedback</CardDescription>
             </div>
-            <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
+            <Select value={selectedTimeRange} onValueChange={(value) => setSelectedTimeRange(value as typeof selectedTimeRange)}>
               <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>

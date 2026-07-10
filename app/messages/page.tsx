@@ -108,7 +108,7 @@ export default function MessagesPage() {
 
   const getOtherParticipant = (thread: Thread): Participant => {
     if (!myUserId) return thread.participantA
-    return thread.participantAId === myUserId ? thread.participantB : thread.participantA
+    return thread.participantA.id === myUserId ? thread.participantB : thread.participantA
   }
 
   return (

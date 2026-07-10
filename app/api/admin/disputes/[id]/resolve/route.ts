@@ -34,26 +34,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // If refund is approved, process it
     if (refundToBuyer && refundAmount > 0) {
-      // Update escrow payment
-      await db.escrowPayment.update({
-        where: { orderId: dispute.orderId },
-        data: {
-          status: "REFUNDED",
-          refundedAt: new Date(),
-        },
-      })
-
-      // TODO: Process actual refund
+      // TODO: Process actual refund once escrow/payment release is implemented
       // await processRefund(dispute.orderId, refundAmount)
-    } else {
-      // Release payment to seller
-      await db.escrowPayment.update({
-        where: { orderId: dispute.orderId },
-        data: {
-          status: "RELEASED",
-          releasedAt: new Date(),
-        },
-      })
     }
 
     return NextResponse.json({

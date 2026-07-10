@@ -43,6 +43,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+              <Link href="/dashboard/clearance/apply" className="text-gray-300 hover:text-white transition-colors">
+                Sell Clearance Deals
+              </Link>
+              </li>
+              <li>
                 <Link href="/sellers" className="text-gray-300 hover:text-white transition-colors">
                   Browse Sellers
                 </Link>

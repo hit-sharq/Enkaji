@@ -16,15 +16,25 @@ export async function GET(request: NextRequest) {
     const maxPrice = searchParams.get("maxPrice")
     const minRating = searchParams.get("minRating")
     const location = searchParams.get("location") // city or region
+    const clearance = searchParams.get("clearance")
+    const clearanceReason = searchParams.get("clearanceReason")
     const featured = searchParams.get("featured")
     const sortBy = searchParams.get("sortBy") || "newest"
     const sortOrder = searchParams.get("sortOrder") || "desc"
 
     const skip = (page - 1) * limit
 
-const where: any = {
+    const where: any = {
       isActive: true,
       isShopApproved: true, // Only show shop-approved products
+    }
+
+    if (clearance === "true") {
+      where.isClearance = true
+    }
+
+    if (clearanceReason) {
+      where.clearanceReason = clearanceReason
     }
 
     if (category) {
@@ -262,6 +272,9 @@ export async function POST(request: NextRequest) {
         sellerId: user.id,
         isActive: true, // Auto-visible on seller profile
         isShopApproved: true, // Auto-approved for shop (no admin approval required)
+        clearanceEndDate: validatedData.clearanceEndDate
+          ? new Date(validatedData.clearanceEndDate)
+          : undefined,
       },
       include: {
         category: true,

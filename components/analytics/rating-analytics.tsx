@@ -143,7 +143,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
             <div className="flex flex-wrap gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Time Range</label>
-                <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
+                <Select value={selectedTimeRange} onValueChange={(value) => setSelectedTimeRange(value as typeof selectedTimeRange)}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
                   </SelectTrigger>

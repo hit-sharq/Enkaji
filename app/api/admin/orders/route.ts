@@ -39,7 +39,6 @@ export async function GET(req: NextRequest) {
             },
           },
         },
-        escrowPayment: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -105,7 +104,6 @@ export async function PATCH(req: NextRequest) {
             },
           },
         },
-        escrowPayment: true,
       },
     })
 

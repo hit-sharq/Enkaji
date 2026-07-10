@@ -1,0 +1,289 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap');
+
+  .gb-wrap { font-family: 'Inter', sans-serif; background: #0d1a12; color: #e8e0d0; width: 100%; }
+  .gb-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 0.5px solid rgba(200,185,150,0.2); background: rgba(13,26,18,0.97); position: sticky; top: 0; z-index: 10; }
+  .gb-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; letter-spacing: 2px; color: #c8b96a; }
+  .gb-nav-links { display: flex; gap: 24px; font-size: 12px; letter-spacing: 1.5px; color: rgba(232,224,208,0.6); }
+  .gb-nav-links span { cursor: pointer; }
+  .gb-nav-links span:hover { color: #c8b96a; }
+  .gb-cta-btn { background: #c8b96a; color: #0d1a12; font-size: 11px; letter-spacing: 2px; padding: 8px 18px; border: none; cursor: pointer; font-weight: 500; }
+
+  .gb-hero { position: relative; height: 520px; background: linear-gradient(160deg, #0d1a12 0%, #162a1a 60%, #1a3020 100%); display: flex; align-items: flex-end; padding: 48px 32px; overflow: hidden; }
+  .gb-hero-bg { position: absolute; top: 0; right: 0; width: 55%; height: 100%; background: url('https://gaiabrookside.co.ke/assets/gaia/exterior_new.webp') center/cover; opacity: 0.45; }
+  .gb-hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(13,26,18,0.95) 35%, rgba(13,26,18,0.2) 100%); }
+  .gb-hero-content { position: relative; z-index: 2; max-width: 480px; }
+  .gb-eyebrow { font-size: 10px; letter-spacing: 4px; color: #c8b96a; margin-bottom: 16px; }
+  .gb-headline { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; line-height: 1.1; color: #f0e8d4; margin-bottom: 16px; }
+  .gb-headline em { font-style: italic; color: #c8b96a; }
+  .gb-sub { font-size: 13px; color: rgba(232,224,208,0.65); line-height: 1.7; margin-bottom: 28px; max-width: 360px; }
+  .gb-hero-btns { display: flex; gap: 12px; }
+  .gb-btn-gold { background: #c8b96a; color: #0d1a12; font-size: 11px; letter-spacing: 2px; padding: 12px 24px; border: none; cursor: pointer; font-weight: 500; }
+  .gb-btn-ghost { background: transparent; color: #c8b96a; font-size: 11px; letter-spacing: 2px; padding: 12px 24px; border: 1px solid rgba(200,185,106,0.5); cursor: pointer; }
+
+  .gb-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 0.5px solid rgba(200,185,150,0.15); border-bottom: 0.5px solid rgba(200,185,150,0.15); }
+  .gb-stat { padding: 24px 32px; border-right: 0.5px solid rgba(200,185,150,0.15); text-align: center; }
+  .gb-stat:last-child { border-right: none; }
+  .gb-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 400; color: #c8b96a; }
+  .gb-stat-label { font-size: 10px; letter-spacing: 2px; color: rgba(232,224,208,0.45); margin-top: 4px; }
+
+  .gb-units { padding: 52px 32px; }
+  .gb-section-label { font-size: 10px; letter-spacing: 4px; color: #c8b96a; margin-bottom: 8px; }
+  .gb-section-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #f0e8d4; margin-bottom: 32px; }
+  .gb-unit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .gb-unit-card { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(200,185,150,0.18); padding: 24px; cursor: pointer; transition: border-color 0.2s; }
+  .gb-unit-card:hover { border-color: rgba(200,185,106,0.5); }
+  .gb-unit-card.featured { border-color: rgba(200,185,106,0.4); background: rgba(200,185,106,0.06); }
+  .gb-unit-type { font-size: 10px; letter-spacing: 3px; color: rgba(232,224,208,0.5); margin-bottom: 8px; }
+  .gb-unit-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #f0e8d4; margin-bottom: 4px; }
+  .gb-unit-size { font-size: 12px; color: rgba(232,224,208,0.45); margin-bottom: 16px; }
+  .gb-unit-price { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #c8b96a; margin-bottom: 12px; }
+  .gb-avail { display: inline-block; font-size: 10px; letter-spacing: 1.5px; padding: 4px 10px; }
+  .gb-avail.open { background: rgba(29,158,117,0.15); color: #5dcaa5; border: 0.5px solid rgba(29,158,117,0.3); }
+  .gb-avail.limited { background: rgba(239,159,39,0.12); color: #ef9f27; border: 0.5px solid rgba(239,159,39,0.3); }
+  .gb-avail.sold { background: rgba(226,75,74,0.12); color: #f09595; border: 0.5px solid rgba(226,75,74,0.25); }
+  .gb-unit-features { margin-top: 16px; padding-top: 16px; border-top: 0.5px solid rgba(200,185,150,0.12); display: flex; gap: 12px; font-size: 11px; color: rgba(232,224,208,0.45); }
+
+  .gb-tour { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: rgba(255,255,255,0.02); border-top: 0.5px solid rgba(200,185,150,0.15); border-bottom: 0.5px solid rgba(200,185,150,0.15); }
+  .gb-tour-visual { background: #162a1a; min-height: 300px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .gb-floor-plan { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+  .gb-plan-title { font-size: 10px; letter-spacing: 4px; color: #c8b96a; margin-bottom: 8px; }
+  .gb-plan-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #f0e8d4; margin-bottom: 20px; }
+  .gb-plan-rooms { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .gb-room { border: 0.5px solid rgba(200,185,150,0.18); padding: 12px; }
+  .gb-room-name { font-size: 10px; letter-spacing: 2px; color: rgba(232,224,208,0.4); }
+  .gb-room-size { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: #f0e8d4; }
+  .gb-plan-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .gb-tab { font-size: 10px; letter-spacing: 2px; padding: 6px 14px; cursor: pointer; border: 0.5px solid rgba(200,185,150,0.2); color: rgba(232,224,208,0.5); }
+  .gb-tab.active { border-color: #c8b96a; color: #c8b96a; }
+
+  .gb-inquiry { padding: 52px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  .gb-inq-left {}
+  .gb-inq-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #f0e8d4; margin-bottom: 12px; }
+  .gb-inq-sub { font-size: 13px; color: rgba(232,224,208,0.5); line-height: 1.7; margin-bottom: 24px; }
+  .gb-contact-rows { display: flex; flex-direction: column; gap: 16px; }
+  .gb-contact-row { display: flex; align-items: flex-start; gap: 12px; }
+  .gb-contact-icon { width: 32px; height: 32px; border: 0.5px solid rgba(200,185,150,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #c8b96a; font-size: 14px; }
+  .gb-contact-info { font-size: 12px; }
+  .gb-contact-label { color: rgba(232,224,208,0.4); font-size: 10px; letter-spacing: 2px; margin-bottom: 2px; }
+  .gb-contact-val { color: #e8e0d0; }
+  .gb-form { display: flex; flex-direction: column; gap: 14px; }
+  .gb-input { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(200,185,150,0.2); color: #e8e0d0; padding: 12px 14px; font-size: 12px; font-family: 'Inter', sans-serif; outline: none; width: 100%; box-sizing: border-box; }
+  .gb-input::placeholder { color: rgba(232,224,208,0.3); }
+  .gb-input:focus { border-color: rgba(200,185,106,0.5); }
+  .gb-select { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(200,185,150,0.2); color: rgba(232,224,208,0.6); padding: 12px 14px; font-size: 12px; font-family: 'Inter', sans-serif; outline: none; width: 100%; appearance: none; }
+  .gb-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gb-submit { background: #c8b96a; color: #0d1a12; font-size: 11px; letter-spacing: 2px; padding: 14px; border: none; cursor: pointer; font-weight: 500; width: 100%; margin-top: 4px; }
+  .gb-submit:hover { background: #d4c878; }
+
+  .gb-footer { padding: 24px 32px; border-top: 0.5px solid rgba(200,185,150,0.15); display: flex; justify-content: space-between; align-items: center; }
+  .gb-footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; letter-spacing: 2px; color: #c8b96a; }
+  .gb-footer-text { font-size: 11px; color: rgba(232,224,208,0.3); letter-spacing: 1px; }
+
+  .play-btn { width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid rgba(200,185,106,0.6); display: flex; align-items: center; justify-content: center; color: #c8b96a; font-size: 20px; cursor: pointer; background: rgba(13,26,18,0.7); }
+  .tour-label { font-size: 10px; letter-spacing: 3px; color: rgba(200,185,106,0.6); margin-top: 12px; }
+</style>
+
+<div class="gb-wrap">
+  <nav class="gb-nav">
+    <div class="gb-logo">GAIA BROOKSIDE</div>
+    <div class="gb-nav-links">
+      <span>RESIDENCES</span>
+      <span>GALLERY</span>
+      <span>FLOOR PLANS</span>
+      <span>LOCATION</span>
+      <span>CONTACT</span>
+    </div>
+    <button class="gb-cta-btn">BOOK A VISIT</button>
+  </nav>
+
+  <div class="gb-hero">
+    <div class="gb-hero-bg"></div>
+    <div class="gb-hero-overlay"></div>
+    <div class="gb-hero-content">
+      <div class="gb-eyebrow">BROOKSIDE · NAIROBI</div>
+      <h1 class="gb-headline">Where the <em>forest</em><br>meets refined living</h1>
+      <p class="gb-sub">3, 4 & 5-bedroom residences nestled in one of Nairobi's most sought-after neighbourhoods. Designed for those who want nature without compromise.</p>
+      <div class="gb-hero-btns">
+        <button class="gb-btn-gold" onclick="document.querySelector('.gb-inquiry').scrollIntoView({behavior:'smooth'})">ENQUIRE NOW</button>
+        <button class="gb-btn-ghost">VIEW FLOOR PLANS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gb-stats">
+    <div class="gb-stat">
+      <div class="gb-stat-num">12</div>
+      <div class="gb-stat-label">EXCLUSIVE UNITS</div>
+    </div>
+    <div class="gb-stat">
+      <div class="gb-stat-num">3–5</div>
+      <div class="gb-stat-label">BEDROOM OPTIONS</div>
+    </div>
+    <div class="gb-stat">
+      <div class="gb-stat-num">Q3</div>
+      <div class="gb-stat-label">2025 COMPLETION</div>
+    </div>
+    <div class="gb-stat">
+      <div class="gb-stat-num">100%</div>
+      <div class="gb-stat-label">SECURE TITLE DEEDS</div>
+    </div>
+  </div>
+
+  <div class="gb-units">
+    <div class="gb-section-label">AVAILABLE RESIDENCES</div>
+    <div class="gb-section-title">Choose your home</div>
+    <div class="gb-unit-grid">
+      <div class="gb-unit-card">
+        <div class="gb-unit-type">TYPE A</div>
+        <div class="gb-unit-name">3-Bedroom Garden</div>
+        <div class="gb-unit-size">From 185 m² · Ground & 1st Floor</div>
+        <div class="gb-unit-price">KES 18.5M</div>
+        <span class="gb-avail open">AVAILABLE</span>
+        <div class="gb-unit-features">
+          <span><i class="ti ti-building" aria-hidden="true"></i> 3 Beds</span>
+          <span><i class="ti ti-bath" aria-hidden="true"></i> 3.5 Baths</span>
+          <span><i class="ti ti-trees" aria-hidden="true"></i> Garden</span>
+        </div>
+      </div>
+      <div class="gb-unit-card featured">
+        <div class="gb-unit-type">TYPE B · POPULAR</div>
+        <div class="gb-unit-name">4-Bedroom Forest View</div>
+        <div class="gb-unit-size">From 235 m² · 2nd & 3rd Floor</div>
+        <div class="gb-unit-price">KES 26.5M</div>
+        <span class="gb-avail limited">3 UNITS LEFT</span>
+        <div class="gb-unit-features">
+          <span><i class="ti ti-building" aria-hidden="true"></i> 4 Beds</span>
+          <span><i class="ti ti-bath" aria-hidden="true"></i> 4.5 Baths</span>
+          <span><i class="ti ti-eye" aria-hidden="true"></i> Forest View</span>
+        </div>
+      </div>
+      <div class="gb-unit-card">
+        <div class="gb-unit-type">TYPE C · PENTHOUSE</div>
+        <div class="gb-unit-name">5-Bedroom Sky Residence</div>
+        <div class="gb-unit-size">From 310 m² · Top Floor</div>
+        <div class="gb-unit-price">KES 38M</div>
+        <span class="gb-avail sold">SOLD OUT</span>
+        <div class="gb-unit-features">
+          <span><i class="ti ti-building" aria-hidden="true"></i> 5 Beds</span>
+          <span><i class="ti ti-bath" aria-hidden="true"></i> 5.5 Baths</span>
+          <span><i class="ti ti-sun" aria-hidden="true"></i> Private Terrace</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gb-tour">
+    <div class="gb-tour-visual" style="flex-direction:column; gap:12px;">
+      <svg width="280" height="220" viewBox="0 0 280 220" style="opacity:0.55;">
+        <rect x="20" y="20" width="100" height="80" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="120" y="20" width="60" height="80" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="180" y="20" width="80" height="80" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="20" y="100" width="80" height="100" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="100" y="100" width="160" height="60" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="100" y="160" width="80" height="40" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <rect x="180" y="160" width="80" height="40" fill="none" stroke="#c8b96a" stroke-width="0.8"/>
+        <text x="65" y="65" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">LIVING</text>
+        <text x="150" y="65" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">KITCHEN</text>
+        <text x="220" y="65" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">DINING</text>
+        <text x="58" y="155" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">MASTER</text>
+        <text x="180" y="133" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">BED 2</text>
+        <text x="140" y="183" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">BED 3</text>
+        <text x="220" y="183" fill="#c8b96a" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" letter-spacing="1">BED 4</text>
+        <line x1="120" y1="100" x2="120" y2="220" stroke="#c8b96a" stroke-width="0.4" stroke-dasharray="4,4"/>
+        <line x1="0" y1="100" x2="280" y2="100" stroke="#c8b96a" stroke-width="0.4" stroke-dasharray="4,4"/>
+      </svg>
+      <div class="tour-label">INTERACTIVE FLOOR PLAN</div>
+    </div>
+    <div class="gb-floor-plan">
+      <div class="gb-plan-title">FLOOR PLANS</div>
+      <div class="gb-plan-name">4-Bedroom Forest View</div>
+      <div class="gb-plan-tabs">
+        <div class="gb-tab active">TYPE A</div>
+        <div class="gb-tab">TYPE B</div>
+        <div class="gb-tab">TYPE C</div>
+      </div>
+      <div class="gb-plan-rooms">
+        <div class="gb-room">
+          <div class="gb-room-name">MASTER SUITE</div>
+          <div class="gb-room-size">32 m²</div>
+        </div>
+        <div class="gb-room">
+          <div class="gb-room-name">LIVING ROOM</div>
+          <div class="gb-room-size">48 m²</div>
+        </div>
+        <div class="gb-room">
+          <div class="gb-room-name">KITCHEN</div>
+          <div class="gb-room-size">22 m²</div>
+        </div>
+        <div class="gb-room">
+          <div class="gb-room-name">TERRACES</div>
+          <div class="gb-room-size">28 m²</div>
+        </div>
+      </div>
+      <button class="gb-btn-gold" style="font-size:10px; letter-spacing:2px; padding:10px 20px; width:fit-content;">DOWNLOAD FULL BROCHURE</button>
+    </div>
+  </div>
+
+  <div class="gb-inquiry">
+    <div class="gb-inq-left">
+      <div class="gb-section-label">GET IN TOUCH</div>
+      <div class="gb-inq-title">Schedule a private viewing</div>
+      <p class="gb-inq-sub">Our team is available for in-person site visits and virtual tours for buyers based abroad. Fill in your details and we'll reach out within 24 hours.</p>
+      <div class="gb-contact-rows">
+        <div class="gb-contact-row">
+          <div class="gb-contact-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+          <div class="gb-contact-info">
+            <div class="gb-contact-label">LOCATION</div>
+            <div class="gb-contact-val">Brookside Drive, Westlands, Nairobi</div>
+          </div>
+        </div>
+        <div class="gb-contact-row">
+          <div class="gb-contact-icon"><i class="ti ti-phone" aria-hidden="true"></i></div>
+          <div class="gb-contact-info">
+            <div class="gb-contact-label">CALL / WHATSAPP</div>
+            <div class="gb-contact-val">+254 700 000 000</div>
+          </div>
+        </div>
+        <div class="gb-contact-row">
+          <div class="gb-contact-icon"><i class="ti ti-mail" aria-hidden="true"></i></div>
+          <div class="gb-contact-info">
+            <div class="gb-contact-label">EMAIL</div>
+            <div class="gb-contact-val">sales@gaiabrookside.co.ke</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="gb-form">
+        <div class="gb-form-row">
+          <input class="gb-input" type="text" placeholder="Full name" />
+          <input class="gb-input" type="text" placeholder="Phone / WhatsApp" />
+        </div>
+        <input class="gb-input" type="email" placeholder="Email address" />
+        <select class="gb-select">
+          <option value="" disabled selected>Interested in which unit?</option>
+          <option>3-Bedroom Garden — KES 18.5M</option>
+          <option>4-Bedroom Forest View — KES 26.5M</option>
+          <option>5-Bedroom Sky Residence — KES 38M</option>
+          <option>Not sure, send me all details</option>
+        </select>
+        <select class="gb-select">
+          <option value="" disabled selected>How would you like to view?</option>
+          <option>In-person site visit</option>
+          <option>Virtual tour (video call)</option>
+          <option>Send me the brochure first</option>
+        </select>
+        <textarea class="gb-input" rows="3" placeholder="Any questions or special requirements?" style="resize:none;"></textarea>
+        <button class="gb-submit">SEND ENQUIRY →</button>
+        <p style="font-size:10px; color:rgba(232,224,208,0.3); margin:0; line-height:1.6;">Your details are kept private and shared only with the Gaia Brookside sales team.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="gb-footer">
+    <div class="gb-footer-logo">GAIA BROOKSIDE</div>
+    <div class="gb-footer-text">© 2025 WONDER PROPERTY KENYA · ALL RIGHTS RESERVED</div>
+  </div>
+</div>

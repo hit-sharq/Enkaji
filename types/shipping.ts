@@ -50,6 +50,7 @@ export interface ShippingQuoteRequest {
     id: string
     weight: number
     value: number
+    quantity?: number
   }>
   destination: {
     country: string

@@ -109,7 +109,7 @@ export async function getCurrentUser() {
         console.log(`❌ Clerk API attempt ${attempt} failed:`, error)
 
         // If this is a dynamic server usage error (no headers during build/static gen), return null immediately
-        if (lastError.digest === 'DYNAMIC_SERVER_USAGE' || lastError.message?.includes('headers')) {
+        if ((lastError as Error & { digest?: string }).digest === 'DYNAMIC_SERVER_USAGE' || lastError.message?.includes('headers')) {
           console.log("⚡ Dynamic server usage error during build, returning null")
           return null
         }

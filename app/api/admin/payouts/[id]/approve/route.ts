@@ -2,7 +2,6 @@ import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { requireAdmin } from "@/lib/auth"
 import { pesapalService } from "@/lib/pesapal"
-import type { PesapalOrderData } from "@/lib/pesapal"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -13,14 +12,15 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     const payoutRequest = await prisma.payoutRequest.findUnique({
       where: { id: payoutRequestId },
-      include: {
-        seller: true
-      }
     })
 
     if (!payoutRequest) {
       return NextResponse.json({ error: "Payout request not found" }, { status: 404 })
     }
+
+    const seller = await prisma.user.findUnique({
+      where: { id: payoutRequest.sellerId },
+    })
 
     if (approved) {
 await prisma.$transaction(async (tx) => {
@@ -49,19 +49,19 @@ await prisma.$transaction(async (tx) => {
         })
 
         // Submit to Pesapal (demo/sandbox)
-        const orderData: PesapalOrderData = {
+        const orderData: any = {
           id: sellerPayout.id,
           currency: 'KES',
           amount: sellerPayout.amount.toString(),
-          description: `Payout to ${payoutRequest.seller.firstName || 'Seller'} ${payoutRequest.seller.lastName || ''}`,
+          description: `Payout to ${seller?.firstName || 'Seller'} ${seller?.lastName || ''}`,
           callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:5000'}/api/pesapal/callback`,
           notification_id: `payout-${sellerPayout.id}`,
           billing_address: {
-            email_address: payoutRequest.seller.email || '',
+            email_address: seller?.email || '',
             phone_number: ((payoutRequest.recipientDetails as any)?.phone || '').toString(),
             country_code: 'KE',
-            first_name: payoutRequest.seller.firstName || 'Seller',
-            last_name: payoutRequest.seller.lastName || '',
+            first_name: seller?.firstName || 'Seller',
+            last_name: seller?.lastName || '',
             line_1: (payoutRequest.recipientDetails as any)?.line1 || '',
             city: (payoutRequest.recipientDetails as any)?.city || 'Nairobi',
             state: 'Nairobi',

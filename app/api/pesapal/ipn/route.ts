@@ -249,7 +249,7 @@ async function createOrderFromPayment(paymentReference: string, statusCode?: num
      // Find the checkout session for this payment reference
      const checkoutSession = await prisma.checkoutSession.findFirst({
        where: {
-         paymentReference: merchantReference,
+          paymentReference: paymentReference,
          expiresAt: { gt: new Date() }
        }
      })

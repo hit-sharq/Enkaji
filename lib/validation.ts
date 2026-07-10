@@ -16,6 +16,25 @@ export const productSchema = z.object({
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === "string" ? Number.parseFloat(val) : val))
     .pipe(z.number().positive("Price must be positive")),
+  comparePrice: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === null || val === "") return undefined
+      return typeof val === "string" ? Number.parseFloat(val) : val
+    }),
+  isClearance: z.boolean().optional(),
+  clearanceEndDate: z.string().optional(),
+  clearanceReason: z
+    .enum([
+      "Overstock",
+      "End of Season",
+      "Warehouse Clearance",
+      "Product Upgrade",
+      "Business Closure",
+      "Other",
+    ])
+    .optional(),
   inventory: z
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === "string" ? Number.parseInt(val, 10) : val))
@@ -23,9 +42,65 @@ export const productSchema = z.object({
   weight: z
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === "string" ? Number.parseFloat(val) : val))
+    .optional()
     .pipe(z.number().positive("Weight must be positive")),
   categoryId: z.string().min(1, "Category is required"),
   images: z.array(z.string().url()).min(1, "At least one image is required"),
+  sku: z.string().optional(),
+  barcode: z.string().optional(),
+  brand: z.string().optional(),
+  unit: z.string().optional().default("pcs"),
+  taxRate: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => (typeof val === "string" ? Number.parseFloat(val) : val))
+    .pipe(z.number().min(0).max(100)),
+  profitMargin: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => (typeof val === "string" ? Number.parseFloat(val) : val))
+    .pipe(z.number().min(0).max(100)),
+  isPublishedToMarketplace: z.boolean().optional().default(false),
+  stockStatus: z.enum(["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK", "OVERSTOCK"]).optional(),
+  lowStockThreshold: z.number().int().min(0).optional().default(10),
+}).superRefine((data, ctx) => {
+  if (data.isClearance) {
+    if (data.comparePrice === undefined || Number.isNaN(data.comparePrice) || data.comparePrice <= data.price) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["comparePrice"],
+        message: "Original price must be greater than clearance price",
+      })
+    }
+
+    if (!data.clearanceReason) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["clearanceReason"],
+        message: "Clearance reason is required for clearance deals",
+      })
+    }
+
+    if (!data.clearanceEndDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["clearanceEndDate"],
+        message: "Clearance end date is required for clearance deals",
+      })
+    } else if (Number.isNaN(Date.parse(data.clearanceEndDate))) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["clearanceEndDate"],
+        message: "Clearance end date must be a valid date",
+      })
+    } else if (new Date(data.clearanceEndDate) <= new Date()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["clearanceEndDate"],
+        message: "Clearance end date must be in the future",
+      })
+    }
+  }
 })
 
 // Order validation schemas

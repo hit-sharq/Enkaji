@@ -1517,7 +1517,7 @@ const fetchDashboardData = async () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip formatter={(value: number) => [`KSh ${value.toLocaleString()}`, "Revenue"]} />
+                    <Tooltip formatter={(value: any) => [`KSh ${value.toLocaleString()}`, "Revenue"]} />
                     <Area type="monotone" dataKey="revenue" stroke="#16a34a" fill="url(#revenueGradient)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -1539,7 +1539,7 @@ const fetchDashboardData = async () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip formatter={(value: number) => [value, "Orders"]} />
+                    <Tooltip formatter={(value: any) => [value, "Orders"]} />
                     <Bar dataKey="orders" fill="#2563eb" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -1564,8 +1564,8 @@ const fetchDashboardData = async () => {
                         cy="50%"
                         outerRadius={80}
                         dataKey="value"
-                        label={({ name, percent }: { name: string; percent: number }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
+                        label={({ name, percent }: any) =>
+                          `${name} ${(Number(percent) * 100).toFixed(0)}%`
                         }
                       >
                         {orderStatusData.map((_, i) => (

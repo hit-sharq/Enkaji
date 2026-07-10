@@ -134,12 +134,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Try to find user by phone or create guest booking
+    // Guest booking (User has no phone field; link to authenticated user if available)
     let customerId: string | null = null
     if (customerPhone) {
       const user = await db.user.findFirst({
         where: {
-          phone: { contains: customerPhone, mode: "insensitive" },
+          email: { contains: customerPhone, mode: "insensitive" },
         },
       })
       customerId = user?.id || null

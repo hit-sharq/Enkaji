@@ -66,8 +66,28 @@ interface DashboardData {
         id: string
         name: string
         sellerId: string
+        isClearance?: boolean
       }
     }>
+  }>
+  clearanceStats: {
+    totalClearanceListings: number
+    totalViews: number
+    totalSales: number
+    inventoryRemaining: number
+    revenueGenerated: number
+  }
+  clearanceProducts: Array<{
+    id: string
+    name: string
+    inventory: number
+    price: number
+    comparePrice?: number | null
+    images: string[]
+    category?: string | null
+    clearanceEndDate?: string | null
+    clearanceReason?: string | null
+    clearanceViews?: number
   }>
 }
 
@@ -82,6 +102,14 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     totalRevenue: 0,
     products: [],
     orders: [],
+    clearanceStats: {
+      totalClearanceListings: 0,
+      totalViews: 0,
+      totalSales: 0,
+      inventoryRemaining: 0,
+      revenueGenerated: 0,
+    },
+    clearanceProducts: [],
   })
   const [isLoading, setIsLoading] = useState(true)
   
@@ -423,9 +451,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="clearance">Clearance</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="payouts">Earnings</TabsTrigger>
           <TabsTrigger value="subscriptions">Subscription</TabsTrigger>
@@ -482,6 +511,19 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                   {dashboardData.products.filter((p) => p.status === "APPROVED").length}
                 </div>
                 <p className="text-xs text-muted-foreground">Out of {dashboardData.totalProducts} total</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Clearance Listings</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {dashboardData.clearanceStats.totalClearanceListings}
+                </div>
+                <p className="text-xs text-muted-foreground">Clearance deals live now</p>
               </CardContent>
             </Card>
           </div>
@@ -579,12 +621,125 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="orders" className="space-y-6">
-          <h2 className="text-2xl font-bold">Order Management</h2>
+        <TabsContent value="clearance" className="space-y-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Clearance Dashboard</h2>
+              <p className="text-gray-600">Track your hot clearance deals, sales, and inventory impact.</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/dashboard/clearance/new">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Clearance Deal
+                </Button>
+              </Link>
+              <Link href="/dashboard/clearance">
+                <Button variant="outline">Manage Listings</Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+                <Eye className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.clearanceStats.totalViews}</div>
+                <p className="text-xs text-muted-foreground">Buyer interest on clearance deals</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.clearanceStats.totalSales}</div>
+                <p className="text-xs text-muted-foreground">Units sold from clearance stock</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Inventory Remaining</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.clearanceStats.inventoryRemaining}</div>
+                <p className="text-xs text-muted-foreground">Units still available for clearance</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Revenue Generated</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">KES {dashboardData.clearanceStats.revenueGenerated.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">Revenue from clearance deals</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Listings</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{dashboardData.clearanceStats.totalClearanceListings}</div>
+                <p className="text-xs text-muted-foreground">Clearance products live</p>
+              </CardContent>
+            </Card>
+          </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>All Orders</CardTitle>
+              <CardTitle>Clearance Listings</CardTitle>
+              <CardDescription>Review and manage your current clearance deals.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {dashboardData.clearanceProducts.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">You have no active clearance listings yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {dashboardData.clearanceProducts.map((product) => {
+                    const discount = product.comparePrice
+                      ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+                      : 0
+
+                    return (
+                      <div key={product.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg bg-white/80 shadow-sm">
+                        <div>
+                          <p className="font-semibold text-gray-900">{product.name}</p>
+                          <p className="text-sm text-gray-600">{product.clearanceReason || "Clearance"} • {product.category || "Uncategorized"}</p>
+                          <p className="text-sm text-gray-600 mt-1">{discount}% off • {product.inventory} left</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge className="bg-enkaji-red text-white">{discount}% OFF</Badge>
+                          <Link href={`/products/${product.id}`}>
+                            <Button size="sm" variant="outline">View</Button>
+                          </Link>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="orders" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Orders</CardTitle>
               <CardDescription>Manage your customer orders</CardDescription>
             </CardHeader>
             <CardContent>

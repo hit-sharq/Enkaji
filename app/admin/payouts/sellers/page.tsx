@@ -74,19 +74,15 @@ async function getPayoutRequests() {
   const requests = await prisma.payoutRequest.findMany({
     include: {
       seller: {
-        include: {
-          user: {
-            select: { firstName: true, lastName: true, email: true }
-          }
-        }
-      }
+        select: { firstName: true, lastName: true, email: true },
+      },
     },
     orderBy: { createdAt: 'desc' },
   });
 
   return requests.map((req) => ({
     id: req.id,
-    seller: req.seller.user,
+    seller: req.seller,
     amount: Number(req.amount),
     method: req.method,
     status: req.status,

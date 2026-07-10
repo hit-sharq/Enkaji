@@ -37,34 +37,36 @@ export default async function PayoutRequestDetail({ params }: { params: { id: st
     where: { id: payoutRequestId },
     include: {
       seller: {
-        include: {
-          user: {
-            select: { firstName: true, lastName: true, email: true }
-          }
-        }
-      }
-    }
+        select: { firstName: true, lastName: true, email: true },
+      },
+    },
   });
 
   if (!payoutRequest) {
     notFound();
   }
 
+  const sellerProfile = await prisma.sellerProfile.findUnique({
+    where: { userId: payoutRequest.sellerId },
+  });
+
   const detail: PayoutRequestDetail = {
     id: payoutRequest.id,
     seller: {
-      firstName: payoutRequest.seller.user.firstName,
-      lastName: payoutRequest.seller.user.lastName,
-      email: payoutRequest.seller.user.email,
-      businessName: payoutRequest.seller.businessName,
+      firstName: payoutRequest.seller.firstName ?? '',
+      lastName: payoutRequest.seller.lastName ?? '',
+      email: payoutRequest.seller.email,
+      businessName:
+        sellerProfile?.businessName ??
+        `${payoutRequest.seller.firstName ?? ''} ${payoutRequest.seller.lastName ?? ''}`.trim(),
     },
     amount: Number(payoutRequest.amount),
     method: payoutRequest.method,
     recipientDetails: payoutRequest.recipientDetails,
     status: payoutRequest.status,
-    adminNotes: payoutRequest.adminNotes,
+    adminNotes: payoutRequest.adminNotes ?? undefined,
     createdAt: payoutRequest.createdAt,
-    processedAt: payoutRequest.processedAt,
+    processedAt: payoutRequest.processedAt ?? undefined,
   };
 
   if (detail.status !== 'PENDING') {

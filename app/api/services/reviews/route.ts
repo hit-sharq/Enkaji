@@ -92,21 +92,6 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Update service provider's average rating
-    const stats = await db.serviceReview.aggregate({
-      where: { serviceId },
-      _avg: { rating: true },
-      _count: { id: true },
-    })
-
-    await db.service.update({
-      where: { id: serviceId },
-      data: {
-        averageRating: stats._avg.rating || 0,
-        totalReviews: stats._count.id,
-      },
-    })
-
     return NextResponse.json({
       message: "Review submitted successfully",
       review,

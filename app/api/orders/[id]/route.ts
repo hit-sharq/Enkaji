@@ -160,10 +160,10 @@ async function processSellerPayouts(order: any) {
         platformFee,
         processingFee,
         status: "PENDING",
-        recipientDetails: {
+        recipientDetails: JSON.stringify({
           method: "MPESA",
           phone: "+254700000000" // Placeholder - should get from seller profile
-        }
+        })
       },
     })
   }

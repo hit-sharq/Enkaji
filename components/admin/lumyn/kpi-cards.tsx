@@ -36,25 +36,23 @@ function KPICard({ title, value, change, badge }: KPIProps) {
 }
 
 async function RevenueCard() {
-  const revenue = await prisma.lumynDriverEarning.aggregate({
-    _sum: { netAmount: true }
-  });
-  return <KPICard title="Platform Revenue" value={`KES ${Number(revenue._sum.netAmount || 0).toLocaleString()}`} badge="KES" />;
+  const count = await prisma.order.count();
+  return <KPICard title="Total Orders" value={count} badge="orders" />;
 }
 
 async function DriversCard() {
-  const count = await prisma.lumynDriver.count({ where: { status: 'active' } });
-  return <KPICard title="Active Drivers" value={count} />;
+  const count = await prisma.sellerProfile.count();
+  return <KPICard title="Active Sellers" value={count} />;
 }
 
 async function DeliveriesCard() {
-  const count = await prisma.lumynDelivery.count({ where: { status: 'delivered' } });
-  return <KPICard title="Total Deliveries" value={count} />;
+  const count = await prisma.product.count();
+  return <KPICard title="Listed Products" value={count} />;
 }
 
 async function PendingKYCCard() {
-  const count = await prisma.lumynDriver.count({ where: { kycVerified: false } });
-  return <KPICard title="Pending KYC" value={count} change="+2" />;
+  const count = await prisma.user.count({ where: { role: 'SELLER' } });
+  return <KPICard title="Seller Accounts" value={count} change="+2" />;
 }
 
 export function StatsGrid() {
