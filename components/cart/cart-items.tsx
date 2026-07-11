@@ -33,7 +33,6 @@ export function CartItems() {
         method: 'DELETE',
       })
       if (response.ok) {
-        // Refetch from server
         const cartResponse = await fetch('/api/cart')
         if (cartResponse.ok) {
           const data = await cartResponse.json()
@@ -58,7 +57,7 @@ export function CartItems() {
       <Card>
         <CardContent className="p-8 text-center">
           <p className="text-muted-foreground text-lg">Your cart is empty</p>
-          <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Continue Shopping</Button>
+          <Button className="mt-4">Continue Shopping</Button>
         </CardContent>
       </Card>
     )
@@ -67,47 +66,47 @@ export function CartItems() {
   return (
     <div className="space-y-4">
       {items.map((item) => (
-        <Card key={item.id}>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
+        <Card key={item.id} className="border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl">
+          <CardContent className="p-5 md:p-6">
+            <div className="flex items-center gap-4">
               <Image
                 src={item.image || "/placeholder.svg?height=80&width=80&query=cart%20item"}
                 alt={item.name}
                 width={80}
                 height={80}
-                className="rounded-md object-cover"
+                className="rounded-lg object-cover"
               />
 
-                <div className="flex-1">
-                  <h3 className="font-display font-semibold text-lg text-foreground">{item.name}</h3>
-                  <p className="text-enkaji-ochre font-bold">KES {item.price.toLocaleString()}</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-display font-semibold text-lg text-foreground line-clamp-1">{item.name}</h3>
+                <p className="text-enkaji-gold font-bold">KES {item.price.toLocaleString()}</p>
                 {item.weight && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                     <Weight className="w-3 h-3 text-enkaji-gold" />
                     Weight: {formatWeight(item.weight * item.quantity)}
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                 >
                   <Minus className="w-4 h-4" />
                 </Button>
-                <span className="w-8 text-center">{item.quantity}</span>
-                <Button variant="outline" size="sm" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>
 
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => removeItem(item.id)}
-                className="text-enkaji-gold hover:text-enkaji-gold/80"
+                className="text-muted-foreground hover:text-destructive"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import { Truck, Clock, Shield, MapPin } from "lucide-react"
+import { Truck, Clock, Shield } from "lucide-react"
 
 interface ShippingOption {
   id: string
@@ -69,11 +69,9 @@ export function ShippingOptions({
   const [showCod, setShowCod] = useState(isCodEnabled)
   const { toast } = useToast()
 
-  // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalWeight = cartItems.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0)
 
-  // Fetch shipping options
   useEffect(() => {
     const fetchShippingOptions = async () => {
       setLoading(true)
@@ -85,20 +83,20 @@ export function ShippingOptions({
           headers: {
             "Content-Type": "application/json",
           },
-           body: JSON.stringify({
-             items: cartItems.map(item => ({
-               id: item.id,
-               weight: item.weight || 0.5,
-               quantity: item.quantity,
-               value: item.price * item.quantity,
-             })),
-             destination: {
-               country: destination.country,
-               city: destination.city,
-               state: destination.state,
-             },
-             cod: showCod,
-           }),
+          body: JSON.stringify({
+            items: cartItems.map(item => ({
+              id: item.id,
+              weight: item.weight || 0.5,
+              quantity: item.quantity,
+              value: item.price * item.quantity,
+            })),
+            destination: {
+              country: destination.country,
+              city: destination.city,
+              state: destination.state,
+            },
+            cod: showCod,
+          }),
         })
 
         if (!response.ok) {
@@ -110,7 +108,6 @@ export function ShippingOptions({
         if (data.success) {
           setOptions(data.data.shipping.options)
           
-          // Auto-select recommended option
           if (data.data.shipping.recommendedId && !selectedOption) {
             const recommendedId = data.data.shipping.recommendedId
             setSelectedOption(recommendedId)
@@ -126,7 +123,6 @@ export function ShippingOptions({
         console.error("Shipping calculation error:", err)
         setError(err instanceof Error ? err.message : "Failed to load shipping options")
         
-        // Show toast notification
         toast({
           title: "Shipping Error",
           description: "Unable to load shipping options. Please try again.",
@@ -142,7 +138,6 @@ export function ShippingOptions({
     }
   }, [destination, cartItems, showCod])
 
-  // Handle option selection
   const handleSelect = (optionId: string) => {
     setSelectedOption(optionId)
     const option = options.find(o => o.id === optionId)
@@ -151,7 +146,6 @@ export function ShippingOptions({
     }
   }
 
-  // Handle COD toggle
   const handleCodToggle = () => {
     const newCod = !showCod
     setShowCod(newCod)
@@ -160,12 +154,12 @@ export function ShippingOptions({
 
   if (!destination.country || !destination.city) {
     return (
-      <Card>
+      <Card className="rounded-xl border border-border shadow-sm">
         <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-             <MapPin className="h-5 w-5 text-enkaji-gold" />
-             Shipping Method
-           </CardTitle>
+          <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
+            <Truck className="h-5 w-5 text-enkaji-gold" />
+            Shipping Method
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
@@ -179,18 +173,18 @@ export function ShippingOptions({
 
   if (loading) {
     return (
-      <Card>
+      <Card className="rounded-xl border border-border shadow-sm">
         <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-             <Truck className="h-5 w-5 text-enkaji-gold" />
-             Shipping Method
-           </CardTitle>
+          <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
+            <Truck className="h-5 w-5 text-enkaji-gold" />
+            Shipping Method
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse">
-                 <div className="h-20 bg-muted rounded-md"></div>
+                 <div className="h-20 bg-muted rounded-xl"></div>
               </div>
             ))}
           </div>
@@ -201,16 +195,16 @@ export function ShippingOptions({
 
   if (error) {
     return (
-      <Card>
+      <Card className="rounded-xl border border-border shadow-sm">
         <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-             <Truck className="h-5 w-5 text-enkaji-gold" />
-             Shipping Method
-           </CardTitle>
+          <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
+            <Truck className="h-5 w-5 text-enkaji-gold" />
+            Shipping Method
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
-            <p className="text-enkaji-red">{error}</p>
+            <p className="text-destructive">{error}</p>
             <Button 
               variant="outline" 
               className="mt-4"
@@ -225,35 +219,35 @@ export function ShippingOptions({
   }
 
   return (
-    <Card>
+    <Card className="rounded-xl border border-border shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Truck className="h-5 w-5" />
+        <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
+          <Truck className="h-5 w-5 text-enkaji-gold" />
           Shipping Method
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* COD Toggle */}
-         <div className="flex items-center justify-between p-3 bg-muted rounded-xl">
-           <div className="flex items-center gap-2">
-             <div className="w-8 h-8 rounded-full bg-enkaji-gold/10 flex items-center justify-center">
-               <span className="text-enkaji-gold text-sm font-bold">K</span>
-             </div>
-             <div>
-               <p className="font-medium text-foreground">Cash on Delivery</p>
-               <p className="text-sm text-muted-foreground">Pay when you receive</p>
-             </div>
-           </div>
-           <label className="relative inline-flex items-center cursor-pointer">
-             <input
-               type="checkbox"
-               className="sr-only peer"
-               checked={showCod}
-               onChange={handleCodToggle}
-             />
-             <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-enkaji-gold/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-card after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-enkaji-gold"></div>
-           </label>
-         </div>
+        <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-enkaji-gold/10 flex items-center justify-center">
+              <span className="text-enkaji-gold text-sm font-bold">K</span>
+            </div>
+            <div>
+              <p className="font-display font-semibold text-foreground">Cash on Delivery</p>
+              <p className="text-sm text-muted-foreground">Pay when you receive</p>
+            </div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={showCod}
+              onChange={handleCodToggle}
+            />
+            <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-enkaji-gold/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-card after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-enkaji-gold"></div>
+          </label>
+        </div>
 
         <Separator />
 
@@ -263,7 +257,7 @@ export function ShippingOptions({
             {options.map((option) => (
               <div
                 key={option.id}
-                className={`relative flex items-start p-4 border rounded-lg cursor-pointer transition-all ${
+                className={`relative flex items-start p-4 border rounded-xl cursor-pointer transition-all ${
                   selectedOption === option.id
                     ? "border-enkaji-gold bg-enkaji-gold/10"
                     : "border-border hover:border-enkaji-gold/50"
@@ -278,18 +272,18 @@ export function ShippingOptions({
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold">{option.service.name}</span>
+                        <span className="font-display font-semibold">{option.service.name}</span>
                         {option.isRecommended && (
                          <span className="px-2 py-0.5 bg-enkaji-gold/10 text-enkaji-gold text-xs rounded-full">
                              Recommended
                            </span>
-                        )}
+                         )}
                       </div>
                        <p className="text-sm text-muted-foreground mt-1">{option.provider.name}</p>
                        <p className="text-xs text-muted-foreground mt-1">{option.service.description}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">{option.formattedPrice}</p>
+                      <p className="font-display font-bold text-xl text-enkaji-gold">{option.formattedPrice}</p>
                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                          <Clock className="h-3 w-3" />
                          {option.formattedDelivery}
@@ -298,7 +292,7 @@ export function ShippingOptions({
                          <p className="text-xs text-muted-foreground mt-1">
                           Est: {option.estimatedDelivery.min} - {option.estimatedDelivery.max}
                         </p>
-                      )}
+                       )}
                     </div>
                   </div>
                   
@@ -314,7 +308,6 @@ export function ShippingOptions({
           </div>
         </RadioGroup>
 
-        {/* Summary */}
         <Separator />
          <div className="flex justify-between text-sm text-muted-foreground">
           <span>Total Weight</span>
@@ -324,4 +317,3 @@ export function ShippingOptions({
     </Card>
   )
 }
-

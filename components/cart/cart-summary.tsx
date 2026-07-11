@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -65,7 +64,7 @@ export function CartSummary() {
               <span>{formatDualCurrency(shipping)}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-xs text-enkaji-brown">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Info className="h-3 w-3 text-enkaji-gold" />
               <span>Shipping estimate based on Nairobi. Final cost calculated at checkout.</span>
             </div>
@@ -101,16 +100,16 @@ export function CartSummary() {
 
         {items.length > 0 && !loading ? (
           <Link href="/checkout" className="block">
-            <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Proceed to Checkout</Button>
+            <Button className="w-full" size="lg">Proceed to Checkout</Button>
           </Link>
         ) : (
-          <Button className="w-full bg-muted text-muted-foreground cursor-not-allowed" disabled>
+          <Button className="w-full" size="lg" disabled>
             {loading ? "Loading..." : "Cart is Empty"}
           </Button>
         )}
 
         <Link href="/shop" className="block">
-          <Button variant="outline" className="w-full bg-transparent border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+          <Button variant="outline" className="w-full">
             Continue Shopping
           </Button>
         </Link>

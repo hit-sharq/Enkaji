@@ -45,7 +45,7 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
 
   if (appliedCode) {
     return (
-      <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-lg">
+      <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-xl">
         <div className="flex items-center gap-2">
           <CheckCircle className="h-4 w-4 text-enkaji-gold" />
           <span className="text-sm font-medium text-enkaji-gold">

@@ -1,4 +1,3 @@
-
 "use client"
 
 import type React from "react"
@@ -12,6 +11,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/components/providers/cart-provider"
 import { calculateOrderTotals } from "@/hooks/use-order-totals"
+import { formatDualCurrency } from "@/lib/currency"
 import { ShieldCheck } from "lucide-react"
 
 interface CheckoutFormProps {
@@ -94,12 +94,11 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
         price: item.price,
       })),
       shippingAddress,
-      selectedShippingOption: null, // Can be made selectable
+      selectedShippingOption: null,
       paymentMethod: "PESAPAL",
     }
 
     try {
-      // Initiate payment WITHOUT creating order
       const response = await fetch("/api/checkout/initiate-payment", {
         method: "POST",
         headers: {
@@ -110,11 +109,9 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
 
       if (response.ok) {
         const data = await response.json()
-        
-        // Store checkout data in session storage for later use
+
         sessionStorage.setItem('checkoutData', JSON.stringify(data.checkoutData))
-        
-        // Redirect to Pesapal payment page
+
         window.location.href = data.redirectUrl
         return
       } else {
@@ -135,54 +132,55 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
   }
 
   if (state.loading) {
-    return <div>Loading cart...</div>
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="space-y-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="animate-pulse space-y-2">
+                <div className="h-4 bg-muted rounded w-1/4"></div>
+                <div className="h-10 bg-muted rounded-md"></div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Shipping Information */}
-      <Card>
+      <Card className="rounded-xl border border-border shadow-sm">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground">Shipping Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
               <Input id="firstName" name="firstName" required />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
               <Input id="lastName" name="lastName" required />
             </div>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="phone">Phone Number</Label>
             <Input id="phone" name="phone" type="tel" required />
           </div>
 
-          <div>
-            <Label htmlFor="address">Address</Label>
-            <Input 
-              id="address" 
-              name="address" 
-              required 
-              value={shippingAddressLine}
-              onChange={(e) => handleAddressChange(e.target.value)}
-              placeholder="Street address"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <Button 
-              type="button" 
-              variant="outline" 
+          <div className="space-y-2">
+            <Button
+              type="button"
+              variant="outline"
               disabled={isLocating}
               onClick={() => {
                 if (!navigator.geolocation) {
@@ -210,23 +208,17 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
                       if (data.address) {
                         const address = data.address
 
-                        // Extract street address
                         const street = address.road || address.pedestrian || address.footway || address.living_street || ''
                         const addressLine1 = street || data.display_name?.split(',')[0] || ''
 
-                        // Extract city/town
                         const city = address.city || address.town || address.municipality || address.village || ''
 
-                        // Extract state/county
                         const state = address.state || address.county || address.province || ''
 
-                        // Extract postal code
                         const postcode = address.postcode || ''
 
-                        // Extract country
                         const country = address.country || 'Kenya'
 
-                        // Update all React state fields
                         setShippingAddressLine(addressLine1)
                         setShippingCity(city)
                         setShippingState(state)
@@ -235,7 +227,6 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
                           setShippingCountry(country)
                         }
 
-                        // Notify parent of destination change (use latest country)
                         notifyDestinationChange(country || shippingCountry, city, state)
 
                         toast({
@@ -274,28 +265,43 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
                   { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
                 )
               }}
-              className="w-full"
-            >
-              {isLocating ? "📍 Getting Location..." : "📍 Use Current Location"}
-            </Button>
-            <div>
+               className="w-full"
+             >
+               {isLocating ? "Getting Location..." : "Use Current Location"}
+             </Button>
+           </div>
+
+           <div className="space-y-2">
+             <Label htmlFor="address">Street Address</Label>
+            <Input
+              id="address"
+              name="address"
+              required
+              value={shippingAddressLine}
+              onChange={(e) => handleAddressChange(e.target.value)}
+              placeholder="Street address"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input 
-                id="city" 
-                name="city" 
-                required 
+              <Input
+                id="city"
+                name="city"
+                required
                 placeholder="e.g., Nairobi"
                 value={shippingCity}
                 onChange={(e) => handleCityChange(e.target.value)}
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="state">State/Province</Label>
-              <Input 
-                id="state" 
-                name="state" 
-                required 
+              <Input
+                id="state"
+                name="state"
+                required
                 value={shippingState}
                 onChange={(e) => handleStateChange(e.target.value)}
               />
@@ -303,17 +309,17 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="zipCode">ZIP/Postal Code</Label>
-              <Input 
-                id="zipCode" 
-                name="zipCode" 
+              <Input
+                id="zipCode"
+                name="zipCode"
                 value={shippingZipCode}
                 onChange={(e) => handleZipChange(e.target.value)}
                 placeholder="00100"
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="country">Country</Label>
               <Input
                 id="country"
@@ -330,38 +336,38 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
           <div className="mt-4 p-4 bg-card rounded-xl border border-border">
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Subtotal</span>
-              <span>KSh {subtotal.toLocaleString()}</span>
+              <span>{formatDualCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Tax (16%)</span>
-              <span>KSh {tax.toLocaleString()}</span>
+              <span>{formatDualCurrency(tax)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Shipping</span>
-              <span>KSh {shippingCost.toLocaleString()}</span>
+              <span>{formatDualCurrency(shippingCost)}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between items-center text-enkaji-gold">
                 <span className="text-sm">Discount</span>
-                <span>− KSh {discountAmount.toLocaleString()}</span>
+                <span>− {formatDualCurrency(discountAmount)}</span>
               </div>
             )}
             {insuranceEnabled && (
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Shipping Protection</span>
-                <span>KSh {insurance.toLocaleString()}</span>
+                <span>{formatDualCurrency(insurance)}</span>
               </div>
             )}
             <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
               <span className="font-semibold">Total</span>
-              <span className="font-bold text-lg text-foreground">KSh {grandTotal.toLocaleString()}</span>
+              <span className="font-display font-bold text-lg text-foreground">{formatDualCurrency(grandTotal)}</span>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Payment Method */}
-      <Card>
+      <Card className="rounded-xl border border-border shadow-sm">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground">Payment Method</CardTitle>
         </CardHeader>
@@ -384,13 +390,13 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
         </CardContent>
       </Card>
 
-      <Button 
-        type="submit" 
-        disabled={isLoading} 
-        className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold" 
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full"
         size="lg"
       >
-        {isLoading ? "Processing..." : `Pay KSh ${grandTotal.toLocaleString()}`}
+        {isLoading ? "Processing..." : `Pay ${formatDualCurrency(grandTotal)}`}
       </Button>
     </form>
   )

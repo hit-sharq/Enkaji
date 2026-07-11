@@ -1,4 +1,3 @@
-
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -37,7 +36,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
   })
 
   return (
-    <Card>
+    <Card className="rounded-xl border border-border shadow-sm">
       <CardHeader>
         <CardTitle className="font-display font-semibold text-foreground">Order Summary</CardTitle>
       </CardHeader>
@@ -45,8 +44,8 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
         {/* Cart Items */}
         <div className="space-y-4">
           {cartItems.map((item) => (
-            <div key={item.id} className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-md overflow-hidden bg-muted">
+            <div key={item.id} className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                 <Image
                   src={item.image || "/placeholder.svg?height=64&width=64"}
                   alt={item.name}
@@ -55,9 +54,9 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
                   className="w-full h-full object-cover"
                 />
               </div>
-                <div className="flex-1">
-                 <p className="font-medium text-foreground">{item.name}</p>
-                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex-1 min-w-0">
+                 <p className="font-display font-semibold text-sm text-foreground line-clamp-1">{item.name}</p>
+                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span>Qty: {item.quantity}</span>
                   {item.weight && (
                     <div className="flex items-center gap-1">
@@ -67,7 +66,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
                   )}
                 </div>
               </div>
-              <p className="font-medium">{formatDualCurrency(item.price * item.quantity)}</p>
+              <p className="font-display font-semibold text-enkaji-gold text-sm">{formatDualCurrency(item.price * item.quantity)}</p>
             </div>
           ))}
         </div>
@@ -103,20 +102,20 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
           </div>
 
           {onInsuranceChange && (
-             <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 rounded-lg">
-               <div className="flex items-center gap-2">
-                 <Checkbox
-                   id="insurance"
-                   checked={insurance === 1}
-                   onCheckedChange={(checked) => onInsuranceChange(checked === true)}
-                 />
-                 <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
-                   <Shield className="h-4 w-4 text-enkaji-gold" />
-                   <span>Shipping Protection</span>
-                 </Label>
-               </div>
-               <span className="font-medium text-enkaji-gold">{formatDualCurrency(insuranceFee)}</span>
-            </div>
+             <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="insurance"
+                    checked={insurance === 1}
+                    onCheckedChange={(checked) => onInsuranceChange(checked === true)}
+                  />
+                  <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
+                    <Shield className="h-4 w-4 text-enkaji-gold" />
+                    <span>Shipping Protection</span>
+                  </Label>
+                </div>
+                <span className="font-medium text-enkaji-gold">{formatDualCurrency(insuranceFee)}</span>
+             </div>
           )}
 
           {discountAmount > 0 && couponCode && (
