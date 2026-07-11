@@ -19,7 +19,6 @@ import {
   COD_FEES,
   VOLUMETRIC_FACTOR,
   WEIGHT_DISCOUNTS,
-  FREE_SHIPPING_THRESHOLDS,
 } from "@/lib/shipping-config"
 
 // ============================================================================
@@ -113,12 +112,6 @@ export function calculateShippingCost(
 
   // Subtotal
   let subtotal = base + weightCharge
-
-  // Free shipping check
-  const freeShipping = FREE_SHIPPING_THRESHOLDS[zone.id as keyof typeof FREE_SHIPPING_THRESHOLDS]
-  if (freeShipping && orderValue >= freeShipping.threshold && weight <= freeShipping.maxWeight) {
-    subtotal = 0
-  }
 
   // Insurance
   let insurance = 0
@@ -302,30 +295,8 @@ export function isCodAvailable(orderValue: number, zone: ShippingZone): boolean 
   return kenyaZones.includes(zone.id)
 }
 
-export function isFreeShippingAvailable(orderValue: number, weight: number, zone: ShippingZone): boolean {
-  const thresholds = FREE_SHIPPING_THRESHOLDS[zone.id as keyof typeof FREE_SHIPPING_THRESHOLDS]
-  if (!thresholds) return false
-  
-  return orderValue >= thresholds.threshold && weight <= thresholds.maxWeight
-}
-
 // ============================================================================
 // TRACKING
-// ============================================================================
-
-export function generateTrackingNumber(providerId: string): string {
-  const prefix = providerId.toUpperCase().slice(0, 3)
-  const random = Math.random().toString(36).substring(2, 10).toUpperCase()
-  const timestamp = Date.now().toString(36).toUpperCase()
-  return `${prefix}${random}${timestamp}`.substring(0, 12)
-}
-
-export function getTrackingUrl(providerId: string, trackingNumber: string): string {
-  const provider = SHIPPING_PROVIDERS.find(p => p.id === providerId)
-  if (!provider) return ''
-  return `${provider.trackingUrl}${trackingNumber}`
-}
-
 // ============================================================================
 // LEGACY EXPORTS (for backward compatibility)
 // ============================================================================

@@ -359,7 +359,7 @@ export const WEIGHT_DISCOUNTS = [
 ]
 
 // ============================================================================
-// FREE SHIPPING THRESHOLDS
+// VOLUMETRIC WEIGHT CALCULATION
 // ============================================================================
 
 export const FREE_SHIPPING_THRESHOLDS = {

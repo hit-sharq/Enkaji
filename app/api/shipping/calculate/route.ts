@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateShippingQuote, isCodAvailable, isFreeShippingAvailable, formatShippingDate } from "@/lib/shipping-enhanced"
+import { generateShippingQuote, isCodAvailable, formatShippingDate } from "@/lib/shipping-enhanced"
 import { detectShippingZone } from "@/lib/shipping-enhanced"
 
 export async function POST(request: NextRequest) {
@@ -53,9 +53,6 @@ export async function POST(request: NextRequest) {
 
     // Check COD availability
     const codAvailable = isCodAvailable(orderValue, zone)
-    
-    // Check free shipping
-    const freeShippingAvailable = isFreeShippingAvailable(orderValue, totalWeight, zone)
 
     // Calculate totals
     const subtotal = orderValue
@@ -108,7 +105,6 @@ export async function POST(request: NextRequest) {
           })),
           recommendedId: quote.recommended,
           codAvailable,
-          freeShippingAvailable,
         },
         meta: {
           calculatedAt: new Date().toISOString(),
