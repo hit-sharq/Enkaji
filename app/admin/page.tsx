@@ -40,38 +40,38 @@ export default async function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link href="/dashboard">
-          <Button variant="outline" className="mb-4 bg-transparent">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
-        </Link>
-      </div>
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage users, products, and monitor platform performance</p>
-        </div>
-        <div className="flex gap-2 flex-wrap justify-end">
-          <Link href="/admin/lumyn">
-            <Button variant="outline" className="gap-2">
-              <Truck className="w-4 h-4" />
-              Lumyn Flow
-            </Button>
-          </Link>
-          <Link href="/admin/payouts">
-            <Button variant="outline" className="gap-2">
-              <Wallet className="w-4 h-4" />
-              Payouts
-            </Button>
-          </Link>
-          <Link href="/admin/coupons">
-            <Button variant="outline" className="gap-2">
-              <Tag className="w-4 h-4" />
-              Coupons
+          <Link href="/dashboard">
+            <Button variant="outline" className="mb-4 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
             </Button>
           </Link>
         </div>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-semibold text-foreground mb-2">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Manage users, products, and monitor platform performance</p>
+          </div>
+          <div className="flex gap-2 flex-wrap justify-end">
+            <Link href="/admin/lumyn">
+              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                <Truck className="w-4 h-4" />
+                Lumyn Flow
+              </Button>
+            </Link>
+            <Link href="/admin/payouts">
+              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                <Wallet className="w-4 h-4" />
+                Payouts
+              </Button>
+            </Link>
+            <Link href="/admin/coupons">
+              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                <Tag className="w-4 h-4" />
+                Coupons
+              </Button>
+            </Link>
+          </div>
       </div>
       <AdminDashboard user={currentUser} />
     </div>

@@ -135,7 +135,7 @@ export function ArtisanDashboard() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold">{product.name}</h3>
-                      <p className="text-sm text-gray-600">{product.category.name}</p>
+                      <p className="text-sm text-muted-foreground">{product.category.name}</p>
                       <p className="text-lg font-bold">{product.price}</p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -163,7 +163,7 @@ export function ArtisanDashboard() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold">Order #{order.orderNumber}</h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {order.items.map(item => item.product.name).join(", ")}
                       </p>
                       <p className="text-lg font-bold">{order.total}</p>

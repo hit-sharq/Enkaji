@@ -145,7 +145,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
             {/* Search */}
             <form onSubmit={handleSearch} className="flex-1 flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search products, sellers, or categories..."
                   value={search}
@@ -201,7 +201,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Showing {(currentPage - 1) * productsPerPage + 1}-{Math.min(currentPage * productsPerPage, totalProducts)}{" "}
             of {totalProducts} products
           </p>
@@ -216,11 +216,11 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
         <Card>
           <CardContent className="text-center py-12">
             <div className="max-w-md mx-auto">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                <Search className="h-8 w-8 text-gray-400" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
+                <Search className="h-8 w-8 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No products found</h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-muted-foreground mb-4">
                 We couldn't find any products matching your criteria. Try adjusting your search or filters.
               </p>
               <Button

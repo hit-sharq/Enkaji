@@ -78,7 +78,7 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
     return (
       <div className={`flex justify-center items-center py-16 ${className}`}>
         <Loader2 className="w-8 h-8 animate-spin text-enkaji-ochre" />
-        <span className="ml-2 text-gray-600">Loading testimonials...</span>
+        <span className="ml-2 text-muted-foreground">Loading testimonials...</span>
       </div>
     )
   }
@@ -86,7 +86,7 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
   if (error) {
     return (
       <div className={`text-center py-16 ${className}`}>
-        <div className="text-red-600 mb-4">
+        <div className="text-enkaji-red mb-4">
           <p>Error loading testimonials: {error}</p>
         </div>
         <Button onClick={fetchTestimonials} variant="outline">
@@ -114,13 +114,13 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
               />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Testimonials Yet</h3>
-          <p className="text-gray-600 mb-6">
+          <h3 className="text-xl font-semibold text-foreground mb-2">No Testimonials Yet</h3>
+          <p className="text-muted-foreground mb-6">
             We're still collecting testimonials from our valued customers. Check back soon to see what they have to say!
           </p>
           <a
             href="/testimonials/submit"
-            className="inline-flex items-center px-6 py-3 bg-enkaji-red text-white rounded-lg hover:bg-enkaji-red/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-enkaji-gold text-enkaji-ink rounded-lg hover:bg-enkaji-gold/90 transition-colors"
           >
             Be the First to Share Your Story
           </a>

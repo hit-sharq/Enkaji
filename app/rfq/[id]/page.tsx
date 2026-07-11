@@ -20,10 +20,10 @@ export default async function RFQDetailPage({ params }: { params: { id: string }
   const rfqData = await rfqResponse.json()
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-8">
-          <a href="/rfq" className="inline-flex items-center text-orange-600 hover:text-orange-700 text-sm font-medium">
+          <a href="/rfq" className="inline-flex items-center text-enkaji-gold hover:text-enkaji-gold/80 text-sm font-medium">
             ← Back to RFQs
           </a>
         </div>

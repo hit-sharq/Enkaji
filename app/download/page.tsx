@@ -69,19 +69,19 @@ export default function DownloadPage() {
   const apkAvailable = process.env.NEXT_PUBLIC_APK_URL !== undefined
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#8B2635] via-[#7a1f2e] to-[#5c1520] text-white py-20 px-4">
+      <section className="bg-gradient-to-br from-enkaji-red via-enkaji-red to-enkaji-ink text-white py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Text */}
             <div>
-              <Badge className="mb-4 bg-white/20 text-white border-white/30 hover:bg-white/20">
+              <Badge className="mb-4 bg-card/20 text-white border-card/30 hover:bg-card/20">
                 Android App
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                 Kenya's Marketplace,
-                <span className="text-[#EAB308]"> in Your Pocket</span>
+                <span className="bg-enkaji-gold"> in Your Pocket</span>
               </h1>
               <p className="text-lg text-white/80 mb-8 leading-relaxed">
                 Shop from thousands of verified Kenyan suppliers, pay with M-Pesa, track your orders, and manage your store — all from the Enkaji mobile app.
@@ -91,24 +91,24 @@ export default function DownloadPage() {
                 <a href={apkUrl} download="enkaji-mobile.apk">
                   <Button
                     size="lg"
-                    className="bg-[#EAB308] hover:bg-yellow-500 text-black font-bold px-8 py-6 text-lg rounded-xl shadow-xl"
+                    className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-black font-bold px-8 py-6 text-lg rounded-xl shadow-xl"
                   >
                     <Download className="w-5 h-5 mr-2" />
                     Download APK
                   </Button>
                 </a>
                 <div className="flex items-center text-white/70 text-sm">
-                  <ShieldCheck className="w-4 h-4 mr-1 text-green-400" />
+                  <ShieldCheck className="w-4 h-4 mr-1 text-enkaji-green" />
                   Free · Android 8.0+ · ~35 MB
                 </div>
               </div>
 
               {!apkAvailable && (
-                <div className="mt-6 flex items-start gap-2 bg-white/10 border border-white/20 rounded-lg p-4 text-sm text-white/80">
-                  <AlertCircle className="w-4 h-4 mt-0.5 text-yellow-400 shrink-0" />
+                <div className="mt-6 flex items-start gap-2 bg-card/10 border border-card/20 rounded-lg p-4 text-sm text-white/80">
+                  <AlertCircle className="w-4 h-4 mt-0.5 text-enkaji-gold shrink-0" />
                   <span>
                     The APK is being finalized. Check back soon or{" "}
-                    <Link href="/contact" className="underline text-yellow-400">contact us</Link> to be notified when it's ready.
+                    <Link href="/contact" className="underline text-enkaji-gold">contact us</Link> to be notified when it's ready.
                   </span>
                 </div>
               )}
@@ -118,24 +118,24 @@ export default function DownloadPage() {
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
                 {/* Phone frame */}
-                <div className="w-64 h-[500px] bg-gray-900 rounded-[40px] border-4 border-gray-700 shadow-2xl overflow-hidden relative">
+                <div className="w-64 h-[500px] bg-enkaji-ink rounded-[40px] border-4 border-enkaji-ink shadow-2xl overflow-hidden relative">
                   {/* Notch */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-900 rounded-b-2xl z-10" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-enkaji-ink rounded-b-2xl z-10" />
                   {/* Screen */}
-                  <div className="w-full h-full bg-gradient-to-b from-[#8B2635] to-[#5c1520] flex flex-col">
+                  <div className="w-full h-full bg-gradient-to-b from-enkaji-red to-enkaji-ink flex flex-col">
                     {/* App header */}
                     <div className="px-4 pt-10 pb-4">
                       <div className="flex items-center gap-2 mb-4">
-                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                          <ShoppingBag className="w-4 h-4 text-[#8B2635]" />
+                        <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center">
+                          <ShoppingBag className="w-4 h-4 text-enkaji-red" />
                         </div>
                         <span className="text-white font-bold text-sm">Enkaji Trade</span>
                       </div>
                       <p className="text-white/60 text-xs">Good morning!</p>
                       <p className="text-white font-semibold text-sm">What are you looking for?</p>
                       {/* Search bar */}
-                      <div className="mt-3 bg-white/20 rounded-full px-3 py-2 flex items-center gap-2">
-                        <div className="w-3 h-3 border border-white/60 rounded-full" />
+                      <div className="mt-3 bg-card/20 rounded-full px-3 py-2 flex items-center gap-2">
+                        <div className="w-3 h-3 border border-card/60 rounded-full" />
                         <span className="text-white/60 text-xs">Search products...</span>
                       </div>
                     </div>
@@ -144,20 +144,20 @@ export default function DownloadPage() {
                       <p className="text-white/80 text-xs font-semibold mb-2">Featured Products</p>
                       <div className="space-y-2">
                         {["Maasai Jewellery", "Kenyan Coffee Blend", "Kitenge Fabric"].map((name, i) => (
-                          <div key={i} className="bg-white/15 rounded-xl p-3 flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white/30 rounded-lg" />
+                          <div key={i} className="bg-card/15 rounded-xl p-3 flex items-center gap-3">
+                            <div className="w-10 h-10 bg-card/30 rounded-lg" />
                             <div className="flex-1">
                               <p className="text-white text-xs font-medium">{name}</p>
-                              <p className="text-yellow-400 text-xs">KES {[1200, 850, 450][i]}</p>
+                              <p className="text-enkaji-gold text-xs">KES {[1200, 850, 450][i]}</p>
                             </div>
                           </div>
                         ))}
                       </div>
                     </div>
                     {/* Bottom nav */}
-                    <div className="bg-white/10 px-6 py-3 flex justify-around">
+                    <div className="bg-card/10 px-6 py-3 flex justify-around">
                       {[ShoppingBag, Zap, ShoppingBag, Star].map((Icon, i) => (
-                        <div key={i} className={`w-5 h-5 ${i === 0 ? "text-yellow-400" : "text-white/50"}`}>
+                        <div key={i} className={`w-5 h-5 ${i === 0 ? "text-enkaji-gold" : "text-white/50"}`}>
                           <Icon className="w-full h-full" />
                         </div>
                       ))}
@@ -165,7 +165,7 @@ export default function DownloadPage() {
                   </div>
                 </div>
                 {/* Glow effect */}
-                <div className="absolute inset-0 -z-10 blur-2xl bg-yellow-400/20 rounded-full scale-75 translate-y-8" />
+                <div className="absolute inset-0 -z-10 blur-2xl bg-enkaji-gold/20 rounded-full scale-75 translate-y-8" />
               </div>
             </div>
           </div>
@@ -173,22 +173,22 @@ export default function DownloadPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-muted">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Everything You Need, On the Go</h2>
-            <p className="text-gray-500 text-lg max-w-xl mx-auto">
+            <h2 className="text-3xl font-bold text-foreground mb-3">Everything You Need, On the Go</h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               The Enkaji mobile app gives you full access to Kenya's largest B2B marketplace — wherever you are.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-[#8B2635]/10 rounded-xl flex items-center justify-center mb-4">
-                  <Icon className="w-6 h-6 text-[#8B2635]" />
+              <div key={title} className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-enkaji-red/10 rounded-xl flex items-center justify-center mb-4">
+                  <Icon className="w-6 h-6 text-enkaji-red" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+                <h3 className="font-semibold text-foreground mb-2">{title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -199,30 +199,30 @@ export default function DownloadPage() {
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">How to Install</h2>
-            <p className="text-gray-500 text-lg">
+            <h2 className="text-3xl font-bold text-foreground mb-3">How to Install</h2>
+            <p className="text-muted-foreground text-lg">
               Since the app is not yet on the Play Store, follow these simple steps to install it directly on your Android phone.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-8">
             {steps.map(({ number, title, desc }) => (
               <div key={number} className="flex gap-5">
-                <div className="shrink-0 w-12 h-12 bg-[#8B2635] text-white rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="shrink-0 w-12 h-12 bg-enkaji-red text-white rounded-full flex items-center justify-center font-bold text-sm">
                   {number}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+                  <h3 className="font-semibold text-foreground mb-1">{title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 bg-amber-50 border border-amber-200 rounded-2xl p-6 flex gap-4">
-            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="mt-12 bg-enkaji-brown border border-enkaji-ochre rounded-2xl p-6 flex gap-4">
+            <AlertCircle className="w-5 h-5 text-enkaji-brown shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-amber-800 mb-1">Android Only (for now)</p>
-              <p className="text-amber-700 text-sm">
+              <p className="font-semibold text-enkaji-brown mb-1">Android Only (for now)</p>
+              <p className="text-enkaji-brown text-sm">
                 The current release is for Android phones only. An iOS version is coming soon. If you have an iPhone, you can access Enkaji via the{" "}
                 <Link href="/" className="underline font-medium">web app</Link> in your browser.
               </p>
@@ -232,9 +232,9 @@ export default function DownloadPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-[#8B2635] to-[#7a1f2e] text-white">
+      <section className="py-20 px-4 bg-gradient-to-r from-enkaji-red to-enkaji-red text-white">
         <div className="container mx-auto max-w-3xl text-center">
-          <Smartphone className="w-14 h-14 mx-auto mb-6 text-yellow-400" />
+          <Smartphone className="w-14 h-14 mx-auto mb-6 text-enkaji-gold" />
           <h2 className="text-3xl font-bold mb-4">Ready to Download?</h2>
           <p className="text-white/75 text-lg mb-8">
             Join thousands of Kenyans already buying and selling on Enkaji. It's free.
@@ -242,7 +242,7 @@ export default function DownloadPage() {
           <a href={apkUrl} download="enkaji-mobile.apk">
             <Button
               size="lg"
-              className="bg-[#EAB308] hover:bg-yellow-500 text-black font-bold px-10 py-6 text-lg rounded-xl shadow-xl"
+              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-black font-bold px-10 py-6 text-lg rounded-xl shadow-xl"
             >
               <Download className="w-5 h-5 mr-2" />
               Download Enkaji APK

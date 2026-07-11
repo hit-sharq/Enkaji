@@ -143,7 +143,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
       {/* Shipping Information */}
       <Card>
         <CardHeader>
-          <CardTitle>Shipping Information</CardTitle>
+          <CardTitle className="font-display font-semibold text-foreground">Shipping Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -327,34 +327,34 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
           </div>
 
           {/* Order Summary in Form */}
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-4 p-4 bg-card rounded-xl border border-border">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Subtotal</span>
+              <span className="text-sm text-muted-foreground">Subtotal</span>
               <span>KSh {subtotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Tax (16%)</span>
+              <span className="text-sm text-muted-foreground">Tax (16%)</span>
               <span>KSh {tax.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Shipping</span>
+              <span className="text-sm text-muted-foreground">Shipping</span>
               <span>KSh {shippingCost.toLocaleString()}</span>
             </div>
             {discountAmount > 0 && (
-              <div className="flex justify-between items-center text-green-600">
+              <div className="flex justify-between items-center text-enkaji-gold">
                 <span className="text-sm">Discount</span>
                 <span>− KSh {discountAmount.toLocaleString()}</span>
               </div>
             )}
             {insuranceEnabled && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Shipping Protection</span>
+                <span className="text-sm text-muted-foreground">Shipping Protection</span>
                 <span>KSh {insurance.toLocaleString()}</span>
               </div>
             )}
-            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+            <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
               <span className="font-semibold">Total</span>
-              <span className="font-bold text-lg">KSh {grandTotal.toLocaleString()}</span>
+              <span className="font-bold text-lg text-foreground">KSh {grandTotal.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>
@@ -363,18 +363,18 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
       {/* Payment Method */}
       <Card>
         <CardHeader>
-          <CardTitle>Payment Method</CardTitle>
+          <CardTitle className="font-display font-semibold text-foreground">Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="bg-card p-4 rounded-xl border border-border">
             <div className="flex items-center gap-2 mb-2">
-              <ShieldCheck className="h-5 w-5 text-green-600" />
+              <ShieldCheck className="h-5 w-5 text-enkaji-gold" />
               <span className="font-medium">Pesapal</span>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
+            <p className="text-sm text-muted-foreground mb-2">
               Pay securely with Pesapal - supports multiple payment methods:
             </p>
-            <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
               <li>Credit/Debit Cards (Visa, Mastercard)</li>
               <li>M-Pesa mobile money</li>
               <li>Airtel Money</li>
@@ -387,7 +387,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
       <Button 
         type="submit" 
         disabled={isLoading} 
-        className="w-full bg-red-800 hover:bg-red-900 text-white" 
+        className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold" 
         size="lg"
       >
         {isLoading ? "Processing..." : `Pay KSh ${grandTotal.toLocaleString()}`}

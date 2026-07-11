@@ -135,13 +135,13 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
 
       {/* Main Error Card */}
       <Card 
-        className={`w-full max-w-2xl relative z-10 border-0 shadow-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-700 ${
+        className={`w-full max-w-2xl relative z-10 border-0 shadow-2xl bg-card/80 dark:bg-enkaji-ink/80 backdrop-blur-xl transition-all duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         {/* Decorative gradient border */}
         <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown p-[1px]">
-          <div className="absolute inset-0 rounded-lg bg-white/80 dark:bg-gray-900/80" />
+          <div className="absolute inset-0 rounded-lg bg-card/80 dark:bg-enkaji-ink/80" />
         </div>
 
         <CardContent className="relative p-8 md:p-12 flex flex-col items-center text-center space-y-8">
@@ -173,20 +173,20 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
 
           {/* Error Details (Development Mode) */}
           {process.env.NODE_ENV === "development" && error && (
-            <div className="w-full p-4 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800/50 text-left">
-              <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
+            <div className="w-full p-4 bg-enkaji-red dark:bg-enkaji-red/30 rounded-lg border border-enkaji-red dark:border-enkaji-red/50 text-left">
+              <p className="text-sm font-medium text-enkaji-red dark:text-enkaji-red mb-2">
                 Error Details (Development Only):
               </p>
-              <p className="text-xs text-red-700 dark:text-red-300 font-mono break-all">
+              <p className="text-xs text-enkaji-red dark:text-enkaji-red font-mono break-all">
                 {error.message}
               </p>
               {error.stack && (
-                <pre className="text-xs text-red-600 dark:text-red-400 mt-2 overflow-x-auto">
+                <pre className="text-xs text-enkaji-red dark:text-enkaji-red mt-2 overflow-x-auto">
                   {error.stack.split("\n").slice(0, 5).join("\n")}
                 </pre>
               )}
               {error.digest && (
-                <p className="text-xs text-red-500 mt-2">
+                <p className="text-xs text-enkaji-red mt-2">
                   Error Digest: {error.digest}
                 </p>
               )}

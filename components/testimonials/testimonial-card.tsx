@@ -35,17 +35,17 @@ export function TestimonialCard({ testimonial, className = "" }: TestimonialCard
   const isVerified = true
 
   return (
-    <Card className={`bg-white shadow-lg hover:shadow-xl transition-all duration-300 enkaji-card-hover ${className}`}>
+    <Card className={`bg-card shadow-lg hover:shadow-xl transition-all duration-300 enkaji-card-hover ${className}`}>
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
           <Quote className="w-8 h-8 text-enkaji-ochre mb-2" />
         </div>
 
-        <p className="text-gray-700 mb-6 italic line-clamp-4">"{testimonial.message}"</p>
+        <p className="text-enkaji-ink mb-6 italic line-clamp-4">"{testimonial.message}"</p>
 
         <div className="flex items-center mb-4">
           {[...Array(rating)].map((_, i) => (
-            <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+            <Star key={i} className="w-4 h-4 text-enkaji-gold fill-current" />
           ))}
         </div>
 
@@ -54,16 +54,16 @@ export function TestimonialCard({ testimonial, className = "" }: TestimonialCard
             <span className="text-white font-bold text-lg">{displayName.charAt(0)}</span>
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+            <h4 className="font-semibold text-enkaji-ink flex items-center gap-2">
               {displayName}
               {isVerified && (
-                <Verified className="w-4 h-4 text-green-500" />
+                <Verified className="w-4 h-4 text-enkaji-green" />
               )}
             </h4>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Customer
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {new Date(testimonial.createdAt).toLocaleDateString()}
             </p>
           </div>

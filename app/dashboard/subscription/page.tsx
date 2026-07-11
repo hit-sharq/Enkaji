@@ -216,13 +216,13 @@ const handlePayment = async () => {
 
       {/* Subscription Warning */}
       {(!subscription || !isActive) && (
-        <Card className="mb-8 border-yellow-500 bg-yellow-50">
+        <Card className="mb-8 border-enkaji-gold bg-enkaji-gold">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-yellow-600" />
+              <AlertCircle className="h-5 w-5 text-enkaji-gold" />
               <div>
-                <p className="font-semibold text-yellow-800">No Active Subscription</p>
-                <p className="text-sm text-yellow-700">
+                <p className="font-semibold text-enkaji-gold">No Active Subscription</p>
+                <p className="text-sm text-enkaji-gold">
                   You need an active subscription to create products. Please subscribe to a plan below.
                 </p>
               </div>
@@ -244,15 +244,15 @@ const handlePayment = async () => {
               }`}
             >
               {currentPlan === planType && isActive && (
-                <Badge className="absolute -top-2 right-4 bg-green-600">Current Plan</Badge>
+                <Badge className="absolute -top-2 right-4 bg-enkaji-green">Current Plan</Badge>
               )}
               {planType === 'PREMIUM' && (
-                <Badge className="absolute -top-2 left-4 bg-orange-500">Popular</Badge>
+                <Badge className="absolute -top-2 left-4 bg-enkaji-gold">Popular</Badge>
               )}
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   {planType === 'BASIC' && <Package className="h-5 w-5" />}
-                  {planType === 'PREMIUM' && <CreditCard className="h-5 w-5 text-orange-500" />}
+                  {planType === 'PREMIUM' && <CreditCard className="h-5 w-5 text-enkaji-gold" />}
                   {planType === 'ENTERPRISE' && <AlertCircle className="h-5 w-5" />}
                   {plan.name}
                 </CardTitle>
@@ -267,7 +267,7 @@ const handlePayment = async () => {
                 <ul className="space-y-2 mb-4">
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <Check className="h-4 w-4 text-enkaji-green mt-0.5 flex-shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}

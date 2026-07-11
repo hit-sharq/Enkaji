@@ -34,8 +34,8 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
   if (artisans.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No artisans found</h3>
-        <p className="text-gray-600">Check back soon as we onboard more talented artisans!</p>
+        <h3 className="text-xl font-medium text-foreground mb-2">No artisans found</h3>
+        <p className="text-muted-foreground">Check back soon as we onboard more talented artisans!</p>
       </div>
     )
   }
@@ -43,7 +43,7 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {artisans.map((artisan) => (
-        <Card key={artisan.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+        <Card key={artisan.id} className="overflow-hidden border border-border bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
           <div className="aspect-square relative overflow-hidden">
             <Image
               src={artisan.imageUrl || "/placeholder.svg?height=600&width=600&query=profile%20photo"}
@@ -54,33 +54,33 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
           </div>
           <CardContent className="p-6">
             <div className="mb-4">
-              <h3 className="font-playfair text-xl font-bold text-gray-900 mb-2">
+              <h3 className="font-display text-xl font-semibold text-foreground mb-2">
                 {artisan.firstName} {artisan.lastName}
               </h3>
 
               {artisan.sellerProfile?.location && (
-                <div className="flex items-center text-gray-600 mb-2">
+                <div className="flex items-center text-muted-foreground mb-2">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span className="text-sm">{artisan.sellerProfile.location}</span>
                 </div>
               )}
 
-              <div className="flex items-center text-gray-600 mb-3">
+              <div className="flex items-center text-muted-foreground mb-3">
                 <Package className="w-4 h-4 mr-1" />
                 <span className="text-sm">{artisan._count.products} products</span>
               </div>
 
               {artisan.sellerProfile?.bio && (
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4">{artisan.sellerProfile.bio}</p>
+                <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{artisan.sellerProfile.bio}</p>
               )}
             </div>
 
             {artisan.products.length > 0 && (
               <div className="mb-4">
-                <h4 className="font-semibold text-sm text-gray-900 mb-2">Featured Products</h4>
+                <h4 className="font-medium text-sm text-foreground mb-2">Featured Products</h4>
                 <div className="grid grid-cols-3 gap-2">
                   {artisan.products.slice(0, 3).map((product) => (
-                    <div key={product.id} className="aspect-square relative overflow-hidden rounded">
+                    <div key={product.id} className="aspect-square relative overflow-hidden rounded-lg">
                       <Image
                         src={product.images[0] || "/placeholder.svg?height=120&width=120&query=product%20image"}
                         alt={product.name}
@@ -94,7 +94,9 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
             )}
 
             <Link href={`/artisans/${artisan.id}`}>
-              <Button className="w-full bg-red-800 hover:bg-red-900">View Profile</Button>
+              <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                View Profile
+              </Button>
             </Link>
           </CardContent>
         </Card>

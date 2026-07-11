@@ -83,11 +83,11 @@ export default async function PayoutRequestDetail({ params }: { params: { id: st
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-2xl">Payout Request #{detail.id.slice(-6)}</CardTitle>
+              <CardTitle className="font-display text-2xl font-semibold text-foreground">Payout Request #{detail.id.slice(-6)}</CardTitle>
               <Badge variant="outline">{detail.status}</Badge>
             </div>
             <div className="text-right">
-              <p className="text-3xl font-bold">KES {detail.amount.toLocaleString()}</p>
+              <p className="font-display text-3xl font-bold text-enkaji-gold">KES {detail.amount.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">{detail.method}</p>
             </div>
           </div>
@@ -137,9 +137,9 @@ export default async function PayoutRequestDetail({ params }: { params: { id: st
                   className="mb-3"
                   rows={3}
                 />
-                <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                  Approve & Process Payout
-                </Button>
+                 <Button type="submit" className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                   Approve & Process Payout
+                 </Button>
               </form>
 
               <form action={`/api/admin/payouts/${detail.id}/approve`} className="flex-1">

@@ -123,10 +123,10 @@ export function SellerFilters() {
       </div>
 
       {/* Filters Card */}
-      <Card className={`${isOpen ? "block" : "hidden"} lg:block`}>
+      <Card className={`border border-border bg-card rounded-xl shadow-sm ${isOpen ? "block" : "hidden"} lg:block`}>
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Filter className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-lg text-foreground">
+            <Filter className="w-5 h-5 text-enkaji-gold" />
             Filter Sellers
           </CardTitle>
         </CardHeader>
@@ -189,8 +189,8 @@ export function SellerFilters() {
           {/* Verification Filter */}
           <div className="flex items-center space-x-2">
             <Checkbox id="verified" checked={verified} onCheckedChange={(checked) => setVerified(checked === true)} />
-            <Label htmlFor="verified" className="flex items-center gap-2 cursor-pointer">
-              <Shield className="w-4 h-4 text-green-600" />
+            <Label htmlFor="verified" className="flex items-center gap-2 cursor-pointer text-foreground">
+              <Shield className="w-4 h-4 text-enkaji-gold" />
               Verified sellers only
             </Label>
           </div>
@@ -206,9 +206,9 @@ export function SellerFilters() {
 
       {/* Active Filters */}
       {activeFilters.length > 0 && (
-        <Card>
+        <Card className="border border-border bg-card rounded-xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Active Filters</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Active Filters</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">

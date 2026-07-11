@@ -57,8 +57,8 @@ export function CartItems() {
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-gray-500 text-lg">Your cart is empty</p>
-          <Button className="mt-4 bg-enkaji-red text-white">Continue Shopping</Button>
+          <p className="text-muted-foreground text-lg">Your cart is empty</p>
+          <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Continue Shopping</Button>
         </CardContent>
       </Card>
     )
@@ -79,11 +79,11 @@ export function CartItems() {
               />
 
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{item.name}</h3>
-                  <p className="text-enkaji-red font-bold">KES {item.price.toLocaleString()}</p>
+                  <h3 className="font-display font-semibold text-lg text-foreground">{item.name}</h3>
+                  <p className="text-enkaji-ochre font-bold">KES {item.price.toLocaleString()}</p>
                 {item.weight && (
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    <Weight className="w-3 h-3" />
+                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                    <Weight className="w-3 h-3 text-enkaji-gold" />
                     Weight: {formatWeight(item.weight * item.quantity)}
                   </p>
                 )}
@@ -107,7 +107,7 @@ export function CartItems() {
                 variant="ghost"
                 size="sm"
                 onClick={() => removeItem(item.id)}
-                className="text-enkaji-brown hover:text-enkaji-brown/80"
+                className="text-enkaji-gold hover:text-enkaji-gold/80"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

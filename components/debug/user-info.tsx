@@ -78,7 +78,7 @@ export function UserInfo() {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-red-600">Failed to load user information</div>
+          <div className="text-enkaji-red">Failed to load user information</div>
         </CardContent>
       </Card>
     )
@@ -99,30 +99,30 @@ export function UserInfo() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-600">Clerk User ID</label>
+              <label className="text-sm font-medium text-muted-foreground">Clerk User ID</label>
               <div className="flex items-center gap-2 mt-1">
-                <code className="bg-gray-100 px-2 py-1 rounded text-sm flex-1">{userInfo.clerk.id}</code>
+                <code className="bg-muted px-2 py-1 rounded text-sm flex-1">{userInfo.clerk.id}</code>
                 <Button size="sm" variant="outline" onClick={() => copyToClipboard(userInfo.clerk.id)}>
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-600">Email</label>
+              <label className="text-sm font-medium text-muted-foreground">Email</label>
               <div className="mt-1">
-                <code className="bg-gray-100 px-2 py-1 rounded text-sm">{userInfo.clerk.email}</code>
+                <code className="bg-muted px-2 py-1 rounded text-sm">{userInfo.clerk.email}</code>
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-600">First Name</label>
+              <label className="text-sm font-medium text-muted-foreground">First Name</label>
               <div className="mt-1">
-                <code className="bg-gray-100 px-2 py-1 rounded text-sm">{userInfo.clerk.firstName || "Not set"}</code>
+                <code className="bg-muted px-2 py-1 rounded text-sm">{userInfo.clerk.firstName || "Not set"}</code>
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-600">Last Name</label>
+              <label className="text-sm font-medium text-muted-foreground">Last Name</label>
               <div className="mt-1">
-                <code className="bg-gray-100 px-2 py-1 rounded text-sm">{userInfo.clerk.lastName || "Not set"}</code>
+                <code className="bg-muted px-2 py-1 rounded text-sm">{userInfo.clerk.lastName || "Not set"}</code>
               </div>
             </div>
           </div>
@@ -141,13 +141,13 @@ export function UserInfo() {
           {userInfo.database ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-600">Database ID</label>
+                <label className="text-sm font-medium text-muted-foreground">Database ID</label>
                 <div className="mt-1">
-                  <code className="bg-gray-100 px-2 py-1 rounded text-sm">{userInfo.database.id}</code>
+                  <code className="bg-muted px-2 py-1 rounded text-sm">{userInfo.database.id}</code>
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Role</label>
+                <label className="text-sm font-medium text-muted-foreground">Role</label>
                 <div className="mt-1">
                   <Badge variant={userInfo.database.role === "ADMIN" ? "destructive" : "secondary"}>
                     {userInfo.database.role}
@@ -156,7 +156,7 @@ export function UserInfo() {
               </div>
             </div>
           ) : (
-            <div className="text-yellow-600">No database record found</div>
+            <div className="text-enkaji-gold">No database record found</div>
           )}
         </CardContent>
       </Card>
@@ -186,26 +186,26 @@ export function UserInfo() {
               {userInfo.adminStatus.isDatabaseAdmin ? "YES" : "NO"}
             </Badge>
           </div>
-          <div className="text-sm text-gray-600">{userInfo.adminStatus.adminIds}</div>
+          <div className="text-sm text-muted-foreground">{userInfo.adminStatus.adminIds}</div>
         </CardContent>
       </Card>
 
       {!isAdmin && (
-        <Card className="border-orange-200 bg-orange-50">
+        <Card className="border-enkaji-ochre bg-enkaji-ochre">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-orange-800">
+            <CardTitle className="flex items-center gap-2 text-enkaji-ochre">
               <Info className="h-5 w-5" />
               How to Become Admin
             </CardTitle>
-            <CardDescription className="text-orange-700">
+            <CardDescription className="text-enkaji-ochre">
               Follow these steps to grant yourself admin access
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-orange-800">1. Add this to your .env file:</label>
+              <label className="text-sm font-medium text-enkaji-ochre">1. Add this to your .env file:</label>
               <div className="flex items-center gap-2 mt-1">
-                <code className="bg-orange-100 px-2 py-1 rounded text-sm flex-1 text-orange-900">
+                <code className="bg-enkaji-ochre px-2 py-1 rounded text-sm flex-1 text-enkaji-ochre">
                   {userInfo.instructions.example}
                 </code>
                 <Button size="sm" variant="outline" onClick={() => copyToClipboard(userInfo.instructions.example)}>
@@ -213,8 +213,8 @@ export function UserInfo() {
                 </Button>
               </div>
             </div>
-            <div className="text-sm text-orange-700">2. Restart your development server</div>
-            <div className="text-sm text-orange-700">3. Refresh this page to verify admin access</div>
+            <div className="text-sm text-enkaji-ochre">2. Restart your development server</div>
+            <div className="text-sm text-enkaji-ochre">3. Refresh this page to verify admin access</div>
           </CardContent>
         </Card>
       )}

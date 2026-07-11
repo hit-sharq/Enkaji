@@ -93,7 +93,7 @@ export function RFQForm() {
           <FileText className="w-5 h-5" />
           Request for Quotation (RFQ)
         </CardTitle>
-        <p className="text-gray-600">Describe what you need and get quotes from multiple artisans across Kenya</p>
+        <p className="text-muted-foreground">Describe what you need and get quotes from multiple artisans across Kenya</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -138,7 +138,7 @@ export function RFQForm() {
                         onClick={() => removeItem(index)}
                         variant="ghost"
                         size="sm"
-                        className="text-red-600 hover:text-red-700"
+                        className="text-enkaji-red hover:text-enkaji-red"
                       >
                         <X className="w-4 h-4" />
                       </Button>
@@ -223,12 +223,12 @@ export function RFQForm() {
             />
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-700" size="lg">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90" size="lg">
             <Send className="w-4 h-4 mr-2" />
             {isSubmitting ? "Submitting RFQ..." : "Submit RFQ"}
           </Button>
 
-          <p className="text-sm text-gray-500 text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Your RFQ will be sent to relevant artisans. You'll receive quotes within 24-48 hours.
           </p>
         </form>

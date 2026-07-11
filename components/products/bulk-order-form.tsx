@@ -90,7 +90,7 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
           <Package className="w-5 h-5" />
           Bulk Order Request
         </CardTitle>
-        <p className="text-sm text-gray-600">Get better prices for larger quantities. Minimum order: 100 pieces</p>
+        <p className="text-sm text-muted-foreground">Get better prices for larger quantities. Minimum order: 100 pieces</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,7 +108,7 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
           </div>
 
           {/* Price Breakdown */}
-          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+          <div className="bg-muted p-4 rounded-lg space-y-2">
             <div className="flex items-center gap-2 mb-3">
               <Calculator className="w-4 h-4" />
               <span className="font-medium">Price Breakdown</span>
@@ -121,13 +121,13 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
 
             <div className="flex justify-between text-sm">
               <span>Bulk price per unit:</span>
-              <span className="text-green-600 font-medium">${calculateBulkPrice(quantity).toFixed(2)}</span>
+              <span className="text-enkaji-green font-medium">${calculateBulkPrice(quantity).toFixed(2)}</span>
             </div>
 
             {savings > 0 && (
               <div className="flex justify-between text-sm">
                 <span>Total savings:</span>
-                <span className="text-green-600 font-medium">${savings.toFixed(2)}</span>
+                <span className="text-enkaji-green font-medium">${savings.toFixed(2)}</span>
               </div>
             )}
 
@@ -140,7 +140,7 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
           </div>
 
           {/* Volume Discounts Info */}
-          <div className="text-xs text-gray-500 space-y-1">
+          <div className="text-xs text-muted-foreground space-y-1">
             <p>• 100-499 pieces: 5% discount</p>
             <p>• 500-999 pieces: 10% discount</p>
             <p>• 1000+ pieces: 15% discount</p>
@@ -161,13 +161,13 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting || quantity < 100}
-            className="w-full bg-orange-600 hover:bg-orange-700"
+            className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90"
           >
             <MessageSquare className="w-4 h-4 mr-2" />
             {isSubmitting ? "Sending Request..." : "Request Bulk Quote"}
           </Button>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             The artisan will contact you within 24 hours with a detailed quote and delivery timeline.
           </p>
         </form>

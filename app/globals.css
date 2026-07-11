@@ -3,66 +3,84 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  /* Premium light — ivory, ink & gold */
+  --background: 40 33% 98%;
+  --foreground: 30 12% 14%;
   --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
+  --card-foreground: 30 12% 14%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 221.2 83.2% 53.3%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96%;
-  --accent-foreground: 222.2 84% 4.9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
-  --radius: 0.75rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
+  --popover-foreground: 30 12% 14%;
+  --primary: 41 56% 49%;
+  --primary-foreground: 30 30% 10%;
+  --secondary: 40 22% 92%;
+  --secondary-foreground: 30 14% 18%;
+  --muted: 40 18% 94%;
+  --muted-foreground: 32 10% 42%;
+  --accent: 41 40% 90%;
+  --accent-foreground: 30 20% 16%;
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 36 20% 87%;
+  --input: 36 20% 87%;
+  --ring: 41 56% 49%;
+  --radius: 0.625rem;
+  --chart-1: 41 56% 49%;
+  --chart-2: 139 38% 35%;
+  --chart-3: 30 55% 45%;
+  --chart-4: 200 50% 45%;
+  --chart-5: 280 35% 50%;
 
   /* Enkaji Brand Colors */
   --enkaji-red: 139 38% 35%;
-  --enkaji-ochre: 30 75% 47%;
-  --enkaji-brown: 30 55% 31%;
-  --enkaji-green: 120 61% 34%;
-  --enkaji-cream: 60 56% 91%;
-  --enkaji-gold: 43 74% 49%;
+  --enkaji-ochre: 30 60% 45%;
+  --enkaji-brown: 30 45% 30%;
+  --enkaji-green: 120 45% 32%;
+  --enkaji-cream: 42 38% 92%;
+  --enkaji-gold: 43 49% 60%;
+  --enkaji-ink: 150 31% 8%;
+  --enkaji-ivory: 40 33% 98%;
+  --enkaji-forest: 150 30% 10%;
+
+  /* Display serif font */
+  --font-playfair: "Playfair Display", Georgia, serif;
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 94.1%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+  /* Premium dark — forest, ink & gold (matches Gaia Brookside mockup) */
+  --background: 150 31% 8%;
+  --foreground: 45 22% 90%;
+  --card: 150 28% 11%;
+  --card-foreground: 45 22% 90%;
+  --popover: 150 28% 11%;
+  --popover-foreground: 45 22% 90%;
+  --primary: 43 49% 60%;
+  --primary-foreground: 150 31% 8%;
+  --secondary: 150 18% 16%;
+  --secondary-foreground: 45 22% 90%;
+  --muted: 150 16% 15%;
+  --muted-foreground: 45 12% 62%;
+  --accent: 150 20% 18%;
+  --accent-foreground: 45 22% 90%;
+  --destructive: 0 62% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 150 14% 22%;
+  --input: 150 14% 22%;
+  --ring: 43 49% 60%;
+  --chart-1: 43 49% 60%;
+  --chart-2: 139 38% 50%;
+  --chart-3: 30 60% 55%;
+  --chart-4: 200 50% 60%;
+  --chart-5: 280 40% 65%;
+
+  --enkaji-red: 139 45% 45%;
+  --enkaji-ochre: 30 65% 55%;
+  --enkaji-brown: 30 50% 40%;
+  --enkaji-green: 120 50% 45%;
+  --enkaji-cream: 42 30% 85%;
+  --enkaji-gold: 43 49% 60%;
+  --enkaji-ink: 150 31% 8%;
+  --enkaji-ivory: 45 22% 90%;
+  --enkaji-forest: 150 30% 10%;
 }
 
 @layer base {
@@ -70,8 +88,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: "Inter", sans-serif;
+    @apply bg-background text-foreground;
+    font-family: "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-playfair);
   }
 }
 
@@ -96,22 +118,42 @@
     overflow: hidden;
   }
 
-  /* Enkaji Brand Styles */
+  /* Display serif headings */
+  .font-display {
+    font-family: var(--font-playfair);
+    letter-spacing: -0.01em;
+  }
+
+  /* Premium eyebrow / kicker label */
+  .enkaji-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: hsl(var(--enkaji-gold));
+    font-weight: 600;
+  }
+
+  /* Gold gradient text */
   .enkaji-gradient-text {
-    @apply bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-enkaji-gold via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
   }
 
+  /* Primary gold button */
   .enkaji-button-primary {
-    @apply bg-enkaji-red hover:bg-enkaji-red/90 text-white shadow-lg hover:shadow-xl transition-all duration-200;
+    @apply bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink shadow-lg hover:shadow-xl transition-all duration-200 font-medium;
   }
 
+  /* Secondary outline-gold button */
   .enkaji-button-secondary {
-    @apply bg-enkaji-ochre hover:bg-enkaji-ochre/90 text-white shadow-lg hover:shadow-xl transition-all duration-200;
+    @apply border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 transition-all duration-200 font-medium;
   }
 
   /* Glass morphism effect */
   .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply bg-white/70 backdrop-blur-md border border-black/5;
+  }
+  .dark .glass {
+    @apply bg-enkaji-ink/60 border-white/10;
   }
 
   .glass-dark {
@@ -123,34 +165,34 @@
     animation: float 6s ease-in-out infinite;
     will-change: transform;
   }
-
   .float-delayed {
     animation: float 6s ease-in-out infinite;
     animation-delay: -2s;
     will-change: transform;
   }
-
   .pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite alternate;
     will-change: box-shadow;
   }
 }
 
-/* Custom scrollbar with Enkaji colors */
+/* Custom scrollbar with Enkaji gold */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-enkaji-cream;
+  background: hsl(var(--enkaji-cream));
 }
-
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--enkaji-ink));
+}
 ::-webkit-scrollbar-thumb {
-  @apply bg-enkaji-ochre rounded-full;
+  background: hsl(var(--enkaji-gold) / 0.7);
+  border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-enkaji-red;
+  background: hsl(var(--enkaji-gold));
 }
 
 /* Smooth scrolling */
@@ -160,100 +202,58 @@ html {
 
 /* Custom animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -20px, 0);
-  }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -20px, 0); }
 }
-
 @keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 5px rgba(139, 38, 53, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(139, 38, 53, 0.8), 0 0 30px rgba(139, 38, 53, 0.6);
-  }
+  0% { box-shadow: 0 0 5px rgba(200, 185, 106, 0.4); }
+  100% { box-shadow: 0 0 20px rgba(200, 185, 106, 0.7), 0 0 30px rgba(200, 185, 106, 0.4); }
 }
-
 @keyframes bounce-subtle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-
 @keyframes slideInFromLeft {
-  0% {
-    transform: translate3d(-100%, 0, 0);
-    opacity: 0;
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
+  0% { transform: translate3d(-100%, 0, 0); opacity: 0; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
 }
-
 @keyframes slideInFromRight {
-  0% {
-    transform: translate3d(100%, 0, 0);
-    opacity: 0;
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
+  0% { transform: translate3d(100%, 0, 0); opacity: 0; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
-}
+.animate-fade-in { animation: fadeIn 0.6s ease-out; }
+.animate-slide-in-left { animation: slideInFromLeft 0.8s ease-out; }
+.animate-slide-in-right { animation: slideInFromRight 0.8s ease-out; }
 
-.animate-slide-in-left {
-  animation: slideInFromLeft 0.8s ease-out;
-}
-
-.animate-slide-in-right {
-  animation: slideInFromRight 0.8s ease-out;
-}
-
-/* Focus styles with Enkaji colors */
+/* Focus styles with Enkaji gold */
 .focus-visible\:ring-2:focus-visible {
-  @apply ring-2 ring-enkaji-red ring-offset-2;
+  @apply ring-2 ring-enkaji-gold ring-offset-2;
 }
 
-/* Button hover effects */
+/* Button hover lift */
 .btn-hover-lift {
   @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
 }
 
-/* Card hover effects with Enkaji styling */
+/* Card hover with Enkaji gold tint */
 .card-hover {
   @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
 }
-
 .card-hover:hover {
-  box-shadow: 0 20px 25px -5px rgba(139, 38, 53, 0.1), 0 10px 10px -5px rgba(139, 38, 53, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(200, 185, 106, 0.12), 0 10px 10px -5px rgba(200, 185, 106, 0.06);
 }
 
-/* Loading spinner with Enkaji colors */
+/* Loading spinner */
 .spinner {
-  @apply animate-spin rounded-full border-2 border-enkaji-cream border-t-enkaji-red;
+  @apply animate-spin rounded-full border-2 border-enkaji-cream border-t-enkaji-gold;
+}
+.dark .spinner {
+  @apply border-white/20 border-t-enkaji-gold;
 }
 
 /* Typography */
@@ -262,9 +262,14 @@ html {
 }
 
 /* Utility classes for Enkaji brand */
-  .text-enkaji-gradient {
-    @apply bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
-  }
+.text-enkaji-gradient {
+  @apply bg-gradient-to-r from-enkaji-gold via-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent;
+}
+
+/* Premium hairline divider */
+.hairline {
+  @apply border-border;
+}
 
 /* Responsive design helpers */
 @media (max-width: 640px) {

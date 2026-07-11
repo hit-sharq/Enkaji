@@ -38,7 +38,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   return (
     <div className="container mx-auto px-4 py-8">
       <article className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="font-display font-semibold text-4xl text-foreground mb-4">{post.title}</h1>
         
         {post.featuredImage && (
           <div className="relative w-full h-64 md:h-96 mb-8">
@@ -55,7 +55,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
         
-        <div className="mt-8 text-sm text-gray-600">
+        <div className="mt-8 text-sm text-muted-foreground">
           <p>Published on {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</p>
           <p>By {post.author.firstName} {post.author.lastName}</p>
         </div>

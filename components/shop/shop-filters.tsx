@@ -181,7 +181,7 @@ export function ShopFilters({ categories }: ShopFiltersProps) {
                     className="w-full"
                   />
                 </div>
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <span>KSh {priceRange[0].toLocaleString()}</span>
                   <span>KSh {priceRange[1].toLocaleString()}</span>
                 </div>

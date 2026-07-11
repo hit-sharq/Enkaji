@@ -43,7 +43,7 @@ export default async function ProductsPage() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">My Products</h1>
-          <p className="text-gray-600">Manage your product listings</p>
+          <p className="text-muted-foreground">Manage your product listings</p>
         </div>
         <Link href="/dashboard/products/new">
           <Button>
@@ -57,9 +57,9 @@ export default async function ProductsPage() {
         <CardContent className="p-0">
           {products.length === 0 ? (
             <div className="text-center py-12">
-              <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
-              <p className="text-gray-600 mb-4">Start selling by adding your first product</p>
+              <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No products yet</h3>
+              <p className="text-muted-foreground mb-4">Start selling by adding your first product</p>
               <Link href="/dashboard/products/new">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
@@ -81,10 +81,10 @@ export default async function ProductsPage() {
                     )}
                     <div>
                       <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Stock: {product.inventory} units • {product.category?.name || "Uncategorized"}
                       </p>
-                      <p className="text-sm font-medium text-green-600">
+                      <p className="text-sm font-medium text-enkaji-green">
                         KES {Number(product.price).toLocaleString()}
                       </p>
                     </div>

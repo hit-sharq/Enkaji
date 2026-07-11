@@ -220,18 +220,18 @@ export function PesapalPaymentForm({
       <Card className="w-full">
         <CardContent className="pt-6">
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-enkaji-gold" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Payment Initiated!</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="font-display text-xl font-semibold text-foreground mb-2">Payment Initiated!</h3>
+            <p className="text-muted-foreground mb-4">
               {selectedMethod === "mpesa" || selectedMethod === "airtel"
                 ? `Please check your phone for the payment prompt.`
                 : "Your payment is being processed."}
             </p>
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <p className="text-sm text-gray-600">Order ID: {orderId}</p>
-              <p className="text-lg font-semibold">{currency} {amount.toLocaleString()}</p>
+            <div className="bg-card border border-border rounded-xl p-4 mb-4">
+              <p className="text-sm text-muted-foreground">Order ID: {orderId}</p>
+              <p className="text-lg font-semibold text-foreground">{currency} {amount.toLocaleString()}</p>
             </div>
             <Button
               onClick={() => window.location.href = `/orders/${orderId}`}
@@ -250,13 +250,13 @@ export function PesapalPaymentForm({
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Smartphone className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+            <Smartphone className="h-5 w-5 text-enkaji-gold" />
             Enter Phone Number
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             We'll send a payment prompt to this number via {selectedMethod === "mpesa" ? "M-Pesa" : "Airtel Money"}.
           </p>
           
@@ -272,9 +272,9 @@ export function PesapalPaymentForm({
             />
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 mb-1">Amount to pay</p>
-            <p className="text-2xl font-bold">{currency} {amount.toLocaleString()}</p>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <p className="text-sm text-muted-foreground mb-1">Amount to pay</p>
+            <p className="text-2xl font-bold text-foreground">{currency} {amount.toLocaleString()}</p>
           </div>
 
           <div className="flex gap-3">
@@ -316,8 +316,8 @@ export function PesapalPaymentForm({
         <CardContent className="pt-6">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-            <h3 className="text-xl font-semibold mb-2">Processing Payment...</h3>
-            <p className="text-gray-600">Please wait while we connect to Pesapal</p>
+            <h3 className="font-display text-xl font-semibold text-foreground mb-2">Processing Payment...</h3>
+            <p className="text-muted-foreground">Please wait while we connect to Pesapal</p>
           </div>
         </CardContent>
       </Card>
@@ -328,16 +328,16 @@ export function PesapalPaymentForm({
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5" />
-          Select Payment Method
-        </CardTitle>
+          <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+            <CreditCard className="h-5 w-5 text-enkaji-gold" />
+            Select Payment Method
+          </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <p className="text-sm text-gray-600 mb-1">Order Total</p>
-          <p className="text-2xl font-bold">{currency} {amount.toLocaleString()}</p>
-        </div>
+         <div className="bg-card border border-border rounded-xl p-4 mb-4">
+           <p className="text-sm text-muted-foreground mb-1">Order Total</p>
+           <p className="text-2xl font-bold text-foreground">{currency} {amount.toLocaleString()}</p>
+         </div>
 
         <RadioGroup
           value={selectedMethod}
@@ -349,14 +349,14 @@ export function PesapalPaymentForm({
               key={method.id}
               className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${
                 selectedMethod === method.id
-                  ? "border-primary bg-primary/5"
-                  : "hover:bg-gray-50"
+                  ? "border-enkaji-gold bg-enkaji-gold/10"
+                  : "hover:bg-enkaji-gold/5"
               }`}
             >
               <RadioGroupItem value={method.id} id={method.id} />
               <div className="flex-1 flex items-center gap-3">
                 <div className={`p-2 rounded-full ${
-                  selectedMethod === method.id ? "bg-primary text-white" : "bg-gray-100"
+                  selectedMethod === method.id ? "bg-enkaji-gold text-enkaji-ink" : "bg-muted"
                 }`}>
                   {method.icon}
                 </div>
@@ -364,10 +364,10 @@ export function PesapalPaymentForm({
                   <Label htmlFor={method.id} className="font-medium cursor-pointer">
                     {method.name}
                   </Label>
-                  <p className="text-sm text-gray-500">{method.description}</p>
+                  <p className="text-sm text-muted-foreground">{method.description}</p>
                 </div>
               </div>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
                 {method.processingTime}
               </span>
             </div>
@@ -386,7 +386,7 @@ export function PesapalPaymentForm({
           <Button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="flex-1 bg-red-800 hover:bg-red-900"
+            className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
           >
             {isLoading ? (
               <>
@@ -399,7 +399,7 @@ export function PesapalPaymentForm({
           </Button>
         </div>
 
-        <p className="text-xs text-center text-gray-500">
+        <p className="text-xs text-center text-muted-foreground">
           Secured by Pesapal. You will be redirected to complete payment.
         </p>
       </CardContent>

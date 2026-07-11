@@ -199,7 +199,7 @@ export function ReviewsManagement() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+            className={`${starSize} ${star <= rating ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -283,10 +283,10 @@ export function ReviewsManagement() {
               {[5, 4, 3, 2, 1].map((rating) => (
                 <div key={rating} className="flex items-center gap-2 text-xs">
                   <span className="w-3">{rating}</span>
-                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                  <div className="flex-1 bg-gray-200 rounded-full h-1">
+                  <Star className="w-3 h-3 text-enkaji-gold fill-enkaji-gold" />
+                  <div className="flex-1 bg-muted rounded-full h-1">
                     <div
-                      className="bg-yellow-400 h-1 rounded-full"
+                      className="bg-enkaji-gold h-1 rounded-full"
                       style={{
                         width: `${((stats.ratingDistribution[rating] || 0) / stats.totalReviews) * 100}%`,
                       }}
@@ -415,7 +415,7 @@ export function ReviewsManagement() {
                           {review.images.length > 0 && (
                             <div className="flex gap-1 mt-2">
                               {review.images.slice(0, 3).map((image, index) => (
-                                <div key={index} className="w-8 h-8 rounded overflow-hidden bg-gray-100">
+                                <div key={index} className="w-8 h-8 rounded overflow-hidden bg-muted">
                                   <Image
                                     src={image || "/placeholder.svg"}
                                     alt="Review image"
@@ -426,7 +426,7 @@ export function ReviewsManagement() {
                                 </div>
                               ))}
                               {review.images.length > 3 && (
-                                <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-xs">
+                                <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-xs">
                                   +{review.images.length - 3}
                                 </div>
                               )}
@@ -436,7 +436,7 @@ export function ReviewsManagement() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
+                          <div className="w-10 h-10 rounded overflow-hidden bg-muted">
                             <Image
                               src={review.product.images[0] || "/placeholder.svg"}
                               alt={review.product.name}
@@ -452,7 +452,7 @@ export function ReviewsManagement() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-muted">
                             {review.user.imageUrl ? (
                               <Image
                                 src={review.user.imageUrl || "/placeholder.svg"}
@@ -463,7 +463,7 @@ export function ReviewsManagement() {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <User className="w-4 h-4 text-gray-400" />
+                                <User className="w-4 h-4 text-muted-foreground" />
                               </div>
                             )}
                           </div>
@@ -515,7 +515,7 @@ export function ReviewsManagement() {
                                     <h5 className="font-medium mb-2">Images</h5>
                                     <div className="grid grid-cols-3 gap-2">
                                       {review.images.map((image, index) => (
-                                        <div key={index} className="aspect-square rounded overflow-hidden bg-gray-100">
+                                        <div key={index} className="aspect-square rounded overflow-hidden bg-muted">
                                           <Image
                                             src={image || "/placeholder.svg"}
                                             alt={`Review image ${index + 1}`}
@@ -543,7 +543,7 @@ export function ReviewsManagement() {
                                 {!review.isVerified && !review.isFlagged && (
                                   <Button
                                     onClick={() => handleReviewModeration(review.id, "approve", moderationReason)}
-                                    className="bg-green-600 hover:bg-green-700"
+                                    className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
                                   >
                                     <CheckCircle className="h-4 w-4 mr-1" />
                                     Approve
@@ -573,7 +573,7 @@ export function ReviewsManagement() {
                             <Button
                               size="sm"
                               onClick={() => handleReviewModeration(review.id, "approve")}
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
                             >
                               <CheckCircle className="h-4 w-4" />
                             </Button>
@@ -610,10 +610,10 @@ export function ReviewsManagement() {
                 {reviews
                   .filter((review) => !review.isVerified && !review.isFlagged)
                   .map((review) => (
-                    <Card key={review.id} className="border-l-4 border-l-yellow-400">
+                    <Card key={review.id} className="border-l-4 border-l-enkaji-gold">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                          <div className="w-12 h-12 rounded overflow-hidden bg-muted">
                             <Image
                               src={review.product.images[0] || "/placeholder.svg"}
                               alt={review.product.name}
@@ -642,7 +642,7 @@ export function ReviewsManagement() {
                             {review.images.length > 0 && (
                               <div className="flex gap-2">
                                 {review.images.slice(0, 4).map((image, index) => (
-                                  <div key={index} className="w-16 h-16 rounded overflow-hidden bg-gray-100">
+                                  <div key={index} className="w-16 h-16 rounded overflow-hidden bg-muted">
                                     <Image
                                       src={image || "/placeholder.svg"}
                                       alt="Review image"
@@ -658,7 +658,7 @@ export function ReviewsManagement() {
                               <Button
                                 size="sm"
                                 onClick={() => handleReviewModeration(review.id, "approve")}
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Approve
@@ -702,10 +702,10 @@ export function ReviewsManagement() {
                 {reviews
                   .filter((review) => review.isFlagged)
                   .map((review) => (
-                    <Card key={review.id} className="border-l-4 border-l-red-500">
+                    <Card key={review.id} className="border-l-4 border-l-enkaji-red">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                          <div className="w-12 h-12 rounded overflow-hidden bg-muted">
                             <Image
                               src={review.product.images[0] || "/placeholder.svg"}
                               alt={review.product.name}
@@ -733,7 +733,7 @@ export function ReviewsManagement() {
                               <Button
                                 size="sm"
                                 onClick={() => handleReviewModeration(review.id, "approve")}
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Approve
@@ -784,11 +784,11 @@ export function ReviewsManagement() {
                     <div key={rating} className="flex items-center gap-3">
                       <div className="flex items-center gap-1 w-16">
                         <span className="text-sm">{rating}</span>
-                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <Star className="w-4 h-4 text-enkaji-gold fill-enkaji-gold" />
                       </div>
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div className="flex-1 bg-muted rounded-full h-2">
                         <div
-                          className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                          className="bg-enkaji-gold h-2 rounded-full transition-all duration-300"
                           style={{
                             width: `${((stats.ratingDistribution[rating] || 0) / stats.totalReviews) * 100}%`,
                           }}

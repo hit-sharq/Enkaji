@@ -75,19 +75,20 @@ export default function SubmitTestimonialPage() {
   const isFormValid = formData.name.trim() && formData.email.trim() && formData.message.trim()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-enkaji-cream via-orange-50 to-white py-16">
+      <section className="bg-enkaji-cream py-16">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="font-playfair text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <p className="enkaji-eyebrow mb-3">Community</p>
+            <h1 className="font-playfair font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
               Share Your Success Story
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
               Help other businesses discover the benefits of trading through Enkaji Trade Kenya 
               by sharing your experience. Your story could inspire others to join our community.
             </p>
-            <Link href="/testimonials" className="text-enkaji-ochre hover:text-enkaji-red transition-colors">
+            <Link href="/testimonials" className="text-enkaji-gold hover:text-enkaji-gold/80 transition-colors">
               ← Back to Testimonials
             </Link>
           </div>
@@ -100,20 +101,20 @@ export default function SubmitTestimonialPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Form */}
             <div className="lg:col-span-2">
-              <Card className="shadow-lg border-none">
+              <Card className="border border-border bg-card rounded-xl shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <MessageSquare className="w-6 h-6 text-enkaji-ochre" />
+                    <MessageSquare className="w-6 h-6 text-enkaji-gold" />
                     Submit Your Testimonial
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {submitStatus === "success" && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div className="bg-enkaji-gold/10 border border-enkaji-gold/30 rounded-lg p-4 flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-enkaji-gold" />
                       <div>
-                        <p className="text-green-800 font-medium">Thank you for your testimonial!</p>
-                        <p className="text-green-700 text-sm">
+                        <p className="text-enkaji-gold font-medium">Thank you for your testimonial!</p>
+                        <p className="text-enkaji-gold/80 text-sm">
                           We've received your feedback and will review it shortly.
                         </p>
                       </div>
@@ -121,11 +122,11 @@ export default function SubmitTestimonialPage() {
                   )}
 
                   {submitStatus === "error" && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
-                      <AlertCircle className="w-5 h-5 text-red-600" />
+                    <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 text-destructive" />
                       <div>
-                        <p className="text-red-800 font-medium">Submission Failed</p>
-                        <p className="text-red-700 text-sm">{errorMessage}</p>
+                        <p className="text-destructive font-medium">Submission Failed</p>
+                        <p className="text-destructive/80 text-sm">{errorMessage}</p>
                       </div>
                     </div>
                   )}
@@ -167,14 +168,14 @@ export default function SubmitTestimonialPage() {
                             onClick={() => handleRatingChange(star)}
                             className={`p-1 rounded transition-colors ${
                               star <= formData.rating
-                                ? "text-yellow-400 hover:text-yellow-500"
-                                : "text-gray-300 hover:text-gray-400"
+                                ? "text-enkaji-gold hover:text-enkaji-gold/80"
+                                : "text-muted-foreground/40 hover:text-muted-foreground/60"
                             }`}
                           >
                             <Star className="w-8 h-8 fill-current" />
                           </button>
                         ))}
-                        <span className="ml-3 text-sm text-gray-600 self-center">
+                        <span className="ml-3 text-sm text-muted-foreground self-center">
                           {formData.rating} out of 5 stars
                         </span>
                       </div>
@@ -191,7 +192,7 @@ export default function SubmitTestimonialPage() {
                         rows={6}
                         required
                       />
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         Minimum 10 characters. Be authentic and specific about your experience.
                       </p>
                     </div>
@@ -204,7 +205,7 @@ export default function SubmitTestimonialPage() {
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          <div className="w-4 h-4 border-2 border-enkaji-ink border-t-transparent rounded-full animate-spin mr-2" />
                           Submitting...
                         </>
                       ) : (
@@ -216,7 +217,7 @@ export default function SubmitTestimonialPage() {
                     </Button>
                   </form>
 
-                  <div className="text-xs text-gray-500 border-t pt-4">
+                  <div className="text-xs text-muted-foreground border-t border-border pt-4">
                     <p>
                       By submitting this testimonial, you agree to have your feedback shared publicly 
                       on our website. We reserve the right to moderate content for appropriateness and accuracy.
@@ -228,54 +229,54 @@ export default function SubmitTestimonialPage() {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <Card className="border-none shadow-lg">
+              <Card className="border border-border bg-card rounded-xl shadow-sm">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">What Makes a Great Testimonial?</h3>
-                  <ul className="space-y-3 text-sm text-gray-600">
+                  <h3 className="font-display font-semibold text-foreground mb-4">What Makes a Great Testimonial?</h3>
+                  <ul className="space-y-3 text-sm text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-enkaji-ochre rounded-full mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-enkaji-gold rounded-full mt-2 flex-shrink-0" />
                       <span>Be specific about your experience</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-enkaji-ochre rounded-full mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-enkaji-gold rounded-full mt-2 flex-shrink-0" />
                       <span>Mention how our platform helped your business</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-enkaji-ochre rounded-full mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-enkaji-gold rounded-full mt-2 flex-shrink-0" />
                       <span>Share specific results or benefits</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-enkaji-ochre rounded-full mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-enkaji-gold rounded-full mt-2 flex-shrink-0" />
                       <span>Keep it authentic and honest</span>
                     </li>
                   </ul>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-lg">
+              <Card className="border border-border bg-card rounded-xl shadow-sm">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Other Ways to Reach Us</h3>
+                  <h3 className="font-display font-semibold text-foreground mb-4">Other Ways to Reach Us</h3>
                   <div className="space-y-4">
                     <div>
-                      <p className="font-medium text-gray-900">Email</p>
-                      <p className="text-sm text-gray-600">testimonials@enkajitradeKenya.com</p>
+                      <p className="font-medium text-foreground">Email</p>
+                      <p className="text-sm text-muted-foreground">testimonials@enkajitradeKenya.com</p>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">WhatsApp</p>
-                      <p className="text-sm text-gray-600">+254 700 000 000</p>
+                      <p className="font-medium text-foreground">WhatsApp</p>
+                      <p className="text-sm text-muted-foreground">+254 700 000 000</p>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Phone</p>
-                      <p className="text-sm text-gray-600">+254 700 000 000</p>
+                      <p className="font-medium text-foreground">Phone</p>
+                      <p className="text-sm text-muted-foreground">+254 700 000 000</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-lg bg-gradient-to-br from-enkaji-cream to-orange-50">
+              <Card className="border border-border bg-card rounded-xl shadow-sm bg-enkaji-cream">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-enkaji-red mb-2">Thank You!</h3>
-                  <p className="text-sm text-enkaji-brown">
+                  <h3 className="font-display font-semibold text-enkaji-gold mb-2">Thank You!</h3>
+                  <p className="text-sm text-enkaji-ink/70">
                     Your feedback helps us improve our platform and helps other businesses 
                     discover the benefits of trading through Enkaji Trade Kenya.
                   </p>

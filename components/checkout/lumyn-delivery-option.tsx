@@ -22,7 +22,7 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
   return (
     <Card
       className={`cursor-pointer border-2 transition-all ${
-        selected ? 'border-red-700 bg-red-50/30' : 'border-gray-200 hover:border-red-200'
+        selected ? 'border-enkaji-gold bg-enkaji-gold/10' : 'border-border hover:border-enkaji-gold/50'
       }`}
       onClick={onSelect}
     >
@@ -30,44 +30,44 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
         <div className="flex items-start gap-3">
           <div
             className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-              selected ? 'border-red-700 bg-red-700' : 'border-gray-300'
+              selected ? 'border-enkaji-gold bg-enkaji-gold' : 'border-border'
             }`}
           >
-            {selected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+            {selected && <div className="w-1.5 h-1.5 rounded-full bg-card" />}
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-sm">Lumyn Express Delivery</span>
-              <Badge className="bg-red-100 text-red-700 hover:bg-red-100 text-xs">Nairobi</Badge>
+              <Badge className="bg-enkaji-gold/10 text-enkaji-gold hover:bg-enkaji-gold/10 text-xs">Nairobi</Badge>
               {isPeak && (
-                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-xs">Peak hours</Badge>
+                <Badge className="bg-enkaji-gold/10 text-enkaji-gold hover:bg-enkaji-gold/10 text-xs">Peak hours</Badge>
               )}
             </div>
 
             <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 <span>Same day, 2–4 hrs</span>
               </div>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Shield className="h-3 w-3" />
                 <span>Insured delivery</span>
               </div>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
-                <Zap className="h-3 w-3 text-amber-500" />
-                <span className="text-amber-600 font-medium">Express</span>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Zap className="h-3 w-3 text-enkaji-gold" />
+                <span className="text-enkaji-gold font-medium">Express</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between mt-2">
-              <span className="text-sm font-bold text-red-700">
-                from KES {estimatedFee}
-                {isPeak && <span className="text-xs font-normal text-gray-500 ml-1">(peak surcharge applied)</span>}
+              <span className="text-sm font-bold text-enkaji-gold">
+                 from KES {estimatedFee}
+                {isPeak && <span className="text-xs font-normal text-muted-foreground ml-1">(peak surcharge applied)</span>}
               </span>
               <button
                 type="button"
-                className="text-xs text-gray-400 flex items-center gap-0.5"
+                className="text-xs text-muted-foreground flex items-center gap-0.5"
                 onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
               >
                 Details {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -75,13 +75,13 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
             </div>
 
             {expanded && (
-              <div className="mt-3 pt-3 border-t border-gray-100 space-y-1.5 text-xs text-gray-600">
+              <div className="mt-3 pt-3 border-t border-border space-y-1.5 text-xs text-muted-foreground">
                 <p>• Real-time driver tracking after pickup</p>
                 <p>• KES 150 base fee + KES 20/km after first 2km</p>
                 <p>• Available within Nairobi metropolitan area</p>
                 <p>• Driver contacts you before pickup</p>
                 <p>• Pay via M-Pesa, card, or cash on delivery</p>
-                <p className="text-gray-400 italic mt-2">Final price calculated at order confirmation based on your exact delivery address.</p>
+                <p className="text-muted-foreground italic mt-2">Final price calculated at order confirmation based on your exact delivery address.</p>
               </div>
             )}
           </div>

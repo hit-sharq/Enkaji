@@ -7,10 +7,11 @@ export default function FAQPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <p className="enkaji-eyebrow mb-3">Support</p>
+            <h1 className="font-playfair font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
               Frequently Asked Questions
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-muted-foreground">
               Find answers to common questions about Enkaji, our products, and services
             </p>
           </div>

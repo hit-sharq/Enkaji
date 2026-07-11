@@ -39,14 +39,14 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order Summary</CardTitle>
+        <CardTitle className="font-display font-semibold text-foreground">Order Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Cart Items */}
         <div className="space-y-4">
           {cartItems.map((item) => (
             <div key={item.id} className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-200">
+              <div className="w-16 h-16 rounded-md overflow-hidden bg-muted">
                 <Image
                   src={item.image || "/placeholder.svg?height=64&width=64"}
                   alt={item.name}
@@ -55,13 +55,13 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex-1">
-                <p className="font-medium">{item.name}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex-1">
+                 <p className="font-medium text-foreground">{item.name}</p>
+                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span>Qty: {item.quantity}</span>
                   {item.weight && (
                     <div className="flex items-center gap-1">
-                      <Weight className="h-3 w-3" />
+                       <Weight className="h-3 w-3 text-enkaji-gold" />
                       <span>{formatWeight(item.weight * item.quantity)}</span>
                     </div>
                   )}
@@ -81,9 +81,9 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
             <span>{formatDualCurrency(total)}</span>
           </div>
 
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-              <Weight className="h-4 w-4" />
+              <Weight className="h-4 w-4 text-enkaji-gold" />
               <span>Total Weight</span>
             </div>
             <span>{formatWeight(totalWeight)}</span>
@@ -91,7 +91,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
 
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
-              <Package className="h-4 w-4" />
+              <Package className="h-4 w-4 text-enkaji-gold" />
               <span>Shipping</span>
             </div>
             <span>{formatDualCurrency(shippingCost)}</span>
@@ -103,24 +103,24 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
           </div>
 
           {onInsuranceChange && (
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="insurance"
-                  checked={insurance === 1}
-                  onCheckedChange={(checked) => onInsuranceChange(checked === true)}
-                />
-                <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <span>Shipping Protection</span>
-                </Label>
-              </div>
-              <span className="font-medium text-blue-700">{formatDualCurrency(insuranceFee)}</span>
+             <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 rounded-lg">
+               <div className="flex items-center gap-2">
+                 <Checkbox
+                   id="insurance"
+                   checked={insurance === 1}
+                   onCheckedChange={(checked) => onInsuranceChange(checked === true)}
+                 />
+                 <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
+                   <Shield className="h-4 w-4 text-enkaji-gold" />
+                   <span>Shipping Protection</span>
+                 </Label>
+               </div>
+               <span className="font-medium text-enkaji-gold">{formatDualCurrency(insuranceFee)}</span>
             </div>
           )}
 
           {discountAmount > 0 && couponCode && (
-            <div className="flex justify-between text-green-600 font-medium">
+             <div className="flex justify-between text-enkaji-gold font-medium">
               <span>Discount ({couponCode})</span>
               <span>− {formatDualCurrency(discountAmount)}</span>
             </div>
@@ -128,7 +128,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
 
           <Separator />
 
-          <div className="flex justify-between font-bold text-lg">
+          <div className="flex justify-between font-bold text-lg text-foreground">
             <span>Total</span>
             <span>{formatDualCurrency(grandTotal)}</span>
           </div>

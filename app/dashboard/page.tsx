@@ -21,7 +21,7 @@ export default async function DashboardPage() {
 
   if (authError) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <main className="container mx-auto px-4 py-8">
           <Alert className="max-w-2xl mx-auto">
             <AlertTriangle className="h-4 w-4" />
@@ -77,7 +77,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">{renderDashboard()}</main>
     </div>
   )

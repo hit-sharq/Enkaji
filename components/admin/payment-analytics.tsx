@@ -114,13 +114,13 @@ export function PaymentAnalytics() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
       case "PROCESSING":
-        return <Clock className="h-4 w-4 text-blue-600" />
+        return <Clock className="h-4 w-4 text-chart-4" />
       case "REJECTED":
-        return <XCircle className="h-4 w-4 text-red-600" />
+        return <XCircle className="h-4 w-4 text-enkaji-red" />
       default:
-        return <Clock className="h-4 w-4 text-yellow-600" />
+        return <Clock className="h-4 w-4 text-enkaji-gold" />
     }
   }
 
@@ -130,10 +130,10 @@ export function PaymentAnalytics() {
         <div className="animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-32 bg-muted rounded-lg"></div>
             ))}
           </div>
-          <div className="h-64 bg-gray-200 rounded-lg"></div>
+          <div className="h-64 bg-muted rounded-lg"></div>
         </div>
       </div>
     )
@@ -221,7 +221,7 @@ export function PaymentAnalytics() {
                           <div className="font-medium">
                             {request.seller.firstName} {request.seller.lastName}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-muted-foreground">
                             {request.seller.sellerProfile?.businessName || request.seller.email}
                           </div>
                         </div>
@@ -246,7 +246,7 @@ export function PaymentAnalytics() {
                             <Button
                               size="sm"
                               onClick={() => handlePayoutAction(request.id, "COMPLETED")}
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
                             >
                               Approve
                             </Button>
@@ -267,7 +267,7 @@ export function PaymentAnalytics() {
 
               {payoutRequests.length === 0 && (
                 <div className="text-center py-8">
-                  <p className="text-gray-600">No payout requests at the moment</p>
+                  <p className="text-muted-foreground">No payout requests at the moment</p>
                 </div>
               )}
             </CardContent>
@@ -289,12 +289,12 @@ export function PaymentAnalytics() {
                         {getPaymentMethodIcon(method)}
                         <div>
                           <p className="font-medium">{method.replace("_", " ")}</p>
-                          <p className="text-sm text-gray-600">Payment method</p>
+                          <p className="text-sm text-muted-foreground">Payment method</p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">KES {amount.toLocaleString()}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {analytics.totalRevenue > 0 ? Math.round((amount / analytics.totalRevenue) * 100) : 0}% of
                           total
                         </p>
@@ -318,16 +318,16 @@ export function PaymentAnalytics() {
                   <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <p className="font-medium">{month.month}</p>
-                      <p className="text-sm text-gray-600">Monthly performance</p>
+                      <p className="text-sm text-muted-foreground">Monthly performance</p>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">KES {month.revenue.toLocaleString()}</p>
-                      <p className="text-sm text-gray-600">Commission: KES {month.commissions.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Commission: KES {month.commissions.toLocaleString()}</p>
                     </div>
                   </div>
                 )) || (
                   <div className="text-center py-8">
-                    <p className="text-gray-600">Revenue trend data will appear here as transactions are processed</p>
+                    <p className="text-muted-foreground">Revenue trend data will appear here as transactions are processed</p>
                   </div>
                 )}
               </div>

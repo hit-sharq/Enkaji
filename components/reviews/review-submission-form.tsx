@@ -150,7 +150,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Star className="w-5 h-5 text-yellow-400" />
+          <Star className="w-5 h-5 text-enkaji-gold" />
           Write a Review for {productName}
         </CardTitle>
       </CardHeader>
@@ -177,13 +177,13 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
                   <Star
                     className={`w-8 h-8 transition-colors ${
                       star <= (hoveredRating || rating)
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-300 hover:text-yellow-200"
+                        ? "text-enkaji-gold fill-current"
+                        : "text-muted-foreground hover:text-enkaji-gold"
                     }`}
                   />
                 </button>
               ))}
-              <span className="ml-2 text-sm text-gray-600">
+              <span className="ml-2 text-sm text-muted-foreground">
                 {rating > 0 && (
                   <>
                     {rating} star{rating !== 1 ? "s" : ""} -{" "}
@@ -215,7 +215,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
               maxLength={100}
               className="w-full"
             />
-            <p className="text-xs text-gray-500">{title.length}/100 characters</p>
+            <p className="text-xs text-muted-foreground">{title.length}/100 characters</p>
           </div>
 
           {/* Review Comment */}
@@ -232,22 +232,22 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
               maxLength={1000}
               className="w-full resize-none"
             />
-            <p className="text-xs text-gray-500">{comment.length}/1000 characters</p>
+            <p className="text-xs text-muted-foreground">{comment.length}/1000 characters</p>
           </div>
 
           {/* Image Upload */}
           <div className="space-y-2">
             <Label className="text-base font-medium">Add Photos (Optional)</Label>
-            <p className="text-sm text-gray-600">
-              Help other customers by showing the product. You can upload up to 5 images.
-            </p>
+             <p className="text-sm text-muted-foreground">
+               Help other customers by showing the product. You can upload up to 5 images.
+             </p>
 
-            {/* Image Previews */}
-            {imagePreviewUrls.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                {imagePreviewUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+             {/* Image Previews */}
+             {imagePreviewUrls.length > 0 && (
+               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                 {imagePreviewUrls.map((url, index) => (
+                   <div key={index} className="relative group">
+                     <div className="aspect-square rounded-lg overflow-hidden bg-muted">
                       <Image
                         src={url || "/placeholder.svg"}
                         alt={`Review image ${index + 1}`}
@@ -259,7 +259,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-2 -right-2 bg-enkaji-red text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -270,7 +270,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
 
             {/* Upload Button */}
             {images.length < 5 && (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center hover:border-enkaji-gold transition-colors">
                 <input
                   type="file"
                   id="images"
@@ -280,9 +280,9 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
                   className="hidden"
                 />
                 <label htmlFor="images" className="cursor-pointer flex flex-col items-center gap-2">
-                  <Camera className="w-8 h-8 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-600">Click to upload images</span>
-                  <span className="text-xs text-gray-500">PNG, JPG up to 5MB each</span>
+                  <Camera className="w-8 h-8 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">Click to upload images</span>
+                  <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB each</span>
                 </label>
               </div>
             )}
@@ -304,7 +304,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
             )}
           </div>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             Your review will be published after moderation to ensure quality and authenticity.
           </p>
         </form>

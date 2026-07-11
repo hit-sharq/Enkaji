@@ -1,0 +1,312 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+  .g{--gold:#c8b96a;--gold-d:rgba(200,185,106,0.18);--gold-b:rgba(200,185,106,0.25);--dk:#0d1a12;--dk2:#162a1a;--cr:#f0e8d4;--cr2:rgba(240,232,212,0.6);--cr3:rgba(240,232,212,0.35);background:var(--dk);color:var(--cr);font-family:'Inter',sans-serif;}
+  .g-nav{display:flex;align-items:center;justify-content:space-between;padding:13px 28px;border-bottom:0.5px solid var(--gold-b);}
+  .g-logo{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:2.5px;color:var(--gold);}
+  .g-breadcrumb{font-size:11px;color:var(--cr3);display:flex;align-items:center;gap:6px;}
+  .g-breadcrumb span{color:var(--cr2);}
+  .g-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .g-left{padding:28px;border-right:0.5px solid var(--gold-b);}
+  .g-right{padding:28px;}
+  .g-img-main{background:var(--dk2);border:0.5px solid var(--gold-b);height:240px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:72px;margin-bottom:10px;}
+  .g-img-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .g-thumb{background:var(--dk2);border:0.5px solid var(--gold-b);height:52px;display:flex;align-items:center;justify-content:center;color:var(--cr3);font-size:20px;cursor:pointer;}
+  .g-thumb.active{border-color:var(--gold);color:var(--gold);}
+  .g-cert-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .g-cert{font-size:10px;letter-spacing:1px;padding:4px 10px;border:0.5px solid var(--gold-b);color:var(--cr3);}
+  .g-eyebrow{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:6px;}
+  .g-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cr);line-height:1.2;margin-bottom:8px;}
+  .g-tagline{font-size:12px;color:var(--cr2);line-height:1.7;margin-bottom:16px;}
+  .g-meta-row{display:flex;gap:16px;margin-bottom:18px;}
+  .g-meta{text-align:center;}
+  .g-meta-val{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);}
+  .g-meta-key{font-size:10px;letter-spacing:1.5px;color:var(--cr3);margin-top:2px;}
+  .g-divider{height:0.5px;background:var(--gold-b);margin:16px 0;}
+  .g-price-block{margin-bottom:18px;}
+  .g-price-label{font-size:10px;letter-spacing:2px;color:var(--cr3);margin-bottom:8px;}
+  .g-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .g-tier{border:0.5px solid var(--gold-b);padding:10px;text-align:center;cursor:pointer;transition:border-color .15s;}
+  .g-tier:hover{border-color:rgba(200,185,106,.5);}
+  .g-tier.selected{border-color:var(--gold);background:var(--gold-d);}
+  .g-tier-qty{font-size:10px;letter-spacing:1px;color:var(--cr3);margin-bottom:4px;}
+  .g-tier-p{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cr);}
+  .g-tier.selected .g-tier-p{color:var(--gold);}
+  .g-tier-save{font-size:10px;color:#5dcaa5;margin-top:2px;}
+  .g-qty-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .g-qty-label{font-size:11px;letter-spacing:1.5px;color:var(--cr3);min-width:60px;}
+  .g-qty-ctrl{display:flex;align-items:center;gap:0;border:0.5px solid var(--gold-b);}
+  .g-qty-btn{background:none;border:none;color:var(--cr2);font-size:16px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .g-qty-btn:hover{color:var(--gold);}
+  .g-qty-val{width:44px;text-align:center;font-size:13px;color:var(--cr);border-left:0.5px solid var(--gold-b);border-right:0.5px solid var(--gold-b);height:32px;display:flex;align-items:center;justify-content:center;}
+  .g-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-top:0.5px solid var(--gold-b);border-bottom:0.5px solid var(--gold-b);margin-bottom:14px;}
+  .g-total-label{font-size:11px;letter-spacing:2px;color:var(--cr3);}
+  .g-total-val{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);}
+  .g-btn-gold{background:var(--gold);color:var(--dk);font-size:11px;letter-spacing:2px;padding:12px 18px;border:none;cursor:pointer;font-weight:500;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;}
+  .g-btn-ghost{background:transparent;color:var(--cr2);font-size:11px;letter-spacing:1.5px;padding:11px 18px;border:0.5px solid var(--gold-b);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;}
+  .g-btn-ghost:hover{border-color:rgba(200,185,106,.5);color:var(--cr);}
+  .g-tabs{display:flex;gap:0;border-bottom:0.5px solid var(--gold-b);margin:0 28px;}
+  .g-tab{font-size:11px;letter-spacing:1.5px;padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;color:var(--cr3);}
+  .g-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+  .g-tab-body{padding:24px 28px;}
+  .g-spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .g-spec-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid rgba(200,185,106,.1);font-size:12px;}
+  .g-spec-k{color:var(--cr3);}
+  .g-spec-v{color:var(--cr);font-weight:500;}
+  .g-spec-col{padding-right:24px;}
+  .g-spec-col:last-child{padding-right:0;padding-left:24px;border-left:0.5px solid var(--gold-b);}
+  .g-doc-list{display:flex;flex-direction:column;gap:10px;}
+  .g-doc{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid var(--gold-b);}
+  .g-doc-name{font-size:12px;color:var(--cr2);display:flex;align-items:center;gap:10px;}
+  .g-doc-dl{font-size:11px;color:var(--gold);cursor:pointer;letter-spacing:1px;}
+  .g-reviews{display:flex;flex-direction:column;gap:12px;}
+  .g-review{border:0.5px solid var(--gold-b);padding:14px;}
+  .g-review-header{display:flex;justify-content:space-between;margin-bottom:6px;}
+  .g-reviewer{font-size:12px;font-weight:500;color:var(--cr);}
+  .g-review-date{font-size:11px;color:var(--cr3);}
+  .g-stars{color:var(--gold);font-size:12px;margin-bottom:4px;}
+  .g-review-text{font-size:12px;color:var(--cr2);line-height:1.6;}
+  .g-sup-bar{display:flex;align-items:center;gap:14px;padding:16px 28px;border-top:0.5px solid var(--gold-b);border-bottom:0.5px solid var(--gold-b);}
+  .g-sup-av{width:40px;height:40px;border:0.5px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--gold);flex-shrink:0;}
+  .g-sup-name{font-size:13px;color:var(--cr);font-weight:500;}
+  .g-sup-meta{font-size:11px;color:var(--cr3);}
+  .g-badge{font-size:10px;padding:2px 8px;}
+  .g-badge.avail{background:rgba(29,158,117,.15);color:#5dcaa5;border:0.5px solid rgba(29,158,117,.25);}
+  .g-chip{font-size:10px;letter-spacing:1px;color:var(--cr3);padding:3px 8px;border:0.5px solid rgba(200,185,106,.15);}
+</style>
+
+<div class="g">
+  <h2 class="sr-only">Gaia B2B product detail page for cold-pressed moringa oil</h2>
+
+  <nav class="g-nav">
+    <div class="g-logo">GAIA MARKET</div>
+    <div class="g-breadcrumb">
+      <span style="cursor:pointer">Marketplace</span>
+      <i class="ti ti-chevron-right" style="font-size:11px" aria-hidden="true"></i>
+      <span style="cursor:pointer">Botanicals</span>
+      <i class="ti ti-chevron-right" style="font-size:11px" aria-hidden="true"></i>
+      <span>Cold-pressed moringa oil</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span style="font-size:11px;color:var(--cr3);letter-spacing:1px;">SKU: MOR-250-CP</span>
+      <span class="g-badge avail">In stock</span>
+    </div>
+  </nav>
+
+  <div class="g-layout">
+    <div class="g-left">
+      <div class="g-img-main">
+        <i class="ti ti-leaf" aria-hidden="true"></i>
+      </div>
+      <div class="g-img-thumbs">
+        <div class="g-thumb active"><i class="ti ti-leaf" aria-hidden="true"></i></div>
+        <div class="g-thumb"><i class="ti ti-droplet" aria-hidden="true"></i></div>
+        <div class="g-thumb"><i class="ti ti-flask" aria-hidden="true"></i></div>
+        <div class="g-thumb"><i class="ti ti-box" aria-hidden="true"></i></div>
+      </div>
+      <div class="g-cert-row">
+        <span class="g-cert">ISO 22000</span>
+        <span class="g-cert">USDA Organic</span>
+        <span class="g-cert">Halal</span>
+        <span class="g-cert">Non-GMO</span>
+        <span class="g-cert">Kosher</span>
+      </div>
+    </div>
+
+    <div class="g-right">
+      <div class="g-eyebrow">BOTANICALS · EAST AFRICA</div>
+      <div class="g-name">Cold-pressed moringa oil</div>
+      <div class="g-tagline">100% pure cold-pressed moringa seed oil, food-grade certified. Ideal for nutraceutical, cosmetic, and culinary B2B buyers seeking premium traceable sourcing from Kenya.</div>
+
+      <div class="g-meta-row">
+        <div class="g-meta">
+          <div class="g-meta-val">★ 4.9</div>
+          <div class="g-meta-key">RATING</div>
+        </div>
+        <div style="width:0.5px;background:var(--gold-b);"></div>
+        <div class="g-meta">
+          <div class="g-meta-val">214</div>
+          <div class="g-meta-key">REVIEWS</div>
+        </div>
+        <div style="width:0.5px;background:var(--gold-b);"></div>
+        <div class="g-meta">
+          <div class="g-meta-val">3–5d</div>
+          <div class="g-meta-key">LEAD TIME</div>
+        </div>
+        <div style="width:0.5px;background:var(--gold-b);"></div>
+        <div class="g-meta">
+          <div class="g-meta-val">100</div>
+          <div class="g-meta-key">MIN ORDER</div>
+        </div>
+      </div>
+
+      <div class="g-divider"></div>
+
+      <div class="g-price-block">
+        <div class="g-price-label">SELECT VOLUME TIER</div>
+        <div class="g-tiers">
+          <div class="g-tier" onclick="selectTier(0,18.50,'')" id="tier0">
+            <div class="g-tier-qty">100–499 btl</div>
+            <div class="g-tier-p">$18.50</div>
+            <div class="g-tier-save">&nbsp;</div>
+          </div>
+          <div class="g-tier selected" onclick="selectTier(1,15.80,'Save 15%')" id="tier1">
+            <div class="g-tier-qty">500–1999 btl</div>
+            <div class="g-tier-p">$15.80</div>
+            <div class="g-tier-save">Save 15%</div>
+          </div>
+          <div class="g-tier" onclick="selectTier(2,12.40,'Save 33%')" id="tier2">
+            <div class="g-tier-qty">2000+ btl</div>
+            <div class="g-tier-p">$12.40</div>
+            <div class="g-tier-save">Save 33%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-qty-row">
+        <span class="g-qty-label">Quantity</span>
+        <div class="g-qty-ctrl">
+          <button class="g-qty-btn" onclick="changeQty(-100)" aria-label="Decrease quantity"><i class="ti ti-minus" style="font-size:13px" aria-hidden="true"></i></button>
+          <div class="g-qty-val" id="qtyVal">500</div>
+          <button class="g-qty-btn" onclick="changeQty(100)" aria-label="Increase quantity"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i></button>
+        </div>
+        <span style="font-size:11px;color:var(--cr3)">bottles · 250ml each</span>
+      </div>
+
+      <div class="g-total-row">
+        <span class="g-total-label">ESTIMATED TOTAL</span>
+        <span class="g-total-val" id="totalVal">$7,900.00</span>
+      </div>
+
+      <button class="g-btn-gold" onclick="this.innerHTML='<i class=\'ti ti-check\' style=\'font-size:14px\' aria-hidden=\'true\'></i> Added to cart'">
+        <i class="ti ti-shopping-cart" style="font-size:14px" aria-hidden="true"></i>
+        Add to cart
+      </button>
+      <button class="g-btn-ghost">
+        <i class="ti ti-file-description" style="font-size:14px" aria-hidden="true"></i>
+        Request a formal quote
+      </button>
+      <button class="g-btn-ghost">
+        <i class="ti ti-message" style="font-size:14px" aria-hidden="true"></i>
+        Contact supplier
+      </button>
+    </div>
+  </div>
+
+  <div class="g-sup-bar">
+    <div class="g-sup-av">GR</div>
+    <div>
+      <div class="g-sup-name">GreenRoots Ltd</div>
+      <div class="g-sup-meta">Verified supplier · Nairobi, Kenya · Member since 2019</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <span class="g-chip">98% on-time delivery</span>
+      <span class="g-chip">1,200+ orders</span>
+      <span class="g-chip">Verified exporter</span>
+    </div>
+  </div>
+
+  <div class="g-tabs">
+    <div class="g-tab active" onclick="switchTab(0,this)">Product specs</div>
+    <div class="g-tab" onclick="switchTab(1,this)">Documents</div>
+    <div class="g-tab" onclick="switchTab(2,this)">Reviews</div>
+  </div>
+
+  <div id="tabBody" class="g-tab-body">
+    <div class="g-spec-grid">
+      <div class="g-spec-col">
+        <div class="g-spec-row"><span class="g-spec-k">SKU</span><span class="g-spec-v">MOR-250-CP</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Pack size</span><span class="g-spec-v">250ml amber glass bottle</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Extraction method</span><span class="g-spec-v">Cold-press, expeller</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Color</span><span class="g-spec-v">Golden yellow</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Odor</span><span class="g-spec-v">Mild, characteristic</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Oleic acid content</span><span class="g-spec-v">≥ 72%</span></div>
+      </div>
+      <div class="g-spec-col">
+        <div class="g-spec-row"><span class="g-spec-k">Country of origin</span><span class="g-spec-v">Kenya</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Shelf life</span><span class="g-spec-v">18 months (unopened)</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Storage</span><span class="g-spec-v">Cool, dark, below 25°C</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Peroxide value</span><span class="g-spec-v">≤ 5 meq O₂/kg</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Free fatty acids</span><span class="g-spec-v">≤ 1.0%</span></div>
+        <div class="g-spec-row"><span class="g-spec-k">Carton qty</span><span class="g-spec-v">24 bottles / carton</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentPrice = 15.80;
+let qty = 500;
+let currentTier = 1;
+
+function selectTier(idx, price, save) {
+  currentTier = idx;
+  currentPrice = price;
+  [0,1,2].forEach(i => {
+    document.getElementById('tier'+i).classList.toggle('selected', i===idx);
+  });
+  updateTotal();
+}
+
+function changeQty(delta) {
+  qty = Math.max(100, qty + delta);
+  document.getElementById('qtyVal').textContent = qty;
+  updateTotal();
+}
+
+function updateTotal() {
+  const total = (qty * currentPrice).toFixed(2);
+  document.getElementById('totalVal').textContent = '$' + Number(total).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+const tabContents = [
+  `<div class="g-spec-grid">
+    <div class="g-spec-col">
+      <div class="g-spec-row"><span class="g-spec-k">SKU</span><span class="g-spec-v">MOR-250-CP</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Pack size</span><span class="g-spec-v">250ml amber glass bottle</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Extraction method</span><span class="g-spec-v">Cold-press, expeller</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Color</span><span class="g-spec-v">Golden yellow</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Odor</span><span class="g-spec-v">Mild, characteristic</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Oleic acid content</span><span class="g-spec-v">≥ 72%</span></div>
+    </div>
+    <div class="g-spec-col">
+      <div class="g-spec-row"><span class="g-spec-k">Country of origin</span><span class="g-spec-v">Kenya</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Shelf life</span><span class="g-spec-v">18 months (unopened)</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Storage</span><span class="g-spec-v">Cool, dark, below 25°C</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Peroxide value</span><span class="g-spec-v">≤ 5 meq O₂/kg</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Free fatty acids</span><span class="g-spec-v">≤ 1.0%</span></div>
+      <div class="g-spec-row"><span class="g-spec-k">Carton qty</span><span class="g-spec-v">24 bottles / carton</span></div>
+    </div>
+  </div>`,
+  `<div class="g-doc-list">
+    <div class="g-doc"><div class="g-doc-name"><i class="ti ti-file-text" style="font-size:16px;color:var(--gold)" aria-hidden="true"></i> Certificate of analysis (COA)</div><span class="g-doc-dl">DOWNLOAD</span></div>
+    <div class="g-doc"><div class="g-doc-name"><i class="ti ti-file-text" style="font-size:16px;color:var(--gold)" aria-hidden="true"></i> Material safety data sheet (MSDS)</div><span class="g-doc-dl">DOWNLOAD</span></div>
+    <div class="g-doc"><div class="g-doc-name"><i class="ti ti-file-text" style="font-size:16px;color:var(--gold)" aria-hidden="true"></i> USDA organic certificate</div><span class="g-doc-dl">DOWNLOAD</span></div>
+    <div class="g-doc"><div class="g-doc-name"><i class="ti ti-file-text" style="font-size:16px;color:var(--gold)" aria-hidden="true"></i> Halal certification</div><span class="g-doc-dl">DOWNLOAD</span></div>
+    <div class="g-doc"><div class="g-doc-name"><i class="ti ti-file-text" style="font-size:16px;color:var(--gold)" aria-hidden="true"></i> Product spec sheet</div><span class="g-doc-dl">DOWNLOAD</span></div>
+  </div>`,
+  `<div class="g-reviews">
+    <div class="g-review">
+      <div class="g-review-header"><span class="g-reviewer">Lena M. · Copenhagen, Denmark</span><span class="g-review-date">March 2025</span></div>
+      <div class="g-stars">★★★★★</div>
+      <div class="g-review-text">Exceptional purity and consistency across three separate orders. The COA matches exactly what arrives. Our cosmetics team has fully replaced our previous supplier with GreenRoots for this product.</div>
+    </div>
+    <div class="g-review">
+      <div class="g-review-header"><span class="g-reviewer">Arjun P. · Mumbai, India</span><span class="g-review-date">January 2025</span></div>
+      <div class="g-stars">★★★★★</div>
+      <div class="g-review-text">Lead time was actually faster than quoted — received 800 bottles in 4 days. The amber glass packaging survived freight without a single breakage. Will be placing a standing monthly order.</div>
+    </div>
+    <div class="g-review">
+      <div class="g-review-header"><span class="g-reviewer">Fatima A. · Dubai, UAE</span><span class="g-review-date">November 2024</span></div>
+      <div class="g-stars">★★★★☆</div>
+      <div class="g-review-text">Very good product overall. Oleic acid content consistently above 74%. Minor feedback: the outer carton labelling could be clearer for customs. Supplier was responsive when we raised this.</div>
+    </div>
+  </div>`
+];
+
+function switchTab(idx, el) {
+  document.querySelectorAll('.g-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabBody').innerHTML = tabContents[idx];
+}
+</script>

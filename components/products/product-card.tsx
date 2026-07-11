@@ -3,11 +3,11 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, ShoppingCart, Heart, MapPin, Verified, Weight } from "lucide-react"
+import { Star, ShoppingCart, MapPin, Verified, Weight } from "lucide-react"
 import { formatDualCurrency } from "@/lib/currency"
 import { formatWeight } from "@/lib/shipping"
 import { useCart } from "@/components/providers/cart-provider"
@@ -108,7 +108,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
   if (viewMode === "list") {
     return (
-        <Card className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-transparent hover:border-l-enkaji-red">
+        <Card className="group border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition border-l-4 border-l-transparent hover:border-l-enkaji-gold">
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
             {/* Image */}
@@ -138,22 +138,22 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             {/* Content */}
             <div className="flex-1 p-6 space-y-4">
               <div>
-                <h3 className="font-semibold text-xl mb-2 line-clamp-1">{product.name}</h3>
-                <p className="text-gray-600 line-clamp-2">{product.description}</p>
+                <h3 className="font-display font-semibold text-xl mb-2 line-clamp-1 group-hover:text-enkaji-gold transition-colors">{product.name}</h3>
+                <p className="text-muted-foreground line-clamp-2">{product.description}</p>
               </div>
 
               <div className="flex items-center justify-between">
-                 <div className="text-2xl font-bold text-enkaji-red">{formatDualCurrency(product.price)}</div>
+                 <div className="text-2xl font-bold text-enkaji-gold">{formatDualCurrency(product.price)}</div>
                 <div className="flex items-center gap-4">
                   {product.weight && (
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Weight className="h-4 w-4" />
                       {formatWeight(product.weight)}
                     </div>
                   )}
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm text-gray-600">({product._count.reviews})</span>
+                    <Star className="h-4 w-4 fill-enkaji-gold text-enkaji-gold" />
+                    <span className="text-sm text-muted-foreground">({product._count.reviews})</span>
                   </div>
                 </div>
               </div>
@@ -169,13 +169,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                         <span className="text-sm font-medium">{sellerName}</span>
                         {product.seller.isVerified && <Verified className="h-3 w-3 text-enkaji-green" />}
                     </div>
-                    {product.seller.location && (
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <MapPin className="h-3 w-3" />
-                        {product.seller.location}
-                      </div>
-                    )}
-                  </div>
+                      {product.seller.location && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <MapPin className="h-3 w-3" />
+                          {product.seller.location}
+                        </div>
+                      )}
+                    </div>
                 </div>
 
                 <div className="flex gap-2">
@@ -204,105 +204,115 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+    <Card className="group border border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-xl hover:border-enkaji-gold/40 hover:-translate-y-1 transition-all duration-300">
       <CardContent className="p-0">
-        <div className="relative aspect-square overflow-hidden rounded-t-lg">
+        {/* Image area (GAIA-like) */}
+        <div className="relative h-[108px] overflow-hidden rounded-t-xl">
           <Image
             src={product.images[0] || "/placeholder.png?height=300&width=300"}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
+            className="object-cover group-hover:scale-110 transition-transform duration-500"
             onError={(e) => {
               e.currentTarget.src = "/placeholder.png"
             }}
           />
-          <div className="absolute top-2 right-2 space-y-2">
-            <FavoriteButton 
-              productId={product.id} 
+
+          {/* Category eyebrow */}
+          <div className="absolute top-3 left-3">
+            <span className="enkaji-eyebrow bg-enkaji-ink/70 text-enkaji-gold px-3 py-1 rounded-full backdrop-blur-sm">
+              {product.category.name}
+            </span>
+          </div>
+
+
+          {/* Favorite */}
+          <div className="absolute top-3 right-3">
+            <FavoriteButton
+              productId={product.id}
               initialIsFavorite={product.isFavorite}
               size="sm"
               variant="secondary"
-              className="opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+              className="opacity-0 group-hover:opacity-100 transition-opacity bg-enkaji-ink/50 text-enkaji-ivory rounded-full p-2 shadow-lg hover:bg-enkaji-ink/70"
             />
           </div>
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="shadow-sm">
-              {product.category.name}
-            </Badge>
+
+          {/* Quick add overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-enkaji-ink/80 via-enkaji-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+            <Button
+              className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+              onClick={handleAddToCart}
+              disabled={isAdding}
+            >
+              {isAdding ? (
+                <span className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </>
+              )}
+            </Button>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
 
-          <div className="p-4 space-y-3">
-            <div>
-              <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-enkaji-red transition-colors">
-                {product.name}
-              </h3>
-            <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
+        {/* Body */}
+        <div className="p-5 space-y-3">
+          {/* Name */}
+          <div>
+            <h3 className="font-display font-semibold text-lg leading-snug line-clamp-1 group-hover:text-enkaji-gold transition-colors">
+              {product.name}
+            </h3>
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{product.description}</p>
           </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-enkaji-red">{formatDualCurrency(product.price)}</div>
-            <div className="flex items-center gap-3">
-              {product.weight && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
+          {/* Price row (GAIA-ish) */}
+          <div className="flex items-center justify-between">
+            <div className="text-xl font-bold font-display text-enkaji-gold">{formatDualCurrency(product.price)}</div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              {product.weight ? (
+                <span className="flex items-center gap-1">
                   <Weight className="h-3 w-3" />
                   {formatWeight(product.weight)}
-                </div>
-              )}
-              {product._count.reviews > 0 && (
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm text-gray-600 truncate">
-                    {product.avgRating ? product.avgRating.toFixed(1) : "0.0"} 
-                    ({product._count.reviews})
-                  </span>
-                </div>
-              )}
+                </span>
+              ) : null}
+              {product._count.reviews > 0 ? (
+                <span className="flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5 fill-enkaji-gold text-enkaji-gold" />
+                  <span className="text-muted-foreground">({product._count.reviews})</span>
+                </span>
+              ) : null}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Footer (GAIA-like badge + MOQ line using available data) */}
+          <div className="flex items-center justify-between pt-3 border-t border-enkaji-gold/10">
+            <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/20">
+              In stock
+            </Badge>
+            <div className="text-[11px] text-muted-foreground">
+              MOQ: <span className="text-foreground/90 font-medium">1</span>
+            </div>
+          </div>
+
+          {/* Seller row (keep existing) */}
+          <div className="flex items-center gap-2 pt-3">
             <Avatar className="h-6 w-6">
               <AvatarImage src={product.seller.imageUrl || undefined} />
-              <AvatarFallback className="text-xs">{sellerInitials}</AvatarFallback>
+              <AvatarFallback className="text-[10px]">{sellerInitials}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
-                <span className="text-sm text-gray-600 truncate">{sellerName}</span>
+                <span className="text-xs text-foreground truncate font-medium">{sellerName}</span>
                 {product.seller.isVerified && <Verified className="h-3 w-3 text-enkaji-green flex-shrink-0" />}
               </div>
-              {product.seller.location && (
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <MapPin className="h-3 w-3" />
-                  <span className="truncate">{product.seller.location}</span>
-                </div>
-              )}
             </div>
+            <Button asChild size="sm" variant="outline" className="border-enkaji-gold/30 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent px-3">
+              <Link href={`/products/${product.id}`}>View</Link>
+            </Button>
           </div>
         </div>
       </CardContent>
-
-      <CardFooter className="p-4 pt-0 space-y-2">
-        <div className="flex gap-2 w-full">
-          <Button asChild className="flex-1">
-            <Link href={`/products/${product.id}`}>View Details</Link>
-          </Button>
-            <Button 
-              size="icon" 
-              variant="outline"
-              className="hover:bg-enkaji-red/10 hover:border-enkaji-red/20 bg-transparent"
-            onClick={handleAddToCart}
-            disabled={isAdding}
-          >
-            {isAdding ? (
-              <span className="h-4 w-4 animate-spin" />
-            ) : (
-              <ShoppingCart className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-      </CardFooter>
     </Card>
   )
 }

@@ -4,20 +4,20 @@ export default function CategoryLoading() {
   return (
     <main>
         {/* Breadcrumb Skeleton */}
-        <section className="bg-gray-50 py-4">
+        <section className="bg-muted py-4">
           <div className="container mx-auto px-4">
             <div className="flex items-center space-x-2">
               <Skeleton className="h-4 w-12" />
-              <span className="text-gray-400">/</span>
+              <span className="text-muted-foreground">/</span>
               <Skeleton className="h-4 w-20" />
-              <span className="text-gray-400">/</span>
+              <span className="text-muted-foreground">/</span>
               <Skeleton className="h-4 w-32" />
             </div>
           </div>
         </section>
 
         {/* Category Header Skeleton */}
-        <section className="py-8 bg-white border-b">
+        <section className="py-8 bg-card border-b">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
               <div>
@@ -30,7 +30,7 @@ export default function CategoryLoading() {
         </section>
 
         {/* Filters Skeleton */}
-        <section className="py-6 bg-gray-50 border-b">
+        <section className="py-6 bg-muted border-b">
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               <Skeleton className="h-10 w-full max-w-md" />

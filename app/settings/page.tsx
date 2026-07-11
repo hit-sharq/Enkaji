@@ -10,12 +10,12 @@ import { User, Bell, Shield, CreditCard, Globe, Trash2 } from "lucide-react"
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-            <p className="text-gray-600 mt-2">Manage your account preferences and settings</p>
+            <h1 className="font-display text-3xl font-semibold text-foreground">Account Settings</h1>
+            <p className="text-muted-foreground mt-2">Manage your account preferences and settings</p>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
@@ -30,7 +30,7 @@ export default function SettingsPage() {
             <TabsContent value="profile" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <User className="w-5 h-5" />
                     Profile Information
                   </CardTitle>
@@ -70,7 +70,7 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button className="bg-enkaji-red text-white">Save Changes</Button>
+                  <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Save Changes</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -78,7 +78,7 @@ export default function SettingsPage() {
             <TabsContent value="notifications" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <Bell className="w-5 h-5" />
                     Notification Preferences
                   </CardTitle>
@@ -88,7 +88,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Order Updates</Label>
-                      <p className="text-sm text-gray-500">Get notified about order status changes</p>
+                      <p className="text-sm text-muted-foreground">Get notified about order status changes</p>
                     </div>
                     <Switch />
                   </div>
@@ -96,7 +96,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>New Messages</Label>
-                      <p className="text-sm text-gray-500">Receive notifications for new messages</p>
+                      <p className="text-sm text-muted-foreground">Receive notifications for new messages</p>
                     </div>
                     <Switch />
                   </div>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Marketing Emails</Label>
-                      <p className="text-sm text-gray-500">Receive promotional emails and offers</p>
+                      <p className="text-sm text-muted-foreground">Receive promotional emails and offers</p>
                     </div>
                     <Switch />
                   </div>
@@ -112,7 +112,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>SMS Notifications</Label>
-                      <p className="text-sm text-gray-500">Get important updates via SMS</p>
+                      <p className="text-sm text-muted-foreground">Get important updates via SMS</p>
                     </div>
                     <Switch />
                   </div>
@@ -123,7 +123,7 @@ export default function SettingsPage() {
             <TabsContent value="privacy" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <Shield className="w-5 h-5" />
                     Privacy Settings
                   </CardTitle>
@@ -133,7 +133,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Profile Visibility</Label>
-                      <p className="text-sm text-gray-500">Make your profile visible to other users</p>
+                      <p className="text-sm text-muted-foreground">Make your profile visible to other users</p>
                     </div>
                     <Switch />
                   </div>
@@ -141,7 +141,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Show Online Status</Label>
-                      <p className="text-sm text-gray-500">Let others see when you're online</p>
+                      <p className="text-sm text-muted-foreground">Let others see when you're online</p>
                     </div>
                     <Switch />
                   </div>
@@ -149,7 +149,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Data Analytics</Label>
-                      <p className="text-sm text-gray-500">Help improve our service with usage data</p>
+                      <p className="text-sm text-muted-foreground">Help improve our service with usage data</p>
                     </div>
                     <Switch />
                   </div>
@@ -160,7 +160,7 @@ export default function SettingsPage() {
             <TabsContent value="billing" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <CreditCard className="w-5 h-5" />
                     Billing Information
                   </CardTitle>
@@ -170,10 +170,10 @@ export default function SettingsPage() {
                   <div className="space-y-2">
                     <Label>Payment Methods</Label>
                     <div className="border rounded-lg p-4">
-                      <p className="text-sm text-gray-500">No payment methods added yet</p>
-                      <Button variant="outline" className="mt-2 bg-transparent">
-                        Add Payment Method
-                      </Button>
+                      <p className="text-sm text-muted-foreground">No payment methods added yet</p>
+                        <Button variant="outline" className="mt-2 border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                          Add Payment Method
+                        </Button>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -201,7 +201,7 @@ export default function SettingsPage() {
             <TabsContent value="account" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <Globe className="w-5 h-5" />
                     Account Management
                   </CardTitle>
@@ -234,8 +234,8 @@ export default function SettingsPage() {
                   <Separator />
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-red-600">Danger Zone</Label>
-                      <p className="text-sm text-gray-500">These actions cannot be undone</p>
+                      <Label className="text-enkaji-gold">Danger Zone</Label>
+                      <p className="text-sm text-muted-foreground">These actions cannot be undone</p>
                     </div>
                     <Button variant="destructive" className="flex items-center gap-2">
                       <Trash2 className="w-4 h-4" />

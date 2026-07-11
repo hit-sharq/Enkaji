@@ -57,11 +57,11 @@ export function ClearanceBusinessForm() {
   }
 
   return (
-    <Card className="rounded-2xl border-0 bg-white/80 backdrop-blur-sm shadow-sm">
+    <Card className="rounded-2xl border-0 bg-card/80 backdrop-blur-sm shadow-sm">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-100">
-            <Store className="h-5 w-5 text-blue-600" />
+          <div className="p-2.5 rounded-xl bg-chart-4">
+            <Store className="h-5 w-5 text-chart-4" />
           </div>
           <div>
             <CardTitle className="text-lg">Apply for Clearance Deals</CardTitle>
@@ -75,7 +75,7 @@ export function ClearanceBusinessForm() {
             <div className="space-y-2">
               <Label htmlFor="businessName">Business Name *</Label>
               <div className="relative">
-                <Store className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Store className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input id="businessName" name="businessName" required placeholder="Your business name" className="pl-10 rounded-xl" />
               </div>
             </div>
@@ -100,14 +100,14 @@ export function ClearanceBusinessForm() {
             <div className="space-y-2">
               <Label htmlFor="location">Location *</Label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input id="location" name="location" required placeholder="City / Area" className="pl-10 rounded-xl" />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number *</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input id="phone" name="phone" required placeholder="+254 7XX XXX XXX" className="pl-10 rounded-xl" />
               </div>
             </div>
@@ -116,7 +116,7 @@ export function ClearanceBusinessForm() {
           <div className="space-y-2">
             <Label htmlFor="email">Email Address *</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input id="email" name="email" type="email" required placeholder="business@example.com" className="pl-10 rounded-xl" />
             </div>
           </div>
@@ -124,12 +124,12 @@ export function ClearanceBusinessForm() {
           <div className="space-y-2">
             <Label htmlFor="description">Business Description</Label>
             <div className="relative">
-              <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Textarea id="description" name="description" placeholder="Tell us about your business and what you plan to clear..." className="pl-10 rounded-xl min-h-[100px]" />
             </div>
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700">
+          <Button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-gradient-to-r from-chart-4 to-chart-4">
             {isSubmitting ? "Submitting..." : "Submit for Approval"}
           </Button>
         </form>

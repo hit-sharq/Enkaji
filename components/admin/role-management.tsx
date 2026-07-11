@@ -22,15 +22,15 @@ interface RoleManagementProps {
 }
 
 const ROLE_COLORS = {
-  ADMIN: "bg-red-100 text-red-800",
-  MODERATOR: "bg-orange-100 text-orange-800",
-  CONTENT_MANAGER: "bg-purple-100 text-purple-800",
-  FINANCE_MANAGER: "bg-green-100 text-green-800",
-  REGIONAL_MANAGER: "bg-blue-100 text-blue-800",
-  SUPPORT_AGENT: "bg-yellow-100 text-yellow-800",
-  SELLER: "bg-indigo-100 text-indigo-800",
-  ARTISAN: "bg-pink-100 text-pink-800",
-  BUYER: "bg-gray-100 text-gray-800",
+  ADMIN: "bg-enkaji-red text-enkaji-red",
+  MODERATOR: "bg-enkaji-ochre/10 text-enkaji-brown",
+  CONTENT_MANAGER: "bg-chart-5 text-chart-5",
+  FINANCE_MANAGER: "bg-enkaji-green text-enkaji-green",
+  REGIONAL_MANAGER: "bg-chart-4 text-chart-4",
+  SUPPORT_AGENT: "bg-enkaji-gold/10 text-enkaji-ink",
+  SELLER: "bg-chart-4 text-chart-4",
+  ARTISAN: "bg-chart-5 text-chart-5",
+  BUYER: "bg-muted text-foreground",
 }
 
 const ROLE_DESCRIPTIONS = {
@@ -113,8 +113,8 @@ export function RoleManagement({ users }: RoleManagementProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Shield className="h-5 w-5" />
-        <h2 className="text-2xl font-bold">Role Management</h2>
+        <Shield className="h-5 w-5 text-enkaji-gold" />
+        <h2 className="font-display text-2xl font-semibold text-foreground">Role Management</h2>
         <div className="text-sm text-muted-foreground ml-auto">Manage user roles and permissions</div>
       </div>
 
@@ -139,7 +139,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Current Role:</span>
                       <Badge
-                        className={ROLE_COLORS[user.role as keyof typeof ROLE_COLORS] || "bg-gray-100 text-gray-800"}
+                        className={ROLE_COLORS[user.role as keyof typeof ROLE_COLORS] || "bg-muted text-foreground"}
                       >
                         {user.role}
                       </Badge>
@@ -187,7 +187,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
                     </div>
 
                     {hasChanges && (
-                      <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                      <div className="text-xs text-enkaji-gold bg-enkaji-gold/10 p-2 rounded">
                         Role will change from <strong>{user.role}</strong> to <strong>{selectedRole}</strong>
                       </div>
                     )}

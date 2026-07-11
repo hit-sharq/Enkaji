@@ -94,7 +94,7 @@ export function ReviewCarousel({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+            className={`w-4 h-4 ${star <= rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -104,7 +104,7 @@ export function ReviewCarousel({
   if (loading) {
     return (
       <div className={`animate-pulse ${className}`}>
-        <div className="h-64 bg-gray-200 rounded-lg"></div>
+        <div className="h-64 bg-muted rounded-lg"></div>
       </div>
     )
   }
@@ -133,9 +133,9 @@ export function ReviewCarousel({
 
             {/* Review Content */}
             <div className="space-y-4">
-              {currentReview.title && <h3 className="text-xl font-semibold text-gray-900">{currentReview.title}</h3>}
+              {currentReview.title && <h3 className="text-xl font-semibold text-foreground">{currentReview.title}</h3>}
               {currentReview.comment && (
-                <blockquote className="text-lg text-gray-700 italic max-w-2xl mx-auto leading-relaxed">
+                <blockquote className="text-lg text-muted-foreground italic max-w-2xl mx-auto leading-relaxed">
                   "{currentReview.comment}"
                 </blockquote>
               )}
@@ -160,7 +160,7 @@ export function ReviewCarousel({
                 )}
               </div>
               <div className="text-left">
-                <div className="font-semibold text-gray-900">{userName}</div>
+                <div className="font-semibold text-foreground">{userName}</div>
                 {currentReview.product && <div className="text-sm text-muted-foreground">Verified Purchase</div>}
               </div>
             </div>
@@ -175,7 +175,7 @@ export function ReviewCarousel({
             variant="outline"
             size="icon"
             onClick={prevReview}
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white shadow-lg hover:shadow-xl"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-lg hover:shadow-xl"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -183,7 +183,7 @@ export function ReviewCarousel({
             variant="outline"
             size="icon"
             onClick={nextReview}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white shadow-lg hover:shadow-xl"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-lg hover:shadow-xl"
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -195,7 +195,7 @@ export function ReviewCarousel({
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? "bg-enkaji-ochre" : "bg-gray-300"
+                  index === currentIndex ? "bg-enkaji-ochre" : "bg-muted"
                 }`}
               />
             ))}

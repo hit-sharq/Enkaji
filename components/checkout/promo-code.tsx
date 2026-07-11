@@ -45,15 +45,15 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
 
   if (appliedCode) {
     return (
-      <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+      <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-lg">
         <div className="flex items-center gap-2">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <span className="text-sm font-medium text-green-700">
-            <Badge variant="outline" className="mr-1 text-green-700 border-green-400">{appliedCode}</Badge>
+          <CheckCircle className="h-4 w-4 text-enkaji-gold" />
+          <span className="text-sm font-medium text-enkaji-gold">
+            <Badge variant="outline" className="mr-1 text-enkaji-gold border-enkaji-gold/40">{appliedCode}</Badge>
             − KES {discountAmount?.toLocaleString()}
           </span>
         </div>
-        <button onClick={onRemove} className="text-green-600 hover:text-red-500 transition-colors">
+        <button onClick={onRemove} className="text-enkaji-gold hover:text-enkaji-ink transition-colors">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -64,7 +64,7 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
     <div className="space-y-2">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Promo code"
             value={code}
@@ -77,7 +77,7 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
         </Button>
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   )
 }

@@ -39,7 +39,7 @@ export function CartSummary() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order Summary</CardTitle>
+        <CardTitle className="font-display font-semibold text-foreground">Order Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between">
@@ -49,9 +49,9 @@ export function CartSummary() {
 
         {showShipping ? (
           <>
-            <div className="flex justify-between text-sm text-gray-600">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
-                <Weight className="h-4 w-4" />
+              <Weight className="h-4 w-4 text-enkaji-gold" />
                 <span>Total Weight</span>
               </div>
               <span>{formatWeight(totalWeight)}</span>
@@ -59,24 +59,24 @@ export function CartSummary() {
 
             <div className="flex justify-between">
               <div className="flex items-center gap-1">
-                <Package className="h-4 w-4" />
+                <Package className="h-4 w-4 text-enkaji-gold" />
                 <span>Shipping</span>
               </div>
               <span>{formatDualCurrency(shipping)}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-xs text-amber-600">
-              <Info className="h-3 w-3" />
+            <div className="flex items-center gap-1 text-xs text-enkaji-brown">
+              <Info className="h-3 w-3 text-enkaji-gold" />
               <span>Shipping estimate based on Nairobi. Final cost calculated at checkout.</span>
             </div>
           </>
         ) : (
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-              <ShoppingBag className="h-4 w-4" />
+              <ShoppingBag className="h-4 w-4 text-enkaji-gold" />
               <span>Shipping</span>
             </div>
-            <span className="text-gray-400">Calculated at checkout</span>
+              <span className="text-muted-foreground">Calculated at checkout</span>
           </div>
         )}
 
@@ -86,9 +86,9 @@ export function CartSummary() {
             <span>{formatDualCurrency(tax)}</span>
           </div>
         ) : (
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-sm text-muted-foreground">
             <span>Tax</span>
-            <span className="text-gray-400">Calculated at checkout</span>
+              <span className="text-muted-foreground">Calculated at checkout</span>
           </div>
         )}
 
@@ -101,16 +101,16 @@ export function CartSummary() {
 
         {items.length > 0 && !loading ? (
           <Link href="/checkout" className="block">
-            <Button className="w-full bg-enkaji-red text-white">Proceed to Checkout</Button>
+            <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Proceed to Checkout</Button>
           </Link>
         ) : (
-          <Button className="w-full bg-gray-300 cursor-not-allowed" disabled>
+          <Button className="w-full bg-muted text-muted-foreground cursor-not-allowed" disabled>
             {loading ? "Loading..." : "Cart is Empty"}
           </Button>
         )}
 
         <Link href="/shop" className="block">
-          <Button variant="outline" className="w-full bg-transparent">
+          <Button variant="outline" className="w-full bg-transparent border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
             Continue Shopping
           </Button>
         </Link>

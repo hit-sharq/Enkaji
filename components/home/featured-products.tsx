@@ -32,21 +32,21 @@ interface Product {
 }
 
 const ProductsSkeleton = () => (
-  <section className="py-20 bg-white">
+  <section className="py-20 bg-background">
     <div className="container mx-auto px-4">
       <div className="text-center mb-16">
-        <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-4 animate-pulse"></div>
-        <div className="h-6 bg-gray-200 rounded-lg w-80 mx-auto animate-pulse"></div>
+        <div className="h-12 bg-muted rounded-lg w-96 mx-auto mb-4 animate-pulse"></div>
+        <div className="h-6 bg-muted rounded-lg w-80 mx-auto animate-pulse"></div>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {Array.from({ length: 4 }, (_, i) => (
-          <Card key={i} className="overflow-hidden border-0 shadow-lg">
-            <div className="h-64 bg-gray-200 animate-pulse"></div>
+          <Card key={i} className="overflow-hidden border border-border bg-card rounded-xl shadow-sm">
+            <div className="h-64 bg-muted animate-pulse"></div>
             <CardContent className="p-4">
-              <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 rounded mb-3 animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
-              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-muted rounded mb-2 animate-pulse"></div>
+              <div className="h-3 bg-muted rounded mb-3 animate-pulse"></div>
+              <div className="h-4 bg-muted rounded mb-4 animate-pulse"></div>
+              <div className="h-10 bg-muted rounded animate-pulse"></div>
             </CardContent>
           </Card>
         ))}
@@ -107,7 +107,7 @@ export function FeaturedProducts() {
         return (
           <Card
             key={product.id}
-            className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+            className="group overflow-hidden border border-border bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
           >
             <div className="relative overflow-hidden">
               <Image
@@ -124,20 +124,20 @@ export function FeaturedProducts() {
               />
               <Badge className={`absolute top-3 left-3 ${badge.color} text-white`}>{badge.text}</Badge>
               <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button size="icon" variant="secondary" className="w-8 h-8 rounded-full bg-white/90 hover:bg-white">
+                <Button size="icon" variant="secondary" className="w-8 h-8 rounded-full bg-card/90 hover:bg-card">
                   <Heart className="w-4 h-4" />
                 </Button>
               </div>
               {discountPercentage > 0 && (
-                <div className="absolute bottom-3 left-3 bg-enkaji-red text-white px-2 py-1 rounded text-sm font-medium">
+                <div className="absolute bottom-3 left-3 bg-enkaji-gold text-enkaji-ink px-2 py-1 rounded text-sm font-medium">
                   {discountPercentage}% OFF
                 </div>
               )}
             </div>
             <CardContent className="p-2 md:p-4">
               <div className="mb-1.5 md:mb-2">
-                <h3 className="font-semibold text-gray-900 text-sm md:text-base line-clamp-2 mb-0.5 md:mb-1">{product.name}</h3>
-                <p className="text-[10px] md:text-sm text-gray-600">{product.seller.businessName}</p>
+                <h3 className="font-semibold text-foreground text-sm md:text-base line-clamp-2 mb-0.5 md:mb-1">{product.name}</h3>
+                <p className="text-[10px] md:text-sm text-muted-foreground">{product.seller.businessName}</p>
               </div>
 
               <div className="flex items-center gap-1 mb-1.5 md:mb-3">
@@ -146,26 +146,26 @@ export function FeaturedProducts() {
                     <Star
                       key={i}
                       className={`w-3 h-3 md:w-4 md:h-4 ${
-                        i < Math.floor(averageRating) ? "text-enkaji-gold fill-current" : "text-gray-300"
+                        i < Math.floor(averageRating) ? "text-enkaji-gold fill-current" : "text-muted-foreground"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-[10px] md:text-sm text-gray-600">({product._count?.reviews || 0})</span>
+                  <span className="text-[10px] md:text-sm text-muted-foreground">({product._count?.reviews || 0})</span>
               </div>
 
               <div className="flex items-center justify-between mb-2 md:mb-4">
                 <div className="flex items-center gap-1 md:gap-2">
-                  <span className="text-base md:text-lg font-bold text-enkaji-red">KSh {product.price.toLocaleString()}</span>
+                  <span className="text-base md:text-lg font-bold text-foreground">KSh {product.price.toLocaleString()}</span>
                   {product.originalPrice && (
-                    <span className="text-[10px] md:text-sm text-gray-500 line-through">
+                    <span className="text-[10px] md:text-sm text-muted-foreground line-through">
                       KSh {product.originalPrice.toLocaleString()}
                     </span>
                   )}
                 </div>
               </div>
 
-              <Button asChild className="w-full bg-enkaji-red hover:bg-enkaji-red/90 text-white group/btn h-8 md:h-10 text-xs md:text-sm">
+              <Button asChild className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink group/btn h-8 md:h-10 text-xs md:text-sm">
                 <Link href={`/products/${product.id}`}>
                   <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 group-hover/btn:scale-110 transition-transform" />
                   <span className="hidden md:inline">View Product</span>
@@ -184,23 +184,24 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-10 md:py-20 bg-white">
+    <section className="py-10 md:py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 md:mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
-            <span className="bg-gradient-to-r from-enkaji-ochre to-enkaji-brown bg-clip-text text-transparent">
+          <p className="enkaji-eyebrow mb-2 md:mb-4">Featured</p>
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4">
+            <span className="bg-gradient-to-r from-enkaji-gold to-enkaji-ochre bg-clip-text text-transparent">
               Featured Sellers
             </span>
           </h2>
-          <p className="text-sm md:text-xl text-gray-600 max-w-2xl mx-auto px-2 md:px-0">
+          <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto px-2 md:px-0">
             Top-rated sellers offering quality products for your business
           </p>
         </div>
 
         {products.length === 0 ? (
           <div className="text-center py-8 md:py-12">
-            <p className="text-gray-600 text-sm md:text-lg">No featured products available at the moment.</p>
-            <Button asChild className="mt-4 bg-enkaji-red hover:bg-enkaji-red/90">
+            <p className="text-muted-foreground text-sm md:text-lg">No featured products available at the moment.</p>
+            <Button asChild className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink">
               <Link href="/shop">Browse All Products</Link>
             </Button>
           </div>
@@ -213,7 +214,7 @@ export function FeaturedProducts() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-enkaji-ochre text-enkaji-ochre hover:bg-enkaji-ochre hover:text-white bg-transparent"
+                className="border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
               >
                 <Link href="/shop">Browse All Products</Link>
               </Button>

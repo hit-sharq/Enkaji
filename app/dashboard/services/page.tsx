@@ -174,13 +174,13 @@ export default function ServiceProviderDashboard() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "PENDING":
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "CONFIRMED":
-        return <Badge className="bg-blue-500"><CheckCircle className="h-3 w-3 mr-1" /> Confirmed</Badge>
+        return <Badge className="bg-chart-4"><CheckCircle className="h-3 w-3 mr-1" /> Confirmed</Badge>
       case "COMPLETED":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "CANCELLED":
-        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
+        return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
       default:
         return <Badge>{status}</Badge>
     }
@@ -188,17 +188,17 @@ export default function ServiceProviderDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-32"></div>
+              <div className="h-8 bg-muted rounded w-48 mb-2"></div>
+              <div className="h-4 bg-muted rounded w-32"></div>
             </div>
           </div>
           <div className="grid md:grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4].map(i => (
-              <Card key={i}><CardContent className="p-6"><div className="h-8 bg-gray-200 rounded"></div></CardContent></Card>
+              <Card key={i}><CardContent className="p-6"><div className="h-8 bg-muted rounded"></div></CardContent></Card>
             ))}
           </div>
         </div>
@@ -207,19 +207,19 @@ export default function ServiceProviderDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Service Dashboard</h1>
-            <p className="text-gray-600">Manage your bookings and services</p>
+            <p className="text-muted-foreground">Manage your bookings and services</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => window.location.href = "/dashboard/services/settings"}>
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
-            <Button className="bg-[#8B2635] hover:bg-[#7a1f2e]" onClick={() => window.location.href = "/dashboard/services/new"}>
+            <Button className="bg-enkaji-gold hover:bg-enkaji-red" onClick={() => window.location.href = "/dashboard/services/new"}>
               <Plus className="h-4 w-4 mr-2" />
               Add Service
             </Button>
@@ -235,7 +235,7 @@ export default function ServiceProviderDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.totalBookings}</div>
-                <p className="text-xs text-gray-500">All time</p>
+                <p className="text-xs text-muted-foreground">All time</p>
               </CardContent>
             </Card>
             <Card>
@@ -243,8 +243,8 @@ export default function ServiceProviderDashboard() {
                 <CardTitle className="text-sm font-medium">Pending</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">{stats.pendingBookings}</div>
-                <p className="text-xs text-gray-500">Awaiting confirmation</p>
+                <div className="text-2xl font-bold text-enkaji-gold">{stats.pendingBookings}</div>
+                <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
               </CardContent>
             </Card>
             <Card>
@@ -253,7 +253,7 @@ export default function ServiceProviderDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">KSh {Number(stats.totalEarnings).toLocaleString()}</div>
-                <p className="text-xs text-gray-500">This month</p>
+                <p className="text-xs text-muted-foreground">This month</p>
               </CardContent>
             </Card>
             <Card>
@@ -262,10 +262,10 @@ export default function ServiceProviderDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-1">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-5 w-5 fill-enkaji-gold text-enkaji-gold" />
                   <span className="text-2xl font-bold">{stats.averageRating.toFixed(1)}</span>
                 </div>
-                <p className="text-xs text-gray-500">{stats.totalReviews} reviews</p>
+                <p className="text-xs text-muted-foreground">{stats.totalReviews} reviews</p>
               </CardContent>
             </Card>
           </div>
@@ -285,17 +285,17 @@ export default function ServiceProviderDashboard() {
             </div>
 
             {pendingBookings.length > 0 && (
-              <Card className="border-yellow-200 bg-yellow-50">
+              <Card className="border-enkaji-gold/20 bg-enkaji-gold/10">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-yellow-800">Pending Bookings ({pendingBookings.length})</CardTitle>
+                  <CardTitle className="text-enkaji-ink">Pending Bookings ({pendingBookings.length})</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {pendingBookings.map((booking) => (
-                      <div key={booking.id} className="flex items-center justify-between p-3 bg-white rounded-lg">
+                      <div key={booking.id} className="flex items-center justify-between p-3 bg-card rounded-lg">
                         <div>
                           <p className="font-medium">{booking.serviceName}</p>
-                          <p className="text-sm text-gray-500">{booking.customerName} • {booking.customerPhone}</p>
+                          <p className="text-sm text-muted-foreground">{booking.customerName} • {booking.customerPhone}</p>
                           <p className="text-sm">{booking.date} at {booking.timeSlot}</p>
                         </div>
                         <div className="flex gap-2">
@@ -321,8 +321,8 @@ export default function ServiceProviderDashboard() {
               <CardContent>
                 {bookings.length === 0 ? (
                   <div className="text-center py-8">
-                    <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-600">No bookings yet</p>
+                    <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No bookings yet</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -333,8 +333,8 @@ export default function ServiceProviderDashboard() {
                             <span className="font-medium">{booking.serviceName}</span>
                             {getStatusBadge(booking.status)}
                           </div>
-                          <p className="text-sm text-gray-600">{booking.customerName}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                          <p className="text-sm text-muted-foreground">{booking.customerName}</p>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                             <span className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
                               {booking.date}
@@ -365,7 +365,7 @@ export default function ServiceProviderDashboard() {
           <TabsContent value="services" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">My Services</h2>
-              <Button className="bg-[#8B2635]" onClick={() => window.location.href = "/dashboard/services/new"}>
+              <Button className="bg-enkaji-gold" onClick={() => window.location.href = "/dashboard/services/new"}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Service
               </Button>
@@ -378,11 +378,11 @@ export default function ServiceProviderDashboard() {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="font-semibold">{service.name}</h3>
-                        <p className="text-gray-600 text-sm">{service.duration} minutes</p>
-                        <p className="text-sm text-gray-500">{service.totalBookings} bookings</p>
+                        <p className="text-muted-foreground text-sm">{service.duration} minutes</p>
+                        <p className="text-sm text-muted-foreground">{service.totalBookings} bookings</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xl font-bold text-[#8B2635]">KSh {Number(service.price).toLocaleString()}</p>
+                        <p className="text-xl font-bold text-enkaji-gold">KSh {Number(service.price).toLocaleString()}</p>
                         <Button size="sm" variant="outline" onClick={() => window.location.href = `/dashboard/services/${service.id}/edit`}>Edit</Button>
                       </div>
                     </div>
@@ -406,7 +406,7 @@ export default function ServiceProviderDashboard() {
                       <div key={phone} className="flex items-center justify-between p-3 border rounded-lg">
                         <div>
                           <p className="font-medium">{customer?.customerName}</p>
-                          <p className="text-sm text-gray-500">{phone}</p>
+                          <p className="text-sm text-muted-foreground">{phone}</p>
                         </div>
                         <div className="flex gap-2">
                           <Button size="sm" variant="outline">

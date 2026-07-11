@@ -407,14 +407,14 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "PROCESSING":
-        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
+        return <Badge className="bg-muted0"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
       case "PENDING":
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-gold/100"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "REJECTED":
       case "FAILED":
-        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
+        return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -434,8 +434,8 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Unable to load dashboard</h3>
-          <p className="text-gray-600">Please try refreshing the page.</p>
+          <h3 className="text-xl font-semibold text-foreground mb-2">Unable to load dashboard</h3>
+          <p className="text-muted-foreground">Please try refreshing the page.</p>
         </div>
       </div>
     )
@@ -445,7 +445,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Seller Dashboard</h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Welcome back, {user.firstName}!{user.sellerProfile?.businessName && ` - ${user.sellerProfile.businessName}`}
         </p>
       </div>
@@ -537,7 +537,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
             <CardContent>
               {dashboardData.orders.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-600">No orders yet. Start by adding products to your store!</p>
+                  <p className="text-muted-foreground">No orders yet. Start by adding products to your store!</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -545,7 +545,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                     <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">Order #{order.id.slice(-8)}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {order.items.length} item(s) • {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -578,9 +578,9 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
             <CardContent className="p-0">
               {dashboardData.products.length === 0 ? (
                 <div className="text-center py-12">
-                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
-                  <p className="text-gray-600 mb-4">Start selling by adding your first product</p>
+                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No products yet</h3>
+                  <p className="text-muted-foreground mb-4">Start selling by adding your first product</p>
                   <Link href="/dashboard/products/new">
                     <Button>
                       <Plus className="h-4 w-4 mr-2" />
@@ -594,7 +594,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                     <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Stock: {product.stock} units • {product.category || "Uncategorized"}
                         </p>
                       </div>
@@ -625,7 +625,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-bold">Clearance Dashboard</h2>
-              <p className="text-gray-600">Track your hot clearance deals, sales, and inventory impact.</p>
+              <p className="text-muted-foreground">Track your hot clearance deals, sales, and inventory impact.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/dashboard/clearance/new">
@@ -705,7 +705,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
             <CardContent>
               {dashboardData.clearanceProducts.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-600">You have no active clearance listings yet.</p>
+                  <p className="text-muted-foreground">You have no active clearance listings yet.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -715,14 +715,14 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                       : 0
 
                     return (
-                      <div key={product.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg bg-white/80 shadow-sm">
+                      <div key={product.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg bg-card/80 shadow-sm">
                         <div>
-                          <p className="font-semibold text-gray-900">{product.name}</p>
-                          <p className="text-sm text-gray-600">{product.clearanceReason || "Clearance"} • {product.category || "Uncategorized"}</p>
-                          <p className="text-sm text-gray-600 mt-1">{discount}% off • {product.inventory} left</p>
+                          <p className="font-semibold text-foreground">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">{product.clearanceReason || "Clearance"} • {product.category || "Uncategorized"}</p>
+                          <p className="text-sm text-muted-foreground mt-1">{discount}% off • {product.inventory} left</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Badge className="bg-enkaji-red text-white">{discount}% OFF</Badge>
+                          <Badge className="bg-enkaji-gold text-enkaji-ink">{discount}% OFF</Badge>
                           <Link href={`/products/${product.id}`}>
                             <Button size="sm" variant="outline">View</Button>
                           </Link>
@@ -745,9 +745,9 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
             <CardContent>
               {dashboardData.orders.length === 0 ? (
                 <div className="text-center py-8">
-                  <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
-                  <p className="text-gray-600">Orders will appear here when customers purchase your products</p>
+                  <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No orders yet</h3>
+                  <p className="text-muted-foreground">Orders will appear here when customers purchase your products</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -755,7 +755,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                     <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">Order #{order.id.slice(-8)}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {order.items.map((item) => item.product.name).join(", ")} •{" "}
                           {new Date(order.createdAt).toLocaleDateString()}
                         </p>
@@ -784,7 +784,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Subscription</h2>
-              <p className="text-gray-600">Manage your seller subscription plan</p>
+              <p className="text-muted-foreground">Manage your seller subscription plan</p>
             </div>
             <Button onClick={() => setShowSubscriptionDialog(true)}>
               <Crown className="h-4 w-4 mr-2" />
@@ -802,7 +802,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-yellow-500" />
+                    <Crown className="h-5 w-5 text-enkaji-gold" />
                     Current Plan
                   </CardTitle>
                 </CardHeader>
@@ -810,20 +810,20 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-3xl font-bold">{subscriptionData.subscription.plan}</p>
-                      <p className="text-gray-600">
+                      <p className="text-muted-foreground">
                         {subscriptionData.plans[subscriptionData.subscription.plan]?.name || subscriptionData.subscription.plan}
                       </p>
                     </div>
                     <Badge 
                       variant={subscriptionData.subscription.status === "ACTIVE" ? "default" : "destructive"}
-                      className={subscriptionData.subscription.status === "ACTIVE" ? "bg-green-500" : ""}
+                      className={subscriptionData.subscription.status === "ACTIVE" ? "bg-enkaji-green" : ""}
                     >
                       {subscriptionData.subscription.status}
                     </Badge>
                   </div>
                   
                   <div className="border-t pt-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <Calendar className="h-4 w-4" />
                       <span>Billing Period</span>
                     </div>
@@ -838,8 +838,8 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                       <p className="text-sm font-medium mb-2">Plan Features:</p>
                       <ul className="space-y-1">
                         {subscriptionData.plans[subscriptionData.subscription.plan].features.map((feature, index) => (
-                          <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
+                          <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CheckCircle className="h-3 w-3 text-enkaji-green" />
                             {feature}
                           </li>
                         ))}
@@ -857,16 +857,16 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <CardContent>
                   <div className="space-y-4">
                     {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
-                      <div key={planKey} className={`p-4 border rounded-lg ${subscriptionData.subscription?.plan === planKey ? "bg-blue-50 border-blue-200" : ""}`}>
+                      <div key={planKey} className={`p-4 border rounded-lg ${subscriptionData.subscription?.plan === planKey ? "bg-muted border-border" : ""}`}>
                         <div className="flex justify-between items-center mb-2">
                           <div>
                             <p className="font-medium">{plan.name}</p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-muted-foreground">
                               {plan.price === 0 ? "Free" : `KES ${plan.price.toLocaleString()}/month`}
                             </p>
                           </div>
                           {subscriptionData.subscription?.plan === planKey && (
-                            <Badge className="bg-blue-500">Current</Badge>
+                            <Badge className="bg-muted0">Current</Badge>
                           )}
                         </div>
                       </div>
@@ -885,13 +885,13 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
                     <div key={planKey} className="p-4 border rounded-lg text-center">
-                      <Crown className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
+                      <Crown className="h-8 w-8 mx-auto mb-2 text-enkaji-gold" />
                       <p className="font-medium">{plan.name}</p>
                       <p className="text-2xl font-bold my-2">
                         {plan.price === 0 ? "Free" : `KES ${plan.price.toLocaleString()}`}
                         {plan.price > 0 && <span className="text-sm font-normal">/mo</span>}
                       </p>
-                      <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                      <ul className="text-sm text-muted-foreground space-y-1 mb-4">
                         {plan.features.slice(0, 3).map((feature, index) => (
                           <li key={index}>{feature}</li>
                         ))}
@@ -915,13 +915,13 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
 
           {/* Payment Status Alert */}
           {subscriptionData.subscription?.status === "PENDING" && (
-            <Card className="border-yellow-200 bg-yellow-50">
+            <Card className="border-enkaji-gold/20 bg-enkaji-gold/10">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
-                  <Clock className="h-6 w-6 text-yellow-600 mt-1" />
+                  <Clock className="h-6 w-6 text-enkaji-gold mt-1" />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-yellow-800">Payment Pending</h3>
-                    <p className="text-sm text-yellow-700 mt-1">
+                    <h3 className="font-semibold text-enkaji-ink">Payment Pending</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
                       Your subscription payment is being processed. Please complete the payment to activate your plan.
                     </p>
                     <Button 
@@ -955,25 +955,25 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                   <div 
                     key={planKey}
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      selectedPlan === planKey ? "border-blue-500 bg-blue-50" : "hover:border-gray-300"
+                      selectedPlan === planKey ? "border-enkaji-gold bg-muted" : "hover:border-border"
                     }`}
                     onClick={() => setSelectedPlan(planKey)}
                   >
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="font-medium">{plan.name}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {plan.price === 0 ? "Free forever" : `KES ${plan.price.toLocaleString()}/month`}
                         </p>
                       </div>
                       {selectedPlan === planKey && (
-                        <CheckCircle className="h-5 w-5 text-blue-500" />
+                        <CheckCircle className="h-5 w-5 text-enkaji-gold" />
                       )}
                     </div>
                     <ul className="mt-2 space-y-1">
                       {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                          <CheckCircle className="h-3 w-3 text-green-500" />
+                        <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <CheckCircle className="h-3 w-3 text-enkaji-green" />
                           {feature}
                         </li>
                       ))}
@@ -982,7 +982,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 ))}
                 
                 {selectedPlan && subscriptionData.plans[selectedPlan]?.price > 0 && (
-                  <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="p-4 bg-muted rounded-lg">
                     <Label htmlFor="phone">M-Pesa Phone Number</Label>
                     <Input
                       id="phone"
@@ -992,7 +992,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                       onChange={(e) => setPayoutPhone(e.target.value)}
                       className="mt-1"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       You will receive an M-Pesa payment request on this number
                     </p>
                   </div>
@@ -1034,15 +1034,15 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium">Business Name</label>
-                  <p className="text-gray-600">{user.sellerProfile?.businessName || "Not set"}</p>
+                  <p className="text-muted-foreground">{user.sellerProfile?.businessName || "Not set"}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Business Type</label>
-                  <p className="text-gray-600">{user.sellerProfile?.businessType || "Not set"}</p>
+                  <p className="text-muted-foreground">{user.sellerProfile?.businessType || "Not set"}</p>
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-sm font-medium">Description</label>
-                  <p className="text-gray-600">{user.sellerProfile?.description || "No description provided"}</p>
+                  <p className="text-muted-foreground">{user.sellerProfile?.description || "No description provided"}</p>
                 </div>
               </div>
               <Button>Edit Profile</Button>

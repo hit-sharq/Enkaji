@@ -162,13 +162,13 @@ export function ShippingOptions({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Shipping Method
-          </CardTitle>
+            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+             <MapPin className="h-5 w-5 text-enkaji-gold" />
+             Shipping Method
+           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4 text-gray-500">
+          <div className="text-center py-4 text-muted-foreground">
             <p>Please enter your shipping address first</p>
             <p className="text-sm mt-1">Shipping options will appear after you provide your location</p>
           </div>
@@ -181,16 +181,16 @@ export function ShippingOptions({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="h-5 w-5" />
-            Shipping Method
-          </CardTitle>
+            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+             <Truck className="h-5 w-5 text-enkaji-gold" />
+             Shipping Method
+           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-20 bg-gray-200 rounded-md"></div>
+                 <div className="h-20 bg-muted rounded-md"></div>
               </div>
             ))}
           </div>
@@ -203,14 +203,14 @@ export function ShippingOptions({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="h-5 w-5" />
-            Shipping Method
-          </CardTitle>
+            <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+             <Truck className="h-5 w-5 text-enkaji-gold" />
+             Shipping Method
+           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
-            <p className="text-red-500">{error}</p>
+            <p className="text-enkaji-red">{error}</p>
             <Button 
               variant="outline" 
               className="mt-4"
@@ -234,26 +234,26 @@ export function ShippingOptions({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* COD Toggle */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-              <span className="text-green-600 text-sm font-bold">K</span>
-            </div>
-            <div>
-              <p className="font-medium">Cash on Delivery</p>
-              <p className="text-sm text-gray-500">Pay when you receive</p>
-            </div>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              checked={showCod}
-              onChange={handleCodToggle}
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-800"></div>
-          </label>
-        </div>
+         <div className="flex items-center justify-between p-3 bg-muted rounded-xl">
+           <div className="flex items-center gap-2">
+             <div className="w-8 h-8 rounded-full bg-enkaji-gold/10 flex items-center justify-center">
+               <span className="text-enkaji-gold text-sm font-bold">K</span>
+             </div>
+             <div>
+               <p className="font-medium text-foreground">Cash on Delivery</p>
+               <p className="text-sm text-muted-foreground">Pay when you receive</p>
+             </div>
+           </div>
+           <label className="relative inline-flex items-center cursor-pointer">
+             <input
+               type="checkbox"
+               className="sr-only peer"
+               checked={showCod}
+               onChange={handleCodToggle}
+             />
+             <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-enkaji-gold/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-card after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-enkaji-gold"></div>
+           </label>
+         </div>
 
         <Separator />
 
@@ -265,8 +265,8 @@ export function ShippingOptions({
                 key={option.id}
                 className={`relative flex items-start p-4 border rounded-lg cursor-pointer transition-all ${
                   selectedOption === option.id
-                    ? "border-red-800 bg-red-50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-enkaji-gold bg-enkaji-gold/10"
+                    : "border-border hover:border-enkaji-gold/50"
                 }`}
               >
                 <RadioGroupItem
@@ -280,22 +280,22 @@ export function ShippingOptions({
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">{option.service.name}</span>
                         {option.isRecommended && (
-                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
-                            Recommended
-                          </span>
+                         <span className="px-2 py-0.5 bg-enkaji-gold/10 text-enkaji-gold text-xs rounded-full">
+                             Recommended
+                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 mt-1">{option.provider.name}</p>
-                      <p className="text-xs text-gray-400 mt-1">{option.service.description}</p>
+                       <p className="text-sm text-muted-foreground mt-1">{option.provider.name}</p>
+                       <p className="text-xs text-muted-foreground mt-1">{option.service.description}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-lg">{option.formattedPrice}</p>
-                      <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
-                        <Clock className="h-3 w-3" />
-                        {option.formattedDelivery}
-                      </div>
-                      {option.estimatedDelivery.min !== option.estimatedDelivery.max && (
-                        <p className="text-xs text-gray-400 mt-1">
+                       <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                         <Clock className="h-3 w-3" />
+                         {option.formattedDelivery}
+                       </div>
+                       {option.estimatedDelivery.min !== option.estimatedDelivery.max && (
+                         <p className="text-xs text-muted-foreground mt-1">
                           Est: {option.estimatedDelivery.min} - {option.estimatedDelivery.max}
                         </p>
                       )}
@@ -303,8 +303,8 @@ export function ShippingOptions({
                   </div>
                   
                   {option.codSupported && showCod && (
-                    <div className="flex items-center gap-2 mt-2 text-sm text-green-600">
-                      <Shield className="h-3 w-3" />
+                    <div className="flex items-center gap-2 mt-2 text-sm text-enkaji-gold">
+                       <Shield className="h-3 w-3" />
                       <span>Cash on Delivery available</span>
                     </div>
                   )}
@@ -316,7 +316,7 @@ export function ShippingOptions({
 
         {/* Summary */}
         <Separator />
-        <div className="flex justify-between text-sm text-gray-600">
+         <div className="flex justify-between text-sm text-muted-foreground">
           <span>Total Weight</span>
           <span>{totalWeight < 1 ? `${(totalWeight * 1000).toFixed(0)}g` : `${totalWeight.toFixed(1)}kg`}</span>
         </div>

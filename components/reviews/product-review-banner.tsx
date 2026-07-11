@@ -23,7 +23,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
 
   if (!userId) {
     return (
-      <Card className={`border-l-4 border-enkaji-ochre bg-gray-50 ${className}`}>
+      <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-enkaji-ochre" />
@@ -31,7 +31,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 mb-4">Please sign in to write a review.</p>
+          <p className="text-muted-foreground mb-4">Please sign in to write a review.</p>
           <Button
             onClick={() => window.location.href = "/sign-in"}
             className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90"
@@ -104,7 +104,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
   }
 
   return (
-    <Card className={`border-l-4 border-enkaji-ochre bg-gray-50 ${className}`}>
+    <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Star className="w-5 h-5 text-enkaji-ochre" />
@@ -127,8 +127,8 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
                 <Star
                   className={`w-7 h-7 transition-colors ${
                     star <= (hoverRating || rating)
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-gray-300"
+                      ? "text-enkaji-gold fill-current"
+                      : "text-muted-foreground"
                   }`}
                 />
               </button>
@@ -168,19 +168,19 @@ interface ProductReviewBannerProps {
 
 export function ProductReviewBanner({ rating, comment, reviewerName, className = "" }: ProductReviewBannerProps) {
   return (
-    <Card className={`border-l-4 border-enkaji-ochre bg-gray-50 ${className}`}>
+    <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
       <CardContent className="p-4">
         <div className="flex items-center gap-1 mb-2">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`w-4 h-4 ${i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+              className={`w-4 h-4 ${i < rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
             />
           ))}
         </div>
-        <p className="text-gray-700 italic">"{comment}"</p>
+        <p className="text-muted-foreground italic">"{comment}"</p>
         {reviewerName && (
-          <p className="text-sm text-gray-500 mt-2">- {reviewerName}</p>
+          <p className="text-sm text-muted-foreground mt-2">- {reviewerName}</p>
         )}
       </CardContent>
     </Card>

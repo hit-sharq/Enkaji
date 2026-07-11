@@ -78,24 +78,24 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-enkaji-gold text-enkaji-gold"
       case "CONFIRMED":
-        return "bg-blue-100 text-blue-800"
+        return "bg-chart-4 text-chart-4"
       case "SHIPPED":
-        return "bg-purple-100 text-purple-800"
+        return "bg-chart-5 text-chart-5"
       case "DELIVERED":
-        return "bg-green-100 text-green-800"
+        return "bg-enkaji-green text-enkaji-green"
       case "CANCELLED":
-        return "bg-red-100 text-red-800"
+        return "bg-enkaji-red text-enkaji-red"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-muted text-muted-foreground"
     }
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-enkaji-ochre" />
       </div>
     )
   }
@@ -103,9 +103,9 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
   if (error || !order) {
     return (
       <div className="text-center py-12">
-        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Order Not Found</h3>
-        <p className="text-gray-600 mb-4">{error || "The order you're looking for doesn't exist."}</p>
+        <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-foreground mb-2">Order Not Found</h3>
+        <p className="text-muted-foreground mb-4">{error || "The order you're looking for doesn't exist."}</p>
         <Button onClick={() => router.back()} variant="outline">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Go Back
@@ -123,8 +123,8 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
-          <p className="text-gray-600">Order #{order.id.slice(-8)}</p>
+          <h1 className="text-3xl font-bold text-foreground">Order Details</h1>
+          <p className="text-muted-foreground">Order #{order.id.slice(-8)}</p>
         </div>
         <Badge className={getStatusColor(order.status)} variant="secondary">
           {order.status}
@@ -163,7 +163,7 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
                       {item.product.images && item.product.images.length > 0 ? (
                         <img
                           src={item.product.images[0] || "/placeholder.svg"}
@@ -171,17 +171,17 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
-                        <Package className="w-8 h-8 text-gray-400" />
+                        <Package className="w-8 h-8 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium">{item.product.name}</h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Sold by:{" "}
                         {item.product.seller.sellerProfile?.businessName ||
                           `${item.product.seller.firstName} ${item.product.seller.lastName}`}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Quantity: {item.quantity} × KSh {item.price.toLocaleString()}
                       </p>
                     </div>
@@ -251,7 +251,7 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
               <p className="font-medium">
                 {order.user.firstName} {order.user.lastName}
               </p>
-              <p className="text-sm text-gray-600">{order.user.email}</p>
+              <p className="text-sm text-muted-foreground">{order.user.email}</p>
             </CardContent>
           </Card>
         </div>

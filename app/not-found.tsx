@@ -69,7 +69,7 @@ function NotFoundContent() {
       />
       
       {/* Floating decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-enkaji-red/5 rounded-full blur-3xl animate-float" />
+      <div className="absolute top-20 left-10 w-32 h-32 bg-enkaji-gold/5 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-10 w-48 h-48 bg-enkaji-ochre/5 rounded-full blur-3xl animate-float-delayed" />
       <div className="absolute top-1/3 right-20 w-32 h-32 bg-enkaji-gold/5 rounded-full blur-2xl animate-float" />
       <div className="absolute bottom-1/3 left-20 w-24 h-24 bg-enkaji-brown/5 rounded-full blur-xl animate-float-delayed" />
@@ -79,13 +79,13 @@ function NotFoundContent() {
 
       {/* Main 404 Card */}
       <Card 
-        className={`w-full max-w-4xl relative z-10 border-0 shadow-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-700 ${
+        className={`w-full max-w-4xl relative z-10 border-0 shadow-2xl bg-card/80 dark:bg-enkaji-ink/80 backdrop-blur-xl transition-all duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         {/* Decorative gradient border */}
         <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown p-[1px]">
-          <div className="absolute inset-0 rounded-lg bg-white/80 dark:bg-gray-900/80" />
+          <div className="absolute inset-0 rounded-lg bg-card/80 dark:bg-enkaji-ink/80" />
         </div>
 
         <CardContent className="relative p-8 md:p-12 flex flex-col items-center text-center space-y-8">
@@ -119,7 +119,7 @@ function NotFoundContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for products, categories, or sellers..."
-                className="w-full px-6 py-4 pr-32 rounded-full border-2 border-enkaji-ochre/30 focus:border-enkaji-ochre focus:outline-none focus:ring-2 focus:ring-enkaji-ochre/20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-300"
+                className="w-full px-6 py-4 pr-32 rounded-full border-2 border-enkaji-ochre/30 focus:border-enkaji-ochre focus:outline-none focus:ring-2 focus:ring-enkaji-ochre/20 bg-card/50 dark:bg-enkaji-forest/50 backdrop-blur-sm transition-all duration-300"
               />
               <Button 
                 type="submit"

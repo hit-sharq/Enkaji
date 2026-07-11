@@ -103,22 +103,23 @@ export default function ServicesPage() {
   const filteredServices = services.length > 0 ? services : []
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#8B2635] to-[#6B1D2A] text-white py-16">
+      <section className="bg-enkaji-ink text-enkaji-ivory py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <p className="enkaji-eyebrow mb-4">Local Professionals</p>
+            <h1 className="text-4xl md:text-5xl font-display font-semibold mb-4">
               Book Local Services
             </h1>
-            <p className="text-xl text-red-100 mb-8">
+            <p className="text-xl text-enkaji-ivory/80 mb-8">
               Find and book appointments with top-rated service providers in Kenya
             </p>
             
             {/* Search */}
-            <div className="flex flex-col md:flex-row gap-3 bg-white rounded-lg p-2">
+            <div className="flex flex-col md:flex-row gap-3 bg-card rounded-xl p-2">
               <div className="flex-1 flex items-center gap-2 px-3">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-muted-foreground" />
                 <Input 
                   placeholder="Search services..." 
                   className="border-0 focus-visible:ring-0 bg-transparent"
@@ -126,8 +127,8 @@ export default function ServicesPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="flex-1 flex items-center gap-2 px-3 border-l">
-                <MapPin className="h-5 w-5 text-gray-400" />
+              <div className="flex-1 flex items-center gap-2 px-3 border-l border-border">
+                <MapPin className="h-5 w-5 text-muted-foreground" />
                 <Input 
                   placeholder="Location (e.g. Nairobi)" 
                   className="border-0 focus-visible:ring-0 bg-transparent"
@@ -135,7 +136,7 @@ export default function ServicesPage() {
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
-              <Button className="bg-[#8B2635] hover:bg-[#7a1f2e] px-8">
+              <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold px-8">
                 Search
               </Button>
             </div>
@@ -144,12 +145,12 @@ export default function ServicesPage() {
       </section>
 
       {/* Categories */}
-      <section className="py-8 bg-white border-b">
+      <section className="py-8 bg-card border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex gap-2 overflow-x-auto pb-2">
             <Button 
               variant={!selectedCategory ? "default" : "outline"}
-              className={!selectedCategory ? "bg-[#8B2635]" : ""}
+              className={!selectedCategory ? "bg-enkaji-gold text-enkaji-ink font-semibold hover:bg-enkaji-gold/90" : "border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10"}
               onClick={() => setSelectedCategory(null)}
             >
               All Services
@@ -160,7 +161,7 @@ export default function ServicesPage() {
                 <Button
                   key={cat.slug}
                   variant={selectedCategory === cat.slug ? "default" : "outline"}
-                  className={selectedCategory === cat.slug ? "bg-[#8B2635]" : ""}
+                  className={selectedCategory === cat.slug ? "bg-enkaji-gold text-enkaji-ink font-semibold hover:bg-enkaji-gold/90" : "border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10"}
                   onClick={() => setSelectedCategory(cat.slug)}
                 >
                   <Icon className="h-4 w-4 mr-2" />
@@ -173,21 +174,22 @@ export default function ServicesPage() {
       </section>
 
       {/* Featured Services */}
-      <section className="py-12">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold">
+              <p className="enkaji-eyebrow mb-2">Browse</p>
+              <h2 className="text-2xl font-display font-semibold text-foreground">
                 {selectedCategory 
                   ? staticCategories.find(c => c.slug === selectedCategory)?.name 
                   : "Popular Services"
                 }
               </h2>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 {loading ? "Loading..." : `${filteredServices.length} services found`}
               </p>
             </div>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
               <Filter className="h-4 w-4" />
               Filters
             </Button>
@@ -196,7 +198,7 @@ export default function ServicesPage() {
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <Card key={i}>
+                <Card key={i} className="border border-border bg-card rounded-xl">
                   <Skeleton className="aspect-video rounded-t-lg" />
                   <CardContent className="p-4 space-y-2">
                     <Skeleton className="h-4 w-24" />
@@ -210,43 +212,43 @@ export default function ServicesPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredServices.map((service) => (
                 <Link href={`/services/${service.id}`} key={service.id}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                    <div className="aspect-video bg-gray-200 rounded-t-lg relative">
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  <Card className="hover:shadow-md border border-border bg-card rounded-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full">
+                    <div className="aspect-video bg-muted rounded-t-lg relative">
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                         <Clock className="h-12 w-12" />
                       </div>
                       {service.provider.isVerified && (
-                        <Badge className="absolute top-3 left-3 bg-green-500">
+                        <Badge className="absolute top-3 left-3 bg-enkaji-gold text-enkaji-ink">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Verified
                         </Badge>
                       )}
                     </div>
                     <CardContent className="p-4">
-                      <p className="text-sm text-[#8B2635] font-medium mb-1">{service.category}</p>
-                      <h3 className="font-semibold text-lg mb-1">{service.name}</h3>
-                      <p className="text-gray-600 text-sm mb-2">{service.provider.businessName}</p>
+                      <p className="text-sm text-enkaji-gold font-medium mb-1">{service.category}</p>
+                      <h3 className="font-medium text-lg mb-1 text-foreground">{service.name}</h3>
+                      <p className="text-muted-foreground text-sm mb-2">{service.provider.businessName}</p>
                       
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <Star className="h-4 w-4 fill-enkaji-gold text-enkaji-gold" />
                           <span className="font-medium">{service.averageRating?.toFixed(1) || "0.0"}</span>
                         </div>
-                        <span className="text-gray-400">•</span>
-                        <span className="text-gray-500 text-sm">{service.totalReviews || 0} reviews</span>
-                        <span className="text-gray-400">•</span>
-                        <div className="flex items-center gap-1 text-gray-500 text-sm">
+                        <span className="text-muted-foreground">•</span>
+                        <span className="text-muted-foreground text-sm">{service.totalReviews || 0} reviews</span>
+                        <span className="text-muted-foreground">•</span>
+                        <div className="flex items-center gap-1 text-muted-foreground text-sm">
                           <MapPin className="h-3 w-3" />
                           {service.city}
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between pt-3 border-t">
+                      <div className="flex items-center justify-between pt-3 border-t border-border">
                         <div>
-                          <span className="text-2xl font-bold text-[#8B2635]">KSh {Number(service.price).toLocaleString()}</span>
-                          <span className="text-gray-500 text-sm"> / {service.duration}min</span>
+                          <span className="text-2xl font-semibold text-enkaji-gold">KSh {Number(service.price).toLocaleString()}</span>
+                          <span className="text-muted-foreground text-sm"> / {service.duration}min</span>
                         </div>
-                        <Button size="sm" className="bg-[#8B2635] hover:bg-[#7a1f2e]">
+                        <Button size="sm" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                           Book Now
                         </Button>
                       </div>
@@ -257,13 +259,13 @@ export default function ServicesPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No services found</h3>
-              <p className="text-gray-600 mb-4">
+              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2 text-foreground">No services found</h3>
+              <p className="text-muted-foreground mb-4">
                 Be the first to register as a service provider in this category!
               </p>
               <Link href="/services/register">
-                <Button className="bg-[#8B2635]">
+                <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                   Register as Provider
                 </Button>
               </Link>
@@ -273,20 +275,21 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 bg-[#8B2635] text-white">
+      <section className="py-16 bg-enkaji-ink text-enkaji-ivory">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Are You a Service Provider?</h2>
-          <p className="text-xl text-red-100 mb-6 max-w-2xl mx-auto">
+          <p className="enkaji-eyebrow mb-4">Grow Your Business</p>
+          <h2 className="text-3xl font-display font-semibold mb-4">Are You a Service Provider?</h2>
+          <p className="text-xl text-enkaji-ivory/80 mb-6 max-w-2xl mx-auto">
             Join thousands of professionals growing their business on Enkaji
           </p>
           <div className="flex gap-4 justify-center">
             <Link href="/services/register">
-              <Button size="lg" className="bg-white text-[#8B2635] hover:bg-gray-100">
+              <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                 Register as Provider
               </Button>
             </Link>
             <Link href="/dashboard/services">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#8B2635]">
+              <Button size="lg" variant="outline" className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
                 Provider Dashboard
               </Button>
             </Link>

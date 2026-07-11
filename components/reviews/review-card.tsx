@@ -103,7 +103,7 @@ export function ReviewCard({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+            className={`${starSize} ${star <= rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -143,7 +143,7 @@ export function ReviewCard({
                 <span className="text-xs text-muted-foreground">{new Date(review.createdAt).toLocaleDateString()}</span>
               </div>
               {review.title && <h4 className="font-medium text-sm mb-1">{review.title}</h4>}
-              {review.comment && <p className="text-sm text-gray-600 line-clamp-2">{review.comment}</p>}
+              {review.comment && <p className="text-sm text-muted-foreground line-clamp-2">{review.comment}</p>}
             </div>
           </div>
         </CardContent>
@@ -194,8 +194,8 @@ export function ReviewCard({
 
           {/* Product Info */}
           {showProduct && review.product && (
-            <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-              <div className="w-12 h-12 rounded overflow-hidden bg-gray-200">
+            <div className="flex items-center gap-3 mb-4 p-3 bg-muted rounded-lg">
+              <div className="w-12 h-12 rounded overflow-hidden bg-muted">
                 <Image
                   src={review.product.images[0] || "/placeholder.svg"}
                   alt={review.product.name}
@@ -216,7 +216,7 @@ export function ReviewCard({
             {review.title && <h3 className="font-semibold text-lg">{review.title}</h3>}
             {review.comment && (
               <div>
-                <p className={`text-gray-700 ${!isExpanded && review.comment.length > 300 ? "line-clamp-4" : ""}`}>
+                <p className={`text-muted-foreground ${!isExpanded && review.comment.length > 300 ? "line-clamp-4" : ""}`}>
                   {review.comment}
                 </p>
                 {review.comment.length > 300 && (
@@ -236,7 +236,7 @@ export function ReviewCard({
             {review.images.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
                 {review.images.slice(0, 4).map((image, index) => (
-                  <div key={index} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+                   <div key={index} className="aspect-square rounded-lg overflow-hidden bg-muted">
                     <Image
                       src={image || "/placeholder.svg"}
                       alt={`Review image ${index + 1}`}
@@ -247,7 +247,7 @@ export function ReviewCard({
                   </div>
                 ))}
                 {review.images.length > 4 && (
-                  <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center text-sm text-gray-500">
+                   <div className="aspect-square rounded-lg bg-muted flex items-center justify-center text-sm text-muted-foreground">
                     +{review.images.length - 4} more
                   </div>
                 )}
@@ -316,12 +316,12 @@ export function ReviewCard({
             <div className="flex items-center gap-2 mb-3">{renderStarRating(review.rating)}</div>
 
             {review.title && <h3 className="font-medium mb-2">{review.title}</h3>}
-            {review.comment && <p className="text-gray-700 mb-3 line-clamp-3">{review.comment}</p>}
+            {review.comment && <p className="text-muted-foreground mb-3 line-clamp-3">{review.comment}</p>}
 
             {review.images.length > 0 && (
               <div className="flex gap-2 mb-3">
                 {review.images.slice(0, 3).map((image, index) => (
-                  <div key={index} className="w-16 h-16 rounded overflow-hidden bg-gray-100">
+                  <div key={index} className="w-16 h-16 rounded overflow-hidden bg-muted">
                     <Image
                       src={image || "/placeholder.svg"}
                       alt={`Review image ${index + 1}`}
@@ -332,7 +332,7 @@ export function ReviewCard({
                   </div>
                 ))}
                 {review.images.length > 3 && (
-                  <div className="w-16 h-16 rounded bg-gray-100 flex items-center justify-center text-xs text-gray-500">
+                   <div className="w-16 h-16 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
                     +{review.images.length - 3}
                   </div>
                 )}

@@ -96,10 +96,10 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Smartphone className="w-5 h-5" />
-          Pay with M-Pesa
-        </CardTitle>
+          <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
+            <Smartphone className="w-5 h-5 text-enkaji-gold" />
+            Pay with M-Pesa
+          </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,7 +113,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
               onChange={handlePhoneChange}
               required
             />
-            <p className="text-sm text-gray-500">Enter your Safaricom phone number</p>
+             <p className="text-sm text-muted-foreground">Enter your Safaricom phone number</p>
           </div>
 
           {error && (
@@ -131,7 +131,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
           <Button
             type="submit"
             disabled={isProcessing || !phoneNumber}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
           >
             {isProcessing ? (
               <>
@@ -143,7 +143,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
             )}
           </Button>
 
-          <div className="text-xs text-gray-500 space-y-1">
+          <div className="text-xs text-muted-foreground space-y-1">
             <p>• You will receive an M-Pesa prompt on your phone</p>
             <p>• Enter your M-Pesa PIN to complete the payment</p>
             <p>• Payment confirmation will be sent via SMS</p>

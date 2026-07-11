@@ -182,7 +182,7 @@ export function BlogManagement() {
               </div>
 
               <div className="flex space-x-4">
-                <Button type="submit" className="bg-red-800 hover:bg-red-900">
+                <Button type="submit" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                   {editingPost ? "Update Post" : "Create Post"}
                 </Button>
                 <Button
@@ -207,17 +207,17 @@ export function BlogManagement() {
           <div className="flex justify-between items-center">
             <CardTitle>Blog Posts ({posts.length})</CardTitle>
             {!isCreating && !editingPost && (
-              <Button onClick={() => setIsCreating(true)} className="bg-red-800 hover:bg-red-900">
-                <Plus className="w-4 h-4 mr-2" />
-                New Post
-              </Button>
+               <Button onClick={() => setIsCreating(true)} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                 <Plus className="w-4 h-4 mr-2" />
+                 New Post
+               </Button>
             )}
           </div>
         </CardHeader>
         <CardContent>
           {posts.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500">No blog posts yet.</p>
+              <p className="text-muted-foreground">No blog posts yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -225,13 +225,13 @@ export function BlogManagement() {
                 <div key={post.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-semibold">{post.title}</h3>
+                      <h3 className="font-display font-semibold text-foreground">{post.title}</h3>
                       <Badge variant={post.published ? "default" : "secondary"}>
                         {post.published ? "Published" : "Draft"}
                       </Badge>
                     </div>
-                    {post.excerpt && <p className="text-sm text-gray-600 mb-2">{post.excerpt}</p>}
-                    <p className="text-xs text-gray-500">Created: {new Date(post.createdAt).toLocaleDateString()}</p>
+                    {post.excerpt && <p className="text-sm text-muted-foreground mb-2">{post.excerpt}</p>}
+                    <p className="text-xs text-muted-foreground">Created: {new Date(post.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button variant="outline" size="sm" onClick={() => window.open(`/blog/${post.slug}`, "_blank")}>

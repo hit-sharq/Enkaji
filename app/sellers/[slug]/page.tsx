@@ -4,7 +4,7 @@ import { AddToCartButton } from "@/components/cart/add-to-cart-button"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, MapPin, Package, Globe, Mail, Phone } from "lucide-react"
+import { ArrowLeft, MapPin, Package, Globe, Mail } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -18,7 +18,7 @@ async function getSellerBySlug(slug: string) {
       user: {
         include: {
           products: {
-            where: { 
+            where: {
               isActive: true,
               // Show all active products on seller's page (not just shop-approved ones)
             },
@@ -53,6 +53,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
 
   const businessName = seller.sellerProfile?.businessName || `${seller.firstName} ${seller.lastName}`
   const sellerSlug = seller.sellerProfile?.slug || seller.id
+  const isVerified = seller.sellerProfile?.isVerified
 
   return (
     <div className="min-h-screen">
@@ -66,96 +67,90 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="flex-shrink-0">
-              <div className="w-32 h-32 relative overflow-hidden rounded-lg">
-                <Image
-                  src={seller.imageUrl || "/placeholder-user.jpg"}
-                  alt={businessName}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+        {/* Dark hero band */}
+        <section className="bg-enkaji-ink rounded-2xl p-8 md:p-12 mb-8">
+          <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+            <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden border border-enkaji-gold/30 flex-shrink-0">
+              <Image
+                src={seller.imageUrl || "/placeholder-user.jpg"}
+                alt={businessName}
+                fill
+                className="object-cover"
+              />
             </div>
 
-            <div className="flex-1">
-              <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-2">{businessName}</h1>
-
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="enkaji-eyebrow">Seller</span>
+                {isVerified && (
+                  <Badge className="border border-enkaji-gold/30 bg-enkaji-gold/10 text-enkaji-gold text-xs">
+                    Verified
+                  </Badge>
+                )}
+              </div>
+              <h1 className="font-display text-3xl md:text-4xl font-semibold text-enkaji-ivory mb-3">
+                {businessName}
+              </h1>
               {seller.sellerProfile?.businessType && (
-                <Badge variant="secondary" className="mb-4">
-                  {seller.sellerProfile.businessType}
-                </Badge>
+                <p className="text-enkaji-ivory/60 mb-4">{seller.sellerProfile.businessType}</p>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-enkaji-ivory/70">
                 {seller.sellerProfile?.location && (
-                  <div className="flex items-center text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 text-enkaji-gold" />
                     <span>{seller.sellerProfile.location}</span>
                   </div>
                 )}
-
-
-                <div className="flex items-center text-gray-600">
-                  <Package className="w-4 h-4 mr-2" />
+                <div className="flex items-center">
+                  <Package className="w-4 h-4 mr-2 text-enkaji-gold" />
                   <span>{seller.products.length} products</span>
                 </div>
-
                 {seller.email && (
-                  <div className="flex items-center text-gray-600">
-                    <Mail className="w-4 h-4 mr-2" />
-                    <a href={`mailto:${seller.email}`} className="text-blue-600 hover:underline">
+                  <div className="flex items-center">
+                    <Mail className="w-4 h-4 mr-2 text-enkaji-gold" />
+                    <a href={`mailto:${seller.email}`} className="text-enkaji-gold hover:underline">
                       {seller.email}
                     </a>
                   </div>
                 )}
-
-                {seller.sellerProfile?.website ? (
-                  <div className="flex items-center text-gray-600">
-                    <Globe className="w-4 h-4 mr-2" />
+                {seller.sellerProfile?.website && (
+                  <div className="flex items-center">
+                    <Globe className="w-4 h-4 mr-2 text-enkaji-gold" />
                     <a
                       href={seller.sellerProfile.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
+                      className="text-enkaji-gold hover:underline"
                     >
                       Visit Website
                     </a>
-                  </div>
-                ) : (
-                  <div className="flex items-center text-gray-600">
-                    <Globe className="w-4 h-4 mr-2" />
-                    <Link
-                      href={`/sellers/${sellerSlug}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      View Store on Enkaji
-                    </Link>
                   </div>
                 )}
               </div>
 
               {seller.sellerProfile?.description && (
-                <p className="text-gray-600 leading-relaxed">{seller.sellerProfile.description}</p>
+                <p className="text-enkaji-ivory/60 leading-relaxed mt-4 max-w-2xl">
+                  {seller.sellerProfile.description}
+                </p>
               )}
             </div>
           </div>
-        </div>
+        </section>
 
         <div className="mb-8">
-          <h2 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Products</h2>
+          <h2 className="font-display text-2xl font-semibold text-foreground mb-6">Products</h2>
 
           {seller.products.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
-              <p className="text-gray-600">This seller hasn't listed any products yet.</p>
+            <div className="text-center py-12 bg-card border border-enkaji-gold/20 rounded-xl">
+              <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No products yet</h3>
+              <p className="text-muted-foreground">This seller hasn't listed any products yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {seller.products.map((product) => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card key={product.id} className="overflow-hidden border border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
                   <div className="aspect-square relative overflow-hidden">
                     <Image
                       src={product.images[0] || "/placeholder.jpg"}
@@ -165,21 +160,25 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
                     />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+                    <h3 className="font-display font-medium text-foreground mb-2 line-clamp-2">{product.name}</h3>
                     {product.category && (
-                      <Badge variant="outline" className="mb-2 text-xs">
+                      <Badge variant="outline" className="mb-2 text-xs border-enkaji-gold/20">
                         {product.category.name}
                       </Badge>
                     )}
-                    <p className="text-lg font-bold text-orange-600 mb-3">KSh {Number(product.price).toLocaleString()}</p>
+                    <p className="text-lg font-semibold text-enkaji-gold mb-3">KSh {Number(product.price).toLocaleString()}</p>
                     <div className="space-y-2">
                       <Link href={`/products/${product.id}`}>
-                        <Button size="sm" className="w-full" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full border-enkaji-gold/30 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+                        >
                           View Product
                         </Button>
                       </Link>
-                      <AddToCartButton 
-                        productId={product.id} 
+                      <AddToCartButton
+                        productId={product.id}
                         productName={product.name}
                       />
                     </div>
@@ -190,26 +189,35 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
           )}
         </div>
 
-        <div className="bg-orange-50 rounded-lg p-8 text-center">
-          <h3 className="font-playfair text-xl font-bold text-gray-900 mb-4">Interested in {businessName}?</h3>
-          <p className="text-gray-600 mb-6">Get in touch with this seller to discuss your business needs.</p>
+        {/* Dark CTA band */}
+        <section className="bg-enkaji-ink rounded-2xl p-8 text-center">
+          <h3 className="font-display text-xl font-semibold text-enkaji-ivory mb-4">
+            Interested in {businessName}?
+          </h3>
+          <p className="text-enkaji-ivory/60 mb-6">
+            Get in touch with this seller to discuss your business needs.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {seller.email && (
-              <Button asChild>
+              <Button asChild className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                 <a href={`mailto:${seller.email}`}>
                   <Mail className="w-4 h-4 mr-2" />
                   Send Email
                 </a>
               </Button>
             )}
-            <Button variant="outline" asChild>
+            <Button
+              variant="outline"
+              asChild
+              className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+            >
               <a href={`https://wa.me/254700000000?text=Hi, I'm interested in your products on Enkaji Trade Kenya`}>
-                <Phone className="w-4 h-4 mr-2" />
+                <Package className="w-4 h-4 mr-2" />
                 WhatsApp
               </a>
             </Button>
           </div>
-        </div>
+        </section>
       </main>
       <WhatsAppButton />
     </div>

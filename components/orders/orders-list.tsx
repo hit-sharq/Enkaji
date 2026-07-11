@@ -57,15 +57,15 @@ export function OrdersList({ userId }: OrdersListProps) {
       case "PENDING":
         return "bg-enkaji-gold/20 text-enkaji-brown"
       case "CONFIRMED":
-        return "bg-blue-100 text-blue-800"
+        return "bg-chart-4 text-chart-4"
       case "SHIPPED":
-        return "bg-purple-100 text-purple-800"
+        return "bg-chart-5 text-chart-5"
       case "DELIVERED":
         return "bg-enkaji-green/20 text-enkaji-green"
       case "CANCELLED":
         return "bg-enkaji-red/15 text-enkaji-red"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-muted text-enkaji-forest"
     }
   }
 
@@ -81,9 +81,9 @@ export function OrdersList({ userId }: OrdersListProps) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <Package className="w-16 h-16 text-gray-300 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No orders yet</h3>
-          <p className="text-gray-600 text-center mb-4">
+          <Package className="w-16 h-16 text-muted-foreground mb-4" />
+          <h3 className="text-xl font-semibold text-enkaji-ink mb-2">No orders yet</h3>
+          <p className="text-muted-foreground text-center mb-4">
             You haven't placed any orders yet. Start shopping to see your orders here.
           </p>
           <Link href="/shop">
@@ -103,7 +103,7 @@ export function OrdersList({ userId }: OrdersListProps) {
               <CardTitle className="text-lg">Order #{order.id.slice(-8)}</CardTitle>
               <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
             </div>
-            <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>Placed on {new Date(order.createdAt).toLocaleDateString()}</span>
               <span className="font-semibold">Total: KSh {order.total.toLocaleString()}</span>
             </div>
@@ -120,7 +120,7 @@ export function OrdersList({ userId }: OrdersListProps) {
                     />
                     <div className="flex-1">
                       <h4 className="font-medium">{item.product.name}</h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Quantity: {item.quantity} × KSh {item.price.toLocaleString()}
                       </p>
                     </div>
@@ -133,7 +133,7 @@ export function OrdersList({ userId }: OrdersListProps) {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-center py-4">No items found for this order</p>
+                <p className="text-muted-foreground text-center py-4">No items found for this order</p>
               )}
             </div>
             <div className="mt-4 pt-4 border-t">

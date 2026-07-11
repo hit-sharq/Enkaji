@@ -212,7 +212,7 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
     return Object.entries(statusMap).map(([name, value]) => ({ name, value }))
   })()
 
-  const PIE_COLORS = ["#16a34a", "#2563eb", "#d97706", "#dc2626", "#7c3aed", "#0891b2"]
+  const PIE_COLORS = ["#1F7A33", "#C8B96A", "#C07A2E", "#8B2635", "#6B3719", "#162A1A"]
 
   useEffect(() => {
     fetchDashboardData()
@@ -527,20 +527,20 @@ const fetchDashboardData = async () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "PROCESSING":
-        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
+        return <Badge className="bg-chart-4"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
       case "PENDING":
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "REJECTED":
       case "FAILED":
-        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
+        return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
       case "ACTIVE":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Active</Badge>
+        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Active</Badge>
       case "CANCELLED":
-        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
+        return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
       case "PAST_DUE":
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" /> Past Due</Badge>
+        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Past Due</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -672,7 +672,7 @@ const fetchDashboardData = async () => {
         <TabsContent value="users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>User Management</CardTitle>
+              <CardTitle className="font-display">User Management</CardTitle>
               <CardDescription>Manage all platform users, their roles, and account status</CardDescription>
             </CardHeader>
             <CardContent>
@@ -763,7 +763,7 @@ const fetchDashboardData = async () => {
                             </Button>
                           </div>
                           {hasRoleChange && (
-                            <div className="text-xs text-blue-600 mt-1">
+                            <div className="text-xs text-enkaji-gold mt-1">
                               {userItem.role} → {selectedRole}
                             </div>
                           )}
@@ -829,7 +829,7 @@ const fetchDashboardData = async () => {
         <TabsContent value="products" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Product Management</CardTitle>
+              <CardTitle className="font-display">Product Management</CardTitle>
               <CardDescription>Review, approve, and manage all product listings</CardDescription>
             </CardHeader>
             <CardContent>
@@ -948,20 +948,20 @@ const fetchDashboardData = async () => {
 
           {/* Disputed Orders Alert */}
           {orders.filter((o) => o.status === "DISPUTED").length > 0 && (
-            <Card className="border-orange-300 bg-orange-50">
+            <Card className="border-enkaji-ochre bg-enkaji-ochre/10">
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center gap-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-600 shrink-0" />
+                  <AlertTriangle className="h-5 w-5 text-enkaji-ochre shrink-0" />
                   <div>
-                    <p className="font-medium text-orange-800">
+                    <p className="font-medium text-enkaji-brown">
                       {orders.filter((o) => o.status === "DISPUTED").length} Disputed Order(s) Require Attention
                     </p>
-                    <p className="text-sm text-orange-600">Use the filter above to view disputed orders and take action.</p>
+                    <p className="text-sm text-enkaji-ochre">Use the filter above to view disputed orders and take action.</p>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="ml-auto border-orange-400 text-orange-700"
+                    className="ml-auto border-enkaji-ochre text-enkaji-ochre"
                     onClick={() => setOrderStatusFilter("DISPUTED")}
                   >
                     View Disputes
@@ -973,7 +973,7 @@ const fetchDashboardData = async () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Order Management</CardTitle>
+              <CardTitle className="font-display">Order Management</CardTitle>
               <CardDescription>Monitor and manage all platform orders</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1013,7 +1013,7 @@ const fetchDashboardData = async () => {
                         filteredOrders.map((order) => (
                           <TableRow
                             key={order.id}
-                            className={order.status === "DISPUTED" ? "bg-orange-50" : ""}
+                            className={order.status === "DISPUTED" ? "bg-enkaji-ochre/10" : ""}
                           >
                             <TableCell>
                               <input
@@ -1053,7 +1053,7 @@ const fetchDashboardData = async () => {
                                         ? "secondary"
                                         : "secondary"
                                 }
-                                className={order.status === "DISPUTED" ? "bg-orange-100 text-orange-700 border-orange-300" : ""}
+                                className={order.status === "DISPUTED" ? "bg-enkaji-ochre/10 text-enkaji-brown border-enkaji-ochre" : ""}
                               >
                                 {order.status === "DISPUTED" && <AlertTriangle className="h-3 w-3 mr-1" />}
                                 {order.status}
@@ -1069,7 +1069,7 @@ const fetchDashboardData = async () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="text-green-600 border-green-300"
+                                    className="text-enkaji-green border-enkaji-green"
                                     onClick={() => handleBulkOrderAction("CONFIRMED")}
                                   >
                                     Resolve
@@ -1092,7 +1092,7 @@ const fetchDashboardData = async () => {
         <TabsContent value="sellers" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Seller Verification</CardTitle>
+              <CardTitle className="font-display">Seller Verification</CardTitle>
               <CardDescription>Review and verify seller accounts and business information</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1163,8 +1163,8 @@ const fetchDashboardData = async () => {
         <TabsContent value="payouts" className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Payout Management</h2>
-              <p className="text-gray-600">Manage seller payout requests and approvals</p>
+              <h2 className="font-display text-2xl font-semibold text-foreground">Payout Management</h2>
+              <p className="text-muted-foreground">Manage seller payout requests and approvals</p>
             </div>
             <Button variant="outline" onClick={fetchPayouts} disabled={payoutLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${payoutLoading ? "animate-spin" : ""}`} />
@@ -1177,7 +1177,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
-                <Clock className="h-4 w-4 text-yellow-500" />
+                <Clock className="h-4 w-4 text-enkaji-gold" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1192,7 +1192,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Processing</CardTitle>
-                <RefreshCw className="h-4 w-4 text-blue-500" />
+                <RefreshCw className="h-4 w-4 text-chart-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1207,7 +1207,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                <CheckCircle className="h-4 w-4 text-green-500" />
+                <CheckCircle className="h-4 w-4 text-enkaji-green" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1223,7 +1223,7 @@ const fetchDashboardData = async () => {
           {/* Payout Requests Table */}
           <Card>
             <CardHeader>
-              <CardTitle>All Payout Requests</CardTitle>
+              <CardTitle className="font-display">All Payout Requests</CardTitle>
               <CardDescription>Review and process seller payout requests</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1233,9 +1233,9 @@ const fetchDashboardData = async () => {
                 </div>
               ) : payouts.length === 0 ? (
                 <div className="text-center py-8">
-                  <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No payout requests</h3>
-                  <p className="text-gray-600">Payout requests from sellers will appear here</p>
+                  <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No payout requests</h3>
+                  <p className="text-muted-foreground">Payout requests from sellers will appear here</p>
                 </div>
               ) : (
                 <Table>
@@ -1334,8 +1334,8 @@ const fetchDashboardData = async () => {
         <TabsContent value="subscriptions" className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Subscription Management</h2>
-              <p className="text-gray-600">Manage seller subscriptions and plans</p>
+              <h2 className="font-display text-2xl font-semibold text-foreground">Subscription Management</h2>
+              <p className="text-muted-foreground">Manage seller subscriptions and plans</p>
             </div>
             <Button variant="outline" onClick={fetchSubscriptions} disabled={subscriptionLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${subscriptionLoading ? "animate-spin" : ""}`} />
@@ -1374,7 +1374,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Premium Plan</CardTitle>
-                <Badge className="bg-yellow-500">KES 1,500/mo</Badge>
+                <Badge className="bg-enkaji-gold">KES 1,500/mo</Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1389,7 +1389,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Enterprise Plan</CardTitle>
-                <Badge className="bg-purple-500">KES 5,000/mo</Badge>
+                <Badge className="bg-chart-5">KES 5,000/mo</Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1405,7 +1405,7 @@ const fetchDashboardData = async () => {
           {/* Subscriptions Table */}
           <Card>
             <CardHeader>
-              <CardTitle>All Subscriptions</CardTitle>
+              <CardTitle className="font-display">All Subscriptions</CardTitle>
               <CardDescription>View and manage seller subscription plans</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1415,9 +1415,9 @@ const fetchDashboardData = async () => {
                 </div>
               ) : subscriptions.length === 0 ? (
                 <div className="text-center py-8">
-                  <Crown className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No subscriptions yet</h3>
-                  <p className="text-gray-600">Seller subscriptions will appear here</p>
+                  <Crown className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No subscriptions yet</h3>
+                  <p className="text-muted-foreground">Seller subscriptions will appear here</p>
                 </div>
               ) : (
                 <Table>
@@ -1472,7 +1472,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardContent className="pt-4">
                 <p className="text-xs text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">KSh {stats.totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-enkaji-gold">KSh {stats.totalRevenue.toLocaleString()}</p>
               </CardContent>
             </Card>
             <Card>
@@ -1499,8 +1499,8 @@ const fetchDashboardData = async () => {
             {/* Revenue Trend */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
+                <CardTitle className="font-display flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-enkaji-gold" />
                   Revenue Trend (6 months)
                 </CardTitle>
                 <CardDescription>Monthly revenue in KSh</CardDescription>
@@ -1510,15 +1510,15 @@ const fetchDashboardData = async () => {
                   <AreaChart data={monthlyRevenueData}>
                     <defs>
                       <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#1F7A33" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#1F7A33" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e8e2d4" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
                     <Tooltip formatter={(value: any) => [`KSh ${value.toLocaleString()}`, "Revenue"]} />
-                    <Area type="monotone" dataKey="revenue" stroke="#16a34a" fill="url(#revenueGradient)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="revenue" stroke="#1F7A33" fill="url(#revenueGradient)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1527,8 +1527,8 @@ const fetchDashboardData = async () => {
             {/* Orders per month */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
+                <CardTitle className="font-display flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-enkaji-gold" />
                   Orders per Month
                 </CardTitle>
                 <CardDescription>Order volume over last 6 months</CardDescription>
@@ -1536,11 +1536,11 @@ const fetchDashboardData = async () => {
               <CardContent>
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={monthlyRevenueData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e8e2d4" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
                     <Tooltip formatter={(value: any) => [value, "Orders"]} />
-                    <Bar dataKey="orders" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="orders" fill="#C8B96A" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1550,7 +1550,7 @@ const fetchDashboardData = async () => {
           {/* Order Status Breakdown */}
           <Card>
             <CardHeader>
-              <CardTitle>Order Status Breakdown</CardTitle>
+                <CardTitle className="font-display">Order Status Breakdown</CardTitle>
               <CardDescription>Distribution of all orders by current status</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1600,7 +1600,7 @@ const fetchDashboardData = async () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Platform Settings</CardTitle>
+                <CardTitle className="font-display">Platform Settings</CardTitle>
                 <CardDescription>Configure platform-wide settings</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1630,7 +1630,7 @@ const fetchDashboardData = async () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Email Templates</CardTitle>
+                <CardTitle className="font-display">Email Templates</CardTitle>
                 <CardDescription>Manage automated email templates</CardDescription>
               </CardHeader>
               <CardContent>

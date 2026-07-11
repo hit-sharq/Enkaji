@@ -113,21 +113,21 @@ export default function MessagesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
+      <h1 className="font-display text-2xl font-semibold mb-6 flex items-center gap-2">
         <MessageSquare className="h-6 w-6" /> Messages
       </h1>
 
       <div className="border rounded-xl overflow-hidden flex h-[600px]">
         <div className={`w-80 border-r flex flex-col ${selected ? "hidden md:flex" : "flex"}`}>
-          <div className="p-4 border-b bg-gray-50">
-            <p className="text-sm font-medium text-gray-600">Conversations</p>
+          <div className="p-4 border-b bg-muted">
+            <p className="text-sm font-medium text-muted-foreground">Conversations</p>
           </div>
           {loading ? (
             <div className="flex-1 flex items-center justify-center">
-              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
           ) : threads.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+              <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-4 text-center">
               <MessageSquare className="h-10 w-10 mb-2 opacity-30" />
               <p className="text-sm">No conversations yet.<br />Message a seller from a product page.</p>
             </div>
@@ -143,29 +143,29 @@ export default function MessagesPage() {
                   <button
                     key={thread.id}
                     onClick={() => { setMyUserId(thread.participantA.id); openThread(thread) }}
-                    className={`w-full text-left p-4 hover:bg-gray-50 transition-colors ${selected?.id === thread.id ? "bg-amber-50" : ""}`}
+                    className={`w-full text-left p-4 hover:bg-muted transition-colors ${selected?.id === thread.id ? "bg-enkaji-gold/10" : ""}`}
                   >
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 shrink-0">
                         <AvatarImage src={other.imageUrl || ""} />
-                        <AvatarFallback className="bg-[#8B2635] text-white text-xs">{initials(other)}</AvatarFallback>
+                        <AvatarFallback className="bg-enkaji-gold text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center">
                           <p className="font-medium text-sm truncate">{displayName(other)}</p>
-                          {lastMsg && (
-                            <span className="text-xs text-gray-400 shrink-0 ml-1">
+                        {lastMsg && (
+                          <span className="text-xs text-muted-foreground shrink-0 ml-1">
                               {formatDistanceToNow(new Date(lastMsg.createdAt), { addSuffix: true })}
                             </span>
                           )}
                         </div>
                         {lastMsg && (
-                          <p className={`text-xs truncate ${unread ? "font-semibold text-gray-800" : "text-gray-500"}`}>
+                           <p className={`text-xs truncate ${unread ? "font-semibold text-foreground/80" : "text-muted-foreground"}`}>
                             {lastMsg.body}
                           </p>
                         )}
                       </div>
-                      {unread && <Badge className="bg-[#8B2635] text-white text-xs px-1.5 py-0.5 rounded-full shrink-0">•</Badge>}
+                      {unread && <Badge className="bg-enkaji-gold text-enkaji-ink text-xs px-1.5 py-0.5 rounded-full shrink-0">•</Badge>}
                     </div>
                   </button>
                 )
@@ -176,7 +176,7 @@ export default function MessagesPage() {
 
         {selected ? (
           <div className="flex-1 flex flex-col">
-            <div className="p-4 border-b bg-gray-50 flex items-center gap-3">
+            <div className="p-4 border-b bg-muted flex items-center gap-3">
               <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setSelected(null)}>
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -186,7 +186,7 @@ export default function MessagesPage() {
                   <>
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={other.imageUrl || ""} />
-                      <AvatarFallback className="bg-[#8B2635] text-white text-xs">{initials(other)}</AvatarFallback>
+                      <AvatarFallback className="bg-enkaji-gold text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-semibold text-sm">{displayName(other)}</p>
@@ -201,9 +201,9 @@ export default function MessagesPage() {
                 const isMe = msg.senderId === myUserId
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${isMe ? "bg-[#8B2635] text-white rounded-br-sm" : "bg-gray-100 text-gray-800 rounded-bl-sm"}`}>
+                    <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${isMe ? "bg-enkaji-gold text-enkaji-ink rounded-br-sm" : "bg-muted text-foreground/80 rounded-bl-sm"}`}>
                       <p>{msg.body}</p>
-                      <p className={`text-xs mt-1 ${isMe ? "text-red-200" : "text-gray-400"}`}>
+                      <p className={`text-xs mt-1 ${isMe ? "text-enkaji-gold/70" : "text-muted-foreground"}`}>
                         {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                       </p>
                     </div>
@@ -213,7 +213,7 @@ export default function MessagesPage() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t bg-white flex gap-2">
+            <div className="p-4 border-t bg-card flex gap-2">
               <Input
                 placeholder="Type a message…"
                 value={body}
@@ -221,13 +221,13 @@ export default function MessagesPage() {
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
                 className="flex-1"
               />
-              <Button onClick={sendMessage} disabled={!body.trim() || sending} className="bg-[#8B2635] hover:bg-[#7a1f2e] text-white">
+              <Button onClick={sendMessage} disabled={!body.trim() || sending} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
           </div>
         ) : (
-          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-gray-400">
+            <div className="hidden md:flex flex-1 flex-col items-center justify-center text-muted-foreground">
             <MessageSquare className="h-16 w-16 opacity-20 mb-4" />
             <p className="text-lg font-medium">Select a conversation</p>
             <p className="text-sm">Choose from your existing messages or start a new one from a product page.</p>

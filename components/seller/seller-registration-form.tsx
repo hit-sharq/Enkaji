@@ -132,28 +132,28 @@ if (!response.ok) {
 
   if (isSuccess) {
     return (
-      <Card>
+      <Card className="border border-border bg-card rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Check className="w-5 h-5 text-green-600" />
+          <CardTitle className="flex items-center space-x-2 text-foreground">
+            <Check className="w-5 h-5 text-enkaji-green" />
             <span>Registration Successful!</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Check className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 border border-border">
+              <Check className="w-8 h-8 text-enkaji-green" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Your seller account has been created!</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="text-xl font-medium mb-2 text-foreground">Your seller account has been created!</h3>
+            <p className="text-muted-foreground mb-4">
               We've sent a confirmation email to <strong>{user.email}</strong> with the list of required legal documents.
             </p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left mb-6">
-              <h4 className="font-semibold mb-2">Next Step: Complete Verification</h4>
-              <p className="text-sm text-gray-600 mb-2">
+            <div className="bg-muted border border-border rounded-xl p-4 text-left mb-6">
+              <h4 className="font-medium mb-2 text-foreground">Next Step: Complete Verification</h4>
+              <p className="text-sm text-muted-foreground mb-2">
                 To access your seller dashboard and start selling, please upload the required documents:
               </p>
-              <ul className="list-disc list-inside space-y-1 text-sm">
+              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
                 <li>Business Registration Certificate</li>
                 <li>KRA PIN Certificate</li>
                 <li>CR12 Form</li>
@@ -163,14 +163,14 @@ if (!response.ok) {
             <div className="space-y-3">
               <Button 
                 onClick={() => router.push("/dashboard")}
-                className="w-full bg-orange-600 hover:bg-orange-700"
+                className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
               >
                 Go to Dashboard
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => router.push("/")}
-                className="w-full"
+                className="w-full border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10"
               >
                 Continue Shopping
               </Button>
@@ -182,10 +182,10 @@ if (!response.ok) {
   }
 
   return (
-    <Card>
+    <Card className="border border-border bg-card rounded-xl shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Store className="w-5 h-5" />
+        <CardTitle className="flex items-center space-x-2 text-foreground">
+          <Store className="w-5 h-5 text-enkaji-gold" />
           <span>Seller Profile Setup</span>
         </CardTitle>
       </CardHeader>
@@ -199,22 +199,22 @@ if (!response.ok) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={user.firstName ?? ""} disabled className="bg-gray-50" />
+              <Label htmlFor="firstName" className="text-foreground">First Name</Label>
+              <Input id="firstName" value={user.firstName ?? ""} disabled className="bg-muted" />
             </div>
             <div>
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={user.lastName ?? ""} disabled className="bg-gray-50" />
+              <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
+              <Input id="lastName" value={user.lastName ?? ""} disabled className="bg-muted" />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" value={user.email} disabled className="bg-gray-50" />
+            <Label htmlFor="email" className="text-foreground">Email</Label>
+            <Input id="email" value={user.email} disabled className="bg-muted" />
           </div>
 
           <div>
-            <Label htmlFor="businessName">Business Name *</Label>
+            <Label htmlFor="businessName" className="text-foreground">Business Name *</Label>
             <Input
               id="businessName"
               name="businessName"
@@ -226,7 +226,7 @@ if (!response.ok) {
           </div>
 
           <div>
-            <Label htmlFor="businessType">Business Type *</Label>
+            <Label htmlFor="businessType" className="text-foreground">Business Type *</Label>
             <Select onValueChange={handleSelectChange} required>
               <SelectTrigger>
                 <SelectValue placeholder="Select your business type" />
@@ -244,7 +244,7 @@ if (!response.ok) {
           </div>
 
           <div>
-            <Label htmlFor="phoneNumber">Phone Number *</Label>
+            <Label htmlFor="phoneNumber" className="text-foreground">Phone Number *</Label>
             <Input
               id="phoneNumber"
               name="phoneNumber"
@@ -256,7 +256,7 @@ if (!response.ok) {
           </div>
 
           <div>
-            <Label htmlFor="location">Location *</Label>
+            <Label htmlFor="location" className="text-foreground">Location *</Label>
             <Input
               id="location"
               name="location"
@@ -268,7 +268,7 @@ if (!response.ok) {
           </div>
 
           <div>
-            <Label htmlFor="website">Website (Optional)</Label>
+            <Label htmlFor="website" className="text-foreground">Website (Optional)</Label>
             <Input
               id="website"
               name="website"
@@ -279,7 +279,7 @@ if (!response.ok) {
           </div>
 
           <div>
-            <Label htmlFor="description">Business Description</Label>
+            <Label htmlFor="description" className="text-foreground">Business Description</Label>
             <Textarea
               id="description"
               name="description"
@@ -291,12 +291,12 @@ if (!response.ok) {
           </div>
 
           {/* Plan Selection */}
-          <div className="border rounded-lg p-4 space-y-4">
+          <div className="border border-border rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-2">
-              <Crown className="w-5 h-5 text-orange-600" />
-              <Label className="text-lg font-semibold">Select Your Plan</Label>
+              <Crown className="w-5 h-5 text-enkaji-gold" />
+              <Label className="text-lg font-medium text-foreground">Select Your Plan</Label>
             </div>
-            <p className="text-sm text-gray-500">Choose the plan that best fits your business needs. You can upgrade anytime.</p>
+            <p className="text-sm text-muted-foreground">Choose the plan that best fits your business needs. You can upgrade anytime.</p>
             
             <RadioGroup 
               value={formData.plan} 
@@ -306,27 +306,27 @@ if (!response.ok) {
               {planOptions.map((plan) => (
                 <Label
                   key={plan.value}
-                  className={`flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-orange-300 ${
+                  className={`flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-enkaji-gold/50 ${
                     formData.plan === plan.value 
-                      ? "border-orange-500 bg-orange-50" 
-                      : "border-gray-200"
+                      ? "border-enkaji-gold bg-accent" 
+                      : "border-border"
                   }`}
                 >
                   <RadioGroupItem value={plan.value} className="sr-only" />
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold">{plan.name}</span>
+                    <span className="font-medium text-foreground">{plan.name}</span>
                     {formData.plan === plan.value && (
-                      <Check className="w-5 h-5 text-orange-600" />
+                      <Check className="w-5 h-5 text-enkaji-gold" />
                     )}
                   </div>
-                  <div className="text-lg font-bold text-orange-600">{plan.price}</div>
-                  <div className="text-sm text-gray-500 mt-1">{plan.description}</div>
+                  <div className="text-lg font-semibold text-enkaji-gold">{plan.price}</div>
+                  <div className="text-sm text-muted-foreground mt-1">{plan.description}</div>
                 </Label>
               ))}
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

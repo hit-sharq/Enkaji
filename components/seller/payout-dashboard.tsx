@@ -148,11 +148,11 @@ export function PayoutDashboard() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "PAID":
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
       case "REQUESTED":
-        return <Clock className="h-4 w-4 text-blue-600" />
+        return <Clock className="h-4 w-4 text-chart-4" />
       default:
-        return <Clock className="h-4 w-4 text-yellow-600" />
+        return <Clock className="h-4 w-4 text-enkaji-gold" />
     }
   }
 
@@ -173,10 +173,10 @@ export function PayoutDashboard() {
         <div className="animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-32 bg-muted rounded-xl"></div>
             ))}
           </div>
-          <div className="h-64 bg-gray-200 rounded-lg"></div>
+          <div className="h-64 bg-muted rounded-xl"></div>
         </div>
       </div>
     )
@@ -186,70 +186,70 @@ export function PayoutDashboard() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Total Earnings</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES {stats?.totalEarnings.toLocaleString() || 0}</div>
+            <div className="text-2xl font-semibold text-foreground">KES {stats?.totalEarnings.toLocaleString() || 0}</div>
             <p className="text-xs text-muted-foreground">Gross sales amount</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Platform Fees</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Platform Fees</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-foreground">
               KES {((stats?.totalCommissions || 0) + (stats?.totalFees || 0)).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">Commission + processing fees</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Net Earnings</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Net Earnings</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES {stats?.totalNet.toLocaleString() || 0}</div>
+            <div className="text-2xl font-semibold text-foreground">KES {stats?.totalNet.toLocaleString() || 0}</div>
             <p className="text-xs text-muted-foreground">After all deductions</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Payout</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Pending Payout</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES {stats?.pendingAmount.toLocaleString() || 0}</div>
+            <div className="text-2xl font-semibold text-foreground">KES {stats?.pendingAmount.toLocaleString() || 0}</div>
             <p className="text-xs text-muted-foreground">Available for withdrawal</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Payout Request */}
-      <Card>
+      <Card className="border border-border bg-card rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>Request Payout</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-foreground">Request Payout</CardTitle>
+          <CardDescription className="text-muted-foreground">
             Minimum payout amount is KES 1,000. Payouts are processed within 3-5 business days.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-semibold">Available: KES {stats?.pendingAmount.toLocaleString() || 0}</p>
-              <p className="text-sm text-gray-600">Ready for withdrawal</p>
+              <p className="text-lg font-semibold text-foreground">Available: KES {stats?.pendingAmount.toLocaleString() || 0}</p>
+              <p className="text-sm text-muted-foreground">Ready for withdrawal</p>
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button disabled={(stats?.pendingAmount || 0) < 1000} className="bg-green-600 hover:bg-green-700">
+                <Button disabled={(stats?.pendingAmount || 0) < 1000} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                   Request Payout
                 </Button>
               </DialogTrigger>
@@ -259,23 +259,23 @@ export function PayoutDashboard() {
                 </DialogHeader>
                 <div className="space-y-4">
                   {savedPaymentMethod ? (
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div className="bg-enkaji-green p-4 rounded-lg border border-enkaji-green">
                       <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="font-semibold text-green-800">Using Saved Payment Method</span>
+                        <CheckCircle className="h-4 w-4 text-enkaji-green" />
+                        <span className="font-semibold text-enkaji-green">Using Saved Payment Method</span>
                       </div>
-                      <p className="text-sm text-green-700">
+                      <p className="text-sm text-enkaji-green">
                         {savedPaymentMethod.method === "MPESA" 
                           ? `M-Pesa: ${savedPaymentMethod.phoneNumber}`
                           : `Bank: ${savedPaymentMethod.bankName} - ${savedPaymentMethod.accountNumber}`}
                       </p>
-                      <p className="text-xs text-green-600 mt-1">
+                      <p className="text-xs text-enkaji-green mt-1">
                         <a href="/dashboard/payment-settings" className="underline">Update in Payment Settings</a>
                       </p>
                     </div>
                   ) : (
                     <div>
-                      <Label htmlFor="payout-method">Payout Method</Label>
+                      <Label htmlFor="payout-method" className="text-foreground">Payout Method</Label>
                       <Select value={payoutMethod} onValueChange={setPayoutMethod}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select payout method" />
@@ -300,7 +300,7 @@ export function PayoutDashboard() {
 
                   {payoutMethod === "MPESA" && (
                     <div>
-                      <Label htmlFor="phone">M-Pesa Phone Number</Label>
+                      <Label htmlFor="phone" className="text-foreground">M-Pesa Phone Number</Label>
                       <Input
                         id="phone"
                         placeholder="0712345678"
@@ -313,7 +313,7 @@ export function PayoutDashboard() {
                   {payoutMethod === "BANK_TRANSFER" && (
                     <div className="space-y-3">
                       <div>
-                        <Label htmlFor="bank-name">Bank Name</Label>
+                        <Label htmlFor="bank-name" className="text-foreground">Bank Name</Label>
                         <Input
                           id="bank-name"
                           placeholder="e.g., KCB Bank"
@@ -322,7 +322,7 @@ export function PayoutDashboard() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="account-number">Account Number</Label>
+                        <Label htmlFor="account-number" className="text-foreground">Account Number</Label>
                         <Input
                           id="account-number"
                           placeholder="Account number"
@@ -331,7 +331,7 @@ export function PayoutDashboard() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="account-name">Account Name</Label>
+                        <Label htmlFor="account-name" className="text-foreground">Account Name</Label>
                         <Input
                           id="account-name"
                           placeholder="Account holder name"
@@ -340,7 +340,7 @@ export function PayoutDashboard() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="swift-code">SWIFT Code (Optional)</Label>
+                        <Label htmlFor="swift-code" className="text-foreground">SWIFT Code (Optional)</Label>
                         <Input
                           id="swift-code"
                           placeholder="SWIFT/BIC code"
@@ -351,11 +351,11 @@ export function PayoutDashboard() {
                     </div>
                   )}
 
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-muted p-4 rounded-lg border border-border">
+                    <p className="text-sm text-foreground">
                       <strong>Amount to be paid:</strong> KES {stats?.pendingAmount.toLocaleString() || 0}
                     </p>
-                    <p className="text-xs text-blue-600 mt-1">Processing time: 3-5 business days</p>
+                    <p className="text-xs text-muted-foreground mt-1">Processing time: 3-5 business days</p>
                   </div>
 
                   <Button onClick={handlePayoutRequest} disabled={requestingPayout} className="w-full">
@@ -369,39 +369,39 @@ export function PayoutDashboard() {
       </Card>
 
       {/* Payout History */}
-      <Card>
+      <Card className="border border-border bg-card rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>Payout History</CardTitle>
-          <CardDescription>Your earnings and payout records</CardDescription>
+          <CardTitle className="text-foreground">Payout History</CardTitle>
+          <CardDescription className="text-muted-foreground">Your earnings and payout records</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order</TableHead>
-                <TableHead>Gross Amount</TableHead>
-                <TableHead>Fees</TableHead>
-                <TableHead>Net Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="text-foreground">Order</TableHead>
+                <TableHead className="text-foreground">Gross Amount</TableHead>
+                <TableHead className="text-foreground">Fees</TableHead>
+                <TableHead className="text-foreground">Net Amount</TableHead>
+                <TableHead className="text-foreground">Status</TableHead>
+                <TableHead className="text-foreground">Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {payouts.map((payout) => (
                 <TableRow key={payout.id}>
-                  <TableCell className="font-mono text-sm">{payout.order.id.slice(0, 8)}...</TableCell>
-                  <TableCell>KES {payout.grossAmount.toLocaleString()}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-mono text-sm text-foreground">{payout.order.id.slice(0, 8)}...</TableCell>
+                  <TableCell className="text-foreground">KES {payout.grossAmount.toLocaleString()}</TableCell>
+                  <TableCell className="text-muted-foreground">
                     KES {(payout.platformCommission + payout.paymentProcessingFee).toLocaleString()}
                   </TableCell>
-                  <TableCell className="font-semibold">KES {payout.netAmount.toLocaleString()}</TableCell>
+                  <TableCell className="font-semibold text-foreground">KES {payout.netAmount.toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusColor(payout.status) as any}>
                       {getStatusIcon(payout.status)}
                       <span className="ml-2">{payout.status}</span>
                     </Badge>
                   </TableCell>
-                  <TableCell>{new Date(payout.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-muted-foreground">{new Date(payout.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -409,7 +409,7 @@ export function PayoutDashboard() {
 
           {payouts.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-gray-600">No payouts yet. Complete some orders to start earning!</p>
+              <p className="text-muted-foreground">No payouts yet. Complete some orders to start earning!</p>
             </div>
           )}
         </CardContent>

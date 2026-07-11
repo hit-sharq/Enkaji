@@ -90,7 +90,7 @@ export function FavoriteButton({
       size="icon"
       className={`
         ${sizeClasses[size]}
-        ${isFavorite ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-gray-600"}
+        ${isFavorite ? "text-enkaji-gold text-enkaji-gold" : "text-muted-foreground hover:text-muted-foreground"}
         ${className || ""}
       `}
       onClick={handleToggleFavorite}

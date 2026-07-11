@@ -87,7 +87,7 @@ export function ContactForm() {
             />
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-red-800 hover:bg-red-900">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-enkaji-red hover:bg-enkaji-red">
             {isSubmitting ? "Sending..." : "Send Message"}
           </Button>
         </form>

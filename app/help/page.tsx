@@ -6,12 +6,13 @@ import { Phone, Mail, MessageCircle, Clock, Search, FileText, Users, Shield } fr
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="enkaji-eyebrow mb-3">Support</p>
+          <h1 className="font-display font-semibold text-4xl text-foreground mb-4">Help Center</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Get the support you need. Find answers to common questions or contact our support team.
           </p>
         </div>
@@ -19,60 +20,60 @@ export default function HelpPage() {
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-12">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <Input placeholder="Search for help articles..." className="pl-10 py-3 text-lg" />
           </div>
         </div>
 
         {/* Quick Help Categories */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
             <CardHeader className="text-center">
-              <FileText className="h-12 w-12 text-blue-600 mx-auto mb-2" />
+              <FileText className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
               <CardTitle className="text-lg">Getting Started</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 text-center">Learn the basics of using Enkaji Trade Kenya</p>
+              <p className="text-muted-foreground text-center">Learn the basics of using Enkaji Trade Kenya</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
             <CardHeader className="text-center">
-              <Users className="h-12 w-12 text-green-600 mx-auto mb-2" />
+              <Users className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
               <CardTitle className="text-lg">Account & Profile</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 text-center">Manage your account settings and profile</p>
+              <p className="text-muted-foreground text-center">Manage your account settings and profile</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
             <CardHeader className="text-center">
-              <Shield className="h-12 w-12 text-purple-600 mx-auto mb-2" />
+              <Shield className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
               <CardTitle className="text-lg">Safety & Security</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 text-center">Stay safe while trading online</p>
+              <p className="text-muted-foreground text-center">Stay safe while trading online</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
             <CardHeader className="text-center">
-              <MessageCircle className="h-12 w-12 text-orange-600 mx-auto mb-2" />
+              <MessageCircle className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
               <CardTitle className="text-lg">Orders & Payments</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 text-center">Help with orders, payments, and refunds</p>
+              <p className="text-muted-foreground text-center">Help with orders, payments, and refunds</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Contact Support */}
-          <Card>
+          <Card className="border border-border bg-card rounded-xl shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-5 w-5 text-enkaji-gold" />
                 Contact Support
               </CardTitle>
               <CardDescription>
@@ -93,37 +94,37 @@ export default function HelpPage() {
           </Card>
 
           {/* Contact Information */}
-          <Card>
+          <Card className="border border-border bg-card rounded-xl shadow-sm">
             <CardHeader>
               <CardTitle>Get in Touch</CardTitle>
               <CardDescription>Multiple ways to reach our support team</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-blue-600" />
+                <Phone className="h-5 w-5 text-enkaji-gold" />
                 <div>
                   <p className="font-medium">Phone Support</p>
-                  <p className="text-gray-600">+254 700 123 456</p>
-                  <p className="text-sm text-gray-500">Mon-Fri, 8AM-6PM EAT</p>
+                  <p className="text-muted-foreground">+254 700 123 456</p>
+                  <p className="text-sm text-muted-foreground">Mon-Fri, 8AM-6PM EAT</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-green-600" />
+                <Mail className="h-5 w-5 text-enkaji-gold" />
                 <div>
                   <p className="font-medium">Email Support</p>
-                  <p className="text-gray-600">support@enkajitrade.co.ke</p>
-                  <p className="text-sm text-gray-500">Response within 24 hours</p>
+                  <p className="text-muted-foreground">support@enkajitrade.co.ke</p>
+                  <p className="text-sm text-muted-foreground">Response within 24 hours</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-purple-600" />
+                <Clock className="h-5 w-5 text-enkaji-gold" />
                 <div>
                   <p className="font-medium">Business Hours</p>
-                  <p className="text-gray-600">Monday - Friday: 8AM - 6PM</p>
-                  <p className="text-gray-600">Saturday: 9AM - 4PM</p>
-                  <p className="text-sm text-gray-500">East Africa Time (EAT)</p>
+                  <p className="text-muted-foreground">Monday - Friday: 8AM - 6PM</p>
+                  <p className="text-muted-foreground">Saturday: 9AM - 4PM</p>
+                  <p className="text-sm text-muted-foreground">East Africa Time (EAT)</p>
                 </div>
               </div>
             </CardContent>
@@ -132,50 +133,50 @@ export default function HelpPage() {
 
         {/* FAQ Section */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+          <h2 className="font-display font-semibold text-2xl text-center mb-8">Frequently Asked Questions</h2>
           <div className="max-w-4xl mx-auto space-y-4">
-            <Card>
+            <Card className="border border-border bg-card rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">How do I create an account?</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Click the "Sign Up" button in the top right corner and follow the registration process. You'll need to
                   provide your email address and create a secure password.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border border-border bg-card rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">How do I list a product for sale?</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   After signing in, go to your dashboard and click "Add Product". Fill in the product details, upload
                   photos, and set your price. Your listing will be reviewed before going live.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border border-border bg-card rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">What payment methods do you accept?</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   We accept M-Pesa, bank transfers, and major credit/debit cards. All payments are processed securely
                   through our trusted payment partners.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border border-border bg-card rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">How does shipping work?</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Sellers are responsible for shipping their products. We provide shipping guidelines and partner with
                   local courier services to ensure safe delivery of your orders.
                 </p>

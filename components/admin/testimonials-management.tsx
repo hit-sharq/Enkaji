@@ -297,7 +297,7 @@ export function TestimonialsManagement() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+            className={`w-4 h-4 ${star <= rating ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -503,7 +503,7 @@ export function TestimonialsManagement() {
                     <TableRow key={testimonial.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-muted">
                             {testimonial.imageUrl ? (
                               <Image
                                 src={testimonial.imageUrl || "/placeholder.svg"}
@@ -513,7 +513,7 @@ export function TestimonialsManagement() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-enkaji-ochre text-white font-bold">
+                              <div className="w-full h-full flex items-center justify-center bg-enkaji-gold text-enkaji-ink font-bold">
                                 {testimonial.name.charAt(0)}
                               </div>
                             )}
@@ -566,7 +566,7 @@ export function TestimonialsManagement() {
                             size="sm"
                             onClick={() => handleToggleFeatured(testimonial.id, !testimonial.isFeatured)}
                           >
-                            <Award className={`w-4 h-4 ${testimonial.isFeatured ? "text-yellow-500" : ""}`} />
+                            <Award className={`w-4 h-4 ${testimonial.isFeatured ? "text-enkaji-gold" : ""}`} />
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -609,7 +609,7 @@ export function TestimonialsManagement() {
             <CardContent>
               <div className="space-y-4">
                 {reviews.map((review) => (
-                  <Card key={review.id} className="border-l-4 border-l-green-400">
+                  <Card key={review.id} className="border-l-4 border-l-enkaji-green">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 space-y-2">

@@ -70,8 +70,9 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen">
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+      <main className="container mx-auto px-4 py-16">
+        <p className="enkaji-eyebrow mb-3">Secure Purchase</p>
+        <h1 className="font-display text-3xl md:text-4xl font-semibold text-foreground mb-10">Checkout</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">

@@ -150,13 +150,13 @@ export function ReviewList({
       <div className={`space-y-4 ${className}`}>
         {showSummary && (
           <div className="animate-pulse">
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
+            <div className="h-64 bg-muted rounded-lg"></div>
           </div>
         )}
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="h-32 bg-gray-200 rounded-lg"></div>
+              <div className="h-32 bg-muted rounded-lg"></div>
             </div>
           ))}
         </div>
@@ -177,7 +177,7 @@ export function ReviewList({
 
       {/* Filters */}
       {showFilters && (
-        <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex flex-wrap gap-4 p-4 bg-muted rounded-lg">
           <div className="flex-1 min-w-64">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -232,11 +232,11 @@ export function ReviewList({
           ))
         ) : (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Filter className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <Filter className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="font-medium text-gray-900 mb-2">No reviews found</h3>
-            <p className="text-gray-500">
+            <h3 className="font-medium text-foreground mb-2">No reviews found</h3>
+            <p className="text-muted-foreground">
               {filters.rating !== "all" || filters.search
                 ? "Try adjusting your filters to see more reviews."
                 : "Be the first to leave a review!"}

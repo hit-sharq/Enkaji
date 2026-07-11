@@ -23,12 +23,12 @@ export function EnhancedCheckoutForm({ orderId, amount, onPaymentSuccess, onPaym
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Choose Payment Method</CardTitle>
+        <CardTitle className="font-display font-semibold text-foreground">Choose Payment Method</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={selectedMethod} onValueChange={setSelectedMethod}>
           <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="mpesa" className="flex items-center gap-2">
+            <TabsTrigger value="mpesa" className="flex items-center gap-2 data-[state=active]:text-enkaji-gold data-[state=active]:border-enkaji-gold/50">
               <Smartphone className="w-4 h-4" />
               M-Pesa
             </TabsTrigger>

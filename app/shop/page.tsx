@@ -66,34 +66,35 @@ export default async function ShopPage({
   const [categories, productsCount] = await Promise.all([getCategories(), getProductsCount()])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-enkaji-red to-enkaji-brown text-white">
-        <div className="container mx-auto px-4 py-16">
+    <div className="min-h-screen bg-background">
+      {/* Hero Section — dark showcase band */}
+      <section className="bg-enkaji-ink text-enkaji-ivory py-20">
+        <div className="container mx-auto px-4">
           <div className="max-w-3xl">
-            <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">Discover Quality Products</h1>
-            <p className="text-xl text-blue-100 mb-6">
+            <span className="enkaji-eyebrow">B2B Marketplace</span>
+            <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">Discover Quality Products</h1>
+            <p className="text-lg text-enkaji-ivory/80 mb-8">
               Browse through {productsCount.toLocaleString()}+ products from verified sellers across Kenya
             </p>
-            <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex flex-wrap gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
                 <span>Verified Sellers</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
                 <span>Quality Guaranteed</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
                 <span>Nationwide Delivery</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-16">
         <Suspense fallback={<ShopPageSkeleton />}>
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Filters Sidebar */}

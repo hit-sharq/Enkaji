@@ -183,11 +183,12 @@ export default async function SellersPage({
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-enkaji-red to-enkaji-brown text-white py-16">
+      <section className="bg-enkaji-ink text-enkaji-ivory py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Discover Trusted Sellers</h1>
-            <p className="text-xl md:text-2xl text-white/85 mb-8">
+            <p className="enkaji-eyebrow mb-4">Trusted B2B Network</p>
+            <h1 className="text-4xl md:text-5xl font-display font-semibold mb-6">Discover Trusted Sellers</h1>
+            <p className="text-xl md:text-2xl text-enkaji-ivory/80 mb-8">
               Connect with verified businesses across Kenya for all your procurement needs
             </p>
 
@@ -198,28 +199,28 @@ export default async function SellersPage({
                   <Users className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.totalSellers}</span>
                 </div>
-                <p className="text-white/70">Total Sellers</p>
+                <p className="text-enkaji-ivory/70 text-sm">Total Sellers</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   <TrendingUp className="w-6 h-6 text-enkaji-green/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.verifiedSellers}</span>
                 </div>
-                <p className="text-white/70">Verified</p>
+                <p className="text-enkaji-ivory/70 text-sm">Verified</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   <MapPin className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.locations}</span>
                 </div>
-                <p className="text-white/70">Locations</p>
+                <p className="text-enkaji-ivory/70 text-sm">Locations</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Search className="w-6 h-6 text-enkaji-gold/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.businessTypes}</span>
                 </div>
-                <p className="text-white/70">Categories</p>
+                <p className="text-enkaji-ivory/70 text-sm">Categories</p>
               </div>
             </div>
           </div>
@@ -232,7 +233,7 @@ export default async function SellersPage({
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Filters Sidebar */}
             <div className="lg:w-1/4">
-              <Suspense fallback={<div className="h-96 bg-white rounded-lg animate-pulse" />}>
+              <Suspense fallback={<div className="h-96 bg-card rounded-xl animate-pulse" />}>
                 <SellerFilters />
               </Suspense>
             </div>
@@ -242,8 +243,8 @@ export default async function SellersPage({
               <div className="mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{sellers.length} Sellers Found</h2>
-                    {searchParams.search && <p className="text-gray-600 mt-1">Results for "{searchParams.search}"</p>}
+                    <h2 className="text-2xl font-display font-semibold text-foreground">{sellers.length} Sellers Found</h2>
+                    {searchParams.search && <p className="text-muted-foreground mt-1">Results for "{searchParams.search}"</p>}
                   </div>
                 </div>
               </div>
@@ -252,7 +253,7 @@ export default async function SellersPage({
                 fallback={
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {[...Array(6)].map((_, i) => (
-                      <div key={i} className="bg-white rounded-lg h-96 animate-pulse" />
+                      <div key={i} className="bg-card rounded-xl h-96 animate-pulse" />
                     ))}
                   </div>
                 }

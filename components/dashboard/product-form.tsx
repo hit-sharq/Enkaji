@@ -206,7 +206,7 @@ if (response.ok) {
               defaultValue={product?.weight || ""}
               placeholder="e.g., 0.5 for 500g items"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Weight is used to calculate accurate shipping costs for customers
             </p>
           </div>
@@ -238,14 +238,14 @@ if (response.ok) {
               <div className="flex items-center justify-center w-full">
                 <label
                   htmlFor="image-upload"
-                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-border border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted"
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <ImageIcon className="w-8 h-8 mb-4 text-gray-500" />
-                    <p className="mb-2 text-sm text-gray-500">
+                    <ImageIcon className="w-8 h-8 mb-4 text-muted-foreground" />
+                    <p className="mb-2 text-sm text-muted-foreground">
                       <span className="font-semibold">Click to upload</span> product images
                     </p>
-                    <p className="text-xs text-gray-500">PNG, JPG, JPEG up to 5MB each</p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG, JPEG up to 5MB each</p>
                   </div>
                   <input
                     id="image-upload"
@@ -261,8 +261,8 @@ if (response.ok) {
 
               {isUploading && (
                 <div className="flex items-center justify-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-800"></div>
-                  <span className="ml-2 text-sm text-gray-600">Uploading images...</span>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-enkaji-gold"></div>
+                  <span className="ml-2 text-sm text-muted-foreground">Uploading images...</span>
                 </div>
               )}
 
@@ -278,7 +278,7 @@ if (response.ok) {
                       <Button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute top-2 right-2 w-6 h-6 p-0 bg-red-600 hover:bg-red-700"
+                        className="absolute top-2 right-2 w-6 h-6 p-0 bg-enkaji-gold hover:bg-enkaji-gold/80"
                         variant="destructive"
                       >
                         <X className="w-3 h-3" />
@@ -294,7 +294,7 @@ if (response.ok) {
             <Button
               type="submit"
               disabled={isSubmitting || images.length === 0 || isUploading}
-              className="bg-red-800 hover:bg-red-900"
+              className="bg-enkaji-gold hover:bg-enkaji-gold/80"
             >
               {isSubmitting ? "Saving..." : product ? "Update Product" : "Create Product"}
             </Button>

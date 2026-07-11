@@ -37,10 +37,10 @@ export function SimilarProducts({ categoryName, currentProductId }: SimilarProdu
         {[...Array(4)].map((_, i) => (
           <Card key={i} className="animate-pulse">
             <CardContent className="p-0">
-              <div className="aspect-square bg-gray-200 rounded-t-lg" />
+              <div className="aspect-square bg-muted rounded-t-lg" />
               <div className="p-4 space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-1/2" />
               </div>
             </CardContent>
           </Card>

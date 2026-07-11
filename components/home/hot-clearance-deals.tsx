@@ -40,18 +40,18 @@ export function HotClearanceDeals() {
   }, [])
 
   return (
-    <section className="py-14 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white">
+    <section className="py-16 bg-enkaji-ink text-enkaji-ivory">
       <div className="container mx-auto px-4">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.28em] text-orange-400">🔥 Hot Clearance Deals</p>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Top discounted inventory moving fast</h2>
-            <p className="mt-3 max-w-2xl text-sm text-slate-300 md:text-base">
+            <p className="enkaji-eyebrow mb-3">Hot Clearance Deals</p>
+            <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl text-enkaji-ivory">Top discounted inventory moving fast</h2>
+            <p className="mt-3 max-w-2xl text-sm text-enkaji-ivory/70 md:text-base">
               Discover premium clearance stock across categories with heavy markdowns and fast delivery ready for business buyers.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/clearance" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/20">
+            <a href="/clearance" className="inline-flex items-center gap-2 rounded-full border border-enkaji-gold/50 bg-enkaji-gold/10 px-4 py-3 text-sm font-semibold text-enkaji-gold transition hover:bg-enkaji-gold/20">
               Browse all clearance
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -61,11 +61,11 @@ export function HotClearanceDeals() {
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-96 rounded-[32px] bg-slate-900/60 animate-pulse" />
+              <div key={index} className="h-96 rounded-[32px] bg-enkaji-ivory/5 animate-pulse" />
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="rounded-[32px] border border-white/10 bg-white/5 p-12 text-center text-slate-200">
+          <div className="rounded-[32px] border border-enkaji-gold/20 bg-enkaji-ivory/5 p-12 text-center text-enkaji-ivory/70">
             No hot clearance deals available right now.
           </div>
         ) : (

@@ -85,13 +85,13 @@ export function PaymentPending({
   const getStatusIcon = () => {
     switch (status.status) {
       case "checking":
-        return <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+        return <Loader2 className="h-12 w-12 animate-spin text-chart-4" />
       case "pending":
-        return <Clock className="h-12 w-12 text-yellow-600" />
+        return <Clock className="h-12 w-12 text-enkaji-gold" />
       case "completed":
-        return <CheckCircle className="h-12 w-12 text-green-600" />
+        return <CheckCircle className="h-12 w-12 text-enkaji-green" />
       case "failed":
-        return <AlertCircle className="h-12 w-12 text-red-600" />
+        return <AlertCircle className="h-12 w-12 text-enkaji-red" />
     }
   }
 
@@ -109,7 +109,7 @@ export function PaymentPending({
         <div className="flex justify-center mb-4">
           {getStatusIcon()}
         </div>
-        <CardTitle>
+        <CardTitle className="font-display font-semibold text-foreground">
           {status.status === "checking" && "Verifying Payment..."}
           {status.status === "pending" && "Payment Pending"}
           {status.status === "completed" && "Payment Successful!"}
@@ -118,27 +118,27 @@ export function PaymentPending({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="text-center">
-          <p className="text-gray-600 mb-2">{status.message}</p>
+           <p className="text-muted-foreground mb-2">{status.message}</p>
           
           {status.status === "pending" && (
-            <p className="text-sm text-gray-500">
-              This may take a few moments. Please don't close this page.
-            </p>
+              <p className="text-sm text-muted-foreground">
+               This may take a few moments. Please don't close this page.
+             </p>
           )}
         </div>
 
         {/* Payment Details */}
-        <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Order ID</span>
-            <span className="font-mono text-sm">{orderId}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Amount</span>
-            <span className="font-semibold">{currency} {amount.toLocaleString()}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Payment Method</span>
+         <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+           <div className="flex justify-between items-center">
+             <span className="text-sm text-muted-foreground">Order ID</span>
+             <span className="font-mono text-sm text-foreground">{orderId}</span>
+           </div>
+           <div className="flex justify-between items-center">
+             <span className="text-sm text-muted-foreground">Amount</span>
+             <span className="font-semibold text-foreground">{currency} {amount.toLocaleString()}</span>
+           </div>
+           <div className="flex justify-between items-center">
+             <span className="text-sm text-muted-foreground">Payment Method</span>
             <div className="flex items-center gap-1">
               {getPaymentMethodIcon()}
               <span className="text-sm capitalize">
@@ -150,12 +150,12 @@ export function PaymentPending({
 
         {/* Instructions for Mobile Money */}
         {paymentMethod.toLowerCase().includes("mpesa") && status.status === "pending" && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
-              <Smartphone className="h-4 w-4" />
-              M-Pesa Instructions
-            </h4>
-            <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+           <div className="bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-lg p-4">
+             <h4 className="font-medium text-enkaji-ink mb-2 flex items-center gap-2">
+               <Smartphone className="h-4 w-4 text-enkaji-gold" />
+               M-Pesa Instructions
+             </h4>
+             <ol className="text-sm text-foreground/80 space-y-1 list-decimal list-inside">
               <li>Check your phone for an STK push notification</li>
               <li>Enter your M-Pesa PIN</li>
               <li>Confirm the payment</li>
@@ -198,7 +198,7 @@ export function PaymentPending({
               </Button>
               <Button
                 onClick={() => window.location.href = `/checkout?orderId=${orderId}`}
-                className="flex-1 bg-red-800 hover:bg-red-900"
+                className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
               >
                 Try Again
               </Button>
@@ -217,9 +217,9 @@ export function PaymentPending({
 
         {/* Timer */}
         {status.status === "pending" && (
-          <p className="text-xs text-center text-gray-500">
-            Auto-refreshing every 10 seconds...
-          </p>
+            <p className="text-xs text-center text-muted-foreground">
+             Auto-refreshing every 10 seconds...
+           </p>
         )}
       </CardContent>
     </Card>

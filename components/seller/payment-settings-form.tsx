@@ -124,16 +124,16 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="border border-border bg-card rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>Payout Method</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-foreground">Payout Method</CardTitle>
+          <CardDescription className="text-muted-foreground">
             Select your preferred payout method. This will be used when processing your payouts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
-            <Label htmlFor="payout-method">Select Payout Method</Label>
+            <Label htmlFor="payout-method" className="text-foreground">Select Payout Method</Label>
             <Select value={payoutMethod} onValueChange={setPayoutMethod}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose how you want to receive payouts" />
@@ -156,20 +156,20 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
           </div>
 
           {payoutMethod === "MPESA" && (
-            <div className="space-y-4 p-4 bg-green-50 rounded-lg border border-green-200">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Smartphone className="h-4 w-4" />
+            <div className="space-y-4 p-4 bg-muted rounded-lg border border-border">
+              <h3 className="font-medium flex items-center gap-2 text-foreground">
+                <Smartphone className="h-4 w-4 text-enkaji-gold" />
                 M-Pesa Details
               </h3>
               <div>
-                <Label htmlFor="mpesa-phone">M-Pesa Phone Number</Label>
+                <Label htmlFor="mpesa-phone" className="text-foreground">M-Pesa Phone Number</Label>
                 <Input
                   id="mpesa-phone"
                   placeholder="0712345678"
                   value={mpesaDetails.phoneNumber}
                   onChange={(e) => setMpesaDetails({ phoneNumber: e.target.value })}
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Enter the phone number registered with M-Pesa
                 </p>
               </div>
@@ -177,14 +177,14 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
           )}
 
           {payoutMethod === "BANK_TRANSFER" && (
-            <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Building className="h-4 w-4" />
+            <div className="space-y-4 p-4 bg-muted rounded-lg border border-border">
+              <h3 className="font-medium flex items-center gap-2 text-foreground">
+                <Building className="h-4 w-4 text-enkaji-gold" />
                 Bank Account Details
               </h3>
               <div className="space-y-3">
                 <div>
-                  <Label htmlFor="bank-name">Bank Name</Label>
+                  <Label htmlFor="bank-name" className="text-foreground">Bank Name</Label>
                   <Input
                     id="bank-name"
                     placeholder="e.g., KCB Bank, Equity Bank"
@@ -193,7 +193,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
                   />
                 </div>
                 <div>
-                  <Label htmlFor="account-number">Account Number</Label>
+                  <Label htmlFor="account-number" className="text-foreground">Account Number</Label>
                   <Input
                     id="account-number"
                     placeholder="Your bank account number"
@@ -202,7 +202,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
                   />
                 </div>
                 <div>
-                  <Label htmlFor="account-name">Account Name</Label>
+                  <Label htmlFor="account-name" className="text-foreground">Account Name</Label>
                   <Input
                     id="account-name"
                     placeholder="Account holder name"
@@ -211,7 +211,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
                   />
                 </div>
                 <div>
-                  <Label htmlFor="swift-code">SWIFT Code (Optional)</Label>
+                  <Label htmlFor="swift-code" className="text-foreground">SWIFT Code (Optional)</Label>
                   <Input
                     id="swift-code"
                     placeholder="SWIFT/BIC code for international transfers"
@@ -223,7 +223,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
             </div>
           )}
 
-          <Button onClick={handleSave} disabled={isLoading || !payoutMethod} className="w-full">
+          <Button onClick={handleSave} disabled={isLoading || !payoutMethod} className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
             {isLoading ? (
               "Saving..."
             ) : saved ? (
@@ -241,12 +241,12 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border border-border bg-card rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>Important Information</CardTitle>
+          <CardTitle className="text-foreground">Important Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
             <li>Your payment details are stored securely and encrypted</li>
             <li>Payouts are processed within 3-5 business days after approval</li>
             <li>Minimum payout amount is KES 1,000</li>

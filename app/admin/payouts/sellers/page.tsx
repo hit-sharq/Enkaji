@@ -107,7 +107,7 @@ export default async function SellerPayoutsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Seller Payout Requests ({payoutRequests.length})</h1>
+        <h1 className="font-display text-3xl font-semibold text-foreground">Seller Payout Requests ({payoutRequests.length})</h1>
         <div className="space-y-1 text-right">
           <p className="text-sm text-muted-foreground">Pending: {pendingCount}</p>
           <p className="text-xl font-semibold">KES {totalPending.toLocaleString()}</p>
@@ -115,20 +115,20 @@ export default async function SellerPayoutsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="text-center p-6 border rounded-lg">
-          <div className="text-2xl font-bold text-blue-600 mb-1">{pendingCount}</div>
+        <div className="text-center p-6 border border-border rounded-xl bg-card">
+          <div className="text-2xl font-bold text-enkaji-gold mb-1">{pendingCount}</div>
           <div className="text-sm text-muted-foreground">Pending Requests</div>
         </div>
-        <div className="text-center p-6 border rounded-lg">
-          <div className="text-2xl font-bold text-green-600 mb-1">KES {totalPending.toLocaleString()}</div>
+        <div className="text-center p-6 border border-border rounded-xl bg-card">
+          <div className="text-2xl font-bold text-enkaji-gold mb-1">KES {totalPending.toLocaleString()}</div>
           <div className="text-sm text-muted-foreground">Total Pending</div>
         </div>
-        <div className="text-center p-6 border rounded-lg">
+        <div className="text-center p-6 border border-border rounded-xl bg-card">
           <div className="text-2xl font-bold mb-1">{payoutRequests.filter(r => r.status === 'APPROVED').length}</div>
           <div className="text-sm text-muted-foreground">Approved</div>
         </div>
-        <div className="text-center p-6 border rounded-lg">
-          <div className="text-2xl font-bold text-red-600 mb-1">{payoutRequests.filter(r => r.status === 'REJECTED').length}</div>
+        <div className="text-center p-6 border border-border rounded-xl bg-card">
+          <div className="text-2xl font-bold text-destructive mb-1">{payoutRequests.filter(r => r.status === 'REJECTED').length}</div>
           <div className="text-sm text-muted-foreground">Rejected</div>
         </div>
       </div>

@@ -97,46 +97,46 @@ export default function ClearancePage() {
   }, [products, searchTerm, selectedCategory, selectedDiscount, selectedReason])
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-[#0F172A]">
-      <section className="relative overflow-hidden bg-[#0F172A] pb-20 pt-20 text-white">
-        <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#0F172A]/90 to-transparent" />
+    <main className="min-h-screen bg-background text-foreground">
+      <section className="relative overflow-hidden bg-enkaji-ink pb-20 pt-20 text-enkaji-ivory">
+        <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-enkaji-ink/90 to-transparent" />
         <div className="container mx-auto px-4">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] items-center">
             <div className="space-y-6">
-              <Badge className="bg-[#F97316] text-white">Clearance Deals</Badge>
-              <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+              <Badge className="bg-enkaji-gold text-enkaji-ink">Clearance Deals</Badge>
+              <h1 className="font-display font-semibold text-4xl tracking-tight sm:text-5xl">
                 Move excess stock faster with premium clearance deals
               </h1>
-              <p className="max-w-2xl text-lg text-slate-200">
+              <p className="max-w-2xl text-lg text-enkaji-ivory/80">
                 Browse deeply discounted inventory, end-of-season stock, and warehouse clearance offers that help sellers convert slow-moving stock into cash.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link href="/dashboard/clearance/new" className="inline-flex items-center rounded-full bg-[#F97316] px-5 py-3 text-sm font-semibold text-white shadow-xl shadow-[#F97316]/20 transition hover:bg-[#ea7b28]">
+                <Link href="/dashboard/clearance/new" className="inline-flex items-center rounded-full bg-enkaji-gold px-5 py-3 text-sm font-semibold text-enkaji-ink shadow-lg shadow-enkaji-gold/20 transition hover:bg-enkaji-gold/90">
                   List Clearance Stock
                 </Link>
-                <Link href="/clearance" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20">
+                <Link href="/clearance" className="inline-flex items-center gap-2 rounded-full border border-enkaji-gold/50 bg-enkaji-gold/10 px-5 py-3 text-sm font-semibold text-enkaji-gold transition hover:bg-enkaji-gold/20">
                   Explore Deals
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
-            <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/10 backdrop-blur-xl">
+            <div className="rounded-[32px] border border-enkaji-gold/20 bg-enkaji-gold/5 p-8 shadow-2xl shadow-enkaji-ink/10 backdrop-blur-xl">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-slate-100">
+                <div className="flex items-center gap-3 text-enkaji-ivory/90">
                   <SlidersHorizontal className="h-5 w-5" />
                   <span className="text-sm font-medium uppercase tracking-[0.24em]">Filter stock in seconds</span>
                 </div>
-                <p className="text-sm leading-6 text-slate-200">
+                <p className="text-sm leading-6 text-enkaji-ivory/80">
                   Use search, category and discount filters to find the best clearance buy for your business. Everything is built for speed and confidence.
                 </p>
-                <div className="rounded-[28px] border border-white/10 bg-white/10 p-5">
+                <div className="rounded-[28px] border border-enkaji-gold/20 bg-enkaji-gold/10 p-5">
                   <div className="grid gap-4">
                     <div className="grid gap-2">
-                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-slate-300">Category</label>
+                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-enkaji-ivory/70">Category</label>
                       <select
                         value={selectedCategory}
                         onChange={(event) => setSelectedCategory(event.target.value)}
-                        className="h-11 rounded-3xl border border-white/15 bg-[#0F172A]/90 px-4 text-sm text-white outline-none transition focus:border-[#F97316]"
+                        className="h-11 rounded-3xl border border-enkaji-gold/30 bg-enkaji-ink/90 px-4 text-sm text-enkaji-ivory outline-none transition focus:border-enkaji-gold"
                       >
                         <option value="all">All categories</option>
                         {categories.map((category) => (
@@ -148,11 +148,11 @@ export default function ClearancePage() {
                     </div>
 
                     <div className="grid gap-2">
-                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-slate-300">Discount</label>
+                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-enkaji-ivory/70">Discount</label>
                       <select
                         value={selectedDiscount}
                         onChange={(event) => setSelectedDiscount(event.target.value)}
-                        className="h-11 rounded-3xl border border-white/15 bg-[#0F172A]/90 px-4 text-sm text-white outline-none transition focus:border-[#F97316]"
+                        className="h-11 rounded-3xl border border-enkaji-gold/30 bg-enkaji-ink/90 px-4 text-sm text-enkaji-ivory outline-none transition focus:border-enkaji-gold"
                       >
                         {discountOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -163,11 +163,11 @@ export default function ClearancePage() {
                     </div>
 
                     <div className="grid gap-2">
-                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-slate-300">Reason</label>
+                      <label className="text-sm font-medium uppercase tracking-[0.18em] text-enkaji-ivory/70">Reason</label>
                       <select
                         value={selectedReason}
                         onChange={(event) => setSelectedReason(event.target.value)}
-                        className="h-11 rounded-3xl border border-white/15 bg-[#0F172A]/90 px-4 text-sm text-white outline-none transition focus:border-[#F97316]"
+                        className="h-11 rounded-3xl border border-enkaji-gold/30 bg-enkaji-ink/90 px-4 text-sm text-enkaji-ivory outline-none transition focus:border-enkaji-gold"
                       >
                         {reasons.map((reason) => (
                           <option key={reason} value={reason === "All reasons" ? "all" : reason}>
@@ -188,8 +188,8 @@ export default function ClearancePage() {
         <div className="container mx-auto px-4">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Browse Clearance Stock</p>
-              <h2 className="text-3xl font-bold text-slate-900">Discounted business inventory ready for checkout</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">Browse Clearance Stock</p>
+              <h2 className="font-display text-3xl font-bold text-foreground">Discounted business inventory ready for checkout</h2>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative w-full max-w-sm">
@@ -199,9 +199,9 @@ export default function ClearancePage() {
                   placeholder="Search products, categories, reasons..."
                   className="pl-11"
                 />
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               </div>
-              <Button variant="outline" className="hidden sm:inline-flex gap-2 border-slate-300 text-slate-700 hover:border-[#0F172A] hover:text-[#0F172A]">
+              <Button variant="outline" className="hidden sm:inline-flex gap-2 border-border text-foreground hover:border-enkaji-gold hover:text-enkaji-gold">
                 <Sparkles className="h-4 w-4" />
                 Top Deals
               </Button>
@@ -211,13 +211,13 @@ export default function ClearancePage() {
           {loading ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="h-96 rounded-[32px] bg-white/70 p-6 shadow-lg shadow-slate-200/50 animate-pulse" />
+                <div key={index} className="h-96 rounded-[32px] bg-card p-6 shadow-sm animate-pulse" />
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="rounded-[32px] border border-slate-200 bg-white p-12 text-center shadow-sm">
-              <p className="text-xl font-semibold text-slate-900">No matching clearance deals found.</p>
-              <p className="mt-3 text-slate-600">Try adjusting your filters or check back later for new stock.</p>
+            <div className="rounded-[32px] border border-border bg-card p-12 text-center shadow-sm">
+              <p className="text-xl font-semibold text-foreground">No matching clearance deals found.</p>
+              <p className="mt-3 text-muted-foreground">Try adjusting your filters or check back later for new stock.</p>
             </div>
           ) : (
             <motion.div

@@ -5,12 +5,12 @@ import { Clock, MapPin, Package, Shield, CreditCard, AlertCircle, CheckCircle, I
 
 export default function ShippingInfoPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Shipping Information</h1>
-            <p className="text-xl text-gray-600">Everything you need to know about shipping with Enkaji Trade Kenya</p>
+            <h1 className="text-4xl font-bold text-foreground mb-4">Shipping Information</h1>
+            <p className="text-xl text-muted-foreground">Everything you need to know about shipping with Enkaji Trade Kenya</p>
           </div>
 
           <Tabs defaultValue="rates" className="space-y-6">
@@ -95,7 +95,7 @@ export default function ShippingInfoPage() {
                         <Card>
                           <CardHeader>
                             <CardTitle className="text-base">Same Day</CardTitle>
-                            <Badge className="bg-orange-500">Within 6 Hours</Badge>
+                            <Badge className="bg-enkaji-gold">Within 6 Hours</Badge>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-2 text-sm">
@@ -188,12 +188,12 @@ export default function ShippingInfoPage() {
                       </div>
                     </div>
 
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="bg-chart-4 p-4 rounded-lg">
                       <div className="flex items-start gap-3">
-                        <Info className="w-5 h-5 text-blue-500 mt-0.5" />
+                        <Info className="w-5 h-5 text-chart-4 mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-blue-900">Additional Charges</h4>
-                          <ul className="text-sm text-blue-800 mt-2 space-y-1">
+                          <h4 className="font-semibold text-chart-4">Additional Charges</h4>
+                          <ul className="text-sm text-chart-4 mt-2 space-y-1">
                             <li>• Remote area delivery: Additional KSh 200-500</li>
                             <li>• Fuel surcharge: 5-10% of shipping cost</li>
                             <li>• Insurance: 1-3% of declared value (optional)</li>
@@ -223,31 +223,31 @@ export default function ShippingInfoPage() {
                     <div>
                       <h3 className="text-lg font-semibold mb-4">Domestic Delivery (Kenya)</h3>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Same Day Delivery</h4>
-                            <p className="text-sm text-gray-600">Available in Nairobi, Mombasa, Kisumu</p>
+                            <p className="text-sm text-muted-foreground">Available in Nairobi, Mombasa, Kisumu</p>
                           </div>
-                          <Badge className="bg-green-500">2-6 hours</Badge>
+                          <Badge className="bg-enkaji-green">2-6 hours</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Express Delivery</h4>
-                            <p className="text-sm text-gray-600">Major cities and towns</p>
+                            <p className="text-sm text-muted-foreground">Major cities and towns</p>
                           </div>
                           <Badge variant="default">1-2 business days</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Standard Delivery</h4>
-                            <p className="text-sm text-gray-600">All locations nationwide</p>
+                            <p className="text-sm text-muted-foreground">All locations nationwide</p>
                           </div>
                           <Badge variant="secondary">3-5 business days</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Remote Areas</h4>
-                            <p className="text-sm text-gray-600">Hard-to-reach locations</p>
+                            <p className="text-sm text-muted-foreground">Hard-to-reach locations</p>
                           </div>
                           <Badge variant="outline">5-7 business days</Badge>
                         </div>
@@ -257,43 +257,43 @@ export default function ShippingInfoPage() {
                     <div>
                       <h3 className="text-lg font-semibold mb-4">International Delivery</h3>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">East Africa</h4>
-                            <p className="text-sm text-gray-600">Uganda, Tanzania, Rwanda, Burundi</p>
+                            <p className="text-sm text-muted-foreground">Uganda, Tanzania, Rwanda, Burundi</p>
                           </div>
                           <Badge variant="default">3-7 business days</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Africa</h4>
-                            <p className="text-sm text-gray-600">Nigeria, South Africa, Ghana, etc.</p>
+                            <p className="text-sm text-muted-foreground">Nigeria, South Africa, Ghana, etc.</p>
                           </div>
                           <Badge variant="secondary">5-10 business days</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Europe & Asia</h4>
-                            <p className="text-sm text-gray-600">UK, Germany, China, India, etc.</p>
+                            <p className="text-sm text-muted-foreground">UK, Germany, China, India, etc.</p>
                           </div>
                           <Badge variant="secondary">7-14 business days</Badge>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
                             <h4 className="font-semibold">Americas & Oceania</h4>
-                            <p className="text-sm text-gray-600">USA, Canada, Australia, etc.</p>
+                            <p className="text-sm text-muted-foreground">USA, Canada, Australia, etc.</p>
                           </div>
                           <Badge variant="outline">10-21 business days</Badge>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-yellow-50 p-4 rounded-lg">
+                    <div className="bg-enkaji-gold p-4 rounded-lg">
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-enkaji-gold mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-yellow-900">Delivery Time Notes</h4>
-                          <ul className="text-sm text-yellow-800 mt-2 space-y-1">
+                          <h4 className="font-semibold text-enkaji-gold">Delivery Time Notes</h4>
+                          <ul className="text-sm text-enkaji-gold mt-2 space-y-1">
                             <li>
                               • Delivery times are estimates and may vary due to weather, customs, or other factors
                             </li>
@@ -324,7 +324,7 @@ export default function ShippingInfoPage() {
                       <h3 className="text-lg font-semibold mb-4">Kenya Coverage</h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-green-600 mb-3">✓ Full Service Areas</h4>
+                          <h4 className="font-semibold text-enkaji-green mb-3">✓ Full Service Areas</h4>
                           <div className="space-y-2 text-sm">
                             <p>
                               <strong>Major Cities:</strong> Nairobi, Mombasa, Kisumu, Nakuru, Eldoret, Thika, Malindi
@@ -338,7 +338,7 @@ export default function ShippingInfoPage() {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-orange-600 mb-3">⚠ Limited Service Areas</h4>
+                          <h4 className="font-semibold text-enkaji-ochre mb-3">⚠ Limited Service Areas</h4>
                           <div className="space-y-2 text-sm">
                             <p>
                               <strong>Remote Areas:</strong> Some rural and hard-to-reach locations
@@ -359,7 +359,7 @@ export default function ShippingInfoPage() {
                       <div className="grid md:grid-cols-3 gap-4">
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-base text-green-600">East Africa</CardTitle>
+                            <CardTitle className="text-base text-enkaji-green">East Africa</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="text-sm space-y-1">
@@ -377,7 +377,7 @@ export default function ShippingInfoPage() {
 
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-base text-blue-600">Africa</CardTitle>
+                            <CardTitle className="text-base text-chart-4">Africa</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="text-sm space-y-1">
@@ -395,7 +395,7 @@ export default function ShippingInfoPage() {
 
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-base text-purple-600">Worldwide</CardTitle>
+                            <CardTitle className="text-base text-chart-5">Worldwide</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="text-sm space-y-1">
@@ -430,51 +430,51 @@ export default function ShippingInfoPage() {
                       <h3 className="text-lg font-semibold mb-4">Packaging Requirements</h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-green-600 mb-3">✓ Recommended Practices</h4>
+                          <h4 className="font-semibold text-enkaji-green mb-3">✓ Recommended Practices</h4>
                           <ul className="text-sm space-y-2">
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
                               Use sturdy boxes or padded envelopes
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
                               Wrap fragile items in bubble wrap
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
                               Fill empty spaces with packing material
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
                               Seal all edges with strong tape
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
                               Label clearly with permanent markers
                             </li>
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-red-600 mb-3">✗ Avoid These Mistakes</h4>
+                          <h4 className="font-semibold text-enkaji-red mb-3">✗ Avoid These Mistakes</h4>
                           <ul className="text-sm space-y-2">
                             <li className="flex items-start gap-2">
-                              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-enkaji-red mt-0.5" />
                               Using damaged or weak boxes
                             </li>
                             <li className="flex items-start gap-2">
-                              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-enkaji-red mt-0.5" />
                               Insufficient padding for fragile items
                             </li>
                             <li className="flex items-start gap-2">
-                              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-enkaji-red mt-0.5" />
                               Overpacking boxes beyond weight limits
                             </li>
                             <li className="flex items-start gap-2">
-                              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-enkaji-red mt-0.5" />
                               Using string or rope instead of tape
                             </li>
                             <li className="flex items-start gap-2">
-                              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-enkaji-red mt-0.5" />
                               Unclear or missing address labels
                             </li>
                           </ul>
@@ -547,9 +547,9 @@ export default function ShippingInfoPage() {
                     <div>
                       <h3 className="text-lg font-semibold mb-4">Tracking Your Package</h3>
                       <div className="space-y-4">
-                        <div className="p-4 bg-blue-50 rounded-lg">
-                          <h4 className="font-semibold text-blue-900 mb-2">How to Track</h4>
-                          <ul className="text-sm text-blue-800 space-y-1">
+                        <div className="p-4 bg-chart-4 rounded-lg">
+                          <h4 className="font-semibold text-chart-4 mb-2">How to Track</h4>
+                          <ul className="text-sm text-chart-4 space-y-1">
                             <li>• Use your tracking number on our website</li>
                             <li>• Receive SMS updates automatically</li>
                             <li>• Get email notifications at key milestones</li>
@@ -562,46 +562,46 @@ export default function ShippingInfoPage() {
                     <div>
                       <h3 className="text-lg font-semibold mb-4">Tracking Status Meanings</h3>
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-chart-4 rounded-full"></div>
                           <div>
                             <p className="font-semibold">Order Received</p>
-                            <p className="text-sm text-gray-600">We've received your shipping request</p>
+                            <p className="text-sm text-muted-foreground">We've received your shipping request</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
                           <div>
                             <p className="font-semibold">Package Collected</p>
-                            <p className="text-sm text-gray-600">Package picked up from sender</p>
+                            <p className="text-sm text-muted-foreground">Package picked up from sender</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
                           <div>
                             <p className="font-semibold">In Transit</p>
-                            <p className="text-sm text-gray-600">Package is on its way to destination</p>
+                            <p className="text-sm text-muted-foreground">Package is on its way to destination</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-chart-5 rounded-full"></div>
                           <div>
                             <p className="font-semibold">Out for Delivery</p>
-                            <p className="text-sm text-gray-600">Package is with delivery agent</p>
+                            <p className="text-sm text-muted-foreground">Package is with delivery agent</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-enkaji-green rounded-full"></div>
                           <div>
                             <p className="font-semibold">Delivered</p>
-                            <p className="text-sm text-gray-600">Package successfully delivered</p>
+                            <p className="text-sm text-muted-foreground">Package successfully delivered</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                          <div className="w-3 h-3 bg-enkaji-red rounded-full"></div>
                           <div>
                             <p className="font-semibold">Exception</p>
-                            <p className="text-sm text-gray-600">Delivery issue - contact support</p>
+                            <p className="text-sm text-muted-foreground">Delivery issue - contact support</p>
                           </div>
                         </div>
                       </div>
@@ -614,10 +614,10 @@ export default function ShippingInfoPage() {
                           <CardContent className="pt-6">
                             <div className="space-y-3">
                               <div className="flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                <CheckCircle className="w-5 h-5 text-enkaji-green" />
                                 <span className="font-semibold">Proof of Delivery</span>
                               </div>
-                              <ul className="text-sm text-gray-600 space-y-1 ml-7">
+                              <ul className="text-sm text-muted-foreground space-y-1 ml-7">
                                 <li>• Digital signature capture</li>
                                 <li>• Photo confirmation of delivery</li>
                                 <li>• GPS location verification</li>

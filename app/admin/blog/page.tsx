@@ -19,15 +19,15 @@ export default async function AdminBlogPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link href="/admin">
-            <Button variant="outline" className="mb-4 bg-transparent">
+            <Button variant="outline" className="mb-4 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Admin Dashboard
             </Button>
           </Link>
         </div>
         <div className="mb-8">
-          <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-2">Blog Management</h1>
-          <p className="text-gray-600">Create and manage blog posts</p>
+          <h1 className="font-display text-3xl font-semibold text-foreground mb-2">Blog Management</h1>
+          <p className="text-muted-foreground">Create and manage blog posts</p>
         </div>
         <BlogManagement />
       </main>

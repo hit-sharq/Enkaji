@@ -42,18 +42,18 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
       case "CONFIRMED":
       case "COMPLETED":
       case "RELEASED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
       case "PENDING":
       case "PROCESSING":
       case "HELD":
-        return <Clock className="h-4 w-4 text-yellow-600" />
+        return <Clock className="h-4 w-4 text-enkaji-gold" />
       case "FAILED":
       case "CANCELLED":
-        return <XCircle className="h-4 w-4 text-red-600" />
+        return <XCircle className="h-4 w-4 text-enkaji-red" />
       case "DISPUTED":
-        return <AlertTriangle className="h-4 w-4 text-orange-600" />
+        return <AlertTriangle className="h-4 w-4 text-enkaji-ochre" />
       default:
-        return <Clock className="h-4 w-4 text-gray-600" />
+        return <Clock className="h-4 w-4 text-muted-foreground" />
     }
   }
 
@@ -100,7 +100,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
           </div>
 
           {order.paymentId && (
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <span className="font-medium">Payment ID:</span> {order.paymentId}
             </div>
           )}
@@ -128,8 +128,8 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
             </div>
 
             {order.escrowPayment.status === "HELD" && (
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-blue-800">
+              <div className="bg-chart-4 p-4 rounded-lg">
+                <p className="text-sm text-chart-4">
                   <strong>Payment is held in escrow</strong> - The payment is securely held until the order is
                   completed.
                   {userRole === "buyer" && " You can release the payment once you receive and approve your order."}
@@ -139,8 +139,8 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
             )}
 
             {order.escrowPayment.status === "RELEASE_REQUESTED" && userRole === "buyer" && (
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <p className="text-sm text-yellow-800 mb-3">
+              <div className="bg-enkaji-gold p-4 rounded-lg">
+                <p className="text-sm text-enkaji-gold mb-3">
                   <strong>Payment release requested</strong> - The seller has requested payment release. Please confirm
                   you've received your order before releasing payment.
                 </p>
@@ -148,7 +148,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
                   <Button
                     size="sm"
                     onClick={() => onEscrowAction?.("RELEASE")}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="bg-enkaji-green hover:bg-enkaji-green"
                   >
                     Release Payment
                   </Button>
@@ -160,8 +160,8 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
             )}
 
             {order.escrowPayment.status === "DISPUTED" && (
-              <div className="bg-red-50 p-4 rounded-lg">
-                <p className="text-sm text-red-800">
+              <div className="bg-enkaji-red p-4 rounded-lg">
+                <p className="text-sm text-enkaji-red">
                   <strong>Payment disputed</strong> - A dispute has been raised for this payment. Our support team will
                   review and resolve this issue.
                 </p>
@@ -175,7 +175,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
                   <Button
                     size="sm"
                     onClick={() => onEscrowAction?.("RELEASE")}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="bg-enkaji-green hover:bg-enkaji-green"
                   >
                     Release Payment
                   </Button>
@@ -194,7 +194,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
             )}
 
             {/* Timestamps */}
-            <div className="text-xs text-gray-500 space-y-1">
+            <div className="text-xs text-muted-foreground space-y-1">
               {order.escrowPayment.heldAt && (
                 <div>Payment held: {new Date(order.escrowPayment.heldAt).toLocaleString()}</div>
               )}

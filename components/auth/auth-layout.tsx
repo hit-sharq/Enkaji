@@ -13,16 +13,16 @@ type AuthLayoutProps = {
 
 export default function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
   return (
-    <main className="min-h-screen grid lg:grid-cols-2 bg-white">
+    <main className="min-h-screen grid lg:grid-cols-2 bg-card">
       {/* Left panel - brand and benefits */}
       <div className="relative hidden lg:flex flex-col justify-between overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-enkaji-red via-enkaji-gold to-enkaji-ochre opacity-90" />
-        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-card/10 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-black/10 blur-3xl" />
 
         <header className="relative z-10 px-10 pt-10">
           <Link href="/" className="inline-flex items-center gap-2 text-white">
-            <div className="h-9 w-9 rounded-md bg-white/15 grid place-items-center">
+            <div className="h-9 w-9 rounded-md bg-card/15 grid place-items-center">
               <Store className="h-5 w-5" />
             </div>
             <span className="text-xl font-semibold tracking-tight">Enkaji Trade Kenya</span>
@@ -37,7 +37,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
 
           <ul className="mt-10 space-y-4 text-white/95">
             <li className="flex items-start gap-3">
-              <div className="mt-1 h-6 w-6 rounded-md bg-white/20 grid place-items-center">
+              <div className="mt-1 h-6 w-6 rounded-md bg-card/20 grid place-items-center">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div>
@@ -46,7 +46,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <div className="mt-1 h-6 w-6 rounded-md bg-white/20 grid place-items-center">
+              <div className="mt-1 h-6 w-6 rounded-md bg-card/20 grid place-items-center">
                 <Users className="h-4 w-4" />
               </div>
               <div>
@@ -76,7 +76,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
       <div className="flex min-h-screen items-center justify-center p-6 sm:p-8">
         <div className="w-full max-w-md">
           <div className="mb-6 flex items-center justify-between lg:hidden">
-            <Link href="/" className="inline-flex items-center gap-2 text-gray-900">
+            <Link href="/" className="inline-flex items-center gap-2 text-enkaji-ink">
               <div className="h-9 w-9 rounded-md bg-enkaji-red/10 text-enkaji-red grid place-items-center">
                 <Store className="h-5 w-5" />
               </div>
@@ -95,7 +95,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
             <CardContent className="space-y-4">{children}</CardContent>
           </Card>
 
-          {footer ? <div className="mt-6 text-center text-sm text-gray-600">{footer}</div> : null}
+          {footer ? <div className="mt-6 text-center text-sm text-muted-foreground">{footer}</div> : null}
         </div>
       </div>
     </main>

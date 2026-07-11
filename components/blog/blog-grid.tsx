@@ -20,8 +20,8 @@ export function BlogGrid({ posts }: BlogGridProps) {
   if (posts.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No blog posts yet</h3>
-        <p className="text-gray-600">Check back soon for stories from our artisans!</p>
+        <h3 className="text-xl font-semibold text-foreground mb-2">No blog posts yet</h3>
+        <p className="text-muted-foreground">Check back soon for stories from our artisans!</p>
       </div>
     )
   }
@@ -40,8 +40,8 @@ export function BlogGrid({ posts }: BlogGridProps) {
                   {new Date(post.createdAt).toLocaleDateString()}
                 </Badge>
               </div>
-              <h3 className="font-playfair text-xl font-bold text-gray-900 mb-3 line-clamp-2">{post.title}</h3>
-              {post.excerpt && <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>}
+              <h3 className="font-playfair text-xl font-bold text-foreground mb-3 line-clamp-2">{post.title}</h3>
+              {post.excerpt && <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>}
             </CardContent>
           </Card>
         </Link>

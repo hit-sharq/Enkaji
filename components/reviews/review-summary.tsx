@@ -19,7 +19,7 @@ export function ReviewSummary({ averageRating, totalReviews, ratingDistribution,
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+            className={`${starSize} ${star <= Math.floor(rating) ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -27,11 +27,11 @@ export function ReviewSummary({ averageRating, totalReviews, ratingDistribution,
   }
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return "text-green-600"
-    if (rating >= 4.0) return "text-green-500"
-    if (rating >= 3.5) return "text-yellow-500"
-    if (rating >= 3.0) return "text-orange-500"
-    return "text-red-500"
+    if (rating >= 4.5) return "text-enkaji-green"
+    if (rating >= 4.0) return "text-enkaji-green"
+    if (rating >= 3.5) return "text-enkaji-gold"
+    if (rating >= 3.0) return "text-enkaji-ochre"
+    return "text-enkaji-red"
   }
 
   return (
@@ -63,7 +63,7 @@ export function ReviewSummary({ averageRating, totalReviews, ratingDistribution,
               <div key={rating} className="flex items-center gap-3">
                 <div className="flex items-center gap-1 w-12">
                   <span className="text-sm">{rating}</span>
-                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="w-3 h-3 text-enkaji-gold fill-current" />
                 </div>
                 <div className="flex-1">
                   <Progress value={percentage} className="h-2" />
@@ -80,7 +80,7 @@ export function ReviewSummary({ averageRating, totalReviews, ratingDistribution,
         {/* Quality Indicators */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-enkaji-green">
               {totalReviews > 0
                 ? ((((ratingDistribution[4] || 0) + (ratingDistribution[5] || 0)) / totalReviews) * 100).toFixed(0)
                 : 0}

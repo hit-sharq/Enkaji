@@ -77,11 +77,11 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
   const getSentimentColor = (sentiment: "positive" | "negative" | "neutral") => {
     switch (sentiment) {
       case "positive":
-        return "text-green-600 bg-green-100"
+        return "text-enkaji-green bg-enkaji-green/10"
       case "negative":
-        return "text-red-600 bg-red-100"
+        return "text-enkaji-red bg-enkaji-red/10"
       default:
-        return "text-gray-600 bg-gray-100"
+        return "text-muted-foreground bg-muted"
     }
   }
 
@@ -215,10 +215,10 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-enkaji-green rounded-full"></div>
                   <span className="text-sm font-medium">Positive</span>
                 </div>
-                <span className="text-sm font-bold text-green-600">
+                <span className="text-sm font-bold text-enkaji-green">
                   {((insights.sentimentAnalysis.positive / insights.summary.totalReviews) * 100).toFixed(1)}%
                 </span>
               </div>
@@ -231,10 +231,10 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-muted0 rounded-full"></div>
                   <span className="text-sm font-medium">Neutral</span>
                 </div>
-                <span className="text-sm font-bold text-gray-600">
+                <span className="text-sm font-bold text-muted-foreground">
                   {((insights.sentimentAnalysis.neutral / insights.summary.totalReviews) * 100).toFixed(1)}%
                 </span>
               </div>
@@ -247,10 +247,10 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-enkaji-red rounded-full"></div>
                   <span className="text-sm font-medium">Negative</span>
                 </div>
-                <span className="text-sm font-bold text-red-600">
+                <span className="text-sm font-bold text-enkaji-red">
                   {((insights.sentimentAnalysis.negative / insights.summary.totalReviews) * 100).toFixed(1)}%
                 </span>
               </div>
@@ -262,7 +262,7 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
 
             <div className="pt-4 border-t">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-enkaji-green">
                   {(
                     (insights.sentimentAnalysis.positive /
                       (insights.sentimentAnalysis.positive + insights.sentimentAnalysis.negative)) *
@@ -336,13 +336,13 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-4 pt-4 border-t">
               <h4 className="font-medium">Verification Status</h4>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{insights.verificationStats.verified}</div>
-                  <p className="text-sm text-green-700">Verified</p>
+                <div className="text-center p-3 bg-enkaji-green rounded-lg">
+                  <div className="text-2xl font-bold text-enkaji-green">{insights.verificationStats.verified}</div>
+                  <p className="text-sm text-enkaji-green">Verified</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-600">{insights.verificationStats.unverified}</div>
-                  <p className="text-sm text-gray-700">Unverified</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-muted-foreground">{insights.verificationStats.unverified}</div>
+                  <p className="text-sm text-foreground/80">Unverified</p>
                 </div>
               </div>
             </div>

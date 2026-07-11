@@ -84,12 +84,12 @@ export default function CouponsAdminPage() {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Tag className="h-6 w-6" /> Coupon Codes</h1>
-          <p className="text-gray-500 text-sm mt-1">Create and manage promo codes for buyers</p>
+          <h1 className="font-display text-2xl font-semibold flex items-center gap-2 text-foreground"><Tag className="h-6 w-6 text-enkaji-gold" /> Coupon Codes</h1>
+          <p className="text-muted-foreground text-sm mt-1">Create and manage promo codes for buyers</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#8B2635] hover:bg-[#7a1f2e] text-white gap-2">
+            <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold gap-2">
               <Plus className="h-4 w-4" /> New Coupon
             </Button>
           </DialogTrigger>
@@ -140,8 +140,8 @@ export default function CouponsAdminPage() {
                   <Input type="date" value={form.expiresAt} onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))} />
                 </div>
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button onClick={handleCreate} disabled={saving} className="w-full bg-[#8B2635] hover:bg-[#7a1f2e] text-white">
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <Button onClick={handleCreate} disabled={saving} className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null} Create Coupon
               </Button>
             </div>
@@ -150,16 +150,16 @@ export default function CouponsAdminPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-gray-400" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
       ) : coupons.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-gray-400">No coupons yet. Create your first promo code.</CardContent></Card>
+        <Card><CardContent className="py-12 text-center text-muted-foreground">No coupons yet. Create your first promo code.</CardContent></Card>
       ) : (
         <div className="space-y-3">
           {coupons.map(c => (
             <Card key={c.id} className={!c.isActive ? "opacity-60" : ""}>
               <CardContent className="py-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 font-mono font-bold text-amber-700 tracking-widest text-sm">
+                  <div className="bg-enkaji-brown border border-enkaji-ochre rounded-lg px-3 py-2 font-mono font-bold text-enkaji-brown tracking-widest text-sm">
                     {c.code}
                   </div>
                   <div>
@@ -167,7 +167,7 @@ export default function CouponsAdminPage() {
                       {c.discountType === "percentage" ? `${c.discountValue}% off` : `KES ${c.discountValue} off`}
                       {c.maximumDiscount ? ` (max KES ${c.maximumDiscount.toLocaleString()})` : ""}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {c.description || "—"}
                       {c.minimumOrder ? ` · Min. KES ${c.minimumOrder.toLocaleString()}` : ""}
                       {c.expiresAt ? ` · Expires ${format(new Date(c.expiresAt), "MMM d, yyyy")}` : ""}
@@ -177,13 +177,13 @@ export default function CouponsAdminPage() {
                 <div className="flex items-center gap-4 shrink-0">
                   <div className="text-center">
                     <p className="text-sm font-bold">{c.usageCount}</p>
-                    <p className="text-xs text-gray-400">{c.usageLimit ? `/ ${c.usageLimit}` : "uses"}</p>
+                    <p className="text-xs text-muted-foreground">{c.usageLimit ? `/ ${c.usageLimit}` : "uses"}</p>
                   </div>
-                  <Badge variant={c.isActive ? "default" : "secondary"} className={c.isActive ? "bg-green-100 text-green-700 border-green-200" : ""}>
+                  <Badge variant={c.isActive ? "default" : "secondary"} className={c.isActive ? "bg-enkaji-green text-enkaji-green border-enkaji-green" : ""}>
                     {c.isActive ? "Active" : "Inactive"}
                   </Badge>
-                  <button onClick={() => toggleCoupon(c.id, c.isActive)} className="text-gray-400 hover:text-gray-700 transition-colors">
-                    {c.isActive ? <ToggleRight className="h-5 w-5 text-green-500" /> : <ToggleLeft className="h-5 w-5" />}
+                    <button onClick={() => toggleCoupon(c.id, c.isActive)} className="text-muted-foreground hover:text-foreground transition-colors">
+                    {c.isActive ? <ToggleRight className="h-5 w-5 text-enkaji-green" /> : <ToggleLeft className="h-5 w-5" />}
                   </button>
                 </div>
               </CardContent>

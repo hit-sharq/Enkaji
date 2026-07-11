@@ -30,7 +30,10 @@ export default async function BlogPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Blog</h1>
+      <div className="max-w-5xl mx-auto">
+        <p className="enkaji-eyebrow mb-3">Journal</p>
+        <h1 className="font-display font-semibold text-3xl text-foreground mb-8">Blog</h1>
+      </div>
       <BlogGrid posts={blogPosts} />
     </div>
   )

@@ -96,11 +96,12 @@ export function TestimonialsSection() {
         ]
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-muted">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Community Says</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="enkaji-eyebrow mb-4">Testimonials</p>
+          <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground mb-4">What Our Community Says</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             {testimonials.length > 0
               ? "Hear from our satisfied customers and partners who have experienced success with Enkaji Trade Kenya."
               : "We're building Kenya's premier B2B marketplace. Join us and be part of the success stories we'll feature here."}
@@ -113,18 +114,18 @@ export function TestimonialsSection() {
             {displayTestimonials.slice(0, 6).map((testimonial) => (
               <Card
                 key={testimonial.id}
-                className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 enkaji-card-hover"
+                className="bg-card border border-border shadow-sm hover:shadow-md transition-all duration-300 enkaji-card-hover"
               >
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <Quote className="w-8 h-8 text-enkaji-ochre mb-2" />
+                    <Quote className="w-8 h-8 text-enkaji-gold mb-2" />
                   </div>
 
-                  <p className="text-gray-700 mb-6 italic line-clamp-3">"{testimonial.content}"</p>
+                  <p className="text-foreground/80 mb-6 italic line-clamp-3">"{testimonial.content}"</p>
 
                   <div className="flex items-center mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                      <Star key={i} className="w-4 h-4 text-enkaji-gold fill-current" />
                     ))}
                   </div>
 
@@ -139,19 +140,19 @@ export function TestimonialsSection() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-white font-bold text-lg">{testimonial.name?.charAt(0) || 'U'}</span>
+                        <span className="text-enkaji-ivory font-bold text-lg">{testimonial.name?.charAt(0) || 'U'}</span>
                       )}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-600">
+                      <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
+                      <p className="text-sm text-muted-foreground">
                         {testimonial.business}
                         {testimonial.location && ` • ${testimonial.location}`}
                       </p>
                       {testimonial.isVerified && (
                         <div className="flex items-center gap-1 mt-1">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="text-xs text-green-600">Verified Customer</span>
+                          <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
+                          <span className="text-xs text-enkaji-gold">Verified Customer</span>
                         </div>
                       )}
                     </div>
@@ -170,23 +171,23 @@ export function TestimonialsSection() {
               >
                 {displayTestimonials.map((testimonial) => (
                   <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                    <Card className="bg-white shadow-lg">
+                    <Card className="bg-card border border-border shadow-sm">
                       <CardContent className="p-6">
                         <div className="flex items-center mb-4">
-                          <Quote className="w-8 h-8 text-enkaji-ochre mb-2" />
+                          <Quote className="w-8 h-8 text-enkaji-gold mb-2" />
                         </div>
 
-                        <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                        <p className="text-foreground/80 mb-6 italic">"{testimonial.content}"</p>
 
                         <div className="flex items-center mb-4">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                            <Star key={i} className="w-4 h-4 text-enkaji-gold fill-current" />
                           ))}
                         </div>
 
                         <div className="flex items-center">
                           <div className="w-12 h-12 rounded-full mr-4 overflow-hidden bg-gradient-to-br from-enkaji-gold to-enkaji-ochre flex items-center justify-center">
-{testimonial.imageUrl ? (
+ {testimonial.imageUrl ? (
                               <Image
                                 src={testimonial.imageUrl || "/placeholder.svg"}
                                 alt={testimonial.name}
@@ -195,19 +196,19 @@ export function TestimonialsSection() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <span className="text-white font-bold text-lg">{testimonial.name?.charAt(0) || 'U'}</span>
+                              <span className="text-enkaji-ivory font-bold text-lg">{testimonial.name?.charAt(0) || 'U'}</span>
                             )}
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                            <p className="text-sm text-gray-600">
+                            <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
+                            <p className="text-sm text-muted-foreground">
                               {testimonial.business}
                               {testimonial.location && ` • ${testimonial.location}`}
                             </p>
                             {testimonial.isVerified && (
                               <div className="flex items-center gap-1 mt-1">
-                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <span className="text-xs text-green-600">Verified Customer</span>
+                                <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
+                                <span className="text-xs text-enkaji-gold">Verified Customer</span>
                               </div>
                             )}
                           </div>
@@ -222,7 +223,7 @@ export function TestimonialsSection() {
             {/* Carousel Controls */}
             {displayTestimonials.length > 1 && (
               <div className="flex items-center justify-center gap-4 mt-6">
-                <Button variant="outline" size="icon" onClick={prevTestimonial} className="rounded-full bg-transparent">
+                <Button variant="outline" size="icon" onClick={prevTestimonial} className="rounded-full bg-transparent border-enkaji-gold/50 text-enkaji-gold">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
 
@@ -232,13 +233,13 @@ export function TestimonialsSection() {
                       key={index}
                       onClick={() => setCurrentIndex(index)}
                       className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentIndex ? "bg-enkaji-ochre" : "bg-gray-300"
+                        index === currentIndex ? "bg-enkaji-gold" : "bg-enkaji-gold/30"
                       }`}
                     />
                   ))}
                 </div>
 
-                <Button variant="outline" size="icon" onClick={nextTestimonial} className="rounded-full bg-transparent">
+                <Button variant="outline" size="icon" onClick={nextTestimonial} className="rounded-full bg-transparent border-enkaji-gold/50 text-enkaji-gold">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -247,12 +248,12 @@ export function TestimonialsSection() {
         </div>
 
         <div className="text-center mt-12">
-          <Card className="bg-gradient-to-br from-enkaji-cream to-orange-50 border-enkaji-ochre/20 max-w-2xl mx-auto">
+          <Card className="bg-card border border-border max-w-2xl mx-auto">
             <CardContent className="p-8">
-              <h3 className="font-semibold text-enkaji-red text-xl mb-4">
+              <h3 className="font-semibold text-enkaji-ink text-xl mb-4">
                 Have a Great Experience with Enkaji Trade Kenya?
               </h3>
-              <p className="text-enkaji-brown mb-6">
+              <p className="text-muted-foreground mb-6">
                 We'd love to hear your story! Share your experience and help other businesses discover the benefits of
                 our platform.
               </p>
@@ -263,7 +264,7 @@ export function TestimonialsSection() {
                 >
                   Share Your Story
                 </Button>
-                <div className="text-sm text-enkaji-brown">
+                <div className="text-sm text-muted-foreground">
                   <p>
                     <strong>Email:</strong> testimonials@enkajitradeKenya.com
                   </p>

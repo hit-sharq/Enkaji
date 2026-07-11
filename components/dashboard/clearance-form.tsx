@@ -186,7 +186,7 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
           </div>
 
           {savings && (
-            <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <div className="rounded-3xl border border-enkaji-ochre bg-enkaji-brown p-4 text-sm text-enkaji-brown">
               Save KES {savings.amount.toLocaleString()} ({savings.percentage}% off)
             </div>
           )}
@@ -268,11 +268,11 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
           <div>
             <Label>Product Images *</Label>
             <div className="space-y-4">
-              <label className="flex flex-col items-center justify-center w-full h-32 rounded-3xl border border-dashed border-slate-300 bg-slate-50 text-center text-sm text-slate-600 hover:border-slate-400 hover:bg-slate-100 transition">
+              <label className="flex flex-col items-center justify-center w-full h-32 rounded-3xl border border-dashed border-muted-foreground bg-muted text-center text-sm text-muted-foreground hover:border-muted-foreground hover:bg-muted transition">
                 <div className="flex flex-col items-center gap-2">
                   <ImageIcon className="h-6 w-6" />
                   <span>Click to upload images</span>
-                  <span className="text-xs text-slate-500">PNG, JPG, JPEG up to 5MB each</span>
+                  <span className="text-xs text-muted-foreground">PNG, JPG, JPEG up to 5MB each</span>
                 </div>
                 <input
                   type="file"
@@ -284,12 +284,12 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
                 />
               </label>
 
-              {isUploading && <p className="text-sm text-slate-500">Uploading images…</p>}
+              {isUploading && <p className="text-sm text-muted-foreground">Uploading images…</p>}
 
               {images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {images.map((src, index) => (
-                    <div key={index} className="group relative overflow-hidden rounded-3xl border border-slate-200">
+                    <div key={index} className="group relative overflow-hidden rounded-3xl border border-muted-foreground">
                       <img src={src} alt={`Clearance image ${index + 1}`} className="h-28 w-full object-cover" />
                       <button
                         type="button"
@@ -306,7 +306,7 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button type="submit" disabled={isSubmitting || images.length === 0 || isUploading} className="bg-[#0F172A] text-white">
+            <Button type="submit" disabled={isSubmitting || images.length === 0 || isUploading} className="bg-enkaji-ink text-white">
               {isSubmitting ? "Creating..." : "Create Clearance Deal"}
             </Button>
             <Button type="button" variant="outline" onClick={() => router.back()}>

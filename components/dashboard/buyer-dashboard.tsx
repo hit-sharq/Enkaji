@@ -60,110 +60,110 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="font-display text-3xl font-semibold text-foreground mb-2">
           Welcome back, {user.firstName || "Friend"}!
         </h1>
-        <p className="text-gray-600">Manage your orders, favorites, and profile</p>
+        <p className="text-muted-foreground">Manage your orders, favorites, and profile</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
+                <p className="text-2xl font-bold text-foreground">{orders.length}</p>
               </div>
-              <Package className="w-8 h-8 text-red-800" />
+              <Package className="w-8 h-8 text-enkaji-gold" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Favorites</p>
-                <p className="text-2xl font-bold text-gray-900">{favorites.length}</p>
+                <p className="text-sm font-medium text-muted-foreground">Favorites</p>
+                <p className="text-2xl font-bold text-foreground">{favorites.length}</p>
               </div>
-              <Heart className="w-8 h-8 text-red-800" />
+              <Heart className="w-8 h-8 text-enkaji-gold" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Cart Items</p>
-                <p className="text-2xl font-bold text-gray-900">{cartItems}</p>
+                <p className="text-sm font-medium text-muted-foreground">Cart Items</p>
+                <p className="text-2xl font-bold text-foreground">{cartItems}</p>
               </div>
-              <ShoppingCart className="w-8 h-8 text-red-800" />
+              <ShoppingCart className="w-8 h-8 text-enkaji-gold" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Profile</p>
-                <p className="text-sm text-gray-900">Complete</p>
+                <p className="text-sm font-medium text-muted-foreground">Profile</p>
+                <p className="text-sm text-foreground">Complete</p>
               </div>
-              <User className="w-8 h-8 text-red-800" />
+              <User className="w-8 h-8 text-enkaji-gold" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle className="font-display font-semibold">Recent Orders</CardTitle>
           </CardHeader>
           <CardContent>
             {orders.length > 0 ? (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg bg-card">
                     <div>
                       <p className="font-medium">Order #{order.orderNumber || order.id.slice(-8)}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {order.items.length} items • KES {order.total.toLocaleString()}
                       </p>
-                      <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <Badge variant={order.status === "DELIVERED" ? "default" : "secondary"}>{order.status}</Badge>
                   </div>
                 ))}
                 <Link href="/orders">
-                  <Button variant="outline" className="w-full bg-transparent">
+                  <Button variant="outline" className="w-full border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
                     View All Orders
                   </Button>
                 </Link>
               </div>
             ) : (
               <div className="text-center py-8">
-                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No orders yet</p>
+                <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No orders yet</p>
                 <Link href="/shop">
-                  <Button className="mt-4 bg-red-800 hover:bg-red-900">Start Shopping</Button>
+                  <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Start Shopping</Button>
                 </Link>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border bg-card rounded-xl shadow-sm">
           <CardHeader>
-            <CardTitle>Your Favorites</CardTitle>
+            <CardTitle className="font-display font-semibold">Your Favorites</CardTitle>
           </CardHeader>
           <CardContent>
             {favorites.length > 0 ? (
               <div className="space-y-4">
                 {favorites.map((favorite) => (
-                  <div key={favorite.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
+                  <div key={favorite.id} className="flex items-center space-x-4 p-4 border border-border rounded-lg bg-card">
+                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
                       {favorite.product.images && favorite.product.images.length > 0 ? (
                         <img
                           src={favorite.product.images[0] || "/placeholder.svg"}
@@ -171,29 +171,29 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                           className="w-full h-full object-cover rounded-md"
                         />
                       ) : (
-                        <Package className="w-8 h-8 text-gray-400" />
+                        <Package className="w-8 h-8 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">{favorite.product.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         KES {favorite.product.price.toLocaleString()} • {favorite.product.category.name}
                       </p>
                     </div>
                   </div>
                 ))}
                 <Link href="/favorites">
-                  <Button variant="outline" className="w-full bg-transparent">
+                  <Button variant="outline" className="w-full border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
                     View All Favorites
                   </Button>
                 </Link>
               </div>
             ) : (
               <div className="text-center py-8">
-                <Heart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No favorites yet</p>
+                <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No favorites yet</p>
                 <Link href="/shop">
-                  <Button className="mt-4 bg-red-800 hover:bg-red-900">Discover Products</Button>
+                  <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Discover Products</Button>
                 </Link>
               </div>
             )}

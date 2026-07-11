@@ -50,7 +50,7 @@ export default function PayoutsAdminPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-2 mb-8">
           <Loader2 className="h-6 w-6 animate-spin" />
-          <h1 className="text-2xl font-bold">Loading Payouts...</h1>
+          <h1 className="font-display text-2xl font-semibold text-foreground">Loading Payouts...</h1>
         </div>
       </div>
     )
@@ -60,10 +60,10 @@ export default function PayoutsAdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Wallet className="h-6 w-6" />
-            Payout Management
-          </h1>
+            <h1 className="font-display text-3xl font-semibold flex items-center gap-2 text-foreground">
+              <Wallet className="h-6 w-6 text-enkaji-gold" />
+              Payout Management
+            </h1>
           <p className="text-muted-foreground">Driver earnings & seller payouts</p>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function PayoutsAdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-amber-600 mb-1">
+            <div className="text-2xl font-bold text-enkaji-gold mb-1">
               KES {driverSummary?.pendingAmount?.toLocaleString() || 0}
             </div>
             <p className="text-sm text-muted-foreground">Driver Pending</p>
@@ -80,7 +80,7 @@ export default function PayoutsAdminPage() {
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600 mb-1">
+            <div className="text-2xl font-bold text-enkaji-green mb-1">
               KES {sellerSummary?.pendingAmount?.toLocaleString() || 0}
             </div>
             <p className="text-sm text-muted-foreground">Seller Pending</p>
@@ -132,7 +132,7 @@ export default function PayoutsAdminPage() {
 
         <TabsContent value="sellers" className="mt-6">
           <Link href="/admin/payouts/sellers">
-            <Button size="lg" className="w-full">
+            <Button size="lg" className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
               Manage Seller Payout Requests
             </Button>
           </Link>

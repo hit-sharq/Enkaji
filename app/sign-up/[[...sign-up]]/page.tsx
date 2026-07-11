@@ -15,7 +15,7 @@ export default function SignUpPage() {
       footer={
         <>
           {"Already have an account? "}
-          <Link href="/sign-in" className="font-medium text-orange-600 hover:text-orange-700">
+          <Link href="/sign-in" className="font-medium text-enkaji-gold hover:text-enkaji-gold/80">
             Sign in
           </Link>
         </>
@@ -24,7 +24,7 @@ export default function SignUpPage() {
       <SignUp
         appearance={{
           variables: {
-            colorPrimary: "#ea580c",
+            colorPrimary: "#C8B96A",
             colorText: "#0a0a0a",
             colorTextSecondary: "#6b7280",
             colorBackground: "#ffffff",
@@ -37,10 +37,10 @@ export default function SignUpPage() {
             headerSubtitle: "hidden",
             formFieldInput:
               "h-10 rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm focus-visible:ring-2 focus-visible:ring-ring",
-            formButtonPrimary: "bg-orange-600 hover:bg-orange-700 text-white h-10 rounded-md transition-colors",
-            socialButtonsBlockButton: "h-10 rounded-md border border-input bg-white hover:bg-orange-50 text-gray-900",
+            formButtonPrimary: "bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink h-10 rounded-md font-semibold transition-colors",
+            socialButtonsBlockButton: "h-10 rounded-md border border-input bg-card hover:bg-enkaji-gold/10 text-enkaji-ink",
             footerAction__signUp: "text-sm",
-            footerActionLink: "text-orange-600 hover:text-orange-700 font-medium",
+            footerActionLink: "text-enkaji-gold hover:text-enkaji-gold/80 font-medium",
           },
         }}
         signInUrl="/sign-in"

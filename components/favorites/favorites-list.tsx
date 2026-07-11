@@ -24,7 +24,7 @@ export default async function FavoritesList({ userId }: FavoritesListProps) {
   })
 
   if (favorites.length === 0) {
-    return <p className="text-gray-600">You have no favorites yet.</p>
+    return <p className="text-muted-foreground">You have no favorites yet.</p>
   }
 
   return (
