@@ -13,10 +13,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Log incoming IPN for debugging
     console.log("[IPN] Received:", JSON.stringify(body, null, 2))
 
-    // Extract IPN data
     const orderTrackingId = body.OrderTrackingId || body.order_tracking_id
     const merchantReference = body.OrderMerchantReference || body.merchant_reference
     const statusCode = body.status_code || body.payment_status_code
@@ -26,7 +24,6 @@ export async function POST(request: NextRequest) {
     const amount = body.amount
     const currency = body.currency
 
-    // Store raw IPN data for audit
     await prisma.pesapalIPN.create({
       data: {
         pesapalTransactionId: transactionId || orderTrackingId,
@@ -46,7 +43,6 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Find the order using merchant reference
     const merchantRef = merchantReference
     const isSubscriptionPayment = merchantRef?.startsWith('SUB-')
     const isCheckoutPayment = merchantRef?.startsWith('PAY-')
@@ -56,16 +52,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "No merchant reference" }, { status: 400 })
     }
 
-    // Check if this is a subscription payment
     if (isSubscriptionPayment) {
       return await handleSubscriptionPayment(merchantRef, statusCode, statusDescription, transactionId, paymentMethod, amount, currency, body)
     }
 
-    // Try to find order by multiple identifiers
     let order = null
     let orderId = merchantRef
 
-    // First, try finding by order ID directly
     order = await prisma.order.findUnique({
       where: { id: merchantRef },
       include: {
@@ -74,7 +67,6 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // If not found, try finding by orderNumber
     if (!order) {
       order = await prisma.order.findFirst({
         where: { orderNumber: merchantRef },
@@ -88,7 +80,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If still not found and this is a checkout payment, create order now
     if (!order && isCheckoutPayment) {
       console.log(`[IPN] Creating order from checkout payment: ${merchantRef}`)
       order = await createOrderFromPayment(merchantRef, statusCode, body)
@@ -99,15 +90,12 @@ export async function POST(request: NextRequest) {
 
     if (!order) {
       console.warn(`[IPN] Order not found for merchant ref: ${merchantRef}`)
-      // Still return success to acknowledge IPN receipt
       return NextResponse.json({ success: true, warning: "Order not found - may be pending creation" })
     }
 
-    // Map statuses
     const paymentStatus = mapOrderPaymentStatus(statusCode)
     const orderStatus = mapOrderStatus(statusCode)
 
-    // Update or create payment record
     if (order.pesapalPayment) {
       await prisma.pesapalPayment.update({
         where: { id: order.pesapalPayment.id },
@@ -135,7 +123,6 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Update order status
     await prisma.order.update({
       where: { id: orderId },
       data: {
@@ -147,7 +134,6 @@ export async function POST(request: NextRequest) {
 
     console.log(`[IPN] Order ${orderId} updated: orderStatus=${orderStatus}, paymentStatus=${paymentStatus}`)
 
-    // Handle payment states
     await handlePaymentState(order, paymentStatus, statusCode, merchantReference)
 
     return NextResponse.json({
@@ -162,10 +148,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: "IPN processing failed" }, { status: 500 })
   }
 }
-
-// ============================================================================
-// Helper Functions (copied from callback route for self-containment)
-// ============================================================================
 
 function mapOrderStatus(statusCode: number | string): "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED" {
   const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
@@ -201,15 +183,17 @@ function mapPesapalStatus(statusCode: number | string): "PENDING" | "COMPLETED" 
 
 function mapPaymentMethod(method: string): "CARD" | "MPESA" | "AIRTEL_MONEY" | "EQUITY_BANK" | "KCB_BANK" | "BANK_TRANSFER" | "MOBILE_BANKING" {
   if (!method) return "CARD"
+  
   const normalized = method.toUpperCase().replace(/[\s-]/g, '_')
   const validMethods = ["CARD", "MPESA", "AIRTEL_MONEY", "EQUITY_BANK", "KCB_BANK", "BANK_TRANSFER", "MOBILE_BANKING"]
+  
   return (validMethods.includes(normalized) ? normalized : "CARD") as any
 }
 
 async function handlePaymentState(order: any, paymentStatus: string, statusCode: number | string, merchantReference?: string): Promise<void> {
   const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
   switch (code) {
-    case 1: // Payment completed
+    case 1:
       console.log(`[IPN] Payment completed for order ${order.id}`)
       if (!order.id && merchantReference) {
         await createOrderFromPayment(merchantReference)
@@ -221,7 +205,7 @@ async function handlePaymentState(order: any, paymentStatus: string, statusCode:
         paymentCallbackEmail(customerName, order.orderNumber, Number(order.total), 'completed', 'Pesapal')
       )
       break
-    case 0: // Payment failed
+    case 0:
       console.log(`[IPN] Payment failed for order ${order.id}`)
       const customerNameFail = `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || 'Customer'
       await sendEmail(
@@ -230,15 +214,19 @@ async function handlePaymentState(order: any, paymentStatus: string, statusCode:
         paymentCallbackEmail(customerNameFail, order.orderNumber, Number(order.total), 'failed', 'Pesapal')
       )
       break
-    case 4: // Payment reversed/refunded
-      console.log(`[IPN] Payment reversed for order ${order.id}`)
+    case 4:
+      console.log(`[IPN] Payment reversed/refunded for order ${order.id}`)
       break
     default:
       console.log(`[IPN] Payment pending (status ${code}) for order ${order.id}`)
   }
 }
 
-async function createOrderFromPayment(paymentReference: string, statusCode?: number | string, rawData?: any): Promise<any> {
+async function createOrderFromPayment(
+  paymentReference: string, 
+  statusCode?: number | string,
+  rawData?: any
+): Promise<any> {
   try {
     const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
     if (code !== 1) {
@@ -246,36 +234,31 @@ async function createOrderFromPayment(paymentReference: string, statusCode?: num
       return null
     }
 
-     // Find the checkout session for this payment reference
-     const checkoutSession = await prisma.checkoutSession.findFirst({
-       where: {
-          paymentReference: paymentReference,
-         expiresAt: { gt: new Date() }
-       }
-     })
+    const checkoutSession = await prisma.checkoutSession.findFirst({
+      where: {
+        paymentReference: paymentReference,
+        expiresAt: { gt: new Date() }
+      }
+    })
 
     if (!checkoutSession) {
       console.error(`[IPN] No checkout session found for payment: ${paymentReference}`)
       return null
     }
 
-    // Check if order already exists
     const existingOrder = await prisma.order.findFirst({ where: { orderNumber: paymentReference } })
     if (existingOrder) {
       console.log(`[IPN] Found existing order: ${existingOrder.id}`)
       return existingOrder
     }
 
-    // Parse items from checkout session
     const items = checkoutSession.items as any[]
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.error(`[IPN] No items in checkout session for payment: ${paymentReference}`)
       return null
     }
 
-    // Create order and deduct inventory atomically
     const order = await prisma.$transaction(async (tx) => {
-      // Create the order
       const orderData = await tx.order.create({
         data: {
           orderNumber: paymentReference,
@@ -291,18 +274,15 @@ async function createOrderFromPayment(paymentReference: string, statusCode?: num
         }
       })
 
-      // Create order items and deduct inventory
       for (const item of items) {
         const productId = item.productId || item.id
         const quantity = Number(item.quantity)
 
-        // Deduct inventory
         await tx.product.update({
           where: { id: productId },
           data: { inventory: { decrement: quantity } }
         })
 
-        // Create order item
         await tx.orderItem.create({
           data: {
             orderId: orderData.id,
@@ -319,12 +299,10 @@ async function createOrderFromPayment(paymentReference: string, statusCode?: num
 
     console.log(`[IPN] Order created from checkout: ${order.id}`)
 
-    // Clear cart
     await prisma.cartItem.deleteMany({
       where: { userId: checkoutSession.userId }
     })
 
-    // Clean up checkout session
     await prisma.checkoutSession.delete({
       where: { id: checkoutSession.id }
     })
@@ -349,6 +327,7 @@ async function handleSubscriptionPayment(
   try {
     const code = typeof statusCode === "string" ? parseInt(statusCode) : statusCode
     const subscriptionId = orderId.split('-')[1]
+    
     if (!subscriptionId) {
       console.warn(`[IPN] Invalid subscription order ID: ${orderId}`)
       return NextResponse.json({ success: false, error: "Invalid subscription ID" }, { status: 400 })
@@ -364,6 +343,21 @@ async function handleSubscriptionPayment(
       return NextResponse.json({ success: true, warning: "Subscription not found" })
     }
 
+    await prisma.pesapalIPN.create({
+      data: {
+        pesapalTransactionId: transactionId || orderId,
+        pesapalTrackingId: orderId,
+        pesapalMerchantRef: orderId,
+        paymentMethod: mapPaymentMethod(paymentMethod || "CARD"),
+        amount: parseFloat(amount || "0") || 0,
+        currency: currency || "KES",
+        status: mapPesapalStatus(statusCode),
+        statusDescription: statusDescription,
+        rawData: rawData,
+        processedAt: new Date()
+      }
+    })
+
     if (code === 1) {
       await prisma.sellerSubscription.update({
         where: { id: subscriptionId },
@@ -373,12 +367,19 @@ async function handleSubscriptionPayment(
           currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         }
       })
+
+      await prisma.user.update({
+        where: { id: subscription.sellerId },
+        data: { role: "SELLER" },
+      })
+
       console.log(`[IPN] Subscription ${subscriptionId} activated successfully`)
     } else {
       await prisma.sellerSubscription.update({
         where: { id: subscriptionId },
         data: { status: "UNPAID" }
       })
+
       console.log(`[IPN] Subscription ${subscriptionId} payment failed`)
     }
 

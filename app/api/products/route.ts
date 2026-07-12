@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth"
 import { productSchema } from "@/lib/validation"
 import { handleApiError, ValidationError, AuthenticationError } from "@/lib/error"
 import { apiRateLimit } from "@/lib/rate-limit"
+import { isSubscriptionActive } from "@/lib/subscription"
+import { checkSubscriptionNotifications } from "@/lib/subscription-notifications"
 
 export async function GET(request: NextRequest) {
   try {
@@ -229,7 +231,11 @@ export async function POST(request: NextRequest) {
       where: { sellerId: user.id }
     })
 
-    if (!subscription || subscription.status !== "ACTIVE") {
+    if (subscription) {
+      await checkSubscriptionNotifications(subscription, user)
+    }
+
+    if (!subscription || !isSubscriptionActive(subscription)) {
       throw new ValidationError("You need an active subscription to create products. Please subscribe to a plan.")
     }
 

@@ -4,42 +4,10 @@ import { handleApiError, AuthenticationError, ValidationError } from "@/lib/erro
 import { prisma } from "@/lib/db"
 import { pesapalService } from "@/lib/pesapal"
 import { appConfig } from "@/lib/app-config"
+import { SUBSCRIPTION_PLANS } from "@/lib/subscription"
+import { checkSubscriptionNotifications } from "@/lib/subscription-notifications"
 
 export const dynamic = 'force-dynamic'
-
-const SUBSCRIPTION_PLANS = {
-  BASIC: {
-    name: "Basic Seller",
-    price: 0,
-    features: ["Up to 20 products", "Basic analytics", "Standard support"],
-    maxProducts: 20,
-  },
-  PREMIUM: {
-    name: "Premium Seller",
-    price: 1500, // KES per month
-    features: [
-      "Unlimited products",
-      "Featured listings",
-      "Advanced analytics",
-      "Priority support",
-      "Bulk upload tools",
-      "Custom branding",
-    ],
-    maxProducts: -1, // Unlimited
-  },
-  ENTERPRISE: {
-    name: "Enterprise Seller",
-    price: 5000, // KES per month
-    features: [
-      "Everything in Premium",
-      "Dedicated account manager",
-      "API access",
-      "Custom integrations",
-      "White-label options",
-    ],
-    maxProducts: -1, // Unlimited
-  },
-}
 
 // GET - Get current subscription and available plans
 export async function GET() {
@@ -56,6 +24,10 @@ export async function GET() {
     const subscription = await prisma.sellerSubscription.findUnique({
       where: { sellerId: user.id }
     })
+
+    if (subscription) {
+      await checkSubscriptionNotifications(subscription, user)
+    }
 
     // Get current product count
     const productCount = await prisma.product.count({

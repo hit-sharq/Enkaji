@@ -65,9 +65,9 @@ export async function POST(request: Request) {
 
     console.log(`Shipping calc: zone=${zone.id}, weight=${totalWeight.toFixed(1)}kg, cost=KES${shippingCost}, total=KES${grandTotal}`)
 
-    // Atomic transaction: order + inventory deduction + orderItems
+    // Atomic transaction: order + orderItems + cart cleanup
     const order = await prisma.$transaction(async (tx) => {
-      // Create order first
+      // Create order first (PENDING for COD or other non-instant payment)
       const orderData = await tx.order.create({
         data: {
           orderNumber,
@@ -83,30 +83,11 @@ export async function POST(request: Request) {
         },
       });
 
-      console.log('Validating products:', items.map(i => ({productId: i.productId || i.id, quantity: i.quantity})));
-      
-      // Deduct inventory & create items
+      // Create order items (no inventory deduction here)
       for (const item of items) {
         const productId = item.productId || item.id;
         const quantity = Number(item.quantity);
         
-        // Double-check inventory
-        const product = await tx.product.findUnique({ 
-          where: { id: productId },
-          select: { inventory: true }
-        });
-        
-        if (!product || product.inventory < quantity) {
-          throw new Error(`Insufficient inventory for product ${productId}: ${product?.inventory || 0} < ${quantity}`);
-        }
-        
-        // Update inventory
-        await tx.product.update({
-          where: { id: productId },
-          data: { inventory: { decrement: quantity } }
-        });
-        
-        // Create order item
         await tx.orderItem.create({
           data: {
             orderId: orderData.id,
@@ -120,13 +101,13 @@ export async function POST(request: Request) {
         item.productId = productId;
       }
       
+      // Clear cart only after order and items are successfully created
+      await tx.cartItem.deleteMany({
+        where: { userId: user.id },
+      });
+      
       return orderData;
     });
-
-    // Clear cart outside tx (less critical)
-    await prisma.cartItem.deleteMany({
-      where: { userId: user.id },
-    })
 
     console.log(`✅ Order created: ${order.id} for user ${user.id}`)
 

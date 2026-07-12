@@ -13,19 +13,28 @@ function getResendClient() {
 
 export async function sendEmail(to: string, subject: string, html: string) {
   if (!process.env.RESEND_API_KEY) {
-    console.log('[Email] No RESEND_API_KEY set, skipping email to', to, subject)
-    return
+    console.warn(
+      `[Email] RESEND_API_KEY is not set. Email to ${to} with subject "${subject}" was NOT sent. Add RESEND_API_KEY to .env to enable emails.`
+    )
+    throw new Error("RESEND_API_KEY is not configured. Email not sent.")
   }
   try {
     const client = getResendClient()
     if (!client) {
-      console.log('[Email] No Resend client available, skipping email to', to, subject)
-      return
+      console.warn(
+        `[Email] Resend client unavailable. Email to ${to} with subject "${subject}" was NOT sent.`
+      )
+      throw new Error("Resend client unavailable. Email not sent.")
     }
     const { error } = await client.emails.send({ from: FROM, to, subject, html })
-    if (error) console.error('[Email] Send error:', error)
+    if (error) {
+      console.error("[Email] Send error:", error)
+      throw new Error(`Resend send error: ${error.message}`)
+    }
+    console.log(`[Email] Sent to ${to}: ${subject}`)
   } catch (err) {
-    console.error('[Email] Unexpected error:', err)
+    console.error("[Email] Unexpected error:", err)
+    throw err
   }
 }
 

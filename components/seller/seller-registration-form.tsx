@@ -92,10 +92,13 @@ if (!response.ok) {
 
       const data = await response.json()
       
-      // Check if payment is required (for PREMIUM or ENTERPRISE plans)
+      if (data.isExisting && data.redirectTo) {
+        router.push(data.redirectTo)
+        return
+      }
+
       if (data.requiresPayment && data.redirectUrl) {
         toast.success("Redirecting to payment...")
-        // Redirect to Pesapal payment page
         window.location.href = data.redirectUrl
         return
       }
