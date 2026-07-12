@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -277,16 +279,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   )
 }
 
-export async function generateStaticParams() {
-  const categories = await db.category.findMany({
-    select: { slug: true },
-  })
-
-  return categories.map((category) => ({
-    slug: category.slug,
-  }))
-}
-
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const category = await db.category.findUnique({
     where: { slug: params.slug },
@@ -300,6 +292,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   return {
     title: `${category.name} - Enkaji Trade Kenya`,
-    description: `Browse ${category.name} products from verified sellers in Kenya. Find quality products at competitive prices.`,
+    description: `Browse ${category.name} products on Enkaji marketplace.`,
   }
 }
