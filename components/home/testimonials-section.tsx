@@ -232,7 +232,7 @@ export function TestimonialsSection() {
                     <button
                       key={index}
                       onClick={() => setCurrentIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-colors ${
+                      className={`w-3 h-3 rounded-full transition-colors ${
                         index === currentIndex ? "bg-enkaji-gold" : "bg-enkaji-gold/30"
                       }`}
                     />

@@ -326,7 +326,7 @@ export function Header() {
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-[85vw] sm:w-80">
                 <div className="flex flex-col space-y-6 mt-6">
                   {/* Mobile Search */}
                   <form onSubmit={handleSearch} className="relative">

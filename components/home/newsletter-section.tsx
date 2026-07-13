@@ -39,7 +39,7 @@ export function NewsletterSection() {
           community.
         </p>
 
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex gap-4">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
           <Input
             type="email"
             placeholder="Enter your email"

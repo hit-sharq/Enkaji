@@ -16,6 +16,13 @@ const inter = Inter({
   preload: true,
 })
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export const metadata: Metadata = {
   title: "Enkaji Trade Kenya - Kenya's Leading Marketplace",
   description: "Connect with thousands of verified businesses across Kenya.",

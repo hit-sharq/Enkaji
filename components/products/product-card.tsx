@@ -207,7 +207,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     <Card className="group border border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-xl hover:border-enkaji-gold/40 hover:-translate-y-1 transition-all duration-300">
       <CardContent className="p-0">
         {/* Image area (GAIA-like) */}
-        <div className="relative h-[108px] overflow-hidden rounded-t-xl">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl">
           <Image
             src={product.images[0] || "/placeholder.png?height=300&width=300"}
             alt={product.name}
@@ -233,12 +233,12 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               initialIsFavorite={product.isFavorite}
               size="sm"
               variant="secondary"
-              className="opacity-0 group-hover:opacity-100 transition-opacity bg-enkaji-ink/50 text-enkaji-ivory rounded-full p-2 shadow-lg hover:bg-enkaji-ink/70"
+              className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-enkaji-ink/50 text-enkaji-ivory rounded-full p-2 shadow-lg hover:bg-enkaji-ink/70"
             />
           </div>
 
           {/* Quick add overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-enkaji-ink/80 via-enkaji-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <div className="absolute inset-0 bg-gradient-to-t from-enkaji-ink/80 via-enkaji-ink/10 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
             <Button
               className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
               onClick={handleAddToCart}

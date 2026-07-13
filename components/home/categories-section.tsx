@@ -71,26 +71,26 @@ export function CategoriesSection() {
           key={category.id}
           className="group overflow-hidden border border-enkaji-gold/20 bg-white/[0.04] rounded-xl hover:border-enkaji-gold/50 hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-1"
         >
-          <CardContent className="p-6">
-            <p className="enkaji-eyebrow mb-3">Sector</p>
-            <h3 className="font-display text-xl md:text-2xl text-enkaji-ivory mb-2 leading-tight">
+          <CardContent className="p-4 md:p-6">
+            <p className="enkaji-eyebrow mb-2 md:mb-3">Sector</p>
+            <h3 className="font-display text-lg md:text-2xl text-enkaji-ivory mb-1 md:mb-2 leading-tight">
               {category.name}
             </h3>
-            <p className="text-enkaji-ivory/60 text-sm mb-5 line-clamp-2">
+            <p className="text-enkaji-ivory/60 text-xs md:text-sm mb-3 md:mb-5 line-clamp-2">
               {category.description}
             </p>
-            <div className="flex items-center justify-between pt-4 border-t border-enkaji-gold/15">
-              <span className="inline-flex items-center text-[10px] tracking-[0.15em] uppercase text-enkaji-gold border border-enkaji-gold/30 px-2.5 py-1 rounded-full">
+            <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-enkaji-gold/15">
+              <span className="inline-flex items-center text-[10px] md:text-xs tracking-[0.12em] uppercase text-enkaji-gold border border-enkaji-gold/30 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full">
                 {category._count?.products ?? 0} Products
               </span>
               <Button
                 asChild
                 variant="ghost"
-                className="p-0 h-auto text-sm text-enkaji-gold hover:text-enkaji-gold/80 group/btn"
+                className="p-0 h-auto text-xs md:text-sm text-enkaji-gold hover:text-enkaji-gold/80 group/btn"
               >
                 <Link href={`/categories/${category.slug}`}>
                   Explore
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </Button>
             </div>
