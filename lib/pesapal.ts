@@ -13,24 +13,9 @@ export interface PesapalConfig {
 // Determine environment from env var (default to sandbox for safety)
 const isProduction = process.env.PESAPAL_ENVIRONMENT === 'production'
 
-// Debug: log env state at module load (only once)
-if (typeof window === 'undefined') {
-  console.log('[Pesapal Config] Environment check:', {
-    PESAPAL_ENVIRONMENT: process.env.PESAPAL_ENVIRONMENT,
-    isProduction,
-    keyPresent: !!process.env.PESAPAL_CONSUMER_KEY,
-    keyLength: process.env.PESAPAL_CONSUMER_KEY?.length || 0,
-    secretPresent: !!process.env.PESAPAL_CONSUMER_SECRET,
-    secretLength: process.env.PESAPAL_CONSUMER_SECRET?.length || 0,
-    callbackUrl: process.env.PESAPAL_CALLBACK_URL,
-    ipnUrl: process.env.PESAPAL_IPN_URL,
-  })
-}
-
 // Validate that credentials are present
 if (!process.env.PESAPAL_CONSUMER_KEY || !process.env.PESAPAL_CONSUMER_SECRET) {
-  console.error('[Pesapal] ERROR: Consumer key and secret must be configured in .env')
-  console.error('[Pesapal] Please set PESAPAL_CONSUMER_KEY and PESAPAL_CONSUMER_SECRET')
+  console.error('[Pesapal] Consumer key and secret must be configured in .env')
 }
 
 // Correct URLs based on Pesapal official documentation

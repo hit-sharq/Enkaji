@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { getCsrfToken, validateCsrfToken } from "@/lib/csrf"
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
@@ -23,10 +24,9 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
-  "/api/pesapal(.*)",  // Allow Pesapal API routes to be public (they handle their own auth)
+  "/api/pesapal(.*)",
 ])
 
-// CORS origins for development and production
 const allowedOrigins = [
   'http://localhost:8081',
   'http://localhost:5000',
@@ -39,52 +39,75 @@ function isAllowedOrigin(origin: string | null): boolean {
   return allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed.replace('https://', '')))
 }
 
+function isCorsPreflight(req: NextRequest): boolean {
+  return req.method === "OPTIONS"
+}
+
+function isStateChangingMethod(req: NextRequest): boolean {
+  return ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)
+}
+
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
-  const origin = req.headers.get('origin')
-  const isApiRoute = req.nextUrl.pathname.startsWith('/api')
+  const origin = req.headers.get("origin")
+  const isApiRoute = req.nextUrl.pathname.startsWith("/api")
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
+  if (isCorsPreflight(req)) {
     const response = NextResponse.next()
     if (origin && isAllowedOrigin(origin)) {
-      response.headers.set('Access-Control-Allow-Origin', origin)
-      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-      response.headers.set('Access-Control-Allow-Credentials', 'true')
-      response.headers.set('Access-Control-Max-Age', '86400')
+      response.headers.set("Access-Control-Allow-Origin", origin)
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With")
+      response.headers.set("Access-Control-Allow-Credentials", "true")
+      response.headers.set("Access-Control-Max-Age", "86400")
     }
     return response
   }
 
-  // If user is signed in and tries to access sign-in/sign-up, redirect to dashboard
   if (userId && (req.nextUrl.pathname.startsWith("/sign-in") || req.nextUrl.pathname.startsWith("/sign-up"))) {
     return NextResponse.redirect(new URL("/dashboard", req.url))
   }
 
-  // Protect routes - redirect to sign-in if not authenticated
   if (isProtectedRoute(req) && !userId) {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
-  // Apply security headers and CORS
   const response = NextResponse.next()
 
-  // Add CORS headers for API routes
   if (origin && isAllowedOrigin(origin) && isApiRoute) {
-    response.headers.set('Access-Control-Allow-Origin', origin)
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-    response.headers.set('Access-Control-Allow-Credentials', 'true')
+    response.headers.set("Access-Control-Allow-Origin", origin)
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With")
+    response.headers.set("Access-Control-Allow-Credentials", "true")
   }
 
-  // Security headers
-  response.headers.set('X-Frame-Options', 'DENY')
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  response.headers.set("X-Frame-Options", "DENY")
+  response.headers.set("X-Content-Type-Options", "nosniff")
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
 
-  // Content Security Policy - relaxed for development
+  if (process.env.NODE_ENV === "production") {
+    response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+  }
+
+  if (isStateChangingMethod(req) && isApiRoute) {
+    const csrfValid = validateCsrfToken(req)
+    if (!csrfValid) {
+      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 })
+    }
+  }
+
+  if (isApiRoute && isStateChangingMethod(req)) {
+    const csrfToken = getCsrfToken()
+    response.cookies.set("csrf_token", csrfToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    })
+  }
+
   const cspDirectives =
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.clerk.com https://*.clerk.accounts.dev; " +
@@ -97,7 +120,7 @@ export default clerkMiddleware(async (auth, req) => {
     "base-uri 'self'; " +
     "form-action 'self';"
 
-  response.headers.set('Content-Security-Policy', cspDirectives)
+  response.headers.set("Content-Security-Policy", cspDirectives)
 
   return response
 })

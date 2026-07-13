@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Package, Calculator, MessageSquare } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface BulkOrderFormProps {
   product: {
@@ -49,7 +50,7 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch("/api/bulk-orders", {
+      const response = await csrfFetch("/api/bulk-orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

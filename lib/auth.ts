@@ -78,22 +78,16 @@ const CIRCUIT_BREAKER_TIMEOUT = 60000 // 1 minute
 
 export async function getCurrentUser() {
   try {
-    console.log("🔍 Attempting to get current user from Clerk...")
-
     const now = Date.now()
     if (circuitBreakerState.isOpen && now - circuitBreakerState.lastFailure < CIRCUIT_BREAKER_TIMEOUT) {
-      console.log("⚡ Circuit breaker is open, skipping Clerk API call")
       return null
     }
 
     let user: User | null = null
     let lastError: Error | null = null
 
-    // Fall back to Clerk web session authentication
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        console.log(`🔄 Clerk API attempt ${attempt}/3`)
-
         user = await Promise.race([
           currentUser(),
           new Promise<never>(
@@ -106,17 +100,13 @@ export async function getCurrentUser() {
         break
       } catch (error) {
         lastError = error as Error & { digest?: string }
-        console.log(`❌ Clerk API attempt ${attempt} failed:`, error)
 
-        // If this is a dynamic server usage error (no headers during build/static gen), return null immediately
         if ((lastError as Error & { digest?: string }).digest === 'DYNAMIC_SERVER_USAGE' || lastError.message?.includes('headers')) {
-          console.log("⚡ Dynamic server usage error during build, returning null")
           return null
         }
 
         if (attempt < 3) {
           const delay = 500 * Math.pow(2, attempt - 1)
-          console.log(`⏳ Retrying in ${delay}ms...`)
           await new Promise((resolve) => setTimeout(resolve, delay))
         }
       }
@@ -128,21 +118,16 @@ export async function getCurrentUser() {
 
       if (circuitBreakerState.failures >= CIRCUIT_BREAKER_THRESHOLD) {
         circuitBreakerState.isOpen = true
-        console.log("⚡ Circuit breaker opened due to repeated failures")
       }
     }
 
     if (!user) {
-      console.log("❌ No user found from Clerk after all attempts")
       return null
     }
-
-    console.log("✅ User found from Clerk:", user.id)
 
     const cacheKey = user.id
     const cached = userCache.get(cacheKey)
     if (cached && now - cached.timestamp < CACHE_TTL) {
-      console.log("📦 Returning cached user data")
       return cached.user
     }
 
@@ -155,13 +140,10 @@ export async function getCurrentUser() {
             artisanProfile: true,
           },
         }),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 15000)), // Increased to 15 seconds for remote databases
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 15000)),
       ])
 
-      // If user doesn't exist in database, create them
       if (!dbUser) {
-        console.log("🔄 Creating new user in database...")
-
         const adminIds = process.env.ADMIN_IDS?.split(",") || []
         const isAdminUser = adminIds.includes(user.id)
 
@@ -182,8 +164,6 @@ export async function getCurrentUser() {
           }),
           new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database create timeout")), 15000)),
         ])
-
-        console.log("✅ User created in database:", dbUser.id)
       } else {
         const adminIds = process.env.ADMIN_IDS?.split(",") || []
         if (adminIds.includes(user.id) && dbUser.role !== "ADMIN") {
@@ -207,7 +187,6 @@ export async function getCurrentUser() {
 
       return dbUser
     } catch (dbError) {
-      console.error("❌ Database error:", dbError)
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
       const fallbackUser = {
         id: user.id,
@@ -225,7 +204,6 @@ export async function getCurrentUser() {
       return fallbackUser
     }
   } catch (error) {
-    console.error("❌ Error getting current user:", error)
     return null
   }
 }
@@ -234,7 +212,6 @@ export async function requireAuth() {
   const user = await getCurrentUser()
 
   if (!user) {
-    console.log("🚫 No user found, redirecting to sign-in")
     redirect("/sign-in")
   }
 
@@ -258,8 +235,7 @@ export async function isAdmin() {
 
     // Check database role
     return user.role === "ADMIN"
-  } catch (error) {
-    console.error("Error checking admin status:", error)
+  } catch {
     return false
   }
 }
@@ -270,16 +246,13 @@ export async function hasRole(requiredRole: keyof typeof ROLE_HIERARCHY) {
     const user = await getCurrentUser()
     if (!user) return false
 
-    // Check environment variable for admin (highest priority)
     if (requiredRole === "ADMIN") {
       const adminIds = process.env.ADMIN_IDS?.split(",") || []
       if (adminIds.includes(user.clerkId)) return true
     }
 
-    // Check database role
     return user.role === requiredRole
-  } catch (error) {
-    console.error("Error checking role:", error)
+  } catch {
     return false
   }
 }
@@ -289,15 +262,12 @@ export async function hasPermission(permission: keyof typeof PERMISSIONS) {
     const user = await getCurrentUser()
     if (!user) return false
 
-    // Environment admin has all permissions
     const adminIds = process.env.ADMIN_IDS?.split(",") || []
     if (adminIds.includes(user.clerkId)) return true
 
-    // Check if user's role has this permission
     const allowedRoles = PERMISSIONS[permission]
     return allowedRoles.includes(user.role as any)
-  } catch (error) {
-    console.error("Error checking permission:", error)
+  } catch {
     return false
   }
 }
@@ -307,7 +277,6 @@ export async function hasMinimumRole(minimumRole: keyof typeof ROLE_HIERARCHY) {
     const user = await getCurrentUser()
     if (!user) return false
 
-    // Environment admin has highest role
     const adminIds = process.env.ADMIN_IDS?.split(",") || []
     if (adminIds.includes(user.clerkId)) return true
 
@@ -315,8 +284,7 @@ export async function hasMinimumRole(minimumRole: keyof typeof ROLE_HIERARCHY) {
     const requiredLevel = ROLE_HIERARCHY[minimumRole]
 
     return userRoleLevel >= requiredLevel
-  } catch (error) {
-    console.error("Error checking minimum role:", error)
+  } catch {
     return false
   }
 }
@@ -388,8 +356,7 @@ export async function isUserAdmin(userId: string) {
     })
 
     return user?.role === "ADMIN" || false
-  } catch (error) {
-    console.error("Error checking if user is admin:", error)
+  } catch {
     return false
   }
 }
@@ -453,8 +420,7 @@ export async function checkUserRole(userId: string) {
     })
 
     return user
-  } catch (error) {
-    console.error("Error checking user role:", error)
+  } catch {
     return null
   }
 }

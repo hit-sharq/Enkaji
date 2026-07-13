@@ -10,17 +10,11 @@ interface EditProductPageProps {
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-const user = await getCurrentUser()
-
-  console.log('🔍 DEBUG EDIT: User:', user ? {id: user.id, role: user.role} : 'NO USER')
+  const user = await getCurrentUser()
 
   if (!user) {
-    console.log('❌ DEBUG EDIT: No user - redirecting to signin')
     redirect("/auth/signin")
   }
-
-console.log('🔍 DEBUG EDIT: Product ID:', params.id)
-  console.log('🔍 DEBUG EDIT: Looking for product...')
 
   const product = await db.product.findUnique({
     where: {
@@ -31,35 +25,13 @@ console.log('🔍 DEBUG EDIT: Product ID:', params.id)
     },
   })
 
-  console.log('🔍 DEBUG EDIT: Product found:', !!product)
-  if (product) {
-    console.log('🔍 DEBUG EDIT: Product details:', {
-      id: product.id,
-      sellerId: product.sellerId,
-      name: product.name,
-      isActive: product.isActive,
-    })
-  }
-
   if (!product) {
-    console.log('❌ DEBUG EDIT: Product NOT FOUND - triggering notFound()')
     notFound()
   }
 
-// Check if user owns this product or is admin
-  console.log('🔍 DEBUG EDIT: Ownership check:', {
-    userId: user.id,
-    userRole: user.role,
-    productSellerId: product.sellerId,
-    ownsProduct: product.sellerId === user.id,
-    isAdmin: user.role === 'ADMIN'
-  })
-
   if (product.sellerId !== user.id && user.role !== "ADMIN") {
-    console.log('❌ DEBUG EDIT: Ownership denied - redirecting to /dashboard/products')
     redirect("/dashboard/products")
   }
-  console.log('✅ DEBUG EDIT: Ownership verified')
 
   const categories = await db.category.findMany({
     orderBy: {

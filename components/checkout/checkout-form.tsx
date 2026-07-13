@@ -13,6 +13,7 @@ import { useCart } from "@/components/providers/cart-provider"
 import { calculateOrderTotals } from "@/hooks/use-order-totals"
 import { formatDualCurrency } from "@/lib/currency"
 import { ShieldCheck } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface CheckoutFormProps {
   onDestinationChange?: (destination: { country: string; city: string; state: string }) => void
@@ -99,7 +100,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
     }
 
     try {
-      const response = await fetch("/api/checkout/initiate-payment", {
+      const response = await csrfFetch("/api/checkout/initiate-payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

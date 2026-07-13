@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Loader2, Store, Check, Crown } from "lucide-react"
 import { toast } from "sonner"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface SellerRegistrationFormProps {
   user: {
@@ -71,7 +72,7 @@ export function SellerRegistrationForm({ user }: SellerRegistrationFormProps) {
     }
 
     try {
-      const response = await fetch("/api/seller/register", {
+      const response = await csrfFetch("/api/seller/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

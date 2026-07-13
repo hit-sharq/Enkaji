@@ -13,6 +13,7 @@ import { formatWeight } from "@/lib/shipping"
 import { useCart } from "@/components/providers/cart-provider"
 import { useToast } from "@/hooks/use-toast"
 import { FavoriteButton } from "@/components/favorites/favorite-button"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface Product {
   id: string
@@ -62,7 +63,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     
     setIsAdding(true)
     try {
-      const response = await fetch("/api/cart", {
+      const response = await csrfFetch("/api/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

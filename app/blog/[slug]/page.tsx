@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import { prisma } from "@/lib/db"
+import { sanitizeBlogContent } from "@/lib/sanitize-html"
 
 interface BlogPostData {
   id: string
@@ -52,7 +53,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         )}
         
         <div className="prose prose-lg max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizeBlogContent(post.content) }} />
         </div>
         
         <div className="mt-8 text-sm text-muted-foreground">

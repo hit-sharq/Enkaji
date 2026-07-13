@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DollarSign, TrendingUp, Clock, CheckCircle, Smartphone, Building } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface PayoutStats {
   totalEarnings: number
@@ -114,7 +115,7 @@ export function PayoutDashboard() {
     setRequestingPayout(true)
 
     try {
-      const response = await fetch("/api/seller/payouts/request", {
+      const response = await csrfFetch("/api/seller/payouts/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

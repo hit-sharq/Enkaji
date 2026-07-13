@@ -1354,3 +1354,46 @@ model ClearanceBusiness {
 
   @@map("clearance_businesses")
 }
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  eventType   String
+  resourceType String
+  resourceId  String?
+  action      String
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  severity    String   @default("LOW")
+  success     Boolean  @default(true)
+  errorMessage String?
+  createdAt   DateTime @default(now())
+
+  @@map("audit_logs")
+  @@index([userId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([severity])
+}
+
+model RateLimitEntry {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  count     Int      @default(1)
+  resetTime DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rate_limit_entries")
+  @@index([key, resetTime])
+}
+
+model BlockedIp {
+  id        String   @id @default(cuid())
+  ip        String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@map("blocked_ips")
+  @@index([ip])
+}

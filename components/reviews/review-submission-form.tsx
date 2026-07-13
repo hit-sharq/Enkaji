@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Star, X, Camera } from "lucide-react"
 import Image from "next/image"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface ReviewSubmissionFormProps {
   productId: string
@@ -91,7 +92,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
           formData.append(`image-${index}`, image)
         })
 
-        const uploadResponse = await fetch("/api/reviews/upload-images", {
+        const uploadResponse = await csrfFetch("/api/reviews/upload-images", {
           method: "POST",
           body: formData,
         })
@@ -103,7 +104,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
       }
 
       // Submit review
-      const response = await fetch("/api/reviews", {
+      const response = await csrfFetch("/api/reviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

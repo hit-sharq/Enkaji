@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Heart } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@clerk/nextjs"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface FavoriteButtonProps {
   productId: string
@@ -40,7 +41,7 @@ export function FavoriteButton({
 
     setIsLoading(true)
     try {
-      const response = await fetch("/api/favorites", {
+      const response = await csrfFetch("/api/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

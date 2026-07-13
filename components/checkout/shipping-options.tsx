@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { Truck, Clock, Shield } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface ShippingOption {
   id: string
@@ -78,7 +79,7 @@ export function ShippingOptions({
       setError(null)
 
       try {
-        const response = await fetch("/api/shipping/calculate", {
+        const response = await csrfFetch("/api/shipping/calculate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

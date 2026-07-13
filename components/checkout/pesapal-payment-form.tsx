@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, CreditCard, Smartphone, Building, CheckCircle } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface PesapalPaymentFormProps {
   orderId: string
@@ -89,7 +90,7 @@ export function PesapalPaymentForm({
 
       // Submit order to Pesapal
       console.log("[Pesapal Form] Submitting payment for order:", orderId)
-      const response = await fetch("/api/pesapal/submit-order", {
+      const response = await csrfFetch("/api/pesapal/submit-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -161,7 +162,7 @@ export function PesapalPaymentForm({
 
       console.log("[Pesapal Form] Submitting with phone number for:", selectedMethod)
       // Submit order with phone number for M-Pesa/Airtel
-      const response = await fetch("/api/pesapal/submit-order", {
+      const response = await csrfFetch("/api/pesapal/submit-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

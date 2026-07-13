@@ -93,7 +93,6 @@ export class AuditTrailService {
         timestamp: new Date(),
       }
 
-      // Log to console for development
       console.log(`[AUDIT] ${auditEntry.eventType}: ${auditEntry.action}`, {
         userId: auditEntry.userId,
         resourceType: auditEntry.resourceType,
@@ -104,8 +103,21 @@ export class AuditTrailService {
         timestamp: auditEntry.timestamp,
       })
 
-      // TODO: Store in database when audit table is created
-      // await prisma.auditLog.create({ data: auditEntry })
+      await prisma.auditLog.create({
+        data: {
+          userId: auditEntry.userId || null,
+          eventType: auditEntry.eventType,
+          resourceType: auditEntry.resourceType,
+          resourceId: auditEntry.resourceId || null,
+          action: auditEntry.action,
+          details: auditEntry.details as any,
+          ipAddress: auditEntry.ipAddress || null,
+          userAgent: auditEntry.userAgent || null,
+          severity: auditEntry.severity,
+          success: auditEntry.success,
+          errorMessage: auditEntry.errorMessage || null,
+        },
+      })
 
     } catch (error) {
       console.error("Failed to log audit event:", error)

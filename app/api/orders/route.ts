@@ -129,13 +129,9 @@ export async function POST(request: Request) {
       cause: error instanceof Error ? (error as any).cause : 'No cause'
     });
     
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ 
       error: "Failed to create order: " + errorMessage,
-      details: process.env.NODE_ENV === 'development' ? {
-        message: errorMessage,
-        ...(error instanceof Error && error.stack ? { stack: error.stack } : {})
-      } : undefined 
     }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
+import { csrfFetch } from "@/lib/csrf-client"
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,7 +28,7 @@ export function ContactForm() {
     }
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await csrfFetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

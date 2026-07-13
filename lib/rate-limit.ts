@@ -1,148 +1,132 @@
 import type { NextRequest } from "next/server"
-import { createClient } from 'redis'
+import { prisma } from "@/lib/db"
 
-interface RateLimitConfig {
+export interface RateLimitConfig {
   windowMs: number
   maxRequests: number
 }
 
-// Redis client for rate limiting
-let redisClient: ReturnType<typeof createClient> | null = null
-
-async function getRedisClient() {
-  if (!redisClient) {
-    const redisUrl = process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL
-
-    if (redisUrl) {
-      try {
-        redisClient = createClient({
-          url: redisUrl,
-          password: process.env.UPSTASH_REDIS_REST_TOKEN || undefined,
-        })
-
-        redisClient.on('error', (err) => {
-          console.error('Redis Client Error:', err)
-        })
-
-        await redisClient.connect()
-        console.log('✅ Connected to Redis for rate limiting')
-      } catch (error) {
-        console.error('❌ Failed to connect to Redis:', error)
-        redisClient = null
-      }
-    }
-  }
-
-  return redisClient
+export interface RateLimitResult {
+  success: boolean
+  remaining: number
+  resetTime?: number
 }
 
-// Fallback in-memory rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
-
-async function checkRedisRateLimit(key: string, config: RateLimitConfig): Promise<{ success: boolean; remaining: number; resetTime?: number }> {
-  const client = await getRedisClient()
-
-  if (!client) {
-    // Fallback to in-memory
-    return checkInMemoryRateLimit(key, config)
-  }
-
-  try {
-    const now = Date.now()
-    const windowKey = `${key}:${Math.floor(now / config.windowMs)}`
-
-    const current = await client.get(windowKey)
-    const count = current ? parseInt(current) : 0
-
-    if (count >= config.maxRequests) {
-      const ttl = await client.ttl(windowKey)
-      return {
-        success: false,
-        remaining: 0,
-        resetTime: now + (ttl * 1000)
-      }
-    }
-
-    const newCount = count + 1
-    await client.setEx(windowKey, Math.ceil(config.windowMs / 1000), newCount.toString())
-
-    return {
-      success: true,
-      remaining: config.maxRequests - newCount
-    }
-  } catch (error) {
-    console.error('Redis rate limit error:', error)
-    // Fallback to in-memory on Redis error
-    return checkInMemoryRateLimit(key, config)
-  }
-}
-
-function checkInMemoryRateLimit(key: string, config: RateLimitConfig): { success: boolean; remaining: number; resetTime?: number } {
+export async function checkRateLimit(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
   const now = Date.now()
   const windowStart = now - config.windowMs
 
-  // Clean up old entries
-  for (const [mapKey, value] of rateLimitMap.entries()) {
-    if (value.resetTime < now) {
-      rateLimitMap.delete(mapKey)
+  try {
+    const existing = await prisma.rateLimitEntry.findUnique({
+      where: { key },
+    })
+
+    if (!existing || existing.resetTime.getTime() < now) {
+      const resetTime = new Date(now + config.windowMs)
+
+      if (existing) {
+        await prisma.rateLimitEntry.update({
+          where: { key },
+          data: { count: 1, resetTime },
+        })
+      } else {
+        await prisma.rateLimitEntry.create({
+          data: { key, count: 1, resetTime },
+        })
+      }
+
+      return { success: true, remaining: config.maxRequests - 1, resetTime: resetTime.getTime() }
     }
-  }
 
-  const current = rateLimitMap.get(key)
+    if (existing.count >= config.maxRequests) {
+      return {
+        success: false,
+        remaining: 0,
+        resetTime: existing.resetTime.getTime(),
+      }
+    }
 
-  if (!current) {
-    rateLimitMap.set(key, {
-      count: 1,
-      resetTime: now + config.windowMs,
+    const updated = await prisma.rateLimitEntry.update({
+      where: { key },
+      data: { count: existing.count + 1 },
     })
-    return { success: true, remaining: config.maxRequests - 1 }
-  }
 
-  if (current.resetTime < now) {
-    rateLimitMap.set(key, {
-      count: 1,
-      resetTime: now + config.windowMs,
-    })
-    return { success: true, remaining: config.maxRequests - 1 }
-  }
-
-  if (current.count >= config.maxRequests) {
     return {
-      success: false,
-      remaining: 0,
-      resetTime: current.resetTime,
+      success: true,
+      remaining: config.maxRequests - updated.count,
+      resetTime: updated.resetTime.getTime(),
     }
-  }
-
-  current.count++
-  return {
-    success: true,
-    remaining: config.maxRequests - current.count,
+  } catch (error) {
+    console.error("[RateLimit] Database error, allowing request:", error)
+    return { success: true, remaining: config.maxRequests - 1 }
   }
 }
 
-export function rateLimit(config: RateLimitConfig) {
-  return async (request: NextRequest) => {
+export async function isBlockedIp(ip: string): Promise<boolean> {
+  try {
+    const blocked = await prisma.blockedIp.findUnique({
+      where: { ip },
+    })
+    return !!blocked
+  } catch (error) {
+    console.error("[RateLimit] Blocked IP check failed:", error)
+    return false
+  }
+}
+
+export async function blockIp(ip: string, reason?: string): Promise<void> {
+  try {
+    await prisma.blockedIp.upsert({
+      where: { ip },
+      update: { reason: reason || null },
+      create: { ip, reason: reason || null },
+    })
+  } catch (error) {
+    console.error("[RateLimit] Failed to block IP:", error)
+  }
+}
+
+export async function unblockIp(ip: string): Promise<void> {
+  try {
+    await prisma.blockedIp.delete({
+      where: { ip },
+    }).catch(() => {})
+  } catch (error) {
+    console.error("[RateLimit] Failed to unblock IP:", error)
+  }
+}
+
+export function createRateLimiter(config: RateLimitConfig) {
+  return async (request: NextRequest): Promise<RateLimitResult> => {
     const ip = request.ip || request.headers.get("x-forwarded-for") || "unknown"
     const userAgent = request.headers.get("user-agent") || ""
-    const key = `${ip}:${userAgent.slice(0, 50)}` // Include user agent for better uniqueness
+    const key = `${ip}:${userAgent.slice(0, 50)}`
 
-    return await checkRedisRateLimit(key, config)
+    const blocked = await isBlockedIp(ip)
+    if (blocked) {
+      return { success: false, remaining: 0 }
+    }
+
+    return checkRateLimit(key, config)
   }
 }
 
-// Pre-configured rate limiters
-export const apiRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+export const apiRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
   maxRequests: 100,
 })
 
-export const authRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+export const authRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
   maxRequests: 5,
 })
 
-export const uploadRateLimit = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
+export const uploadRateLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
   maxRequests: 10,
 })
+
+// Backwards-compatible aliases
+export const apiRateLimit = apiRateLimiter
+export const authRateLimit = authRateLimiter
+export const uploadRateLimit = uploadRateLimiter

@@ -82,7 +82,6 @@ export async function GET() {
     console.error('Admin stats error:', error)
     return NextResponse.json({ 
       error: 'Failed to fetch stats',
-      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
     }, { status: 500 })
   } finally {
     await prisma.$disconnect()

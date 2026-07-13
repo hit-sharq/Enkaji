@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tag, X, Loader2, CheckCircle } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface PromoCodeProps {
   orderTotal: number
@@ -24,7 +25,7 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("/api/coupons/validate", {
+      const res = await csrfFetch("/api/coupons/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: code.trim(), orderTotal }),

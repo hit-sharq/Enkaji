@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, Smartphone } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface MpesaPaymentFormProps {
   amount: number
@@ -60,7 +61,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
     setSuccess(null)
 
     try {
-      const response = await fetch("/api/mpesa/stk-push", {
+      const response = await csrfFetch("/api/mpesa/stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

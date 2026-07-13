@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useTransition } from "react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface AddToCartButtonProps {
   productId: string
@@ -17,7 +18,7 @@ export function AddToCartButton({ productId, productName }: AddToCartButtonProps
   const handleAddToCart = () => {
     startTransition(async () => {
       try {
-        const response = await fetch('/api/cart', {
+        const response = await csrfFetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 

@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface Review {
   id: string
@@ -127,7 +128,7 @@ export function ReviewsManagement() {
 
   const handleReviewModeration = async (reviewId: string, action: "approve" | "reject" | "flag", reason?: string) => {
     try {
-      const response = await fetch(`/api/admin/reviews/${reviewId}/moderate`, {
+      const response = await csrfFetch(`/api/admin/reviews/${reviewId}/moderate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, reason }),
@@ -156,7 +157,7 @@ export function ReviewsManagement() {
 
   const handleBulkAction = async (reviewIds: string[], action: "approve" | "reject" | "flag") => {
     try {
-      const response = await fetch("/api/admin/reviews/bulk", {
+      const response = await csrfFetch("/api/admin/reviews/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reviewIds, action, reason: moderationReason }),

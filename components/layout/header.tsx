@@ -32,10 +32,6 @@ export function Header() {
     const checkAdminStatus = async () => {
       if (user?.id) {
         try {
-          console.log("🔍 Admin Debug Info:")
-          console.log("User ID:", user.id)
-          console.log("Checking admin status...")
-
           const controller = new AbortController()
           const timeoutId = setTimeout(() => controller.abort(), 3000)
 
@@ -45,16 +41,11 @@ export function Header() {
           clearTimeout(timeoutId)
 
           const data = await response.json()
-          console.log("API Response:", data)
-          console.log("Is Admin:", data.isAdmin)
-
           setIsAdmin(data.isAdmin)
-        } catch (error) {
-          console.error("❌ Error checking admin status:", error)
+        } catch {
           setIsAdmin(false)
         }
       } else {
-        console.log("❌ No user ID found")
         setIsAdmin(false)
       }
     }
@@ -97,7 +88,7 @@ export function Header() {
   }
 
   if (process.env.NODE_ENV === "development") {
-    console.log("🎯 Header Render - isAdmin:", isAdmin, "User:", user?.id)
+    console.log("Header Render - isAdmin:", isAdmin, "User:", user?.id)
   }
 
   return (

@@ -1,12 +1,11 @@
-export const dynamic = 'force-dynamic'
-
-import { type NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { currentUser } from "@clerk/nextjs/server"
+import { requireAdmin } from "@/lib/auth"
 import { db } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await currentUser()
+    const user = await requireAdmin()
 
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
@@ -38,13 +37,8 @@ export async function GET(request: NextRequest) {
       },
       database: dbUser,
       adminStatus: {
-        isEnvAdmin,
+        isEnvAdmin: adminIds.includes(user.id),
         isDatabaseAdmin: dbUser?.role === "ADMIN",
-        adminIds: adminIds.length > 0 ? `${adminIds.length} admin(s) configured` : "No admins configured",
-      },
-      instructions: {
-        toMakeAdmin: `Add your Clerk ID (${user.id}) to ADMIN_IDS environment variable`,
-        example: `ADMIN_IDS=${user.id}`,
       },
     })
   } catch (error) {

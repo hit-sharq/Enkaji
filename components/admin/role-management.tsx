@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { Shield } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface User {
   id: string
@@ -55,7 +56,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
     setLoading((prev) => ({ ...prev, [userId]: true }))
 
     try {
-      const response = await fetch(`/api/admin/users/${userId}/assign-role`, {
+      const response = await csrfFetch(`/api/admin/users/${userId}/assign-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

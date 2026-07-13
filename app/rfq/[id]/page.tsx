@@ -7,7 +7,7 @@ export default async function RFQDetailPage({ params }: { params: { id: string }
   const rfqId = params.id
 
   // Fetch real RFQ data from DB via API
-  const rfqResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:5000'}/api/rfq/${rfqId}`, {
+  const rfqResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/rfq/${rfqId}`, {
     headers: {
       'Content-Type': 'application/json',
     },

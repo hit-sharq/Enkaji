@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { FileText, Send, Plus, X } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface RFQItem {
   productName: string
@@ -47,7 +48,7 @@ export function RFQForm() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch("/api/rfq", {
+      const response = await csrfFetch("/api/rfq", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -15,6 +15,7 @@ import { ReviewSummary } from "@/components/reviews/review-summary"
 import { ReviewCard } from "@/components/reviews/review-card"
 import { ProductReviewFormBanner } from "@/components/reviews/product-review-banner"
 import { SimilarProducts } from "./similar-products"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface ProductDetailsProps {
   product: {
@@ -100,7 +101,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
   useEffect(() => {
     const checkFavorite = async () => {
       try {
-        const response = await fetch("/api/favorites")
+        const response = await csrfFetch("/api/favorites")
         if (response.ok) {
           const favorites = await response.json()
           const isFav = favorites.some((fav: any) => fav.id === product.id)
@@ -117,7 +118,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
   const handleAddToCart = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/cart", {
+      const response = await csrfFetch("/api/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -338,7 +339,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
             // Refetch reviews after submission
             const fetchReviews = async () => {
               try {
-                const response = await fetch(`/api/reviews?productId=${product.id}`)
+        const response = await csrfFetch(`/api/reviews?productId=${product.id}`)
                 const data = await response.json()
                 if (response.ok) {
                   setReviews(data.reviews || [])

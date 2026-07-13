@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Package, User, Store, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, Eye } from "lucide-react"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface PendingApprovals {
   pendingProducts: any[]
@@ -67,7 +68,7 @@ export function ApprovalDashboard() {
   const handleProductApproval = async (productId: string, approved: boolean, reason?: string) => {
     setActionLoading(productId)
     try {
-      const response = await fetch(`/api/admin/products/${productId}/approve`, {
+      const response = await csrfFetch(`/api/admin/products/${productId}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ approved, reason }),
@@ -96,7 +97,7 @@ export function ApprovalDashboard() {
   const handleArtisanApproval = async (artisanId: string, approved: boolean, reason?: string) => {
     setActionLoading(artisanId)
     try {
-      const response = await fetch(`/api/admin/artisans/${artisanId}/approve`, {
+      const response = await csrfFetch(`/api/admin/artisans/${artisanId}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ approved, reason }),
@@ -125,7 +126,7 @@ export function ApprovalDashboard() {
   const handleSellerVerification = async (sellerId: string, verified: boolean, reason?: string) => {
     setActionLoading(sellerId)
     try {
-      const response = await fetch(`/api/admin/sellers/${sellerId}/verify`, {
+      const response = await csrfFetch(`/api/admin/sellers/${sellerId}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ verified, reason }),
@@ -154,7 +155,7 @@ export function ApprovalDashboard() {
   const handlePayoutApproval = async (payoutId: string, approved: boolean, notes?: string) => {
     setActionLoading(payoutId)
     try {
-      const response = await fetch(`/api/admin/payouts/${payoutId}/approve`, {
+      const response = await csrfFetch(`/api/admin/payouts/${payoutId}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ approved, notes }),

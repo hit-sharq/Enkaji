@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Minus, Plus, Trash2, Weight } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { formatWeight } from "@/lib/shipping"
+import { csrfFetch } from "@/lib/csrf-client"
 
 type CartItem = {
   id: string
@@ -29,11 +30,11 @@ export function CartItems() {
 
   const removeItem = async (id: string) => {
     try {
-      const response = await fetch(`/api/cart/${id}`, {
+      const response = await csrfFetch(`/api/cart/${id}`, {
         method: 'DELETE',
       })
       if (response.ok) {
-        const cartResponse = await fetch('/api/cart')
+        const cartResponse = await csrfFetch('/api/cart')
         if (cartResponse.ok) {
           const data = await cartResponse.json()
           const cartItems = data.items?.map((item: any) => ({

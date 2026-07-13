@@ -56,7 +56,7 @@ await prisma.$transaction(async (tx) => {
           currency: 'KES',
           amount: sellerPayout.amount.toString(),
           description: `Payout to ${seller?.firstName || 'Seller'} ${seller?.lastName || ''}`,
-          callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:5000'}/api/pesapal/callback`,
+          callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/pesapal/callback`,
           notification_id: `payout-${sellerPayout.id}`,
           billing_address: {
             email_address: seller?.email || '',
@@ -106,7 +106,6 @@ await prisma.$transaction(async (tx) => {
     console.error('Payout approval error:', error)
     return NextResponse.json({ 
       error: 'Failed to process payout request',
-      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
     }, { status: 500 })
   }
 }

@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, User } from "lucide-react"
 import { toast } from "sonner"
+import { csrfFetch } from "@/lib/csrf-client"
 
 interface ArtisanRegistrationFormProps {
   user: {
@@ -38,7 +39,7 @@ export function ArtisanRegistrationForm({ user }: ArtisanRegistrationFormProps) 
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/seller/register", {
+      const response = await csrfFetch("/api/seller/register", {
         // Use seller register since SELLER is the creator role
         method: "POST",
         headers: {

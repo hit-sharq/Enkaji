@@ -14,7 +14,30 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    console.log("[Callback] IPN received:", JSON.stringify(body, null, 2))
+    const forwarded = request.headers.get("x-forwarded-for") || ""
+    const ip = request.headers.get("x-real-ip") || forwarded.split(",")[0].trim() || "unknown"
+    
+    const allowedPesapalIps = [
+      "185.11.146.0/24",
+      "185.11.147.0/24",
+      "209.133.79.0/24",
+      "209.133.80.0/24",
+    ]
+    
+    const isAllowedIp = allowedPesapalIps.some((cidr) => {
+      const [range, bits] = cidr.split("/")
+      const mask = ~((1 << (32 - Number(bits))) - 1)
+      const ipNum = ip.split(".").reduce((acc, octet) => (acc << 8) + Number(octet), 0)
+      const rangeNum = range.split(".").reduce((acc, octet) => (acc << 8) + Number(octet), 0)
+      return (ipNum & mask) === (rangeNum & mask)
+    })
+    
+    if (!isAllowedIp && ip !== "unknown" && ip !== "127.0.0.1") {
+      console.error("[Callback] Rejected request from non-Pesapal IP:", ip)
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 })
+    }
+    
+    console.log("[Callback] IPN received from:", ip)
 
     const orderTrackingId = body.OrderTrackingId || body.order_tracking_id
     const merchantReference = body.OrderMerchantReference || body.merchant_reference
