@@ -32,7 +32,7 @@ export default function SettingsScreen() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => Alert.alert('Contact Support', 'Please contact support@enkaji.co.ke to delete your account.'),
+          onPress: () => Alert.alert('Contact Support', 'Please contact us via WhatsApp at +254 700 000 000 to delete your account.'),
         },
       ]
     )
@@ -142,13 +142,13 @@ export default function SettingsScreen() {
           <SettingRow
             icon="shield"
             label="Privacy Policy"
-            onPress={() => Alert.alert('Privacy Policy', 'Visit enkaji.co.ke/privacy for our full privacy policy.')}
+            onPress={() => Alert.alert('Privacy Policy', 'Our full privacy policy is available on our website.')}
           />
           <View style={styles.divider} />
           <SettingRow
             icon="file-text"
             label="Terms of Service"
-            onPress={() => Alert.alert('Terms of Service', 'Visit enkaji.co.ke/terms for our full terms of service.')}
+            onPress={() => Alert.alert('Terms of Service', 'Our full terms of service are available on our website.')}
           />
         </View>
 

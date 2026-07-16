@@ -221,9 +221,9 @@ function NotFoundContent() {
                 <Phone className="w-4 h-4" />
                 +254 700 000 000
               </a>
-              <a href="mailto:support@enkaji.co.ke" className="text-sm text-muted-foreground hover:text-enkaji-red flex items-center gap-1">
+              <a href="/contact" className="text-sm text-muted-foreground hover:text-enkaji-red flex items-center gap-1">
                 <Mail className="w-4 h-4" />
-                support@enkaji.co.ke
+                Contact us
               </a>
             </div>
           </div>

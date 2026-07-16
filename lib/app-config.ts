@@ -19,16 +19,27 @@ export const appConfig = {
   /** Short tagline for emails and footers */
   APP_TAGLINE: process.env.APP_TAGLINE || "Connecting Kenya's Market",
 
-  /** Base app URL (no trailing slash) */
-  APP_URL: (process.env.NEXT_PUBLIC_APP_URL || "https://enkaji.co.ke").replace(/\/$/, ""),
+  /**
+   * Base app URL (no trailing slash).
+   * Set NEXT_PUBLIC_APP_URL to your real domain in production.
+   * Falls back to localhost for development since no custom domain is configured yet.
+   */
+  APP_URL: (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, ""),
 
-  /** Email sender address */
+  /**
+   * Email sender address.
+   * Set EMAIL_FROM once a real sending domain is verified with the email provider.
+   */
   get EMAIL_FROM() {
-    return process.env.EMAIL_FROM || `${this.APP_NAME} <noreply@enkaji.co.ke>`
+    return process.env.EMAIL_FROM || `${this.APP_NAME} <onboarding@resend.dev>`
   },
 
-  /** Support email */
-  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "support@enkaji.co.ke",
+  /**
+   * Support email.
+   * Set SUPPORT_EMAIL once a real support inbox exists; empty by default so the
+   * UI can fall back to the on-site contact form instead of a fake address.
+   */
+  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "",
 
   /** Seller dashboard URL */
   get SELLER_DASHBOARD_URL() {

@@ -203,7 +203,11 @@ export function sellerRegistrationEmail(sellerName: string, businessName: string
     
     <p><a href="${appConfig.SELLER_DASHBOARD_URL}" style="display:inline-block;background:#8B2635;color:white;padding:12px 24px;text-decoration:none;border-radius:4px;margin:16px 0">Go to Dashboard</a></p>
     
-    <p>If you have any questions, contact us at <a href="mailto:${appConfig.SUPPORT_EMAIL}">${appConfig.SUPPORT_EMAIL}</a></p>
+    <p>If you have any questions, ${
+      appConfig.SUPPORT_EMAIL
+        ? `contact us at <a href="mailto:${appConfig.SUPPORT_EMAIL}">${appConfig.SUPPORT_EMAIL}</a>`
+        : `reach out through our <a href="${appConfig.APP_URL}/contact">contact page</a>`
+    }.</p>
     <p style="color:#666;font-size:12px">${appConfig.APP_FULL_NAME} — ${appConfig.APP_TAGLINE}</p>
   </div>`
 }

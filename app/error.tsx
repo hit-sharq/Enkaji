@@ -284,9 +284,9 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
             <Phone className="w-3 h-3" />
             +254 700 000 000
           </a>
-          <a href="mailto:support@enkaji.co.ke" className="text-xs text-muted-foreground hover:text-enkaji-red transition-colors flex items-center gap-1">
+          <a href="/contact" className="text-xs text-muted-foreground hover:text-enkaji-red transition-colors flex items-center gap-1">
             <Mail className="w-3 h-3" />
-            support@enkaji.co.ke
+            Contact us
           </a>
         </div>
       </div>

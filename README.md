@@ -150,9 +150,9 @@ We welcome contributions from developers, designers, and business experts who sh
 
 ## 📞 Support
 
-For technical support or business inquiries:
-- Email: support@enkaji.co.ke
-- Phone: +254 794 773 452
+For technical support or business inquiries, use the in-app Contact page. A dedicated support email will be published once a custom domain is configured.
+
+> Note: Set `NEXT_PUBLIC_APP_URL`, `SUPPORT_EMAIL`, and `EMAIL_FROM` in your environment once a real domain is available. There is currently no custom domain, so these default to local/placeholder values.
 
 ---
 

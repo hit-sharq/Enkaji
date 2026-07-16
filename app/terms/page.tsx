@@ -81,8 +81,11 @@ export default function TermsPage() {
             <section>
               <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Contact Information</h2>
               <p className="text-foreground/80">
-                If you have any questions about these Terms of Service, please contact us at legal@enkaji.com or through
-                our contact page.
+                If you have any questions about these Terms of Service, please contact us through our{" "}
+                <a href="/contact" className="text-enkaji-gold hover:underline">
+                  contact page
+                </a>
+                .
               </p>
             </section>
 

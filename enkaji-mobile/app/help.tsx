@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
+  LayoutChangeEvent,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
@@ -45,6 +46,8 @@ const FAQS = [
 
 export default function HelpScreen() {
   const router = useRouter()
+  const scrollRef = useRef<ScrollView>(null)
+  const formOffset = useRef(0)
   const [expanded, setExpanded] = useState<number | null>(null)
   const [message, setMessage] = useState('')
   const [subject, setSubject] = useState('')
@@ -63,7 +66,7 @@ export default function HelpScreen() {
       setMessage('')
       setSubject('')
     } catch {
-      Alert.alert('Error', 'Could not send message. Please email us directly at support@enkaji.co.ke')
+      Alert.alert('Error', 'Could not send message. Please reach us on WhatsApp at +254 700 000 000.')
     } finally {
       setIsSending(false)
     }
@@ -79,12 +82,15 @@ export default function HelpScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.contactRow}>
-          <TouchableOpacity style={styles.contactCard} onPress={() => Linking.openURL('mailto:support@enkaji.co.ke')}>
+          <TouchableOpacity
+            style={styles.contactCard}
+            onPress={() => scrollRef.current?.scrollTo({ y: formOffset.current, animated: true })}
+          >
             <Feather name="mail" size={24} color={Colors.primary} />
-            <Text style={styles.contactLabel}>Email Us</Text>
-            <Text style={styles.contactValue}>support@enkaji.co.ke</Text>
+            <Text style={styles.contactLabel}>Message Us</Text>
+            <Text style={styles.contactValue}>Use the form below</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contactCard} onPress={() => Linking.openURL('https://wa.me/254700000000')}>
             <Feather name="message-circle" size={24} color="#25D366" />
@@ -109,7 +115,14 @@ export default function HelpScreen() {
           </TouchableOpacity>
         ))}
 
-        <Text style={styles.sectionTitle}>Send Us a Message</Text>
+        <Text
+          style={styles.sectionTitle}
+          onLayout={(e: LayoutChangeEvent) => {
+            formOffset.current = e.nativeEvent.layout.y
+          }}
+        >
+          Send Us a Message
+        </Text>
         <View style={styles.form}>
           <Text style={styles.label}>Subject</Text>
           <TextInput

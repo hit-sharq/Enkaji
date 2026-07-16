@@ -2,64 +2,64 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const faqs = [
   {
-    id: "shipping",
-    question: "How long does shipping take?",
+    id: "what-is-enkaji",
+    question: "What is Enkaji?",
     answer:
-      "Shipping times vary by location. Within Kenya, orders typically arrive within 3-5 business days. International shipping takes 7-14 business days depending on your location and chosen shipping method.",
+      "Enkaji is Kenya's premier B2B marketplace, connecting buyers with verified sellers and suppliers across all 47 counties. Whether you're sourcing for a small business or a large enterprise, Enkaji provides a trusted environment for secure trade across categories like agriculture, electronics, construction, and fashion.",
   },
   {
-    id: "authenticity",
-    question: "Are all products authentic Masai crafts?",
+    id: "verified-sellers",
+    question: "Are sellers on Enkaji verified?",
     answer:
-      "Yes, absolutely! Every product on Enkaji is handmade by verified Masai artisans using traditional techniques and materials. We work directly with artisan communities to ensure authenticity and fair compensation.",
-  },
-  {
-    id: "returns",
-    question: "What is your return policy?",
-    answer:
-      "We offer a 30-day return policy for unused items in their original condition. Due to the handmade nature of our products, slight variations are normal and not grounds for return. Contact us at support@enkaji.com to initiate a return.",
+      "Yes. Every seller and supplier goes through our verification process before they can trade on the platform. Verified sellers display a badge on their profile, helping you buy with confidence from businesses across Kenya.",
   },
   {
     id: "payments",
     question: "What payment methods do you accept?",
     answer:
-      "We accept major credit cards (Visa, Mastercard, American Express) through Stripe for international customers. Kenyan customers can also pay using M-Pesa for convenient local transactions.",
+      "We accept M-Pesa, bank transfers, and major credit and debit cards. Local payments are optimized for M-Pesa, while international transactions are supported through our secure card payment partners.",
   },
   {
-    id: "artisan-support",
-    question: "How does purchasing support artisans?",
+    id: "buyer-protection",
+    question: "How are my payments protected?",
     answer:
-      "When you purchase from Enkaji, a significant portion goes directly to the artisan who created the piece. We ensure fair pricing and provide artisans with a platform to reach global markets while preserving their traditional crafts.",
+      "Enkaji offers trade assurance with escrow-style payment protection. Funds are safeguarded until your order is confirmed, so both buyers and sellers are protected throughout the transaction.",
   },
   {
-    id: "custom-orders",
-    question: "Can I request custom pieces?",
+    id: "rfq",
+    question: "Can I request quotes from multiple sellers?",
     answer:
-      "Yes! Many of our artisans accept custom orders. Contact the artisan directly through their profile page or reach out to us at hello@enkaji.com with your requirements, and we'll connect you with the right artisan.",
+      "Yes. Use our Request for Quote (RFQ) feature to describe what you need and receive competitive quotes from relevant sellers across Kenya, typically within 24-48 hours.",
   },
   {
-    id: "care-instructions",
-    question: "How do I care for my handmade items?",
+    id: "bulk-orders",
+    question: "Do you support bulk and wholesale orders?",
     answer:
-      "Care instructions vary by product type and materials used. Each product page includes specific care instructions. Generally, we recommend gentle cleaning and avoiding harsh chemicals to preserve the natural materials and craftsmanship.",
+      "Absolutely. Many sellers offer wholesale pricing for bulk orders. Submit a bulk order request on the product page and the seller will contact you with a detailed quote and delivery timeline, usually within 24 hours.",
   },
   {
-    id: "wholesale",
-    question: "Do you offer wholesale pricing?",
+    id: "shipping",
+    question: "How does shipping and delivery work?",
     answer:
-      "Yes, we offer wholesale pricing for bulk orders. Please contact us at wholesale@enkaji.com with details about your requirements, and we'll provide you with wholesale pricing and terms.",
+      "Sellers ship their own products and we partner with local courier services for reliable delivery across Kenya. Nairobi orders typically arrive within 1-2 business days, while upcountry deliveries take 3-7 business days depending on location.",
   },
   {
-    id: "become-artisan",
-    question: "How can I become an artisan on Enkaji?",
+    id: "returns",
+    question: "What is your return and refund policy?",
     answer:
-      "We're always looking to work with talented Masai artisans! Apply through our artisan registration page. Our team will review your application and craftsmanship samples. Once approved, you can start listing your products on our platform.",
+      "You can request a return within the window shown at checkout, generally up to 30 days from delivery for eligible items. Contact the seller first, and if they're unresponsive, reach out to Enkaji support through our Contact page to resolve the issue.",
+  },
+  {
+    id: "become-seller",
+    question: "How can I become a seller on Enkaji?",
+    answer:
+      "Create an account, open your dashboard, and select 'Become a Seller'. Provide your business details for verification, and once approved you can start listing products and reaching buyers nationwide.",
   },
   {
     id: "tracking",
     question: "How can I track my order?",
     answer:
-      "Once your order ships, you'll receive a tracking number via email. You can also track your order status by logging into your account and viewing your order history.",
+      "Once your order ships, you'll receive a tracking update by email. You can also view your order status and history anytime by logging into your account.",
   },
 ]
 

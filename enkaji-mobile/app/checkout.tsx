@@ -374,7 +374,7 @@ export default function CheckoutScreen() {
                   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`,
                   {
                     headers: {
-                      'User-Agent': 'EnkajiTrade/1.0 (support@enkaji.co.ke)'
+                      'User-Agent': 'EnkajiTrade Mobile App'
                     }
                   }
                 )

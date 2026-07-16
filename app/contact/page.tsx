@@ -32,9 +32,11 @@ export default function ContactPage() {
                     <div className="flex items-start space-x-4">
                       <Mail className="w-6 h-6 text-enkaji-gold mt-1" />
                       <div>
-                        <h3 className="font-semibold text-lg mb-2">Email</h3>
-                        <p className="text-muted-foreground">hello@enkaji.com</p>
-                        <p className="text-muted-foreground">support@enkaji.com</p>
+                        <h3 className="font-semibold text-lg mb-2">Message Us</h3>
+                        <p className="text-muted-foreground">
+                          Use the form on this page to send us a message and we'll get back to you.
+                        </p>
+                        <p className="text-sm text-muted-foreground">We typically reply within 24 hours.</p>
                       </div>
                     </div>
                   </CardContent>
@@ -89,7 +91,7 @@ export default function ContactPage() {
               <div className="mt-8 p-6 bg-enkaji-gold/10 rounded-lg border border-enkaji-gold/20">
                 <h3 className="font-semibold text-lg mb-2">Frequently Asked Questions</h3>
                 <p className="text-muted-foreground mb-4">
-                  Find quick answers to common questions about orders, shipping, and our artisans.
+                  Find quick answers to common questions about orders, payments, shipping, and selling.
                 </p>
                 <a href="/faq" className="text-enkaji-gold hover:text-enkaji-gold/80 font-medium transition-colors">
                   Visit our FAQ →
