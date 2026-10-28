@@ -49,9 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${inter.variable} ${sora.variable}`}>
+      <html lang="en" suppressHydrationWarning className={`${inter.variable} ${sora.variable}`}>
         <body className="antialiased">
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <CartProvider>
               <Header />
               <main className="min-h-screen">{children}</main>
