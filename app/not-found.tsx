@@ -69,13 +69,13 @@ function NotFoundContent() {
       />
       
       {/* Floating decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-enkaji-gold/5 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 right-10 w-48 h-48 bg-enkaji-ochre/5 rounded-full blur-3xl animate-float-delayed" />
-      <div className="absolute top-1/3 right-20 w-32 h-32 bg-enkaji-gold/5 rounded-full blur-2xl animate-float" />
+      <div className="absolute top-20 left-10 w-32 h-32 bg-enkaji-orange/5 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 right-10 w-48 h-48 bg-enkaji-orange/5 rounded-full blur-3xl animate-float-delayed" />
+      <div className="absolute top-1/3 right-20 w-32 h-32 bg-enkaji-orange/5 rounded-full blur-2xl animate-float" />
       <div className="absolute bottom-1/3 left-20 w-24 h-24 bg-enkaji-brown/5 rounded-full blur-xl animate-float-delayed" />
 
       {/* Breadcrumb decoration */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-red via-enkaji-orange to-enkaji-brown" />
 
       {/* Main 404 Card */}
       <Card 
@@ -84,7 +84,7 @@ function NotFoundContent() {
         }`}
       >
         {/* Decorative gradient border */}
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown p-[1px]">
+        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-orange to-enkaji-brown p-[1px]">
           <div className="absolute inset-0 rounded-lg bg-card/80 dark:bg-enkaji-ink/80" />
         </div>
 
@@ -93,8 +93,8 @@ function NotFoundContent() {
           <div className="relative group">
             <div className="absolute inset-0 bg-enkaji-red/10 rounded-full blur-2xl group-hover:bg-enkaji-red/20 transition-all duration-500" />
             <div className="relative" style={{ animation: "bounce-subtle 3s ease-in-out infinite" }}>
-              <Search className="w-32 h-32 text-enkaji-ochre mx-auto mb-4" />
-              <h1 className="text-9xl font-bold text-enkaji-gradient font-playfair tracking-tight animate-fade-in">
+              <Search className="w-32 h-32 text-enkaji-orange mx-auto mb-4" />
+              <h1 className="text-9xl font-bold text-enkaji-gradient font-display tracking-tight animate-fade-in">
                 404
               </h1>
             </div>
@@ -119,7 +119,7 @@ function NotFoundContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for products, categories, or sellers..."
-                className="w-full px-6 py-4 pr-32 rounded-full border-2 border-enkaji-ochre/30 focus:border-enkaji-ochre focus:outline-none focus:ring-2 focus:ring-enkaji-ochre/20 bg-card/50 dark:bg-enkaji-forest/50 backdrop-blur-sm transition-all duration-300"
+                className="w-full px-6 py-4 pr-32 rounded-full border-2 border-enkaji-orange/30 focus:border-enkaji-orange focus:outline-none focus:ring-2 focus:ring-enkaji-orange/20 bg-card/50 dark:bg-enkaji-charcoal/50 backdrop-blur-sm transition-all duration-300"
               />
               <Button 
                 type="submit"
@@ -163,9 +163,9 @@ function NotFoundContent() {
           {/* Popular Categories */}
           <div className="w-full pt-8 border-t border-border">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="h-px w-8 bg-enkaji-ochre/50" />
+              <span className="h-px w-8 bg-enkaji-orange/50" />
               <h3 className="text-lg font-semibold text-foreground">Popular Categories</h3>
-              <span className="h-px w-8 bg-enkaji-ochre/50" />
+              <span className="h-px w-8 bg-enkaji-orange/50" />
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -203,7 +203,7 @@ function NotFoundContent() {
           </div>
 
           {/* Help Section */}
-          <div className="w-full p-6 bg-enkaji-gradient/5 rounded-xl border border-enkaji-ochre/20">
+          <div className="w-full p-6 bg-enkaji-gradient/5 rounded-xl border border-enkaji-orange/20">
             <p className="text-sm text-muted-foreground mb-4">
               Can't find what you're looking for? Our support team is here to help!
             </p>
@@ -212,7 +212,7 @@ function NotFoundContent() {
                 variant="outline" 
                 size="sm"
                 onClick={() => window.location.href = "/contact"}
-                className="border-enkaji-ochre text-enkaji-ochre hover:bg-enkaji-ochre hover:text-white"
+                className="border-enkaji-orange text-enkaji-orange hover:bg-enkaji-orange hover:text-white"
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
                 Contact Support
@@ -232,7 +232,7 @@ function NotFoundContent() {
 
       {/* Enkaji Branding Footer */}
       <div className="mt-8 text-center space-y-2 relative z-10">
-        <p className="text-lg font-bold font-playfair text-enkaji-gradient">
+        <p className="text-lg font-bold font-display text-enkaji-gradient">
           Enkaji Trade Kenya
         </p>
         <p className="text-sm text-muted-foreground">
@@ -241,7 +241,7 @@ function NotFoundContent() {
       </div>
 
       {/* Decorative bottom gradient */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-brown via-enkaji-ochre to-enkaji-red" />
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-brown via-enkaji-orange to-enkaji-red" />
     </div>
   )
 }

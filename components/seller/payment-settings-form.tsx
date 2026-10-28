@@ -124,7 +124,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
 
   return (
     <div className="space-y-6">
-      <Card className="border border-border bg-card rounded-xl shadow-sm">
+      <Card className="border border-border bg-card rounded-2xl shadow-card">
         <CardHeader>
           <CardTitle className="text-foreground">Payout Method</CardTitle>
           <CardDescription className="text-muted-foreground">
@@ -156,9 +156,9 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
           </div>
 
           {payoutMethod === "MPESA" && (
-            <div className="space-y-4 p-4 bg-muted rounded-lg border border-border">
+            <div className="space-y-4 p-4 bg-muted rounded-xl border border-border">
               <h3 className="font-medium flex items-center gap-2 text-foreground">
-                <Smartphone className="h-4 w-4 text-enkaji-gold" />
+                <Smartphone className="h-4 w-4 text-enkaji-orange" />
                 M-Pesa Details
               </h3>
               <div>
@@ -177,9 +177,9 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
           )}
 
           {payoutMethod === "BANK_TRANSFER" && (
-            <div className="space-y-4 p-4 bg-muted rounded-lg border border-border">
+            <div className="space-y-4 p-4 bg-muted rounded-xl border border-border">
               <h3 className="font-medium flex items-center gap-2 text-foreground">
-                <Building className="h-4 w-4 text-enkaji-gold" />
+                <Building className="h-4 w-4 text-enkaji-orange" />
                 Bank Account Details
               </h3>
               <div className="space-y-3">
@@ -223,7 +223,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
             </div>
           )}
 
-          <Button onClick={handleSave} disabled={isLoading || !payoutMethod} className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+          <Button onClick={handleSave} disabled={isLoading || !payoutMethod} className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
             {isLoading ? (
               "Saving..."
             ) : saved ? (
@@ -241,7 +241,7 @@ export function PaymentSettingsForm({ user, sellerProfile }: PaymentSettingsForm
         </CardContent>
       </Card>
 
-      <Card className="border border-border bg-card rounded-xl shadow-sm">
+      <Card className="border border-border bg-card rounded-2xl shadow-card">
         <CardHeader>
           <CardTitle className="text-foreground">Important Information</CardTitle>
         </CardHeader>

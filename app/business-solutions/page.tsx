@@ -16,7 +16,7 @@ export default function BusinessSolutionsPage() {
               Comprehensive B2B solutions to help your business grow, from procurement to logistics and everything in
               between.
             </p>
-            <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+            <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
               Get Started Today
             </Button>
           </div>
@@ -34,177 +34,177 @@ export default function BusinessSolutionsPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <Building2 className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <Building2 className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Enterprise Procurement</CardTitle>
                   <CardDescription>Streamlined procurement solutions for large organizations</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Bulk ordering with volume discounts
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Dedicated account management
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Custom pricing agreements
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Priority seller matching
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Learn More</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Learn More</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <Users className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <Users className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Seller Network</CardTitle>
                   <CardDescription>Access to Kenya's largest verified seller network</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       10,000+ verified sellers
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Quality assurance programs
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Seller performance tracking
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Risk assessment tools
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Explore Network</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Explore Network</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <ShoppingCart className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <ShoppingCart className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Digital Marketplace</CardTitle>
                   <CardDescription>Complete e-commerce solution for B2B transactions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Custom storefronts
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Inventory management
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Order processing automation
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Multi-channel integration
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Start Selling</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Start Selling</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <BarChart3 className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <BarChart3 className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Analytics & Insights</CardTitle>
                   <CardDescription>Data-driven insights to optimize your business operations</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Real-time dashboards
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Market trend analysis
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Performance metrics
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Custom reporting
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">View Demo</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">View Demo</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <Shield className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <Shield className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Trade Assurance</CardTitle>
                   <CardDescription>Comprehensive protection for all your business transactions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Payment protection
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Quality guarantees
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Dispute resolution
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Insurance coverage
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Get Protected</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Get Protected</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader>
-                  <Truck className="w-12 h-12 text-enkaji-gold mb-4" />
+                  <Truck className="w-12 h-12 text-enkaji-orange mb-4" />
                   <CardTitle>Logistics Solutions</CardTitle>
                   <CardDescription>End-to-end logistics and supply chain management</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Nationwide delivery network
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Warehousing services
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Real-time tracking
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Customs clearance
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Ship Now</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Ship Now</Button>
                 </CardContent>
               </Card>
             </div>
@@ -221,24 +221,24 @@ export default function BusinessSolutionsPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <Card className="relative border border-border bg-card rounded-xl shadow-sm">
+              <Card className="relative border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
                   <CardTitle>Starter</CardTitle>
-                  <div className="text-3xl font-bold text-enkaji-gold">Free</div>
+                  <div className="text-3xl font-bold text-enkaji-orange">Free</div>
                   <CardDescription>Perfect for small businesses getting started</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Up to 10 orders per month
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Basic supplier access
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Email support
                     </li>
                   </ul>
@@ -248,13 +248,13 @@ export default function BusinessSolutionsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="relative border-enkaji-gold border-2">
+              <Card className="relative border-enkaji-orange border-2">
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-enkaji-gold text-enkaji-ink">Most Popular</Badge>
+                  <Badge className="bg-enkaji-orange text-enkaji-ink">Most Popular</Badge>
                 </div>
                 <CardHeader className="text-center">
                   <CardTitle>Professional</CardTitle>
-                  <div className="text-3xl font-bold text-enkaji-gold">
+                  <div className="text-3xl font-bold text-enkaji-orange">
                     KSh 15,000<span className="text-sm text-muted-foreground">/month</span>
                   </div>
                   <CardDescription>For growing businesses with regular orders</CardDescription>
@@ -262,48 +262,48 @@ export default function BusinessSolutionsPage() {
                 <CardContent className="space-y-4">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Unlimited orders
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Premium supplier network
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Priority support
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Analytics dashboard
                     </li>
                   </ul>
-                  <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Choose Plan</Button>
+                  <Button className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Choose Plan</Button>
                 </CardContent>
               </Card>
 
-              <Card className="relative border border-border bg-card rounded-xl shadow-sm">
+              <Card className="relative border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
                   <CardTitle>Enterprise</CardTitle>
-                  <div className="text-3xl font-bold text-enkaji-gold">Custom</div>
+                  <div className="text-3xl font-bold text-enkaji-orange">Custom</div>
                   <CardDescription>Tailored solutions for large organizations</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Custom integrations
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Dedicated account manager
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       24/7 phone support
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       SLA guarantees
                     </li>
                   </ul>
@@ -325,13 +325,13 @@ export default function BusinessSolutionsPage() {
               revenue.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 Start Free Trial
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+                className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10 bg-transparent"
               >
                 Schedule Demo
               </Button>

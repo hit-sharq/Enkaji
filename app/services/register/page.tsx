@@ -109,12 +109,12 @@ export default function ServiceProviderRegisterPage() {
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                step >= s ? "bg-enkaji-gold text-enkaji-ink" : "bg-muted text-muted-foreground"
+                step >= s ? "bg-enkaji-orange text-enkaji-ink" : "bg-muted text-muted-foreground"
               }`}>
                 {step > s ? <CheckCircle className="h-5 w-5" /> : s}
               </div>
               {s < 3 && (
-                <div className={`w-16 h-1 ${step > s ? "bg-enkaji-gold" : "bg-muted"}`} />
+                <div className={`w-16 h-1 ${step > s ? "bg-enkaji-orange" : "bg-muted"}`} />
               )}
             </div>
           ))}
@@ -259,21 +259,21 @@ export default function ServiceProviderRegisterPage() {
 
             {step === 3 && (
               <div className="space-y-4">
-                <div className="p-4 bg-muted rounded-lg border border-border space-y-2">
+                <div className="p-4 bg-muted rounded-xl border border-border space-y-2">
                   <h3 className="font-medium text-foreground">Business Details</h3>
                   <p className="text-muted-foreground"><strong>Name:</strong> {formData.businessName}</p>
                   <p className="text-muted-foreground"><strong>Type:</strong> {businessTypes.find(t => t.value === formData.businessType)?.label}</p>
                   <p className="text-muted-foreground"><strong>Experience:</strong> {formData.yearsExperience || "Not specified"} years</p>
                 </div>
 
-                <div className="p-4 bg-muted rounded-lg border border-border space-y-2">
+                <div className="p-4 bg-muted rounded-xl border border-border space-y-2">
                   <h3 className="font-medium text-foreground">Contact</h3>
                   <p className="text-muted-foreground"><strong>Phone:</strong> {formData.phone}</p>
                   <p className="text-muted-foreground"><strong>WhatsApp:</strong> {formData.whatsapp || "Not specified"}</p>
                   <p className="text-muted-foreground"><strong>Email:</strong> {formData.email || "Not specified"}</p>
                 </div>
 
-                <div className="p-4 bg-muted rounded-lg border border-border space-y-2">
+                <div className="p-4 bg-muted rounded-xl border border-border space-y-2">
                   <h3 className="font-medium text-foreground">Location</h3>
                   <p className="text-muted-foreground"><strong>Address:</strong> {formData.address || "Not specified"}</p>
                   <p className="text-muted-foreground"><strong>City:</strong> {formData.city}</p>
@@ -287,8 +287,8 @@ export default function ServiceProviderRegisterPage() {
                     onCheckedChange={(checked) => setFormData({...formData, agreeTerms: checked as boolean})}
                   />
                   <Label htmlFor="terms" className="text-sm text-foreground">
-                    I agree to the <a href="/terms" className="text-enkaji-gold hover:underline">Terms of Service</a> and 
-                    <a href="/privacy" className="text-enkaji-gold hover:underline"> Privacy Policy</a>
+                    I agree to the <a href="/terms" className="text-enkaji-orange hover:underline">Terms of Service</a> and 
+                    <a href="/privacy" className="text-enkaji-orange hover:underline"> Privacy Policy</a>
                   </Label>
                 </div>
               </div>
@@ -296,20 +296,20 @@ export default function ServiceProviderRegisterPage() {
 
             <div className="flex gap-2 pt-4">
               {step > 1 && (
-                <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                   Back
                 </Button>
               )}
               {step < 3 ? (
                 <Button 
-                  className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                  className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                   onClick={() => setStep(step + 1)}
                 >
                   Continue <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
                 <Button 
-                  className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                  className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                   onClick={handleSubmit}
                   disabled={loading}
                 >
@@ -323,23 +323,23 @@ export default function ServiceProviderRegisterPage() {
 
         {/* Benefits */}
         <div className="mt-8 grid md:grid-cols-3 gap-4">
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-4 text-center">
-              <CheckCircle className="h-8 w-8 text-enkaji-gold mx-auto mb-2" />
+              <CheckCircle className="h-8 w-8 text-enkaji-orange mx-auto mb-2" />
               <h3 className="font-medium text-foreground">Verified Badge</h3>
               <p className="text-sm text-muted-foreground">Get verified and build trust</p>
             </CardContent>
           </Card>
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-4 text-center">
-              <CheckCircle className="h-8 w-8 text-enkaji-gold mx-auto mb-2" />
+              <CheckCircle className="h-8 w-8 text-enkaji-orange mx-auto mb-2" />
               <h3 className="font-medium text-foreground">Easy Bookings</h3>
               <p className="text-sm text-muted-foreground">Manage all bookings in one place</p>
             </CardContent>
           </Card>
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-4 text-center">
-              <CheckCircle className="h-8 w-8 text-enkaji-gold mx-auto mb-2" />
+              <CheckCircle className="h-8 w-8 text-enkaji-orange mx-auto mb-2" />
               <h3 className="font-medium text-foreground">Get Paid Online</h3>
               <p className="text-sm text-muted-foreground">Accept M-Pesa & cards</p>
             </CardContent>

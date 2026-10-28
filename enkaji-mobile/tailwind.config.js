@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'enkaji-red': '#8B2635',
+        'enkaji-orange': '#F36A1B',
         'enkaji-cream': '#F5F5DC',
         // Sync with web globals.css vars
         background: 'hsl(var(--background))',

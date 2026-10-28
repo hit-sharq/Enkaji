@@ -55,17 +55,17 @@ export function OrdersList({ userId }: OrdersListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
-        return "bg-enkaji-gold/20 text-enkaji-brown"
+        return "bg-enkaji-orange/20 text-enkaji-brown"
       case "CONFIRMED":
         return "bg-chart-4 text-chart-4"
       case "SHIPPED":
         return "bg-chart-5 text-chart-5"
       case "DELIVERED":
-        return "bg-enkaji-green/20 text-enkaji-green"
+        return "bg-enkaji-orange/20 text-enkaji-orange"
       case "CANCELLED":
         return "bg-enkaji-red/15 text-enkaji-red"
       default:
-        return "bg-muted text-enkaji-forest"
+        return "bg-muted text-enkaji-charcoal"
     }
   }
 
@@ -87,7 +87,7 @@ export function OrdersList({ userId }: OrdersListProps) {
             You haven't placed any orders yet. Start shopping to see your orders here.
           </p>
           <Link href="/shop">
-            <Button className="bg-enkaji-red text-white">Start Shopping</Button>
+            <Button>Start Shopping</Button>
           </Link>
         </CardContent>
       </Card>

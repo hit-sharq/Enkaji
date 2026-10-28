@@ -6,11 +6,11 @@ export default function TermsPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
               <p className="enkaji-eyebrow mb-3">Legal</p>
-              <h1 className="font-playfair font-display text-3xl md:text-4xl font-bold text-foreground mb-8">Terms of Service</h1>
+              <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">Terms of Service</h1>
 
           <div className="prose prose-lg max-w-none space-y-8">
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Acceptance of Terms</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Acceptance of Terms</h2>
               <p className="text-foreground/80">
                 By accessing and using the Enkaji website and services, you accept and agree to be bound by the terms
                 and provision of this agreement. If you do not agree to abide by the above, please do not use this
@@ -19,7 +19,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Use License</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Use License</h2>
               <p className="text-foreground/80 mb-4">
                 Permission is granted to temporarily download one copy of the materials on Enkaji's website for
                 personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of
@@ -34,7 +34,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Product Information</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Product Information</h2>
               <p className="text-foreground/80">
                 All products sold on Enkaji are handmade by Masai artisans. Due to the handmade nature, slight
                 variations in color, size, and design are normal and should be expected. We strive to display colors and
@@ -44,7 +44,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Pricing and Payment</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Pricing and Payment</h2>
               <p className="text-foreground/80">
                 All prices are listed in USD unless otherwise specified. We reserve the right to change prices at any
                 time without notice. Payment is required at the time of purchase. We accept major credit cards and
@@ -53,7 +53,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Shipping and Delivery</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Shipping and Delivery</h2>
               <p className="text-foreground/80">
                 We ship worldwide. Shipping costs and delivery times vary by location and shipping method selected. We
                 are not responsible for delays caused by customs, weather, or other factors beyond our control.
@@ -61,7 +61,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Returns and Refunds</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Returns and Refunds</h2>
               <p className="text-foreground/80">
                 We offer a 30-day return policy for unused items in their original condition. Custom orders and
                 personalized items cannot be returned unless defective. Return shipping costs are the responsibility of
@@ -70,7 +70,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Limitation of Liability</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Limitation of Liability</h2>
               <p className="text-foreground/80">
                 In no event shall Enkaji or its suppliers be liable for any damages (including, without limitation,
                 damages for loss of data or profit, or due to business interruption) arising out of the use or inability
@@ -79,10 +79,10 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Contact Information</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Contact Information</h2>
               <p className="text-foreground/80">
                 If you have any questions about these Terms of Service, please contact us through our{" "}
-                <a href="/contact" className="text-enkaji-gold hover:underline">
+                <a href="/contact" className="text-enkaji-orange hover:underline">
                   contact page
                 </a>
                 .
@@ -90,7 +90,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-playfair font-display text-2xl font-bold text-foreground mb-4">Changes to Terms</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-4">Changes to Terms</h2>
               <p className="text-foreground/80">
                 Enkaji reserves the right to revise these terms of service at any time without notice. By using this
                 website, you are agreeing to be bound by the then current version of these terms of service.

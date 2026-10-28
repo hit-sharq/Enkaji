@@ -123,10 +123,10 @@ export function SellerFilters() {
       </div>
 
       {/* Filters Card */}
-      <Card className={`border border-border bg-card rounded-xl shadow-sm ${isOpen ? "block" : "hidden"} lg:block`}>
+      <Card className={`border border-border bg-card rounded-2xl shadow-card ${isOpen ? "block" : "hidden"} lg:block`}>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg text-foreground">
-            <Filter className="w-5 h-5 text-enkaji-gold" />
+            <Filter className="w-5 h-5 text-enkaji-orange" />
             Filter Sellers
           </CardTitle>
         </CardHeader>
@@ -190,7 +190,7 @@ export function SellerFilters() {
           <div className="flex items-center space-x-2">
             <Checkbox id="verified" checked={verified} onCheckedChange={(checked) => setVerified(checked === true)} />
             <Label htmlFor="verified" className="flex items-center gap-2 cursor-pointer text-foreground">
-              <Shield className="w-4 h-4 text-enkaji-gold" />
+              <Shield className="w-4 h-4 text-enkaji-orange" />
               Verified sellers only
             </Label>
           </div>
@@ -206,7 +206,7 @@ export function SellerFilters() {
 
       {/* Active Filters */}
       {activeFilters.length > 0 && (
-        <Card className="border border-border bg-card rounded-xl">
+        <Card className="border border-border bg-card rounded-2xl">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-foreground">Active Filters</CardTitle>
           </CardHeader>

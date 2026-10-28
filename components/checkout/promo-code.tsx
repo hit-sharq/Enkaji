@@ -46,15 +46,15 @@ export function PromoCode({ orderTotal, onDiscount, onRemove, appliedCode, disco
 
   if (appliedCode) {
     return (
-      <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-xl">
+      <div className="flex items-center justify-between p-3 bg-enkaji-orange/10 border border-enkaji-orange/40 rounded-xl">
         <div className="flex items-center gap-2">
-          <CheckCircle className="h-4 w-4 text-enkaji-gold" />
-          <span className="text-sm font-medium text-enkaji-gold">
-            <Badge variant="outline" className="mr-1 text-enkaji-gold border-enkaji-gold/40">{appliedCode}</Badge>
+          <CheckCircle className="h-4 w-4 text-enkaji-orange" />
+          <span className="text-sm font-medium text-enkaji-orange">
+            <Badge variant="outline" className="mr-1 text-enkaji-orange border-enkaji-orange/40">{appliedCode}</Badge>
             − KES {discountAmount?.toLocaleString()}
           </span>
         </div>
-        <button onClick={onRemove} className="text-enkaji-gold hover:text-enkaji-ink transition-colors">
+        <button onClick={onRemove} className="text-enkaji-orange hover:text-enkaji-ink transition-colors">
           <X className="h-4 w-4" />
         </button>
       </div>

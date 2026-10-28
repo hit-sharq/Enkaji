@@ -148,11 +148,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <section className="bg-card border-b border-border py-4">
           <div className="container mx-auto px-4">
             <div className="flex items-center space-x-2 text-sm">
-              <Link href="/" className="text-muted-foreground hover:text-enkaji-gold transition-colors">
+              <Link href="/" className="text-muted-foreground hover:text-enkaji-orange transition-colors">
                 Home
               </Link>
               <span className="text-muted-foreground">/</span>
-              <Link href="/categories" className="text-muted-foreground hover:text-enkaji-gold transition-colors">
+              <Link href="/categories" className="text-muted-foreground hover:text-enkaji-orange transition-colors">
                 Categories
               </Link>
               <span className="text-muted-foreground">/</span>
@@ -162,20 +162,20 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         </section>
 
         {/* Category Header */}
-        <section className="py-12 bg-card border-b border-border">
+        <section className="bg-gradient-to-br from-enkaji-cream/60 via-background to-enkaji-cream/40 py-16">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center space-x-4 mb-4">
                   <Link href="/categories">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="rounded-xl text-muted-foreground hover:text-foreground">
                       <ArrowLeft className="w-4 h-4 mr-2" />
                       Back to Categories
                     </Button>
                   </Link>
                 </div>
                 <span className="enkaji-eyebrow mb-2 block">{category.name}</span>
-                <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">{category.name}</h1>
+                <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-2">{category.name}</h1>
                 <p className="text-muted-foreground">{category._count.products} products available in this category</p>
               </div>
             </div>
@@ -183,21 +183,25 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         </section>
 
         {/* Filters and Search */}
-        <section className="py-6 bg-card border-b border-border">
+        <section className="py-6 bg-background">
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input placeholder={`Search in ${category.name}...`} className="pl-10" defaultValue={search} />
+                  <Input
+                    placeholder={`Search in ${category.name}...`}
+                    className="rounded-xl pl-10 transition-colors focus:border-enkaji-orange focus:ring-2 focus:ring-enkaji-orange/20"
+                    defaultValue={search}
+                  />
                 </div>
               </div>
 
               {/* Filters */}
               <div className="flex items-center space-x-4">
                 <Select defaultValue={sort}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 rounded-xl">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -208,16 +212,16 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                   <Filter className="w-4 h-4 mr-2" />
                   Filters
                 </Button>
 
-                <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="sm">
+                <div className="flex items-center space-x-2 rounded-xl border border-border p-1">
+                  <Button variant="ghost" size="sm" className="rounded-lg bg-enkaji-orange/10 text-enkaji-orange">
                     <Grid className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="rounded-lg text-muted-foreground">
                     <List className="w-4 h-4" />
                   </Button>
                 </div>
@@ -237,8 +241,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               </div>
             ) : (
               <div className="text-center py-16">
-                <div className="w-24 h-24 bg-card border border-border rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Search className="w-12 h-12 text-muted-foreground" />
+                <div className="w-24 h-24 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="w-12 h-12 text-enkaji-orange" />
                 </div>
                 <h3 className="text-xl font-display font-semibold text-foreground mb-2">No Products Found</h3>
                 <p className="text-muted-foreground mb-6">
@@ -248,10 +252,10 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/categories">
-                    <Button variant="outline" className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">Browse Other Categories</Button>
+                    <Button variant="outline" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">Browse Other Categories</Button>
                   </Link>
                   <Link href="/rfq">
-                    <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Request for Quotation</Button>
+                    <Button className="rounded-xl bg-enkaji-orange font-semibold text-enkaji-ink shadow-card transition-all duration-200 hover:bg-enkaji-orange/90 hover:shadow-card-hover">Request for Quotation</Button>
                   </Link>
                 </div>
               </div>
@@ -263,10 +267,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         {productsWithRatings.length > 0 && (
           <section className="py-20 bg-card border-y border-border">
             <div className="container mx-auto px-4">
+              <span className="enkaji-eyebrow mb-2 block text-center">Explore</span>
               <h2 className="font-display text-2xl font-bold text-foreground mb-8 text-center">Explore Other Categories</h2>
               <div className="flex justify-center">
                 <Link href="/categories">
-                  <Button variant="outline" className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 px-8 py-3 bg-transparent">
+                  <Button variant="outline" className="rounded-xl border-enkaji-orange/30 px-8 py-3 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                     View All Categories
                   </Button>
                 </Link>

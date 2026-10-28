@@ -95,12 +95,12 @@ export default async function CategoriesPage() {
               {/* Search */}
               <div className="max-w-2xl mx-auto">
                 <div className="relative">
-                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-enkaji-gold w-5 h-5" />
+                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-enkaji-orange w-5 h-5" />
                   <Input
                     placeholder="Search categories..."
-                    className="w-full pl-14 pr-4 h-12 text-lg border-0 bg-enkaji-ivory/10 text-enkaji-ivory placeholder:text-enkaji-ivory/50 focus:ring-enkaji-gold rounded-full"
+                    className="w-full pl-14 pr-4 h-12 text-lg border-0 bg-enkaji-ivory/10 text-enkaji-ivory placeholder:text-enkaji-ivory/50 focus:ring-enkaji-orange rounded-full"
                   />
-                  <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-6 bg-enkaji-gold text-enkaji-ink font-semibold rounded-full">
+                  <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-6 bg-enkaji-orange text-enkaji-ink font-semibold rounded-full">
                     Search
                   </Button>
                 </div>
@@ -117,16 +117,16 @@ export default async function CategoriesPage() {
                 const IconComponent = categoryIcons[category.slug] || Factory
                 return (
                   <Link key={category.id} href={`/categories/${category.slug}`}>
-                    <Card className="group border border-enkaji-gold/20 bg-white/[0.04] rounded-xl hover:border-enkaji-gold/50 hover:bg-white/[0.06] transition h-full">
+                    <Card className="group border border-enkaji-orange/20 bg-white/[0.04] rounded-2xl hover:border-enkaji-orange/50 hover:bg-white/[0.06] transition h-full">
                       <CardContent className="p-6">
-                        <div className="w-12 h-12 border border-enkaji-gold/30 rounded-lg flex items-center justify-center mb-4 group-hover:border-enkaji-gold/50 transition-colors">
-                          <IconComponent className="w-6 h-6 text-enkaji-gold" />
+                        <div className="w-12 h-12 border border-enkaji-orange/30 rounded-lg flex items-center justify-center mb-4 group-hover:border-enkaji-orange/50 transition-colors">
+                          <IconComponent className="w-6 h-6 text-enkaji-orange" />
                         </div>
-                        <h3 className="font-display font-semibold text-enkaji-ivory mb-2 group-hover:text-enkaji-gold transition-colors">
+                        <h3 className="font-display font-semibold text-enkaji-ivory mb-2 group-hover:text-enkaji-orange transition-colors">
                           {category.name}
                         </h3>
                         <p className="text-sm text-enkaji-ivory/60 mb-4">{category._count.products} products available</p>
-                        <div className="flex items-center text-enkaji-gold text-sm font-medium">
+                        <div className="flex items-center text-enkaji-orange text-sm font-medium">
                           Browse products
                           <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                         </div>
@@ -139,7 +139,7 @@ export default async function CategoriesPage() {
 
             {categories.length === 0 && (
                 <div className="text-center py-16">
-                <div className="w-24 h-24 bg-white/[0.04] border border-enkaji-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-24 h-24 bg-white/[0.04] border border-enkaji-orange/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Factory className="w-12 h-12 text-enkaji-ivory/50" />
                 </div>
                 <h3 className="text-xl font-display font-semibold text-enkaji-ivory mb-2">No Categories Found</h3>
@@ -160,8 +160,8 @@ export default async function CategoriesPage() {
               <h2 className="font-display text-3xl font-bold text-foreground mb-4">Can't Find What You're Looking For?</h2>
               <p className="text-lg text-muted-foreground mb-8">Submit a request for quotation and let suppliers come to you</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold px-8 py-3 shadow-lg">Post Buying Request</Button>
-                <Button variant="outline" className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 px-8 py-3">
+                <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold px-8 py-3 shadow-elevated">Post Buying Request</Button>
+                <Button variant="outline" className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10 px-8 py-3">
                   Contact Support
                 </Button>
               </div>

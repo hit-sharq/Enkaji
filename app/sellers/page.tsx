@@ -196,28 +196,28 @@ export default async function SellersPage({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Users className="w-6 h-6 text-enkaji-gold/80 mr-2" />
+                  <Users className="w-6 h-6 text-enkaji-orange/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.totalSellers}</span>
                 </div>
                 <p className="text-enkaji-ivory/70 text-sm">Total Sellers</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <TrendingUp className="w-6 h-6 text-enkaji-green/80 mr-2" />
+                  <TrendingUp className="w-6 h-6 text-enkaji-orange/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.verifiedSellers}</span>
                 </div>
                 <p className="text-enkaji-ivory/70 text-sm">Verified</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <MapPin className="w-6 h-6 text-enkaji-gold/80 mr-2" />
+                  <MapPin className="w-6 h-6 text-enkaji-orange/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.locations}</span>
                 </div>
                 <p className="text-enkaji-ivory/70 text-sm">Locations</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Search className="w-6 h-6 text-enkaji-gold/80 mr-2" />
+                  <Search className="w-6 h-6 text-enkaji-orange/80 mr-2" />
                   <span className="text-3xl font-bold">{stats.businessTypes}</span>
                 </div>
                 <p className="text-enkaji-ivory/70 text-sm">Categories</p>

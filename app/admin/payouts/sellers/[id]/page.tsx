@@ -87,7 +87,7 @@ export default async function PayoutRequestDetail({ params }: { params: { id: st
               <Badge variant="outline">{detail.status}</Badge>
             </div>
             <div className="text-right">
-              <p className="font-display text-3xl font-bold text-enkaji-gold">KES {detail.amount.toLocaleString()}</p>
+              <p className="font-display text-3xl font-bold text-enkaji-orange">KES {detail.amount.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">{detail.method}</p>
             </div>
           </div>
@@ -137,7 +137,7 @@ export default async function PayoutRequestDetail({ params }: { params: { id: st
                   className="mb-3"
                   rows={3}
                 />
-                 <Button type="submit" className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                 <Button type="submit" className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                    Approve & Process Payout
                  </Button>
               </form>

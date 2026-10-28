@@ -1,7 +1,5 @@
 import type { Config } from "tailwindcss"
 
-// all in fixtures is set to tailwind v3 as interims solutions
-
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -63,15 +61,15 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        "enkaji-red": "#8B2635",
-        "enkaji-ochre": "#C07A2E",
-        "enkaji-brown": "#6B3719",
-        "enkaji-green": "#1F7A33",
-        "enkaji-cream": "#EFE9D8",
-        "enkaji-gold": "#C8B96A",
-        "enkaji-ink": "#0D1A12",
-        "enkaji-ivory": "#FAF6EC",
-        "enkaji-forest": "#162A1A",
+        "enkaji-red": "hsl(var(--enkaji-red))",
+        "enkaji-orange": "hsl(var(--enkaji-orange))",
+        "enkaji-brown": "hsl(var(--enkaji-brown))",
+        "enkaji-orange": "hsl(var(--enkaji-orange))",
+        "enkaji-cream": "hsl(var(--enkaji-cream))",
+        "enkaji-orange": "hsl(var(--enkaji-orange))",
+        "enkaji-ink": "hsl(var(--enkaji-ink))",
+        "enkaji-ivory": "hsl(var(--enkaji-ivory))",
+        "enkaji-charcoal": "hsl(var(--enkaji-charcoal))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -100,10 +98,13 @@ const config: Config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["var(--font-playfair)"],
-        playfair: ["var(--font-playfair)"],
+      boxShadow: {
+        "card": "0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 3px 0 rgb(0 0 0 / 0.06)",
+        "card-hover": "0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06)",
+        "elevated": "0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.06)",
+        "inset": "inset 0 1px 2px 0 rgb(0 0 0 / 0.04)",
+        "glow-orange": "0 0 0 3px hsl(var(--enkaji-orange) / 0.15)",
+        "glow-gold": "0 0 0 3px hsl(var(--enkaji-orange) / 0.2)",
       },
     },
   },

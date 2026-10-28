@@ -80,13 +80,13 @@ export function PaymentSuccess() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "CONFIRMED":
-        return <CheckCircle className="h-6 w-6 text-enkaji-green" />
+        return <CheckCircle className="h-6 w-6 text-enkaji-orange" />
       case "SHIPPED":
         return <Truck className="h-6 w-6 text-chart-4" />
       case "DELIVERED":
-        return <Package className="h-6 w-6 text-enkaji-green" />
+        return <Package className="h-6 w-6 text-enkaji-orange" />
       default:
-        return <Clock className="h-6 w-6 text-enkaji-gold" />
+        return <Clock className="h-6 w-6 text-enkaji-orange" />
     }
   }
 
@@ -108,8 +108,8 @@ export function PaymentSuccess() {
       <div className="max-w-2xl mx-auto">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-enkaji-gold" />
+          <div className="w-16 h-16 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-enkaji-orange" />
           </div>
           <h1 className="font-display text-3xl font-bold text-foreground mb-2">Payment Successful!</h1>
           <p className="text-muted-foreground">Thank you for your order. We'll send you updates as we process it.</p>

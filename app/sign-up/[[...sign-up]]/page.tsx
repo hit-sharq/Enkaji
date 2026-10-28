@@ -15,20 +15,20 @@ export default function SignUpPage() {
       footer={
         <>
           {"Already have an account? "}
-          <Link href="/sign-in" className="font-medium text-enkaji-gold hover:text-enkaji-gold/80">
-            Sign in
-          </Link>
+      <Link href="/sign-in" className="font-medium text-enkaji-orange hover:text-enkaji-orange/80">
+        Sign in
+      </Link>
         </>
       }
     >
       <SignUp
         appearance={{
           variables: {
-            colorPrimary: "#C8B96A",
+            colorPrimary: "#F36A1B",
             colorText: "#0a0a0a",
             colorTextSecondary: "#6b7280",
             colorBackground: "#ffffff",
-            borderRadius: "0.5rem",
+            borderRadius: "0.75rem",
           },
           elements: {
             rootBox: "w-full",
@@ -36,11 +36,11 @@ export default function SignUpPage() {
             headerTitle: "hidden",
             headerSubtitle: "hidden",
             formFieldInput:
-              "h-10 rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm focus-visible:ring-2 focus-visible:ring-ring",
-            formButtonPrimary: "bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink h-10 rounded-md font-semibold transition-colors",
-            socialButtonsBlockButton: "h-10 rounded-md border border-input bg-card hover:bg-enkaji-gold/10 text-enkaji-ink",
+              "h-11 rounded-xl border border-input bg-background px-3.5 py-2 text-base md:text-sm focus-visible:ring-2 focus-visible:ring-enkaji-orange/30 focus-visible:border-enkaji-orange",
+            formButtonPrimary: "bg-enkaji-orange hover:bg-enkaji-orange/90 text-white h-11 rounded-xl font-semibold transition-colors",
+            socialButtonsBlockButton: "h-11 rounded-xl border border-input bg-card hover:bg-enkaji-orange/10 text-enkaji-ink",
             footerAction__signUp: "text-sm",
-            footerActionLink: "text-enkaji-gold hover:text-enkaji-gold/80 font-medium",
+            footerActionLink: "text-enkaji-orange hover:text-enkaji-orange/80 font-medium",
           },
         }}
         signInUrl="/sign-in"

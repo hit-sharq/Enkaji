@@ -57,11 +57,11 @@ export function ClearanceBusinessForm() {
   }
 
   return (
-    <Card className="rounded-2xl border-0 bg-card/80 backdrop-blur-sm shadow-sm">
+    <Card className="rounded-2xl border-0 bg-card/80 backdrop-blur-sm shadow-card">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-chart-4">
-            <Store className="h-5 w-5 text-chart-4" />
+          <div className="p-2.5 rounded-xl bg-enkaji-orange/10">
+            <Store className="h-5 w-5 text-enkaji-orange" />
           </div>
           <div>
             <CardTitle className="text-lg">Apply for Clearance Deals</CardTitle>
@@ -129,7 +129,7 @@ export function ClearanceBusinessForm() {
             </div>
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-gradient-to-r from-chart-4 to-chart-4">
+          <Button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-enkaji-orange font-semibold text-enkaji-ink shadow-card transition-all duration-200 hover:bg-enkaji-orange/90 hover:shadow-card-hover">
             {isSubmitting ? "Submitting..." : "Submit for Approval"}
           </Button>
         </form>

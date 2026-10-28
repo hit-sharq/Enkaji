@@ -161,7 +161,7 @@ export function ArtisanRegistrationForm({ user }: ArtisanRegistrationFormProps) 
             />
           </div>
 
-          <Button type="submit" className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

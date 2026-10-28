@@ -81,7 +81,7 @@ export default function DownloadPage() {
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                 Kenya's Marketplace,
-                <span className="bg-enkaji-gold"> in Your Pocket</span>
+                <span className="bg-enkaji-orange"> in Your Pocket</span>
               </h1>
               <p className="text-lg text-white/80 mb-8 leading-relaxed">
                 Shop from thousands of verified Kenyan suppliers, pay with M-Pesa, track your orders, and manage your store — all from the Enkaji mobile app.
@@ -91,24 +91,24 @@ export default function DownloadPage() {
                 <a href={apkUrl} download="enkaji-mobile.apk">
                   <Button
                     size="lg"
-                    className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-black font-bold px-8 py-6 text-lg rounded-xl shadow-xl"
+                    className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-black font-bold px-8 py-6 text-lg rounded-xl shadow-xl"
                   >
                     <Download className="w-5 h-5 mr-2" />
                     Download APK
                   </Button>
                 </a>
                 <div className="flex items-center text-white/70 text-sm">
-                  <ShieldCheck className="w-4 h-4 mr-1 text-enkaji-green" />
+                  <ShieldCheck className="w-4 h-4 mr-1 text-enkaji-orange" />
                   Free · Android 8.0+ · ~35 MB
                 </div>
               </div>
 
               {!apkAvailable && (
                 <div className="mt-6 flex items-start gap-2 bg-card/10 border border-card/20 rounded-lg p-4 text-sm text-white/80">
-                  <AlertCircle className="w-4 h-4 mt-0.5 text-enkaji-gold shrink-0" />
+                  <AlertCircle className="w-4 h-4 mt-0.5 text-enkaji-orange shrink-0" />
                   <span>
                     The APK is being finalized. Check back soon or{" "}
-                    <Link href="/contact" className="underline text-enkaji-gold">contact us</Link> to be notified when it's ready.
+                    <Link href="/contact" className="underline text-enkaji-orange">contact us</Link> to be notified when it's ready.
                   </span>
                 </div>
               )}
@@ -148,7 +148,7 @@ export default function DownloadPage() {
                             <div className="w-10 h-10 bg-card/30 rounded-lg" />
                             <div className="flex-1">
                               <p className="text-white text-xs font-medium">{name}</p>
-                              <p className="text-enkaji-gold text-xs">KES {[1200, 850, 450][i]}</p>
+                              <p className="text-enkaji-orange text-xs">KES {[1200, 850, 450][i]}</p>
                             </div>
                           </div>
                         ))}
@@ -157,7 +157,7 @@ export default function DownloadPage() {
                     {/* Bottom nav */}
                     <div className="bg-card/10 px-6 py-3 flex justify-around">
                       {[ShoppingBag, Zap, ShoppingBag, Star].map((Icon, i) => (
-                        <div key={i} className={`w-5 h-5 ${i === 0 ? "text-enkaji-gold" : "text-white/50"}`}>
+                        <div key={i} className={`w-5 h-5 ${i === 0 ? "text-enkaji-orange" : "text-white/50"}`}>
                           <Icon className="w-full h-full" />
                         </div>
                       ))}
@@ -165,7 +165,7 @@ export default function DownloadPage() {
                   </div>
                 </div>
                 {/* Glow effect */}
-                <div className="absolute inset-0 -z-10 blur-2xl bg-enkaji-gold/20 rounded-full scale-75 translate-y-8" />
+                <div className="absolute inset-0 -z-10 blur-2xl bg-enkaji-orange/20 rounded-full scale-75 translate-y-8" />
               </div>
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function DownloadPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow">
+              <div key={title} className="bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-card-hover transition-shadow">
                 <div className="w-12 h-12 bg-enkaji-red/10 rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-6 h-6 text-enkaji-red" />
                 </div>
@@ -218,7 +218,7 @@ export default function DownloadPage() {
             ))}
           </div>
 
-          <div className="mt-12 bg-enkaji-brown border border-enkaji-ochre rounded-2xl p-6 flex gap-4">
+          <div className="mt-12 bg-enkaji-brown border border-enkaji-orange rounded-2xl p-6 flex gap-4">
             <AlertCircle className="w-5 h-5 text-enkaji-brown shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-enkaji-brown mb-1">Android Only (for now)</p>
@@ -234,7 +234,7 @@ export default function DownloadPage() {
       {/* CTA */}
       <section className="py-20 px-4 bg-gradient-to-r from-enkaji-red to-enkaji-red text-white">
         <div className="container mx-auto max-w-3xl text-center">
-          <Smartphone className="w-14 h-14 mx-auto mb-6 text-enkaji-gold" />
+          <Smartphone className="w-14 h-14 mx-auto mb-6 text-enkaji-orange" />
           <h2 className="text-3xl font-bold mb-4">Ready to Download?</h2>
           <p className="text-white/75 text-lg mb-8">
             Join thousands of Kenyans already buying and selling on Enkaji. It's free.
@@ -242,7 +242,7 @@ export default function DownloadPage() {
           <a href={apkUrl} download="enkaji-mobile.apk">
             <Button
               size="lg"
-              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-black font-bold px-10 py-6 text-lg rounded-xl shadow-xl"
+              className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-black font-bold px-10 py-6 text-lg rounded-xl shadow-xl"
             >
               <Download className="w-5 h-5 mr-2" />
               Download Enkaji APK

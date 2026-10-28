@@ -23,10 +23,10 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
 
   if (!userId) {
     return (
-      <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
+      <Card className={`border-l-4 border-enkaji-orange bg-muted ${className}`}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-enkaji-ochre" />
+            <Star className="w-5 h-5 text-enkaji-orange" />
             Write a Review
           </CardTitle>
         </CardHeader>
@@ -34,7 +34,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
           <p className="text-muted-foreground mb-4">Please sign in to write a review.</p>
           <Button
             onClick={() => window.location.href = "/sign-in"}
-            className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90"
+            className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90"
           >
             Sign In to Review
           </Button>
@@ -104,10 +104,10 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
   }
 
   return (
-    <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
+    <Card className={`border-l-4 border-enkaji-orange bg-muted ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Star className="w-5 h-5 text-enkaji-ochre" />
+          <Star className="w-5 h-5 text-enkaji-orange" />
           Write a Review
         </CardTitle>
       </CardHeader>
@@ -127,7 +127,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
                 <Star
                   className={`w-7 h-7 transition-colors ${
                     star <= (hoverRating || rating)
-                      ? "text-enkaji-gold fill-current"
+                      ? "text-enkaji-orange fill-current"
                       : "text-muted-foreground"
                   }`}
                 />
@@ -150,7 +150,7 @@ export function ProductReviewFormBanner({ productId, onReviewSubmitted, classNam
         <Button
           onClick={handleSubmit}
           disabled={isSubmitting || rating === 0 || !comment.trim()}
-          className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90"
+          className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90"
         >
           {isSubmitting ? "Submitting..." : "Submit Review"}
         </Button>
@@ -168,13 +168,13 @@ interface ProductReviewBannerProps {
 
 export function ProductReviewBanner({ rating, comment, reviewerName, className = "" }: ProductReviewBannerProps) {
   return (
-    <Card className={`border-l-4 border-enkaji-gold bg-muted ${className}`}>
+    <Card className={`border-l-4 border-enkaji-orange bg-muted ${className}`}>
       <CardContent className="p-4">
         <div className="flex items-center gap-1 mb-2">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`w-4 h-4 ${i < rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
+              className={`w-4 h-4 ${i < rating ? "text-enkaji-orange fill-current" : "text-muted-foreground"}`}
             />
           ))}
         </div>

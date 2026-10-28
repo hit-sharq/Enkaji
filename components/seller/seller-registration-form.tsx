@@ -136,17 +136,17 @@ if (!response.ok) {
 
   if (isSuccess) {
     return (
-      <Card className="border border-border bg-card rounded-xl shadow-sm">
+      <Card className="border border-border bg-card rounded-2xl shadow-card">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-foreground">
-            <Check className="w-5 h-5 text-enkaji-green" />
+            <Check className="w-5 h-5 text-enkaji-orange" />
             <span>Registration Successful!</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 border border-border">
-              <Check className="w-8 h-8 text-enkaji-green" />
+              <Check className="w-8 h-8 text-enkaji-orange" />
             </div>
             <h3 className="text-xl font-medium mb-2 text-foreground">Your seller account has been created!</h3>
             <p className="text-muted-foreground mb-4">
@@ -167,14 +167,14 @@ if (!response.ok) {
             <div className="space-y-3">
               <Button 
                 onClick={() => router.push("/dashboard")}
-                className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
               >
                 Go to Dashboard
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => router.push("/")}
-                className="w-full border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10"
+                className="w-full border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10"
               >
                 Continue Shopping
               </Button>
@@ -186,10 +186,10 @@ if (!response.ok) {
   }
 
   return (
-    <Card className="border border-border bg-card rounded-xl shadow-sm">
+    <Card className="border border-border bg-card rounded-2xl shadow-card">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-foreground">
-          <Store className="w-5 h-5 text-enkaji-gold" />
+          <Store className="w-5 h-5 text-enkaji-orange" />
           <span>Seller Profile Setup</span>
         </CardTitle>
       </CardHeader>
@@ -297,7 +297,7 @@ if (!response.ok) {
           {/* Plan Selection */}
           <div className="border border-border rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-2">
-              <Crown className="w-5 h-5 text-enkaji-gold" />
+              <Crown className="w-5 h-5 text-enkaji-orange" />
               <Label className="text-lg font-medium text-foreground">Select Your Plan</Label>
             </div>
             <p className="text-sm text-muted-foreground">Choose the plan that best fits your business needs. You can upgrade anytime.</p>
@@ -310,9 +310,9 @@ if (!response.ok) {
               {planOptions.map((plan) => (
                 <Label
                   key={plan.value}
-                  className={`flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-enkaji-gold/50 ${
+                  className={`flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-enkaji-orange/50 ${
                     formData.plan === plan.value 
-                      ? "border-enkaji-gold bg-accent" 
+                      ? "border-enkaji-orange bg-accent" 
                       : "border-border"
                   }`}
                 >
@@ -320,17 +320,17 @@ if (!response.ok) {
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-foreground">{plan.name}</span>
                     {formData.plan === plan.value && (
-                      <Check className="w-5 h-5 text-enkaji-gold" />
+                      <Check className="w-5 h-5 text-enkaji-orange" />
                     )}
                   </div>
-                  <div className="text-lg font-semibold text-enkaji-gold">{plan.price}</div>
+                  <div className="text-lg font-semibold text-enkaji-orange">{plan.price}</div>
                   <div className="text-sm text-muted-foreground mt-1">{plan.description}</div>
                 </Label>
               ))}
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

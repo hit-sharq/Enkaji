@@ -182,7 +182,7 @@ export function BlogManagement() {
               </div>
 
               <div className="flex space-x-4">
-                <Button type="submit" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                <Button type="submit" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                   {editingPost ? "Update Post" : "Create Post"}
                 </Button>
                 <Button
@@ -207,7 +207,7 @@ export function BlogManagement() {
           <div className="flex justify-between items-center">
             <CardTitle>Blog Posts ({posts.length})</CardTitle>
             {!isCreating && !editingPost && (
-               <Button onClick={() => setIsCreating(true)} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+               <Button onClick={() => setIsCreating(true)} className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                  <Plus className="w-4 h-4 mr-2" />
                  New Post
                </Button>

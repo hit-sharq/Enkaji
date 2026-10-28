@@ -156,7 +156,7 @@ export function UserInfo() {
               </div>
             </div>
           ) : (
-            <div className="text-enkaji-gold">No database record found</div>
+            <div className="text-enkaji-orange">No database record found</div>
           )}
         </CardContent>
       </Card>
@@ -191,21 +191,21 @@ export function UserInfo() {
       </Card>
 
       {!isAdmin && (
-        <Card className="border-enkaji-ochre bg-enkaji-ochre">
+        <Card className="border-enkaji-orange bg-enkaji-orange">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-enkaji-ochre">
+            <CardTitle className="flex items-center gap-2 text-enkaji-orange">
               <Info className="h-5 w-5" />
               How to Become Admin
             </CardTitle>
-            <CardDescription className="text-enkaji-ochre">
+            <CardDescription className="text-enkaji-orange">
               Follow these steps to grant yourself admin access
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-enkaji-ochre">1. Add this to your .env file:</label>
+              <label className="text-sm font-medium text-enkaji-orange">1. Add this to your .env file:</label>
               <div className="flex items-center gap-2 mt-1">
-                <code className="bg-enkaji-ochre px-2 py-1 rounded text-sm flex-1 text-enkaji-ochre">
+                <code className="bg-enkaji-orange px-2 py-1 rounded text-sm flex-1 text-enkaji-orange">
                   {userInfo.instructions.example}
                 </code>
                 <Button size="sm" variant="outline" onClick={() => copyToClipboard(userInfo.instructions.example)}>
@@ -213,8 +213,8 @@ export function UserInfo() {
                 </Button>
               </div>
             </div>
-            <div className="text-sm text-enkaji-ochre">2. Restart your development server</div>
-            <div className="text-sm text-enkaji-ochre">3. Refresh this page to verify admin access</div>
+            <div className="text-sm text-enkaji-orange">2. Restart your development server</div>
+            <div className="text-sm text-enkaji-orange">3. Refresh this page to verify admin access</div>
           </CardContent>
         </Card>
       )}

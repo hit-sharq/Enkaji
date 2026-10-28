@@ -36,7 +36,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
   })
 
   return (
-    <Card className="rounded-xl border border-border shadow-sm">
+    <Card className="rounded-2xl border border-border shadow-card">
       <CardHeader>
         <CardTitle className="font-display font-semibold text-foreground">Order Summary</CardTitle>
       </CardHeader>
@@ -60,13 +60,13 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
                   <span>Qty: {item.quantity}</span>
                   {item.weight && (
                     <div className="flex items-center gap-1">
-                       <Weight className="h-3 w-3 text-enkaji-gold" />
+                       <Weight className="h-3 w-3 text-enkaji-orange" />
                       <span>{formatWeight(item.weight * item.quantity)}</span>
                     </div>
                   )}
                 </div>
               </div>
-              <p className="font-display font-semibold text-enkaji-gold text-sm">{formatDualCurrency(item.price * item.quantity)}</p>
+              <p className="font-display font-semibold text-enkaji-orange text-sm">{formatDualCurrency(item.price * item.quantity)}</p>
             </div>
           ))}
         </div>
@@ -82,7 +82,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
 
           <div className="flex justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-              <Weight className="h-4 w-4 text-enkaji-gold" />
+              <Weight className="h-4 w-4 text-enkaji-orange" />
               <span>Total Weight</span>
             </div>
             <span>{formatWeight(totalWeight)}</span>
@@ -90,7 +90,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
 
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
-              <Package className="h-4 w-4 text-enkaji-gold" />
+              <Package className="h-4 w-4 text-enkaji-orange" />
               <span>Shipping</span>
             </div>
             <span>{formatDualCurrency(shippingCost)}</span>
@@ -102,7 +102,7 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
           </div>
 
           {onInsuranceChange && (
-             <div className="flex items-center justify-between p-3 bg-enkaji-gold/10 rounded-xl">
+             <div className="flex items-center justify-between p-3 bg-enkaji-orange/10 rounded-xl">
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="insurance"
@@ -110,16 +110,16 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
                     onCheckedChange={(checked) => onInsuranceChange(checked === true)}
                   />
                   <Label htmlFor="insurance" className="flex items-center gap-1 cursor-pointer">
-                    <Shield className="h-4 w-4 text-enkaji-gold" />
+                    <Shield className="h-4 w-4 text-enkaji-orange" />
                     <span>Shipping Protection</span>
                   </Label>
                 </div>
-                <span className="font-medium text-enkaji-gold">{formatDualCurrency(insuranceFee)}</span>
+                <span className="font-medium text-enkaji-orange">{formatDualCurrency(insuranceFee)}</span>
              </div>
           )}
 
           {discountAmount > 0 && couponCode && (
-             <div className="flex justify-between text-enkaji-gold font-medium">
+             <div className="flex justify-between text-enkaji-orange font-medium">
               <span>Discount ({couponCode})</span>
               <span>− {formatDualCurrency(discountAmount)}</span>
             </div>

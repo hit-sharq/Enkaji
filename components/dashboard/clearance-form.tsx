@@ -186,7 +186,7 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
           </div>
 
           {savings && (
-            <div className="rounded-3xl border border-enkaji-ochre bg-enkaji-brown p-4 text-sm text-enkaji-brown">
+            <div className="rounded-xl border border-enkaji-orange bg-enkaji-brown p-4 text-sm text-enkaji-brown">
               Save KES {savings.amount.toLocaleString()} ({savings.percentage}% off)
             </div>
           )}
@@ -268,7 +268,7 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
           <div>
             <Label>Product Images *</Label>
             <div className="space-y-4">
-              <label className="flex flex-col items-center justify-center w-full h-32 rounded-3xl border border-dashed border-muted-foreground bg-muted text-center text-sm text-muted-foreground hover:border-muted-foreground hover:bg-muted transition">
+              <label className="flex flex-col items-center justify-center w-full h-32 rounded-xl border border-dashed border-muted-foreground bg-muted text-center text-sm text-muted-foreground hover:border-muted-foreground hover:bg-muted transition">
                 <div className="flex flex-col items-center gap-2">
                   <ImageIcon className="h-6 w-6" />
                   <span>Click to upload images</span>
@@ -289,7 +289,7 @@ export function ClearanceListingForm({ categories }: ClearanceFormProps) {
               {images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {images.map((src, index) => (
-                    <div key={index} className="group relative overflow-hidden rounded-3xl border border-muted-foreground">
+                    <div key={index} className="group relative overflow-hidden rounded-xl border border-muted-foreground">
                       <img src={src} alt={`Clearance image ${index + 1}`} className="h-28 w-full object-cover" />
                       <button
                         type="button"

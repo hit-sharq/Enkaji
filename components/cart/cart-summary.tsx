@@ -50,7 +50,7 @@ export function CartSummary() {
           <>
             <div className="flex justify-between text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
-              <Weight className="h-4 w-4 text-enkaji-gold" />
+              <Weight className="h-4 w-4 text-enkaji-orange" />
                 <span>Total Weight</span>
               </div>
               <span>{formatWeight(totalWeight)}</span>
@@ -58,21 +58,21 @@ export function CartSummary() {
 
             <div className="flex justify-between">
               <div className="flex items-center gap-1">
-                <Package className="h-4 w-4 text-enkaji-gold" />
+                <Package className="h-4 w-4 text-enkaji-orange" />
                 <span>Shipping</span>
               </div>
               <span>{formatDualCurrency(shipping)}</span>
             </div>
 
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Info className="h-3 w-3 text-enkaji-gold" />
+              <Info className="h-3 w-3 text-enkaji-orange" />
               <span>Shipping estimate based on Nairobi. Final cost calculated at checkout.</span>
             </div>
           </>
         ) : (
           <div className="flex justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-              <ShoppingBag className="h-4 w-4 text-enkaji-gold" />
+              <ShoppingBag className="h-4 w-4 text-enkaji-orange" />
               <span>Shipping</span>
             </div>
               <span className="text-muted-foreground">Calculated at checkout</span>

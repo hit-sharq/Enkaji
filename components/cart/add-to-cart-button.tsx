@@ -48,7 +48,7 @@ export function AddToCartButton({ productId, productName }: AddToCartButtonProps
   }
 
   return (
-    <Button 
+    <Button
       onClick={handleAddToCart}
       disabled={isPending}
       className="flex items-center gap-2"

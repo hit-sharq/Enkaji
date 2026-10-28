@@ -19,7 +19,7 @@ export default function CategoryNotFound() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/categories">
-                  <Button className="bg-enkaji-ochre hover:bg-enkaji-ochre/90">
+                  <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Browse All Categories
                   </Button>
@@ -32,22 +32,22 @@ export default function CategoryNotFound() {
               <div className="mt-12 p-6 bg-muted rounded-lg">
                 <h3 className="text-lg font-semibold text-foreground mb-4">Popular Categories</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <Link href="/categories/electronics" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/electronics" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Electronics & Technology
                   </Link>
-                  <Link href="/categories/fashion-apparel" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/fashion-apparel" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Fashion & Apparel
                   </Link>
-                  <Link href="/categories/agriculture" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/agriculture" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Agriculture & Food
                   </Link>
-                  <Link href="/categories/construction" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/construction" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Construction Materials
                   </Link>
-                  <Link href="/categories/automotive" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/automotive" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Automotive
                   </Link>
-                  <Link href="/categories/home-garden" className="text-enkaji-ochre hover:text-enkaji-ochre/90">
+                  <Link href="/categories/home-garden" className="text-enkaji-orange hover:text-enkaji-orange/90">
                     Home & Garden
                   </Link>
                 </div>

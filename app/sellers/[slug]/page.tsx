@@ -70,7 +70,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
         {/* Dark hero band */}
         <section className="bg-enkaji-ink rounded-2xl p-8 md:p-12 mb-8">
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-            <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden border border-enkaji-gold/30 flex-shrink-0">
+            <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden border border-enkaji-orange/30 flex-shrink-0">
               <Image
                 src={seller.imageUrl || "/placeholder-user.jpg"}
                 alt={businessName}
@@ -83,7 +83,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
               <div className="flex items-center gap-3 mb-2">
                 <span className="enkaji-eyebrow">Seller</span>
                 {isVerified && (
-                  <Badge className="border border-enkaji-gold/30 bg-enkaji-gold/10 text-enkaji-gold text-xs">
+                  <Badge className="border border-enkaji-orange/30 bg-enkaji-orange/10 text-enkaji-orange text-xs">
                     Verified
                   </Badge>
                 )}
@@ -98,30 +98,30 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-enkaji-ivory/70">
                 {seller.sellerProfile?.location && (
                   <div className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-2 text-enkaji-gold" />
+                    <MapPin className="w-4 h-4 mr-2 text-enkaji-orange" />
                     <span>{seller.sellerProfile.location}</span>
                   </div>
                 )}
                 <div className="flex items-center">
-                  <Package className="w-4 h-4 mr-2 text-enkaji-gold" />
+                  <Package className="w-4 h-4 mr-2 text-enkaji-orange" />
                   <span>{seller.products.length} products</span>
                 </div>
                 {seller.email && (
                   <div className="flex items-center">
-                    <Mail className="w-4 h-4 mr-2 text-enkaji-gold" />
-                    <a href={`mailto:${seller.email}`} className="text-enkaji-gold hover:underline">
+                    <Mail className="w-4 h-4 mr-2 text-enkaji-orange" />
+                    <a href={`mailto:${seller.email}`} className="text-enkaji-orange hover:underline">
                       {seller.email}
                     </a>
                   </div>
                 )}
                 {seller.sellerProfile?.website && (
                   <div className="flex items-center">
-                    <Globe className="w-4 h-4 mr-2 text-enkaji-gold" />
+                    <Globe className="w-4 h-4 mr-2 text-enkaji-orange" />
                     <a
                       href={seller.sellerProfile.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-enkaji-gold hover:underline"
+                      className="text-enkaji-orange hover:underline"
                     >
                       Visit Website
                     </a>
@@ -142,7 +142,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
           <h2 className="font-display text-2xl font-semibold text-foreground mb-6">Products</h2>
 
           {seller.products.length === 0 ? (
-            <div className="text-center py-12 bg-card border border-enkaji-gold/20 rounded-xl">
+            <div className="text-center py-12 bg-card border border-enkaji-orange/20 rounded-xl">
               <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">No products yet</h3>
               <p className="text-muted-foreground">This seller hasn't listed any products yet.</p>
@@ -150,7 +150,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {seller.products.map((product) => (
-                <Card key={product.id} className="overflow-hidden border border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+                <Card key={product.id} className="overflow-hidden border border-enkaji-orange/20 bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all hover:-translate-y-1">
                   <div className="aspect-square relative overflow-hidden">
                     <Image
                       src={product.images[0] || "/placeholder.jpg"}
@@ -162,17 +162,17 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
                   <CardContent className="p-4">
                     <h3 className="font-display font-medium text-foreground mb-2 line-clamp-2">{product.name}</h3>
                     {product.category && (
-                      <Badge variant="outline" className="mb-2 text-xs border-enkaji-gold/20">
+                      <Badge variant="outline" className="mb-2 text-xs border-enkaji-orange/20">
                         {product.category.name}
                       </Badge>
                     )}
-                    <p className="text-lg font-semibold text-enkaji-gold mb-3">KSh {Number(product.price).toLocaleString()}</p>
+                    <p className="text-lg font-semibold text-enkaji-orange mb-3">KSh {Number(product.price).toLocaleString()}</p>
                     <div className="space-y-2">
                       <Link href={`/products/${product.id}`}>
                         <Button
                           size="sm"
                           variant="outline"
-                          className="w-full border-enkaji-gold/30 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+                          className="w-full border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/10 bg-transparent"
                         >
                           View Product
                         </Button>
@@ -199,7 +199,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {seller.email && (
-              <Button asChild className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button asChild className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 <a href={`mailto:${seller.email}`}>
                   <Mail className="w-4 h-4 mr-2" />
                   Send Email
@@ -209,7 +209,7 @@ export default async function SellerStorePage({ params }: { params: { slug: stri
             <Button
               variant="outline"
               asChild
-              className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+              className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10 bg-transparent"
             >
               <a href={`https://wa.me/254700000000?text=Hi, I'm interested in your products on Enkaji Trade Kenya`}>
                 <Package className="w-4 h-4 mr-2" />

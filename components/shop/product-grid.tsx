@@ -126,11 +126,13 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
       }`}
     >
       {Array.from({ length: productsPerPage }).map((_, i) => (
-        <div key={i} className="animate-pulse">
-          <Skeleton className="aspect-square w-full mb-4" />
-          <Skeleton className="h-4 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-1/2 mb-2" />
-          <Skeleton className="h-6 w-1/3" />
+        <div key={i} className="animate-pulse rounded-2xl border border-border bg-card p-0 shadow-card">
+          <Skeleton className="aspect-[4/3] w-full rounded-t-2xl" />
+          <div className="space-y-3 p-5">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-6 w-1/3" />
+          </div>
         </div>
       ))}
     </div>
@@ -139,7 +141,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
   return (
     <div className="space-y-6">
       {/* Search and Controls */}
-      <Card>
+      <Card className="rounded-2xl border-border bg-card shadow-card">
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
@@ -150,17 +152,19 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                   placeholder="Search products, sellers, or categories..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10"
+                  className="rounded-xl pl-10 transition-colors focus:border-enkaji-orange focus:ring-2 focus:ring-enkaji-orange/20"
                 />
               </div>
-              <Button type="submit">Search</Button>
+              <Button type="submit" className="rounded-xl bg-enkaji-orange font-semibold text-enkaji-ink hover:bg-enkaji-orange/90">
+                Search
+              </Button>
             </form>
 
             {/* Controls */}
             <div className="flex gap-2">
               {/* Sort */}
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-48 rounded-xl">
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
@@ -175,12 +179,12 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
               </Select>
 
               {/* View Mode */}
-              <div className="flex border rounded-md">
+              <div className="flex rounded-xl border border-border overflow-hidden">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode("grid")}
-                  className="rounded-r-none"
+                  className={`rounded-none ${viewMode === "grid" ? "bg-enkaji-orange text-white hover:bg-enkaji-orange/90" : ""}`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </Button>
@@ -188,7 +192,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                   variant={viewMode === "list" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode("list")}
-                  className="rounded-l-none"
+                  className={`rounded-none ${viewMode === "list" ? "bg-enkaji-orange text-white hover:bg-enkaji-orange/90" : ""}`}
                 >
                   <List className="h-4 w-4" />
                 </Button>
@@ -205,7 +209,11 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
             Showing {(currentPage - 1) * productsPerPage + 1}-{Math.min(currentPage * productsPerPage, totalProducts)}{" "}
             of {totalProducts} products
           </p>
-          {searchQuery && <Badge variant="outline">Search: "{searchQuery}"</Badge>}
+          {searchQuery && (
+            <Badge variant="outline" className="rounded-full border-enkaji-orange/30 text-enkaji-orange">
+              Search: "{searchQuery}"
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -213,13 +221,13 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
       {loading ? (
         <ProductGridSkeleton />
       ) : products.length === 0 ? (
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card">
           <CardContent className="text-center py-12">
             <div className="max-w-md mx-auto">
-              <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
-                <Search className="h-8 w-8 text-muted-foreground" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-enkaji-orange/10 flex items-center justify-center">
+                <Search className="h-8 w-8 text-enkaji-orange" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No products found</h3>
+              <h3 className="font-display text-lg font-semibold mb-2">No products found</h3>
               <p className="text-muted-foreground mb-4">
                 We couldn't find any products matching your criteria. Try adjusting your search or filters.
               </p>
@@ -230,6 +238,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                   window.history.pushState({}, "", "/shop")
                   setCurrentPage(1)
                 }}
+                className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent"
               >
                 Clear Search
               </Button>
@@ -250,7 +259,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -259,6 +268,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                   size="sm"
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
+                  className="rounded-xl"
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Previous
@@ -284,7 +294,11 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                       variant={currentPage === pageNum ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(pageNum)}
-                      className="w-10"
+                      className={`w-10 rounded-xl ${
+                        currentPage === pageNum
+                          ? "border-transparent bg-enkaji-orange text-enkaji-ink hover:bg-enkaji-orange/90"
+                          : ""
+                      }`}
                     >
                       {pageNum}
                     </Button>
@@ -298,6 +312,7 @@ export function ProductGrid({ searchParams }: ProductGridProps) {
                   size="sm"
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
+                  className="rounded-xl"
                 >
                   Next
                   <ChevronRight className="h-4 w-4 ml-1" />

@@ -122,13 +122,13 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
 
             <div className="flex justify-between text-sm">
               <span>Bulk price per unit:</span>
-              <span className="text-enkaji-green font-medium">${calculateBulkPrice(quantity).toFixed(2)}</span>
+              <span className="text-enkaji-orange font-medium">${calculateBulkPrice(quantity).toFixed(2)}</span>
             </div>
 
             {savings > 0 && (
               <div className="flex justify-between text-sm">
                 <span>Total savings:</span>
-                <span className="text-enkaji-green font-medium">${savings.toFixed(2)}</span>
+                <span className="text-enkaji-orange font-medium">${savings.toFixed(2)}</span>
               </div>
             )}
 
@@ -162,7 +162,7 @@ export function BulkOrderForm({ product }: BulkOrderFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting || quantity < 100}
-            className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90"
+            className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90"
           >
             <MessageSquare className="w-4 h-4 mr-2" />
             {isSubmitting ? "Sending Request..." : "Request Bulk Quote"}

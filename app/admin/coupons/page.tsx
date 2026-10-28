@@ -84,12 +84,13 @@ export default function CouponsAdminPage() {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="font-display text-2xl font-semibold flex items-center gap-2 text-foreground"><Tag className="h-6 w-6 text-enkaji-gold" /> Coupon Codes</h1>
+          <p className="enkaji-eyebrow mb-1 block">Admin</p>
+          <h1 className="font-display text-2xl font-semibold flex items-center gap-2 text-foreground"><Tag className="h-6 w-6 text-enkaji-orange" /> Coupon Codes</h1>
           <p className="text-muted-foreground text-sm mt-1">Create and manage promo codes for buyers</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold gap-2">
+            <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold gap-2">
               <Plus className="h-4 w-4" /> New Coupon
             </Button>
           </DialogTrigger>
@@ -141,7 +142,7 @@ export default function CouponsAdminPage() {
                 </div>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button onClick={handleCreate} disabled={saving} className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button onClick={handleCreate} disabled={saving} className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null} Create Coupon
               </Button>
             </div>
@@ -159,7 +160,7 @@ export default function CouponsAdminPage() {
             <Card key={c.id} className={!c.isActive ? "opacity-60" : ""}>
               <CardContent className="py-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="bg-enkaji-brown border border-enkaji-ochre rounded-lg px-3 py-2 font-mono font-bold text-enkaji-brown tracking-widest text-sm">
+                  <div className="bg-enkaji-brown border border-enkaji-orange rounded-lg px-3 py-2 font-mono font-bold text-enkaji-brown tracking-widest text-sm">
                     {c.code}
                   </div>
                   <div>
@@ -179,11 +180,11 @@ export default function CouponsAdminPage() {
                     <p className="text-sm font-bold">{c.usageCount}</p>
                     <p className="text-xs text-muted-foreground">{c.usageLimit ? `/ ${c.usageLimit}` : "uses"}</p>
                   </div>
-                  <Badge variant={c.isActive ? "default" : "secondary"} className={c.isActive ? "bg-enkaji-green text-enkaji-green border-enkaji-green" : ""}>
+                  <Badge variant={c.isActive ? "default" : "secondary"} className={c.isActive ? "bg-enkaji-orange text-enkaji-orange border-enkaji-orange" : ""}>
                     {c.isActive ? "Active" : "Inactive"}
                   </Badge>
                     <button onClick={() => toggleCoupon(c.id, c.isActive)} className="text-muted-foreground hover:text-foreground transition-colors">
-                    {c.isActive ? <ToggleRight className="h-5 w-5 text-enkaji-green" /> : <ToggleLeft className="h-5 w-5" />}
+                    {c.isActive ? <ToggleRight className="h-5 w-5 text-enkaji-orange" /> : <ToggleLeft className="h-5 w-5" />}
                   </button>
                 </div>
               </CardContent>

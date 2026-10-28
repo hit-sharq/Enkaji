@@ -224,7 +224,7 @@ export function RFQForm() {
             />
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-enkaji-ochre hover:bg-enkaji-ochre/90" size="lg">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90" size="lg">
             <Send className="w-4 h-4 mr-2" />
             {isSubmitting ? "Submitting RFQ..." : "Submit RFQ"}
           </Button>

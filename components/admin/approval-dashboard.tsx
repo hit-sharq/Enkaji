@@ -197,60 +197,60 @@ export function ApprovalDashboard() {
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <Package className="h-4 w-4 text-enkaji-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{approvals.summary.totalPendingProducts}</div>
+            <div className="font-display text-2xl font-bold text-enkaji-orange">{approvals.summary.totalPendingProducts}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Artisans</CardTitle>
-            <User className="h-4 w-4 text-muted-foreground" />
+            <User className="h-4 w-4 text-enkaji-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{approvals.summary.totalPendingArtisans}</div>
+            <div className="font-display text-2xl font-bold text-enkaji-orange">{approvals.summary.totalPendingArtisans}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Unverified Sellers</CardTitle>
-            <Store className="h-4 w-4 text-muted-foreground" />
+            <Store className="h-4 w-4 text-enkaji-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{approvals.summary.totalUnverifiedSellers}</div>
+            <div className="font-display text-2xl font-bold text-enkaji-orange">{approvals.summary.totalUnverifiedSellers}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-4 w-4 text-enkaji-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{approvals.summary.totalPendingPayouts}</div>
+            <div className="font-display text-2xl font-bold text-enkaji-orange">{approvals.summary.totalPendingPayouts}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Disputes</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <AlertTriangle className="h-4 w-4 text-enkaji-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{approvals.summary.totalOpenDisputes}</div>
+            <div className="font-display text-2xl font-bold text-enkaji-orange">{approvals.summary.totalOpenDisputes}</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Approval Tabs */}
       <Tabs defaultValue="products" className="space-y-4">
-        <TabsList>
+        <TabsList className="rounded-xl">
           <TabsTrigger value="products">Products ({approvals.summary.totalPendingProducts})</TabsTrigger>
           <TabsTrigger value="artisans">Artisans ({approvals.summary.totalPendingArtisans})</TabsTrigger>
           <TabsTrigger value="sellers">Sellers ({approvals.summary.totalUnverifiedSellers})</TabsTrigger>
@@ -270,7 +270,7 @@ export function ApprovalDashboard() {
                       by {product.seller.firstName} {product.seller.lastName} • {product.category.name}
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge className="rounded-full border border-enkaji-orange/20 bg-enkaji-orange/10 text-enkaji-orange">
                     <Clock className="h-3 w-3 mr-1" />
                     Pending
                   </Badge>
@@ -283,13 +283,13 @@ export function ApprovalDashboard() {
                     <p className="font-semibold">KES {product.price.toLocaleString()}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                       <Eye className="h-4 w-4 mr-1" />
                       View
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="sm" disabled={actionLoading === product.id}>
+                        <Button variant="destructive" size="sm" className="rounded-xl" disabled={actionLoading === product.id}>
                           <XCircle className="h-4 w-4 mr-1" />
                           Reject
                         </Button>
@@ -301,7 +301,7 @@ export function ApprovalDashboard() {
                             Are you sure you want to reject this product? Please provide a reason.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <Textarea placeholder="Reason for rejection..." />
+                        <Textarea placeholder="Reason for rejection..." className="rounded-xl" />
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
@@ -316,6 +316,7 @@ export function ApprovalDashboard() {
                       onClick={() => handleProductApproval(product.id, true)}
                       size="sm"
                       disabled={actionLoading === product.id}
+                      className="rounded-xl bg-enkaji-orange font-semibold text-white hover:bg-enkaji-orange/90"
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {actionLoading === product.id ? "Processing..." : "Approve"}
@@ -327,7 +328,7 @@ export function ApprovalDashboard() {
           ))}
 
           {approvals.pendingProducts.length === 0 && (
-            <Card>
+            <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
               <CardContent className="text-center py-8">
                 <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No pending products to review</p>
@@ -348,7 +349,7 @@ export function ApprovalDashboard() {
                     </CardTitle>
                     <CardDescription>{artisan.user.email}</CardDescription>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge className="rounded-full border border-enkaji-orange/20 bg-enkaji-orange/10 text-enkaji-orange">
                     <Clock className="h-3 w-3 mr-1" />
                     Pending
                   </Badge>
@@ -369,7 +370,7 @@ export function ApprovalDashboard() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                       <Eye className="h-4 w-4 mr-1" />
                       View Profile
                     </Button>
@@ -386,6 +387,7 @@ export function ApprovalDashboard() {
                       onClick={() => handleArtisanApproval(artisan.userId, true)}
                       size="sm"
                       disabled={actionLoading === artisan.userId}
+                      className="rounded-xl bg-enkaji-orange font-semibold text-white hover:bg-enkaji-orange/90"
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {actionLoading === artisan.userId ? "Processing..." : "Approve"}
@@ -397,7 +399,7 @@ export function ApprovalDashboard() {
           ))}
 
           {approvals.pendingArtisans.length === 0 && (
-            <Card>
+            <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
               <CardContent className="text-center py-8">
                 <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No pending artisan applications</p>
@@ -418,7 +420,7 @@ export function ApprovalDashboard() {
                       {seller.user.firstName} {seller.user.lastName} • {seller.user.email}
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge className="rounded-full border border-enkaji-orange/20 bg-enkaji-orange/10 text-enkaji-orange">
                     <Clock className="h-3 w-3 mr-1" />
                     Unverified
                   </Badge>
@@ -439,7 +441,7 @@ export function ApprovalDashboard() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                       <Eye className="h-4 w-4 mr-1" />
                       View Details
                     </Button>
@@ -456,6 +458,7 @@ export function ApprovalDashboard() {
                       onClick={() => handleSellerVerification(seller.userId, true)}
                       size="sm"
                       disabled={actionLoading === seller.userId}
+                      className="rounded-xl bg-enkaji-orange font-semibold text-white hover:bg-enkaji-orange/90"
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {actionLoading === seller.userId ? "Processing..." : "Verify"}
@@ -467,7 +470,7 @@ export function ApprovalDashboard() {
           ))}
 
           {approvals.unverifiedSellers.length === 0 && (
-            <Card>
+            <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
               <CardContent className="text-center py-8">
                 <Store className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No unverified sellers</p>
@@ -488,7 +491,7 @@ export function ApprovalDashboard() {
                     </CardTitle>
                     <CardDescription>{payout.seller.email}</CardDescription>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge className="rounded-full border border-enkaji-orange/20 bg-enkaji-orange/10 text-enkaji-orange">
                     <Clock className="h-3 w-3 mr-1" />
                     Pending
                   </Badge>
@@ -517,6 +520,7 @@ export function ApprovalDashboard() {
                       onClick={() => handlePayoutApproval(payout.id, true)}
                       size="sm"
                       disabled={actionLoading === payout.id}
+                      className="rounded-xl bg-enkaji-orange font-semibold text-white hover:bg-enkaji-orange/90"
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {actionLoading === payout.id ? "Processing..." : "Approve"}
@@ -528,7 +532,7 @@ export function ApprovalDashboard() {
           ))}
 
           {approvals.pendingPayouts.length === 0 && (
-            <Card>
+            <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
               <CardContent className="text-center py-8">
                 <DollarSign className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No pending payout requests</p>
@@ -565,11 +569,11 @@ export function ApprovalDashboard() {
                     Created: {new Date(dispute.createdAt).toLocaleDateString()}
                   </p>
                   <div className="flex items-center gap-2 mt-4">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-xl border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
                       <Eye className="h-4 w-4 mr-1" />
                       View Order
                     </Button>
-                    <Button size="sm">Resolve Dispute</Button>
+                    <Button size="sm" className="rounded-xl bg-enkaji-orange font-semibold text-enkaji-ink hover:bg-enkaji-orange/90">Resolve Dispute</Button>
                   </div>
                 </div>
               </CardContent>
@@ -577,7 +581,7 @@ export function ApprovalDashboard() {
           ))}
 
           {approvals.openDisputes.length === 0 && (
-            <Card>
+            <Card className="rounded-2xl border-border bg-card shadow-card transition-all duration-300 hover:shadow-card-hover">
               <CardContent className="text-center py-8">
                 <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No open disputes</p>

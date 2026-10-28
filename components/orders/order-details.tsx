@@ -78,13 +78,13 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
-        return "bg-enkaji-gold text-enkaji-gold"
+        return "bg-enkaji-orange text-enkaji-orange"
       case "CONFIRMED":
         return "bg-chart-4 text-chart-4"
       case "SHIPPED":
         return "bg-chart-5 text-chart-5"
       case "DELIVERED":
-        return "bg-enkaji-green text-enkaji-green"
+        return "bg-enkaji-orange text-enkaji-orange"
       case "CANCELLED":
         return "bg-enkaji-red text-enkaji-red"
       default:
@@ -95,7 +95,7 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-enkaji-ochre" />
+        <Loader2 className="w-8 h-8 animate-spin text-enkaji-orange" />
       </div>
     )
   }

@@ -174,11 +174,11 @@ export default function ServiceProviderDashboard() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "PENDING":
-        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-orange"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "CONFIRMED":
         return <Badge className="bg-chart-4"><CheckCircle className="h-3 w-3 mr-1" /> Confirmed</Badge>
       case "COMPLETED":
-        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-orange"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "CANCELLED":
         return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
       default:
@@ -211,7 +211,8 @@ export default function ServiceProviderDashboard() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Service Dashboard</h1>
+            <span className="enkaji-eyebrow mb-2 block">Services</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight">Service Dashboard</h1>
             <p className="text-muted-foreground">Manage your bookings and services</p>
           </div>
           <div className="flex gap-2">
@@ -219,7 +220,7 @@ export default function ServiceProviderDashboard() {
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
-            <Button className="bg-enkaji-gold hover:bg-enkaji-red" onClick={() => window.location.href = "/dashboard/services/new"}>
+            <Button className="bg-enkaji-orange hover:bg-enkaji-red" onClick={() => window.location.href = "/dashboard/services/new"}>
               <Plus className="h-4 w-4 mr-2" />
               Add Service
             </Button>
@@ -243,7 +244,7 @@ export default function ServiceProviderDashboard() {
                 <CardTitle className="text-sm font-medium">Pending</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-enkaji-gold">{stats.pendingBookings}</div>
+                <div className="text-2xl font-bold text-enkaji-orange">{stats.pendingBookings}</div>
                 <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
               </CardContent>
             </Card>
@@ -262,7 +263,7 @@ export default function ServiceProviderDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-1">
-                  <Star className="h-5 w-5 fill-enkaji-gold text-enkaji-gold" />
+                  <Star className="h-5 w-5 fill-enkaji-orange text-enkaji-orange" />
                   <span className="text-2xl font-bold">{stats.averageRating.toFixed(1)}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">{stats.totalReviews} reviews</p>
@@ -285,7 +286,7 @@ export default function ServiceProviderDashboard() {
             </div>
 
             {pendingBookings.length > 0 && (
-              <Card className="border-enkaji-gold/20 bg-enkaji-gold/10">
+              <Card className="border-enkaji-orange/20 bg-enkaji-orange/10">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-enkaji-ink">Pending Bookings ({pendingBookings.length})</CardTitle>
                 </CardHeader>
@@ -365,7 +366,7 @@ export default function ServiceProviderDashboard() {
           <TabsContent value="services" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">My Services</h2>
-              <Button className="bg-enkaji-gold" onClick={() => window.location.href = "/dashboard/services/new"}>
+              <Button className="bg-enkaji-orange" onClick={() => window.location.href = "/dashboard/services/new"}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Service
               </Button>
@@ -382,7 +383,7 @@ export default function ServiceProviderDashboard() {
                         <p className="text-sm text-muted-foreground">{service.totalBookings} bookings</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xl font-bold text-enkaji-gold">KSh {Number(service.price).toLocaleString()}</p>
+                        <p className="text-xl font-bold text-enkaji-orange">KSh {Number(service.price).toLocaleString()}</p>
                         <Button size="sm" variant="outline" onClick={() => window.location.href = `/dashboard/services/${service.id}/edit`}>Edit</Button>
                       </div>
                     </div>

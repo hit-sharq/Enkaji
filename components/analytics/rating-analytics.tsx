@@ -85,7 +85,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= Math.floor(rating) ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground"}`}
+            className={`${starSize} ${star <= Math.floor(rating) ? "text-enkaji-orange fill-enkaji-orange" : "text-muted-foreground"}`}
           />
         ))}
         <span className="ml-1 text-sm font-medium">{rating.toFixed(1)}</span>
@@ -94,18 +94,18 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
   }
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return "text-enkaji-green"
-    if (rating >= 4.0) return "text-enkaji-green"
-    if (rating >= 3.5) return "text-enkaji-gold"
-    if (rating >= 3.0) return "text-enkaji-ochre"
+    if (rating >= 4.5) return "text-enkaji-orange"
+    if (rating >= 4.0) return "text-enkaji-orange"
+    if (rating >= 3.5) return "text-enkaji-orange"
+    if (rating >= 3.0) return "text-enkaji-orange"
     return "text-enkaji-red"
   }
 
   const getRatingBgColor = (rating: number) => {
-    if (rating >= 4.5) return "bg-enkaji-green"
-    if (rating >= 4.0) return "bg-enkaji-green"
-    if (rating >= 3.5) return "bg-enkaji-gold"
-    if (rating >= 3.0) return "bg-enkaji-ochre/10"
+    if (rating >= 4.5) return "bg-enkaji-orange"
+    if (rating >= 4.0) return "bg-enkaji-orange"
+    if (rating >= 3.5) return "bg-enkaji-orange"
+    if (rating >= 3.0) return "bg-enkaji-orange/10"
     return "bg-enkaji-red"
   }
 
@@ -203,7 +203,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
               </div>
               <div className="flex items-center gap-1">
                 {analytics.overview.recentTrend === "up" ? (
-                  <TrendingUp className="w-4 h-4 text-enkaji-green" />
+                  <TrendingUp className="w-4 h-4 text-enkaji-orange" />
                 ) : analytics.overview.recentTrend === "down" ? (
                   <TrendingDown className="w-4 h-4 text-enkaji-red" />
                 ) : null}
@@ -223,7 +223,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
             <Award className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-enkaji-green">{analytics.overview.ratingDistribution[5] || 0}</div>
+            <div className="text-2xl font-bold text-enkaji-orange">{analytics.overview.ratingDistribution[5] || 0}</div>
             <p className="text-xs text-muted-foreground">
               {(((analytics.overview.ratingDistribution[5] || 0) / analytics.overview.totalReviews) * 100).toFixed(1)}%
               of all reviews
@@ -270,7 +270,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium">{rating}</span>
-                          <Star className="w-4 h-4 text-enkaji-gold fill-enkaji-gold" />
+                          <Star className="w-4 h-4 text-enkaji-orange fill-enkaji-orange" />
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">{count}</span>
@@ -293,7 +293,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Positive Reviews (4-5 stars)</span>
-                    <span className="text-sm font-bold text-enkaji-green">
+                    <span className="text-sm font-bold text-enkaji-orange">
                       {(
                         (((analytics.overview.ratingDistribution[4] || 0) +
                           (analytics.overview.ratingDistribution[5] || 0)) /
@@ -317,7 +317,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Neutral Reviews (3 stars)</span>
-                    <span className="text-sm font-bold text-enkaji-gold">
+                    <span className="text-sm font-bold text-enkaji-orange">
                       {(
                         ((analytics.overview.ratingDistribution[3] || 0) / analytics.overview.totalReviews) *
                         100
@@ -379,7 +379,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
               <CardContent>
                 <div className="space-y-4">
                   {analytics.trends.daily.slice(-7).map((day, index) => (
-                    <div key={day.date} className="flex items-center justify-between p-3 rounded-lg bg-muted">
+                    <div key={day.date} className="flex items-center justify-between p-3 rounded-xl bg-muted">
                       <div>
                         <div className="font-medium">{new Date(day.date).toLocaleDateString()}</div>
                         <div className="text-sm text-muted-foreground">{day.reviewCount} reviews</div>
@@ -399,7 +399,7 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
               <CardContent>
                 <div className="space-y-4">
                   {analytics.trends.monthly.slice(-6).map((month) => (
-                    <div key={month.month} className="flex items-center justify-between p-3 rounded-lg bg-muted">
+                    <div key={month.month} className="flex items-center justify-between p-3 rounded-xl bg-muted">
                       <div>
                         <div className="font-medium">{month.month}</div>
                         <div className="text-sm text-muted-foreground">{month.reviewCount} reviews</div>
@@ -469,8 +469,8 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
               <CardContent>
                 <div className="space-y-4">
                   {analytics.topProducts.slice(0, 5).map((product, index) => (
-                    <div key={product.productId} className="flex items-center gap-3 p-3 rounded-lg bg-muted">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-enkaji-gold text-enkaji-ink text-sm font-bold">
+                    <div key={product.productId} className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-enkaji-orange text-enkaji-ink text-sm font-bold">
                         {index + 1}
                       </div>
                       <div className="flex-1">
@@ -492,8 +492,8 @@ export function RatingAnalytics({ timeRange = "30d", showFilters = true }: Ratin
               <CardContent>
                 <div className="space-y-4">
                   {analytics.topSellers.slice(0, 5).map((seller, index) => (
-                    <div key={seller.sellerId} className="flex items-center gap-3 p-3 rounded-lg bg-muted">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-enkaji-gold text-enkaji-ink text-sm font-bold">
+                    <div key={seller.sellerId} className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-enkaji-orange text-enkaji-ink text-sm font-bold">
                         {index + 1}
                       </div>
                       <div className="flex-1">

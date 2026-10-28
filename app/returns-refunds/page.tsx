@@ -50,7 +50,7 @@ export default function ReturnsRefundsPage() {
 
                       <Card>
                         <CardHeader className="text-center">
-                          <Package className="w-12 h-12 text-enkaji-green mx-auto mb-2" />
+                          <Package className="w-12 h-12 text-enkaji-orange mx-auto mb-2" />
                           <CardTitle className="text-base">Original Condition</CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -77,30 +77,30 @@ export default function ReturnsRefundsPage() {
                       <h3 className="text-lg font-semibold mb-4">Eligible Items for Return</h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-enkaji-green mb-3">✓ Returnable Items</h4>
+                          <h4 className="font-semibold text-enkaji-orange mb-3">✓ Returnable Items</h4>
                           <ul className="text-sm space-y-2">
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Electronics (within 30 days)
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Clothing and accessories
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Home and garden items
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Books and media
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Defective or damaged items
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Items not as described
                             </li>
                           </ul>
@@ -243,8 +243,8 @@ export default function ReturnsRefundsPage() {
                       </div>
 
                       <div className="flex items-start gap-4">
-                        <div className="w-8 h-8 bg-enkaji-green rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-enkaji-green font-semibold">6</span>
+                        <div className="w-8 h-8 bg-enkaji-orange rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-enkaji-orange font-semibold">6</span>
                         </div>
                         <div>
                           <h3 className="font-semibold mb-2">Receive Confirmation</h3>
@@ -255,12 +255,12 @@ export default function ReturnsRefundsPage() {
                       </div>
                     </div>
 
-                    <div className="bg-enkaji-gold p-4 rounded-lg">
+                    <div className="bg-enkaji-orange p-4 rounded-lg">
                       <div className="flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-enkaji-gold mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-enkaji-orange mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-enkaji-gold">Important Notes</h4>
-                          <ul className="text-sm text-enkaji-gold mt-2 space-y-1">
+                          <h4 className="font-semibold text-enkaji-orange">Important Notes</h4>
+                          <ul className="text-sm text-enkaji-orange mt-2 space-y-1">
                             <li>• Keep your return tracking number for reference</li>
                             <li>• Returns without authorization may be rejected</li>
                             <li>• Original shipping costs are non-refundable (unless seller error)</li>
@@ -322,19 +322,19 @@ export default function ReturnsRefundsPage() {
                           <CardContent>
                             <ul className="text-sm space-y-2">
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 Credit/Debit Cards
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 M-Pesa
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 Bank Transfer
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 PayPal
                               </li>
                             </ul>
@@ -348,19 +348,19 @@ export default function ReturnsRefundsPage() {
                           <CardContent>
                             <ul className="text-sm space-y-2">
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 Instant processing
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 No expiration date
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 Use for future purchases
                               </li>
                               <li className="flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-enkaji-green" />
+                                <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                                 Transferable to others
                               </li>
                             </ul>
@@ -385,7 +385,7 @@ export default function ReturnsRefundsPage() {
                     </div>
 
                     <div className="text-center">
-                      <Button size="lg" className="bg-enkaji-green hover:bg-enkaji-green">
+                      <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange">
                         Check Refund Status
                       </Button>
                     </div>

@@ -19,7 +19,7 @@ export default async function AdminBlogPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link href="/admin">
-            <Button variant="outline" className="mb-4 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+            <Button variant="outline" className="mb-4 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Admin Dashboard
             </Button>

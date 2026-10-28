@@ -77,7 +77,7 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
   const getSentimentColor = (sentiment: "positive" | "negative" | "neutral") => {
     switch (sentiment) {
       case "positive":
-        return "text-enkaji-green bg-enkaji-green/10"
+        return "text-enkaji-orange bg-enkaji-orange/10"
       case "negative":
         return "text-enkaji-red bg-enkaji-red/10"
       default:
@@ -215,10 +215,10 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-enkaji-green rounded-full"></div>
+                  <div className="w-3 h-3 bg-enkaji-orange rounded-full"></div>
                   <span className="text-sm font-medium">Positive</span>
                 </div>
-                <span className="text-sm font-bold text-enkaji-green">
+                <span className="text-sm font-bold text-enkaji-orange">
                   {((insights.sentimentAnalysis.positive / insights.summary.totalReviews) * 100).toFixed(1)}%
                 </span>
               </div>
@@ -262,7 +262,7 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
 
             <div className="pt-4 border-t">
               <div className="text-center">
-                <div className="text-2xl font-bold text-enkaji-green">
+                <div className="text-2xl font-bold text-enkaji-orange">
                   {(
                     (insights.sentimentAnalysis.positive /
                       (insights.sentimentAnalysis.positive + insights.sentimentAnalysis.negative)) *
@@ -336,9 +336,9 @@ export function ReviewInsights({ timeRange = "30d", productId, sellerId }: Revie
             <div className="space-y-4 pt-4 border-t">
               <h4 className="font-medium">Verification Status</h4>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-enkaji-green rounded-lg">
-                  <div className="text-2xl font-bold text-enkaji-green">{insights.verificationStats.verified}</div>
-                  <p className="text-sm text-enkaji-green">Verified</p>
+                <div className="text-center p-3 bg-enkaji-orange rounded-lg">
+                  <div className="text-2xl font-bold text-enkaji-orange">{insights.verificationStats.verified}</div>
+                  <p className="text-sm text-enkaji-orange">Verified</p>
                 </div>
                 <div className="text-center p-3 bg-muted rounded-lg">
                   <div className="text-2xl font-bold text-muted-foreground">{insights.verificationStats.unverified}</div>

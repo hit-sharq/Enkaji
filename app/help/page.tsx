@@ -27,9 +27,9 @@ export default function HelpPage() {
 
         {/* Quick Help Categories */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
+          <Card className="hover:shadow-card-hover transition-shadow cursor-pointer border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <FileText className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
+              <FileText className="h-12 w-12 text-enkaji-orange mx-auto mb-2" />
               <CardTitle className="text-lg">Getting Started</CardTitle>
             </CardHeader>
             <CardContent>
@@ -37,9 +37,9 @@ export default function HelpPage() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
+          <Card className="hover:shadow-card-hover transition-shadow cursor-pointer border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <Users className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
+              <Users className="h-12 w-12 text-enkaji-orange mx-auto mb-2" />
               <CardTitle className="text-lg">Account & Profile</CardTitle>
             </CardHeader>
             <CardContent>
@@ -47,9 +47,9 @@ export default function HelpPage() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
+          <Card className="hover:shadow-card-hover transition-shadow cursor-pointer border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <Shield className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
+              <Shield className="h-12 w-12 text-enkaji-orange mx-auto mb-2" />
               <CardTitle className="text-lg">Safety & Security</CardTitle>
             </CardHeader>
             <CardContent>
@@ -57,9 +57,9 @@ export default function HelpPage() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border border-border bg-card rounded-xl shadow-sm">
+          <Card className="hover:shadow-card-hover transition-shadow cursor-pointer border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <MessageCircle className="h-12 w-12 text-enkaji-gold mx-auto mb-2" />
+              <MessageCircle className="h-12 w-12 text-enkaji-orange mx-auto mb-2" />
               <CardTitle className="text-lg">Orders & Payments</CardTitle>
             </CardHeader>
             <CardContent>
@@ -70,10 +70,10 @@ export default function HelpPage() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Contact Support */}
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5 text-enkaji-gold" />
+                <MessageCircle className="h-5 w-5 text-enkaji-orange" />
                 Contact Support
               </CardTitle>
               <CardDescription>
@@ -94,14 +94,14 @@ export default function HelpPage() {
           </Card>
 
           {/* Contact Information */}
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader>
               <CardTitle>Get in Touch</CardTitle>
               <CardDescription>Multiple ways to reach our support team</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-enkaji-gold" />
+                <Phone className="h-5 w-5 text-enkaji-orange" />
                 <div>
                   <p className="font-medium">Phone Support</p>
                   <p className="text-muted-foreground">+254 700 123 456</p>
@@ -110,7 +110,7 @@ export default function HelpPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-enkaji-gold" />
+                <Mail className="h-5 w-5 text-enkaji-orange" />
                 <div>
                   <p className="font-medium">Email Support</p>
                   <p className="text-muted-foreground">support@enkajitrade.co.ke</p>
@@ -119,7 +119,7 @@ export default function HelpPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-enkaji-gold" />
+                <Clock className="h-5 w-5 text-enkaji-orange" />
                 <div>
                   <p className="font-medium">Business Hours</p>
                   <p className="text-muted-foreground">Monday - Friday: 8AM - 6PM</p>
@@ -135,7 +135,7 @@ export default function HelpPage() {
         <div className="mt-12">
           <h2 className="font-display font-semibold text-2xl text-center mb-8">Frequently Asked Questions</h2>
           <div className="max-w-4xl mx-auto space-y-4">
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="text-lg">How do I create an account?</CardTitle>
               </CardHeader>
@@ -147,7 +147,7 @@ export default function HelpPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="text-lg">How do I list a product for sale?</CardTitle>
               </CardHeader>
@@ -159,7 +159,7 @@ export default function HelpPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="text-lg">What payment methods do you accept?</CardTitle>
               </CardHeader>
@@ -171,7 +171,7 @@ export default function HelpPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="text-lg">How does shipping work?</CardTitle>
               </CardHeader>

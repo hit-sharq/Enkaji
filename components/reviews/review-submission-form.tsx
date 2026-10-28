@@ -151,7 +151,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Star className="w-5 h-5 text-enkaji-gold" />
+          <Star className="w-5 h-5 text-enkaji-orange" />
           Write a Review for {productName}
         </CardTitle>
       </CardHeader>
@@ -165,7 +165,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
                 <button
                   key={star}
                   type="button"
-                  className="p-1 hover:scale-110 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-enkaji-ochre focus:ring-offset-2 rounded"
+                  className="p-1 hover:scale-110 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-enkaji-orange focus:ring-offset-2 rounded"
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
                   onClick={(e) => {
@@ -178,8 +178,8 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
                   <Star
                     className={`w-8 h-8 transition-colors ${
                       star <= (hoveredRating || rating)
-                        ? "text-enkaji-gold fill-current"
-                        : "text-muted-foreground hover:text-enkaji-gold"
+                        ? "text-enkaji-orange fill-current"
+                        : "text-muted-foreground hover:text-enkaji-orange"
                     }`}
                   />
                 </button>
@@ -271,7 +271,7 @@ export function ReviewSubmissionForm({ productId, productName, onSuccess, onCanc
 
             {/* Upload Button */}
             {images.length < 5 && (
-              <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center hover:border-enkaji-gold transition-colors">
+              <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center hover:border-enkaji-orange transition-colors">
                 <input
                   type="file"
                   id="images"

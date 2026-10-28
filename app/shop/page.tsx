@@ -67,27 +67,31 @@ export default async function ShopPage({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section — dark showcase band */}
-      <section className="bg-enkaji-ink text-enkaji-ivory py-20">
+      {/* Hero Section — procurement band */}
+      <section className="bg-card border-b border-border py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <span className="enkaji-eyebrow">B2B Marketplace</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">Discover Quality Products</h1>
-            <p className="text-lg text-enkaji-ivory/80 mb-8">
-              Browse through {productsCount.toLocaleString()}+ products from verified sellers across Kenya
-            </p>
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <span className="enkaji-eyebrow">Marketplace</span>
+              <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                Clearance Deals & Wholesale Stock
+              </h1>
+              <p className="mt-3 text-muted-foreground">
+                Browse {productsCount.toLocaleString()}+ products from sellers liquidating surplus stock and listing through our system.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
-                <span>Verified Sellers</span>
+                <div className="h-2 w-2 rounded-full bg-enkaji-orange"></div>
+                <span className="text-foreground/80">Verified Suppliers</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
-                <span>Quality Guaranteed</span>
+                <div className="h-2 w-2 rounded-full bg-enkaji-orange"></div>
+                <span className="text-foreground/80">Clearance Deals</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-enkaji-gold"></div>
-                <span>Nationwide Delivery</span>
+                <div className="h-2 w-2 rounded-full bg-enkaji-orange"></div>
+                <span className="text-foreground/80">Trade Assurance</span>
               </div>
             </div>
           </div>

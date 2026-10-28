@@ -94,7 +94,7 @@ export function ReviewCarousel({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 ${star <= rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
+            className={`w-4 h-4 ${star <= rating ? "text-enkaji-orange fill-current" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -129,7 +129,7 @@ export function ReviewCarousel({
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             {/* Quote Icon */}
-            <Quote className="w-12 h-12 text-enkaji-ochre mx-auto" />
+            <Quote className="w-12 h-12 text-enkaji-orange mx-auto" />
 
             {/* Review Content */}
             <div className="space-y-4">
@@ -146,7 +146,7 @@ export function ReviewCarousel({
 
             {/* User Info */}
             <div className="flex items-center justify-center gap-4">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-ochre flex items-center justify-center text-white font-bold">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-orange flex items-center justify-center text-white font-bold">
                 {currentReview.user.imageUrl ? (
                   <Image
                     src={currentReview.user.imageUrl || "/placeholder.svg"}
@@ -175,7 +175,7 @@ export function ReviewCarousel({
             variant="outline"
             size="icon"
             onClick={prevReview}
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-lg hover:shadow-xl"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-elevated hover:shadow-xl"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -183,7 +183,7 @@ export function ReviewCarousel({
             variant="outline"
             size="icon"
             onClick={nextReview}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-lg hover:shadow-xl"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-card shadow-elevated hover:shadow-xl"
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -195,7 +195,7 @@ export function ReviewCarousel({
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? "bg-enkaji-ochre" : "bg-muted"
+                  index === currentIndex ? "bg-enkaji-orange" : "bg-muted"
                 }`}
               />
             ))}

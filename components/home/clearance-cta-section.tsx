@@ -1,63 +1,66 @@
 "use client"
 
 import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Store, TrendingDown, Clock, CheckCircle } from "lucide-react"
 
 export function ClearanceCTASection() {
   return (
-    <section className="py-20 bg-enkaji-ink text-enkaji-ivory">
-      <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="enkaji-eyebrow mb-4">Clearance Program</p>
-            <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4">Turn Excess Stock Into Cash</h2>
-            <p className="text-enkaji-ivory/70 text-lg max-w-2xl mx-auto">
-              Have overstock, end-of-season inventory, or slow-moving products? List them as clearance deals and reach thousands of buyers on Enkaji.
-            </p>
-          </div>
+    <section className="bg-enkaji-orange py-20 text-white">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mb-12 text-center">
+          <p className="enkaji-eyebrow mb-4 !text-enkaji-orange">Clearance Program</p>
+          <h2 className="mb-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
+            Turn Excess Stock Into Cash
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-white/80">
+            Have overstock, end-of-season inventory, or slow-moving products? List them as clearance deals and reach thousands of buyers on Enkaji.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <Card className="bg-enkaji-ivory/5 border border-enkaji-gold/20 text-enkaji-ivory">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-enkaji-gold/20 flex items-center justify-center mb-3">
-                  <Store className="h-6 w-6 text-enkaji-gold" />
-                </div>
-                <CardTitle className="text-enkaji-ivory">1. Apply</CardTitle>
-                <CardDescription className="text-enkaji-ivory/70">Submit your business details for quick approval</CardDescription>
-              </CardHeader>
-            </Card>
+        <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <Card className="rounded-2xl border border-white/20 bg-white/10 text-white backdrop-blur-sm">
+            <CardHeader>
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+                <Store className="h-6 w-6 text-enkaji-orange" />
+              </div>
+              <CardTitle className="text-white">1. Apply</CardTitle>
+              <CardDescription className="text-white/70">Submit your business details for quick approval</CardDescription>
+            </CardHeader>
+          </Card>
 
-            <Card className="bg-enkaji-ivory/5 border border-enkaji-gold/20 text-enkaji-ivory">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-enkaji-gold/20 flex items-center justify-center mb-3">
-                  <TrendingDown className="h-6 w-6 text-enkaji-gold" />
-                </div>
-                <CardTitle className="text-enkaji-ivory">2. List</CardTitle>
-                <CardDescription className="text-enkaji-ivory/70">Create clearance deals with your pricing and terms</CardDescription>
-              </CardHeader>
-            </Card>
+          <Card className="rounded-2xl border border-white/20 bg-white/10 text-white backdrop-blur-sm">
+            <CardHeader>
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+                <TrendingDown className="h-6 w-6 text-enkaji-orange" />
+              </div>
+              <CardTitle className="text-white">2. List</CardTitle>
+              <CardDescription className="text-white/70">Create clearance deals with your pricing and terms</CardDescription>
+            </CardHeader>
+          </Card>
 
-            <Card className="bg-enkaji-ivory/5 border border-enkaji-gold/20 text-enkaji-ivory">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-enkaji-gold/20 flex items-center justify-center mb-3">
-                  <CheckCircle className="h-6 w-6 text-enkaji-gold" />
-                </div>
-                <CardTitle className="text-enkaji-ivory">3. Sell</CardTitle>
-                <CardDescription className="text-enkaji-ivory/70">Your deals go live after admin review</CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+          <Card className="rounded-2xl border border-white/20 bg-white/10 text-white backdrop-blur-sm">
+            <CardHeader>
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+                <CheckCircle className="h-6 w-6 text-enkaji-orange" />
+              </div>
+              <CardTitle className="text-white">3. Sell</CardTitle>
+              <CardDescription className="text-white/70">Your deals go live after admin review</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
 
-          <div className="text-center">
-            <Link href="/dashboard/clearance/apply">
-              <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink px-8 py-3 rounded-xl text-lg font-semibold">
-                Apply to Sell Clearance Deals
-              </Button>
-            </Link>
-            <p className="text-enkaji-ivory/60 text-sm mt-4">No seller account required • Free to apply • Approval within 24-48 hours</p>
-          </div>
+        <div className="text-center">
+          <Link href="/dashboard/clearance/apply">
+            <Button size="lg" className="rounded-xl bg-enkaji-orange px-8 py-3 text-lg font-semibold text-enkaji-ink hover:bg-enkaji-orange/90">
+              Apply to Sell Clearance Deals
+            </Button>
+          </Link>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-sm text-white/70">
+            <Clock className="h-4 w-4" />
+            No seller account required • Free to apply • Approval within 24-48 hours
+          </p>
         </div>
       </div>
     </section>

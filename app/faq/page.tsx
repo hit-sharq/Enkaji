@@ -8,7 +8,7 @@ export default function FAQPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <p className="enkaji-eyebrow mb-3">Support</p>
-            <h1 className="font-playfair font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
               Frequently Asked Questions
             </h1>
             <p className="text-lg text-muted-foreground">

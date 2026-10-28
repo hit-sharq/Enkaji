@@ -98,7 +98,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
     <Card>
       <CardHeader>
           <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-            <Smartphone className="w-5 h-5 text-enkaji-gold" />
+            <Smartphone className="w-5 h-5 text-enkaji-orange" />
             Pay with M-Pesa
           </CardTitle>
       </CardHeader>
@@ -132,7 +132,7 @@ export function MpesaPaymentForm({ amount, orderId, onSuccess, onError }: MpesaP
           <Button
             type="submit"
             disabled={isProcessing || !phoneNumber}
-            className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+            className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
           >
             {isProcessing ? (
               <>

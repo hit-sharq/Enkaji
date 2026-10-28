@@ -67,57 +67,57 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
                 <p className="text-2xl font-bold text-foreground">{orders.length}</p>
               </div>
-              <Package className="w-8 h-8 text-enkaji-gold" />
+              <Package className="w-8 h-8 text-enkaji-orange" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Favorites</p>
                 <p className="text-2xl font-bold text-foreground">{favorites.length}</p>
               </div>
-              <Heart className="w-8 h-8 text-enkaji-gold" />
+              <Heart className="w-8 h-8 text-enkaji-orange" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Cart Items</p>
                 <p className="text-2xl font-bold text-foreground">{cartItems}</p>
               </div>
-              <ShoppingCart className="w-8 h-8 text-enkaji-gold" />
+              <ShoppingCart className="w-8 h-8 text-enkaji-orange" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Profile</p>
                 <p className="text-sm text-foreground">Complete</p>
               </div>
-              <User className="w-8 h-8 text-enkaji-gold" />
+              <User className="w-8 h-8 text-enkaji-orange" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader>
             <CardTitle className="font-display font-semibold">Recent Orders</CardTitle>
           </CardHeader>
@@ -125,7 +125,7 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
             {orders.length > 0 ? (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg bg-card">
+                  <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-xl bg-card">
                     <div>
                       <p className="font-medium">Order #{order.orderNumber || order.id.slice(-8)}</p>
                       <p className="text-sm text-muted-foreground">
@@ -137,7 +137,7 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                   </div>
                 ))}
                 <Link href="/orders">
-                  <Button variant="outline" className="w-full border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                  <Button variant="outline" className="w-full border border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                     View All Orders
                   </Button>
                 </Link>
@@ -147,14 +147,14 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                 <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No orders yet</p>
                 <Link href="/shop">
-                  <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Start Shopping</Button>
+                  <Button className="mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Start Shopping</Button>
                 </Link>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader>
             <CardTitle className="font-display font-semibold">Your Favorites</CardTitle>
           </CardHeader>
@@ -162,7 +162,7 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
             {favorites.length > 0 ? (
               <div className="space-y-4">
                 {favorites.map((favorite) => (
-                  <div key={favorite.id} className="flex items-center space-x-4 p-4 border border-border rounded-lg bg-card">
+                  <div key={favorite.id} className="flex items-center space-x-4 p-4 border border-border rounded-xl bg-card">
                     <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
                       {favorite.product.images && favorite.product.images.length > 0 ? (
                         <img
@@ -183,7 +183,7 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                   </div>
                 ))}
                 <Link href="/favorites">
-                  <Button variant="outline" className="w-full border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                  <Button variant="outline" className="w-full border border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                     View All Favorites
                   </Button>
                 </Link>
@@ -193,7 +193,7 @@ export async function BuyerDashboard({ user }: BuyerDashboardProps) {
                 <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No favorites yet</p>
                 <Link href="/shop">
-                  <Button className="mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Discover Products</Button>
+                  <Button className="mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Discover Products</Button>
                 </Link>
               </div>
             )}

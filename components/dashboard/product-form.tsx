@@ -261,7 +261,7 @@ if (response.ok) {
 
               {isUploading && (
                 <div className="flex items-center justify-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-enkaji-gold"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-enkaji-orange"></div>
                   <span className="ml-2 text-sm text-muted-foreground">Uploading images...</span>
                 </div>
               )}
@@ -278,7 +278,7 @@ if (response.ok) {
                       <Button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute top-2 right-2 w-6 h-6 p-0 bg-enkaji-gold hover:bg-enkaji-gold/80"
+                        className="absolute top-2 right-2 w-6 h-6 p-0 bg-enkaji-orange hover:bg-enkaji-orange/80"
                         variant="destructive"
                       >
                         <X className="w-3 h-3" />
@@ -294,7 +294,7 @@ if (response.ok) {
             <Button
               type="submit"
               disabled={isSubmitting || images.length === 0 || isUploading}
-              className="bg-enkaji-gold hover:bg-enkaji-gold/80"
+              className="bg-enkaji-orange hover:bg-enkaji-orange/80"
             >
               {isSubmitting ? "Saving..." : product ? "Update Product" : "Create Product"}
             </Button>

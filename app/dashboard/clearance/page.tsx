@@ -25,10 +25,10 @@ export default async function SellerClearancePage() {
       <div className="min-h-screen bg-muted py-10">
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
-            <Card className="rounded-2xl border-0 bg-card/80 backdrop-blur-sm shadow-sm">
+            <Card className="rounded-2xl border-0 bg-card/80 backdrop-blur-sm shadow-card">
               <CardHeader className="text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-enkaji-gold/10 flex items-center justify-center mb-4">
-                  <Clock className="h-6 w-6 text-enkaji-ochre" />
+                <div className="mx-auto w-12 h-12 rounded-full bg-enkaji-orange/10 flex items-center justify-center mb-4">
+                  <Clock className="h-6 w-6 text-enkaji-orange" />
                 </div>
                 <CardTitle className="text-xl">Approval Required</CardTitle>
                 <CardDescription>
@@ -73,7 +73,8 @@ export default async function SellerClearancePage() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-enkaji-ink">Clearance Listings</h1>
+            <span className="enkaji-eyebrow mb-2 block">Clearance</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-enkaji-ink">Clearance Listings</h1>
             <p className="mt-2 text-muted-foreground">Manage your discount stock. All deals require admin approval before going live.</p>
           </div>
           <Link href="/dashboard/clearance/new">
@@ -96,7 +97,7 @@ export default async function SellerClearancePage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">Live Deals</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-enkaji-green">{approvedCount}</div>
+              <div className="text-2xl font-bold text-enkaji-orange">{approvedCount}</div>
             </CardContent>
           </Card>
           <Card>
@@ -104,7 +105,7 @@ export default async function SellerClearancePage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">Pending Approval</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-enkaji-ochre">{pendingCount}</div>
+              <div className="text-2xl font-bold text-enkaji-orange">{pendingCount}</div>
               {pendingCount > 0 && (
                 <p className="text-xs text-muted-foreground mt-1">Awaiting admin review</p>
               )}
@@ -131,12 +132,12 @@ export default async function SellerClearancePage() {
                 : 0
 
               const statusBadge = !product.isShopApproved ? (
-                <Badge variant="outline" className="bg-enkaji-gold/10 text-enkaji-ochre border-enkaji-gold/30">
+                <Badge variant="outline" className="bg-enkaji-orange/10 text-enkaji-orange border-enkaji-orange/30">
                   <Clock className="h-3 w-3 mr-1" />
                   Pending Approval
                 </Badge>
               ) : (
-                <Badge variant="outline" className="bg-enkaji-green text-enkaji-green border-enkaji-green">
+                <Badge variant="outline" className="bg-enkaji-orange text-enkaji-orange border-enkaji-orange">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Live
                 </Badge>
@@ -153,7 +154,7 @@ export default async function SellerClearancePage() {
                       <p className="text-sm text-muted-foreground">{product.category?.name || "Uncategorized"}</p>
                       <p className="mt-1 text-sm text-muted-foreground">{product.clearanceReason || "Clearance deal"} • Ends {product.clearanceEndDate ? new Date(product.clearanceEndDate).toLocaleDateString() : "—"}</p>
                       {!product.isShopApproved && (
-                        <div className="flex items-center gap-1 mt-2 text-xs text-enkaji-ochre">
+                        <div className="flex items-center gap-1 mt-2 text-xs text-enkaji-orange">
                           <AlertTriangle className="h-3 w-3" />
                           This deal is awaiting admin approval and is not yet visible to buyers.
                         </div>
@@ -167,7 +168,7 @@ export default async function SellerClearancePage() {
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-enkaji-gold/10 px-3 py-1 text-xs font-semibold text-enkaji-ochre">{discount}% OFF</span>
+                        <span className="rounded-full bg-enkaji-orange/10 px-3 py-1 text-xs font-semibold text-enkaji-orange">{discount}% OFF</span>
                         <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-enkaji-ink">{product.inventory} left</span>
                       </div>
                     </div>

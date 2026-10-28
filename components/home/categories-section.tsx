@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState, useMemo, useCallback } from "react"
 
@@ -18,24 +18,15 @@ interface Category {
 }
 
 const CategoriesSkeleton = () => (
-  <section className="py-12 md:py-20 bg-enkaji-ink">
-    <div className="container mx-auto px-4">
-      <div className="text-center mb-8 md:mb-16">
-        <div className="h-10 md:h-12 bg-white/10 rounded-lg w-80 md:w-96 mx-auto mb-3 md:mb-4 animate-pulse"></div>
-        <div className="h-4 md:h-6 bg-white/10 rounded-lg w-64 md:w-80 mx-auto animate-pulse"></div>
+  <section className="bg-background py-16 md:py-24">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mb-10 text-center md:mb-14">
+        <div className="mx-auto mb-3 h-10 w-80 animate-pulse rounded-lg bg-muted md:h-12 md:w-96" />
+        <div className="mx-auto h-4 w-64 animate-pulse rounded-lg bg-muted md:h-6 md:w-80" />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:grid-rows-2">
         {Array.from({ length: 6 }, (_, i) => (
-          <Card key={i} className="overflow-hidden border border-enkaji-gold/20 bg-white/[0.04] rounded-xl">
-            <div className="p-6">
-              <div className="h-3 w-16 bg-white/10 rounded mb-3 animate-pulse"></div>
-              <div className="h-5 w-3/4 bg-white/10 rounded mb-3 animate-pulse"></div>
-              <div className="h-3 w-full bg-white/10 rounded mb-2 animate-pulse"></div>
-              <div className="h-3 w-2/3 bg-white/10 rounded mb-5 animate-pulse"></div>
-              <div className="h-px w-full bg-enkaji-gold/10 mb-4"></div>
-              <div className="h-4 w-24 bg-white/10 rounded animate-pulse"></div>
-            </div>
-          </Card>
+          <div key={i} className="animate-pulse rounded-2xl bg-muted md:col-span-2 md:row-span-1" />
         ))}
       </div>
     </div>
@@ -64,71 +55,97 @@ export function CategoriesSection() {
     fetchCategories()
   }, [fetchCategories])
 
-  const categoryCards = useMemo(
-    () =>
-      categories.map((category) => (
-        <Card
-          key={category.id}
-          className="group overflow-hidden border border-enkaji-gold/20 bg-white/[0.04] rounded-xl hover:border-enkaji-gold/50 hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-1"
-        >
-          <CardContent className="p-4 md:p-6">
-            <p className="enkaji-eyebrow mb-2 md:mb-3">Sector</p>
-            <h3 className="font-display text-lg md:text-2xl text-enkaji-ivory mb-1 md:mb-2 leading-tight">
-              {category.name}
-            </h3>
-            <p className="text-enkaji-ivory/60 text-xs md:text-sm mb-3 md:mb-5 line-clamp-2">
-              {category.description}
-            </p>
-            <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-enkaji-gold/15">
-              <span className="inline-flex items-center text-[10px] md:text-xs tracking-[0.12em] uppercase text-enkaji-gold border border-enkaji-gold/30 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full">
-                {category._count?.products ?? 0} Products
-              </span>
-              <Button
-                asChild
-                variant="ghost"
-                className="p-0 h-auto text-xs md:text-sm text-enkaji-gold hover:text-enkaji-gold/80 group/btn"
-              >
-                <Link href={`/categories/${category.slug}`}>
-                  Explore
-                  <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )),
-    [categories],
-  )
+  const bentoCards = useMemo(() => {
+    if (categories.length === 0) return null
+    const [first, ...rest] = categories
+    return { first, rest }
+  }, [categories])
 
   if (loading) {
     return <CategoriesSkeleton />
   }
 
   return (
-    <section className="py-12 md:py-20 bg-enkaji-ink">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8 md:mb-16">
-          <p className="enkaji-eyebrow mb-2 md:mb-4">Browse by Sector</p>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4">
-            <span className="enkaji-gradient-text">Business Categories</span>
-          </h2>
-          <p className="text-sm md:text-xl text-enkaji-ivory/70 max-w-2xl mx-auto px-2 md:px-0">
-            Find sellers and products across Kenya's key business sectors
+    <section className="bg-background py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-10 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="enkaji-eyebrow mb-2 md:mb-4">Browse by Sector</p>
+            <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+              <span className="enkaji-gradient-text">Business Categories</span>
+            </h2>
+          </div>
+          <p className="max-w-md text-sm text-muted-foreground md:text-base">
+            Find sellers and products across Kenya&apos;s key business sectors.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">{categoryCards}</div>
+        {bentoCards && (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:grid-rows-2 md:gap-5">
+            {/* Featured large card */}
+            <Card
+              key={bentoCards.first.id}
+              className="group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-enkaji-orange to-enkaji-charcoal text-white transition-all duration-300 hover:shadow-xl md:col-span-2 md:row-span-2"
+            >
+              <CardContent className="flex h-full flex-col justify-between p-6 md:p-8">
+                <div>
+                  <span className="mb-4 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+                    {bentoCards.first._count?.products ?? 0} Products
+                  </span>
+                  <h3 className="font-display text-2xl font-bold md:text-3xl">
+                    {bentoCards.first.name}
+                  </h3>
+                  <p className="mt-2 max-w-sm text-sm text-white/70 md:text-base">
+                    {bentoCards.first.description}
+                  </p>
+                </div>
+                <Button
+                  asChild
+                  className="mt-6 w-fit rounded-full bg-enkaji-orange font-semibold text-enkaji-ink hover:bg-enkaji-orange/90"
+                >
+                  <Link href={`/categories/${bentoCards.first.slug}`}>
+                    Explore
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
 
-        <div className="text-center mt-8 md:mt-12">
+            {/* Smaller cards */}
+            {bentoCards.rest.map((category) => (
+              <Card
+                key={category.id}
+                className="group overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-enkaji-orange/30 hover:shadow-elevated"
+              >
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between">
+                    <span className="enkaji-badge border border-enkaji-orange/20 bg-enkaji-orange/5 text-enkaji-orange">
+                      {category._count?.products ?? 0}
+                    </span>
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-enkaji-orange" />
+                  </div>
+                  <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
+                    {category.name}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                    {category.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-10 text-center md:mt-12">
           <Button
             asChild
             size="lg"
             variant="outline"
-            className="border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+            className="rounded-full border-enkaji-orange/30 px-7 py-6 font-semibold text-enkaji-orange hover:bg-enkaji-orange/5"
           >
             <Link href="/categories">
               Browse All Sectors
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

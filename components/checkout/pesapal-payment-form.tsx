@@ -221,8 +221,8 @@ export function PesapalPaymentForm({
       <Card className="w-full">
         <CardContent className="pt-6">
           <div className="text-center">
-            <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-enkaji-gold" />
+            <div className="w-16 h-16 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-enkaji-orange" />
             </div>
             <h3 className="font-display text-xl font-semibold text-foreground mb-2">Payment Initiated!</h3>
             <p className="text-muted-foreground mb-4">
@@ -252,7 +252,7 @@ export function PesapalPaymentForm({
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-            <Smartphone className="h-5 w-5 text-enkaji-gold" />
+            <Smartphone className="h-5 w-5 text-enkaji-orange" />
             Enter Phone Number
           </CardTitle>
         </CardHeader>
@@ -330,7 +330,7 @@ export function PesapalPaymentForm({
     <Card className="w-full">
       <CardHeader>
           <CardTitle className="flex items-center gap-2 font-display font-semibold text-foreground">
-            <CreditCard className="h-5 w-5 text-enkaji-gold" />
+            <CreditCard className="h-5 w-5 text-enkaji-orange" />
             Select Payment Method
           </CardTitle>
       </CardHeader>
@@ -350,14 +350,14 @@ export function PesapalPaymentForm({
               key={method.id}
               className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${
                 selectedMethod === method.id
-                  ? "border-enkaji-gold bg-enkaji-gold/10"
-                  : "hover:bg-enkaji-gold/5"
+                  ? "border-enkaji-orange bg-enkaji-orange/10"
+                  : "hover:bg-enkaji-orange/5"
               }`}
             >
               <RadioGroupItem value={method.id} id={method.id} />
               <div className="flex-1 flex items-center gap-3">
                 <div className={`p-2 rounded-full ${
-                  selectedMethod === method.id ? "bg-enkaji-gold text-enkaji-ink" : "bg-muted"
+                  selectedMethod === method.id ? "bg-enkaji-orange text-enkaji-ink" : "bg-muted"
                 }`}>
                   {method.icon}
                 </div>
@@ -387,7 +387,7 @@ export function PesapalPaymentForm({
           <Button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+            className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
           >
             {isLoading ? (
               <>

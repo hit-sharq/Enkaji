@@ -200,7 +200,7 @@ export function ReviewsManagement() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= rating ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground"}`}
+            className={`${starSize} ${star <= rating ? "text-enkaji-orange fill-enkaji-orange" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -284,10 +284,10 @@ export function ReviewsManagement() {
               {[5, 4, 3, 2, 1].map((rating) => (
                 <div key={rating} className="flex items-center gap-2 text-xs">
                   <span className="w-3">{rating}</span>
-                  <Star className="w-3 h-3 text-enkaji-gold fill-enkaji-gold" />
+                  <Star className="w-3 h-3 text-enkaji-orange fill-enkaji-orange" />
                   <div className="flex-1 bg-muted rounded-full h-1">
                     <div
-                      className="bg-enkaji-gold h-1 rounded-full"
+                      className="bg-enkaji-orange h-1 rounded-full"
                       style={{
                         width: `${((stats.ratingDistribution[rating] || 0) / stats.totalReviews) * 100}%`,
                       }}
@@ -544,7 +544,7 @@ export function ReviewsManagement() {
                                 {!review.isVerified && !review.isFlagged && (
                                   <Button
                                     onClick={() => handleReviewModeration(review.id, "approve", moderationReason)}
-                                    className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                                    className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                                   >
                                     <CheckCircle className="h-4 w-4 mr-1" />
                                     Approve
@@ -574,7 +574,7 @@ export function ReviewsManagement() {
                             <Button
                               size="sm"
                               onClick={() => handleReviewModeration(review.id, "approve")}
-                              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                              className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                             >
                               <CheckCircle className="h-4 w-4" />
                             </Button>
@@ -611,7 +611,7 @@ export function ReviewsManagement() {
                 {reviews
                   .filter((review) => !review.isVerified && !review.isFlagged)
                   .map((review) => (
-                    <Card key={review.id} className="border-l-4 border-l-enkaji-gold">
+                    <Card key={review.id} className="border-l-4 border-l-enkaji-orange">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
                           <div className="w-12 h-12 rounded overflow-hidden bg-muted">
@@ -659,7 +659,7 @@ export function ReviewsManagement() {
                               <Button
                                 size="sm"
                                 onClick={() => handleReviewModeration(review.id, "approve")}
-                                className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                                className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Approve
@@ -734,7 +734,7 @@ export function ReviewsManagement() {
                               <Button
                                 size="sm"
                                 onClick={() => handleReviewModeration(review.id, "approve")}
-                                className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                                className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Approve
@@ -785,11 +785,11 @@ export function ReviewsManagement() {
                     <div key={rating} className="flex items-center gap-3">
                       <div className="flex items-center gap-1 w-16">
                         <span className="text-sm">{rating}</span>
-                        <Star className="w-4 h-4 text-enkaji-gold fill-enkaji-gold" />
+                        <Star className="w-4 h-4 text-enkaji-orange fill-enkaji-orange" />
                       </div>
                       <div className="flex-1 bg-muted rounded-full h-2">
                         <div
-                          className="bg-enkaji-gold h-2 rounded-full transition-all duration-300"
+                          className="bg-enkaji-orange h-2 rounded-full transition-all duration-300"
                           style={{
                             width: `${((stats.ratingDistribution[rating] || 0) / stats.totalReviews) * 100}%`,
                           }}

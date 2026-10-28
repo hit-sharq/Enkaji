@@ -3,10 +3,11 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Minus, Plus, Trash2, Weight } from "lucide-react"
+import { Minus, Plus, Trash2, Weight, ShoppingBag } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { formatWeight } from "@/lib/shipping"
 import { csrfFetch } from "@/lib/csrf-client"
+import Link from "next/link"
 
 type CartItem = {
   id: string
@@ -56,9 +57,17 @@ export function CartItems() {
   if (items.length === 0) {
     return (
       <Card>
-        <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">Your cart is empty</p>
-          <Button className="mt-4">Continue Shopping</Button>
+        <CardContent className="p-8 md:p-12 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-enkaji-orange/10">
+            <ShoppingBag className="h-8 w-8 text-enkaji-orange" />
+          </div>
+          <h2 className="font-display text-lg font-semibold text-foreground mb-2">Your cart is empty</h2>
+          <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+            Browse the marketplace and add products to get started. Your cart is saved across devices.
+          </p>
+          <Button asChild>
+            <Link href="/shop">Continue Shopping</Link>
+          </Button>
         </CardContent>
       </Card>
     )
@@ -67,38 +76,40 @@ export function CartItems() {
   return (
     <div className="space-y-4">
       {items.map((item) => (
-        <Card key={item.id} className="border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl">
+        <Card key={item.id} className="border border-border shadow-card transition-all duration-300 hover:shadow-card-hover">
           <CardContent className="p-5 md:p-6">
             <div className="flex items-center gap-4">
-              <Image
-                src={item.image || "/placeholder.svg?height=80&width=80&query=cart%20item"}
-                alt={item.name}
-                width={80}
-                height={80}
-                className="rounded-lg object-cover"
-              />
+              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border bg-muted">
+                <Image
+                  src={item.image || "/placeholder.svg?height=80&width=80&query=cart%20item"}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
 
               <div className="flex-1 min-w-0">
                 <h3 className="font-display font-semibold text-lg text-foreground line-clamp-1">{item.name}</h3>
-                <p className="text-enkaji-gold font-bold">KES {item.price.toLocaleString()}</p>
+                <p className="font-display font-bold text-enkaji-orange">KES {item.price.toLocaleString()}</p>
                 {item.weight && (
                   <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                    <Weight className="w-3 h-3 text-enkaji-gold" />
+                    <Weight className="w-3 h-3 text-enkaji-orange" />
                     Weight: {formatWeight(item.weight * item.quantity)}
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center rounded-xl border border-border bg-card">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                  className="h-9 w-9 rounded-l-xl"
                 >
                   <Minus className="w-4 h-4" />
                 </Button>
                 <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                <Button variant="ghost" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="h-9 w-9 rounded-r-xl">
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>

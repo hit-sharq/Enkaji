@@ -285,7 +285,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
   // WriteReviewButton Component
   const WriteReviewButton = () => (
     <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
-      <Button variant="outline" size="sm" onClick={() => setReviewOpen(true)} className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+      <Button variant="outline" size="sm" onClick={() => setReviewOpen(true)} className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
         Write a Review
       </Button>
       <DialogContent className="sm:max-w-[500px]">
@@ -309,7 +309,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                   <Star
                     className={`h-6 w-6 ${
                       star <= reviewRating
-                        ? "fill-enkaji-gold text-enkaji-gold"
+                        ? "fill-enkaji-orange text-enkaji-orange"
                         : "text-muted-foreground"
                     }`}
                   />
@@ -338,13 +338,13 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setReviewOpen(false)} className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+          <Button variant="outline" onClick={() => setReviewOpen(false)} className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
             Cancel
           </Button>
           <Button
             onClick={handleSubmitReview}
             disabled={reviewSubmitting}
-            className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+            className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
           >
             {reviewSubmitting ? (
               <>
@@ -363,7 +363,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <Link href="/services" className="flex items-center gap-2 text-muted-foreground hover:text-enkaji-gold mb-6">
+        <Link href="/services" className="flex items-center gap-2 text-muted-foreground hover:text-enkaji-orange mb-6">
           <ArrowLeft className="h-4 w-4" />
           Back to Services
         </Link>
@@ -372,13 +372,13 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
           {/* Left Column - Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <Card className="border border-border bg-card rounded-xl">
+            <Card className="border border-border bg-card rounded-2xl">
               <div className="relative aspect-video bg-muted rounded-t-lg">
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                   <Clock className="h-16 w-16" />
                 </div>
                 {service.provider.isPremium && (
-                  <Badge className="absolute top-4 left-4 bg-enkaji-gold text-enkaji-ink">
+                  <Badge className="absolute top-4 left-4 bg-enkaji-orange text-enkaji-ink">
                     Premium Provider
                   </Badge>
                 )}
@@ -402,11 +402,11 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
             </Card>
 
             {/* Service Info */}
-            <Card className="border border-border bg-card rounded-xl">
+            <Card className="border border-border bg-card rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <Badge className="bg-enkaji-gold text-enkaji-ink mb-2">{service.category}</Badge>
+                    <Badge className="bg-enkaji-orange text-enkaji-ink mb-2">{service.category}</Badge>
                     <h1 className="text-2xl font-display font-semibold text-foreground">{service.name}</h1>
                   </div>
                   <div className="flex gap-2">
@@ -421,7 +421,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex items-center gap-1">
-                    <Star className="h-5 w-5 fill-enkaji-gold text-enkaji-gold" />
+                    <Star className="h-5 w-5 fill-enkaji-orange text-enkaji-orange" />
                     <span className="font-semibold">{service.provider.averageRating}</span>
                     <span className="text-muted-foreground">({service.provider.totalReviews} reviews)</span>
                   </div>
@@ -443,7 +443,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                 {/* Provider Card */}
                 <div className="border-t border-border pt-6 mt-6">
                   <h2 className="font-medium mb-3 text-foreground">About the Provider</h2>
-                  <Card className="bg-muted border border-border rounded-xl">
+                  <Card className="bg-muted border border-border rounded-2xl">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
                         <Avatar className="h-16 w-16">
@@ -456,7 +456,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-medium text-foreground">{service.provider.businessName}</h3>
                             {service.provider.isVerified && (
-                              <CheckCircle className="h-4 w-4 text-enkaji-green" />
+                              <CheckCircle className="h-4 w-4 text-enkaji-orange" />
                             )}
                           </div>
                           <p className="text-muted-foreground text-sm mb-2">{service.provider.description}</p>
@@ -513,7 +513,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-4 w-4 ${i < review.rating ? "fill-enkaji-gold text-enkaji-gold" : "text-muted-foreground"}`}
+                                  className={`h-4 w-4 ${i < review.rating ? "fill-enkaji-orange text-enkaji-orange" : "text-muted-foreground"}`}
                                 />
                               ))}
                             </div>
@@ -533,7 +533,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
           {/* Right Column - Booking */}
           <div className="space-y-6">
             {/* Booking Card */}
-            <Card className="sticky top-8 border border-border bg-card rounded-xl shadow-sm">
+            <Card className="sticky top-8 border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="text-foreground">Book This Service</CardTitle>
               </CardHeader>
@@ -550,8 +550,8 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                             onClick={() => setSelectedDate(date)}
                             className={`p-2 text-center rounded-lg border border-border ${
                               selectedDate?.toDateString() === date.toDateString()
-                                ? "bg-enkaji-gold text-enkaji-ink border-enkaji-gold"
-                                : "hover:border-enkaji-gold bg-card"
+                                ? "bg-enkaji-orange text-enkaji-ink border-enkaji-orange"
+                                : "hover:border-enkaji-orange bg-card"
                             }`}
                           >
                             <div className="text-xs text-muted-foreground">{date.toLocaleDateString("en-US", { weekday: "short" })}</div>
@@ -571,7 +571,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                               key={time}
                               variant={selectedTime === time ? "default" : "outline"}
                               size="sm"
-                              className={selectedTime === time ? "bg-enkaji-gold text-enkaji-ink font-semibold hover:bg-enkaji-gold/90" : "border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10"}
+                              className={selectedTime === time ? "bg-enkaji-orange text-enkaji-ink font-semibold hover:bg-enkaji-orange/90" : "border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10"}
                               onClick={() => setSelectedTime(time)}
                             >
                               {time}
@@ -582,7 +582,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                     )}
 
                     <Button
-                      className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                      className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                       onClick={() => selectedDate && selectedTime && setBookingStep(2)}
                       disabled={!selectedDate || !selectedTime}
                     >
@@ -641,11 +641,11 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                     </div>
 
                     <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setBookingStep(1)} className="flex-1 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                      <Button variant="outline" onClick={() => setBookingStep(1)} className="flex-1 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                         Back
                       </Button>
                       <Button
-                        className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                        className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                         onClick={handleBooking}
                         disabled={submitting}
                       >
@@ -659,13 +659,13 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
                 {bookingStep === 3 && (
                   <div className="text-center py-6">
                     <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 border border-border">
-                      <CheckCircle className="h-8 w-8 text-enkaji-green" />
+                      <CheckCircle className="h-8 w-8 text-enkaji-orange" />
                     </div>
                     <h3 className="font-medium text-lg mb-2 text-foreground">Booking Submitted!</h3>
                     <p className="text-muted-foreground text-sm mb-4">
                       The provider will confirm your appointment shortly. You'll receive an SMS confirmation.
                     </p>
-                    <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold" onClick={() => { setBookingStep(1); setSelectedDate(null); setSelectedTime(null) }}>
+                    <Button className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold" onClick={() => { setBookingStep(1); setSelectedDate(null); setSelectedTime(null) }}>
                       Book Another
                     </Button>
                   </div>
@@ -674,17 +674,17 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ id: st
             </Card>
 
             {/* Trust Badges */}
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-enkaji-gold" />
+                  <Shield className="h-5 w-5 text-enkaji-orange" />
                   <div>
                     <p className="font-medium text-sm text-foreground">Secure Booking</p>
                     <p className="text-xs text-muted-foreground">Protected by Enkaji</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-enkaji-green" />
+                  <CheckCircle className="h-5 w-5 text-enkaji-orange" />
                   <div>
                     <p className="font-medium text-sm text-foreground">Verified Provider</p>
                     <p className="text-xs text-muted-foreground">Identity & documents checked</p>

@@ -22,7 +22,7 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
   return (
     <Card
       className={`cursor-pointer border-2 transition-all ${
-        selected ? 'border-enkaji-gold bg-enkaji-gold/10' : 'border-border hover:border-enkaji-gold/50'
+        selected ? 'border-enkaji-orange bg-enkaji-orange/10' : 'border-border hover:border-enkaji-orange/50'
       }`}
       onClick={onSelect}
     >
@@ -30,7 +30,7 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
         <div className="flex items-start gap-3">
           <div
             className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-              selected ? 'border-enkaji-gold bg-enkaji-gold' : 'border-border'
+              selected ? 'border-enkaji-orange bg-enkaji-orange' : 'border-border'
             }`}
           >
             {selected && <div className="w-1.5 h-1.5 rounded-full bg-card" />}
@@ -39,9 +39,9 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-sm">Lumyn Express Delivery</span>
-              <Badge className="bg-enkaji-gold/10 text-enkaji-gold hover:bg-enkaji-gold/10 text-xs">Nairobi</Badge>
+              <Badge className="bg-enkaji-orange/10 text-enkaji-orange hover:bg-enkaji-orange/10 text-xs">Nairobi</Badge>
               {isPeak && (
-                <Badge className="bg-enkaji-gold/10 text-enkaji-gold hover:bg-enkaji-gold/10 text-xs">Peak hours</Badge>
+                <Badge className="bg-enkaji-orange/10 text-enkaji-orange hover:bg-enkaji-orange/10 text-xs">Peak hours</Badge>
               )}
             </div>
 
@@ -55,13 +55,13 @@ export function LumynDeliveryOption({ selected, onSelect, cartTotal }: LumynDeli
                 <span>Insured delivery</span>
               </div>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Zap className="h-3 w-3 text-enkaji-gold" />
-                <span className="text-enkaji-gold font-medium">Express</span>
+                <Zap className="h-3 w-3 text-enkaji-orange" />
+                <span className="text-enkaji-orange font-medium">Express</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between mt-2">
-              <span className="text-sm font-bold text-enkaji-gold">
+              <span className="text-sm font-bold text-enkaji-orange">
                  from KES {estimatedFee}
                 {isPeak && <span className="text-xs font-normal text-muted-foreground ml-1">(peak surcharge applied)</span>}
               </span>

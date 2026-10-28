@@ -143,12 +143,12 @@ export default function MessagesPage() {
                   <button
                     key={thread.id}
                     onClick={() => { setMyUserId(thread.participantA.id); openThread(thread) }}
-                    className={`w-full text-left p-4 hover:bg-muted transition-colors ${selected?.id === thread.id ? "bg-enkaji-gold/10" : ""}`}
+                    className={`w-full text-left p-4 hover:bg-muted transition-colors ${selected?.id === thread.id ? "bg-enkaji-orange/10" : ""}`}
                   >
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 shrink-0">
                         <AvatarImage src={other.imageUrl || ""} />
-                        <AvatarFallback className="bg-enkaji-gold text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
+                        <AvatarFallback className="bg-enkaji-orange text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center">
@@ -165,7 +165,7 @@ export default function MessagesPage() {
                           </p>
                         )}
                       </div>
-                      {unread && <Badge className="bg-enkaji-gold text-enkaji-ink text-xs px-1.5 py-0.5 rounded-full shrink-0">•</Badge>}
+                      {unread && <Badge className="bg-enkaji-orange text-enkaji-ink text-xs px-1.5 py-0.5 rounded-full shrink-0">•</Badge>}
                     </div>
                   </button>
                 )
@@ -186,7 +186,7 @@ export default function MessagesPage() {
                   <>
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={other.imageUrl || ""} />
-                      <AvatarFallback className="bg-enkaji-gold text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
+                      <AvatarFallback className="bg-enkaji-orange text-enkaji-ink text-xs">{initials(other)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-semibold text-sm">{displayName(other)}</p>
@@ -201,9 +201,9 @@ export default function MessagesPage() {
                 const isMe = msg.senderId === myUserId
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${isMe ? "bg-enkaji-gold text-enkaji-ink rounded-br-sm" : "bg-muted text-foreground/80 rounded-bl-sm"}`}>
+                    <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${isMe ? "bg-enkaji-orange text-enkaji-ink rounded-br-sm" : "bg-muted text-foreground/80 rounded-bl-sm"}`}>
                       <p>{msg.body}</p>
-                      <p className={`text-xs mt-1 ${isMe ? "text-enkaji-gold/70" : "text-muted-foreground"}`}>
+                      <p className={`text-xs mt-1 ${isMe ? "text-enkaji-orange/70" : "text-muted-foreground"}`}>
                         {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                       </p>
                     </div>
@@ -221,7 +221,7 @@ export default function MessagesPage() {
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
                 className="flex-1"
               />
-              <Button onClick={sendMessage} disabled={!body.trim() || sending} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button onClick={sendMessage} disabled={!body.trim() || sending} className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>

@@ -152,7 +152,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Shipping Information */}
-      <Card className="rounded-xl border border-border shadow-sm">
+      <Card className="rounded-2xl border border-border shadow-card">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground">Shipping Information</CardTitle>
         </CardHeader>
@@ -348,7 +348,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
               <span>{formatDualCurrency(shippingCost)}</span>
             </div>
             {discountAmount > 0 && (
-              <div className="flex justify-between items-center text-enkaji-gold">
+              <div className="flex justify-between items-center text-enkaji-orange">
                 <span className="text-sm">Discount</span>
                 <span>− {formatDualCurrency(discountAmount)}</span>
               </div>
@@ -368,14 +368,14 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
       </Card>
 
       {/* Payment Method */}
-      <Card className="rounded-xl border border-border shadow-sm">
+      <Card className="rounded-2xl border border-border shadow-card">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground">Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="bg-card p-4 rounded-xl border border-border">
             <div className="flex items-center gap-2 mb-2">
-              <ShieldCheck className="h-5 w-5 text-enkaji-gold" />
+              <ShieldCheck className="h-5 w-5 text-enkaji-orange" />
               <span className="font-medium">Pesapal</span>
             </div>
             <p className="text-sm text-muted-foreground mb-2">

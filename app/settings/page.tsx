@@ -14,7 +14,8 @@ export default function SettingsPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="font-display text-3xl font-semibold text-foreground">Account Settings</h1>
+            <p className="enkaji-eyebrow mb-2 block">Account</p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Account Settings</h1>
             <p className="text-muted-foreground mt-2">Manage your account preferences and settings</p>
           </div>
 
@@ -70,7 +71,7 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Save Changes</Button>
+                  <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Save Changes</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -171,7 +172,7 @@ export default function SettingsPage() {
                     <Label>Payment Methods</Label>
                     <div className="border rounded-lg p-4">
                       <p className="text-sm text-muted-foreground">No payment methods added yet</p>
-                        <Button variant="outline" className="mt-2 border border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                        <Button variant="outline" className="mt-2 border border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                           Add Payment Method
                         </Button>
                     </div>
@@ -234,7 +235,7 @@ export default function SettingsPage() {
                   <Separator />
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-enkaji-gold">Danger Zone</Label>
+                      <Label className="text-enkaji-orange">Danger Zone</Label>
                       <p className="text-sm text-muted-foreground">These actions cannot be undone</p>
                     </div>
                     <Button variant="destructive" className="flex items-center gap-2">

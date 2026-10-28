@@ -12,7 +12,8 @@ export default async function ApprovalsPage() {
     <RoleGuard minimumRole="MODERATOR">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-semibold text-foreground">Approval Dashboard</h1>
+          <span className="enkaji-eyebrow mb-2 block">Admin</span>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">Approval Dashboard</h1>
           <p className="text-muted-foreground">
             Review and approve pending products, artisans, sellers, payouts, and resolve disputes.
           </p>

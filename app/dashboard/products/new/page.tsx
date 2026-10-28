@@ -38,7 +38,8 @@ export default async function NewProductPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
-            <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">Add New Product</h1>
+            <span className="enkaji-eyebrow mb-2 block">Seller</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground mb-2">Add New Product</h1>
             <p className="text-muted-foreground">Create a new product listing for your craft</p>
           </div>
           <ProductForm categories={categories} />

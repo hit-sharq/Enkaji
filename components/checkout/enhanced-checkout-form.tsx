@@ -28,7 +28,7 @@ export function EnhancedCheckoutForm({ orderId, amount, onPaymentSuccess, onPaym
       <CardContent>
         <Tabs value={selectedMethod} onValueChange={setSelectedMethod}>
           <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="mpesa" className="flex items-center gap-2 data-[state=active]:text-enkaji-gold data-[state=active]:border-enkaji-gold/50">
+            <TabsTrigger value="mpesa" className="flex items-center gap-2 data-[state=active]:text-enkaji-orange data-[state=active]:border-enkaji-orange/50">
               <Smartphone className="w-4 h-4" />
               M-Pesa
             </TabsTrigger>

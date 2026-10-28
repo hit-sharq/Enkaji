@@ -329,7 +329,7 @@ export default function HomeScreen() {
             {[
               { icon: 'shield', title: 'Secure Payments', desc: 'Protected by Pesapal & escrow', color: '#10B981' },
               { icon: 'truck', title: 'Nationwide Delivery', desc: 'All 47 counties covered', color: '#3B82F6' },
-              { icon: 'award', title: 'Verified Sellers', desc: 'Background-checked suppliers', color: '#F59E0B' },
+              { icon: 'award', title: 'Verified Sellers', desc: 'Background-checked suppliers', color: '#F36A1B' },
               { icon: 'users', title: 'B2B & B2C', desc: 'Built for businesses & individuals', color: Colors.primary },
             ].map((item, i) => (
               <View key={i} style={styles.valueCard}>

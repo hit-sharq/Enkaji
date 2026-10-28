@@ -87,9 +87,9 @@ export function PaymentPending({
       case "checking":
         return <Loader2 className="h-12 w-12 animate-spin text-chart-4" />
       case "pending":
-        return <Clock className="h-12 w-12 text-enkaji-gold" />
+        return <Clock className="h-12 w-12 text-enkaji-orange" />
       case "completed":
-        return <CheckCircle className="h-12 w-12 text-enkaji-green" />
+        return <CheckCircle className="h-12 w-12 text-enkaji-orange" />
       case "failed":
         return <AlertCircle className="h-12 w-12 text-enkaji-red" />
     }
@@ -150,9 +150,9 @@ export function PaymentPending({
 
         {/* Instructions for Mobile Money */}
         {paymentMethod.toLowerCase().includes("mpesa") && status.status === "pending" && (
-           <div className="bg-enkaji-gold/10 border border-enkaji-gold/40 rounded-lg p-4">
+           <div className="bg-enkaji-orange/10 border border-enkaji-orange/40 rounded-lg p-4">
              <h4 className="font-medium text-enkaji-ink mb-2 flex items-center gap-2">
-               <Smartphone className="h-4 w-4 text-enkaji-gold" />
+               <Smartphone className="h-4 w-4 text-enkaji-orange" />
                M-Pesa Instructions
              </h4>
              <ol className="text-sm text-foreground/80 space-y-1 list-decimal list-inside">
@@ -198,7 +198,7 @@ export function PaymentPending({
               </Button>
               <Button
                 onClick={() => window.location.href = `/checkout?orderId=${orderId}`}
-                className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
               >
                 Try Again
               </Button>

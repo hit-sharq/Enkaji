@@ -50,7 +50,8 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Edit Product</h1>
+        <span className="enkaji-eyebrow mb-2 block">Seller</span>
+        <h1 className="font-display text-3xl font-bold tracking-tight mb-8">Edit Product</h1>
         <ProductForm categories={categories} product={productForForm} />
       </div>
     </div>

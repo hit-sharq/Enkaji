@@ -16,7 +16,7 @@ interface ErrorPageProps {
 // Predefined error messages and configurations
 const ERROR_CONFIGS: Record<string, { icon: React.ReactNode; title: string; message: string; suggestions: string[] }> = {
   "400": {
-    icon: <AlertTriangle className="w-24 h-24 text-enkaji-ochre animate-pulse-glow" />,
+    icon: <AlertTriangle className="w-24 h-24 text-enkaji-orange animate-pulse-glow" />,
     title: "Oops! Something Went Wrong",
     message: "The request you made was invalid. Please check your input and try again.",
     suggestions: [
@@ -46,7 +46,7 @@ const ERROR_CONFIGS: Record<string, { icon: React.ReactNode; title: string; mess
     ],
   },
   "404": {
-    icon: <Search className="w-24 h-24 text-enkaji-ochre animate-pulse-glow" />,
+    icon: <Search className="w-24 h-24 text-enkaji-orange animate-pulse-glow" />,
     title: "Page Not Found",
     message: "The page you're looking for doesn't exist, has been moved, or is temporarily unavailable.",
     suggestions: [
@@ -66,7 +66,7 @@ const ERROR_CONFIGS: Record<string, { icon: React.ReactNode; title: string; mess
     ],
   },
   "503": {
-    icon: <AlertTriangle className="w-24 h-24 text-enkaji-ochre animate-pulse-glow" />,
+    icon: <AlertTriangle className="w-24 h-24 text-enkaji-orange animate-pulse-glow" />,
     title: "Service Temporarily Unavailable",
     message: "We're performing scheduled maintenance. Please check back soon!",
     suggestions: [
@@ -127,11 +127,11 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
       
       {/* Floating decorative elements */}
       <div className="absolute top-20 left-10 w-32 h-32 bg-enkaji-red/5 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 right-10 w-48 h-48 bg-enkaji-ochre/5 rounded-full blur-3xl animate-float-delayed" />
-      <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-enkaji-gold/5 rounded-full blur-2xl animate-float" />
+      <div className="absolute bottom-20 right-10 w-48 h-48 bg-enkaji-orange/5 rounded-full blur-3xl animate-float-delayed" />
+      <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-enkaji-orange/5 rounded-full blur-2xl animate-float" />
 
       {/* Breadcrumb decoration */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-red via-enkaji-orange to-enkaji-brown" />
 
       {/* Main Error Card */}
       <Card 
@@ -140,7 +140,7 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
         }`}
       >
         {/* Decorative gradient border */}
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-ochre to-enkaji-brown p-[1px]">
+        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-enkaji-red via-enkaji-orange to-enkaji-brown p-[1px]">
           <div className="absolute inset-0 rounded-lg bg-card/80 dark:bg-enkaji-ink/80" />
         </div>
 
@@ -155,10 +155,10 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
 
           {/* Error Code */}
           <div className="space-y-2">
-            <h1 className="text-8xl font-bold text-enkaji-gradient font-playfair tracking-tight animate-fade-in">
+            <h1 className="text-8xl font-bold text-enkaji-gradient font-display tracking-tight animate-fade-in">
               {errorCode}
             </h1>
-            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-enkaji-red to-enkaji-ochre rounded-full" />
+            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-enkaji-red to-enkaji-orange rounded-full" />
           </div>
 
           {/* Error Title */}
@@ -196,9 +196,9 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
           {/* Suggestions Section */}
           <div className="w-full space-y-4">
             <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              <span className="h-px w-8 bg-enkaji-ochre/50" />
+              <span className="h-px w-8 bg-enkaji-orange/50" />
               What You Can Do
-              <span className="h-px w-8 bg-enkaji-ochre/50" />
+              <span className="h-px w-8 bg-enkaji-orange/50" />
             </div>
             
             <div className="grid gap-3 md:grid-cols-3">
@@ -273,7 +273,7 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
 
       {/* Enkaji Branding Footer */}
       <div className="mt-8 text-center space-y-2 relative z-10">
-        <p className="text-lg font-bold font-playfair text-enkaji-gradient">
+        <p className="text-lg font-bold font-display text-enkaji-gradient">
           Enkaji Trade Kenya
         </p>
         <p className="text-sm text-muted-foreground">
@@ -292,7 +292,7 @@ function ErrorPageContent({ error, reset, errorCode = "500", errorMessage, error
       </div>
 
       {/* Decorative bottom gradient */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-brown via-enkaji-ochre to-enkaji-red" />
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-enkaji-brown via-enkaji-orange to-enkaji-red" />
 
       <style jsx global>{`
         @keyframes bounce-subtle {

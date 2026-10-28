@@ -407,11 +407,11 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-orange"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "PROCESSING":
         return <Badge className="bg-muted0"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
       case "PENDING":
-        return <Badge className="bg-enkaji-gold/100"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-orange/100"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "REJECTED":
       case "FAILED":
         return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
@@ -715,14 +715,14 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                       : 0
 
                     return (
-                      <div key={product.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg bg-card/80 shadow-sm">
+                      <div key={product.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-xl bg-card/80 shadow-card">
                         <div>
                           <p className="font-semibold text-foreground">{product.name}</p>
                           <p className="text-sm text-muted-foreground">{product.clearanceReason || "Clearance"} • {product.category || "Uncategorized"}</p>
                           <p className="text-sm text-muted-foreground mt-1">{discount}% off • {product.inventory} left</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Badge className="bg-enkaji-gold text-enkaji-ink">{discount}% OFF</Badge>
+                          <Badge className="bg-enkaji-orange text-enkaji-ink">{discount}% OFF</Badge>
                           <Link href={`/products/${product.id}`}>
                             <Button size="sm" variant="outline">View</Button>
                           </Link>
@@ -802,7 +802,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-enkaji-gold" />
+                    <Crown className="h-5 w-5 text-enkaji-orange" />
                     Current Plan
                   </CardTitle>
                 </CardHeader>
@@ -816,7 +816,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                     </div>
                     <Badge 
                       variant={subscriptionData.subscription.status === "ACTIVE" ? "default" : "destructive"}
-                      className={subscriptionData.subscription.status === "ACTIVE" ? "bg-enkaji-green" : ""}
+                      className={subscriptionData.subscription.status === "ACTIVE" ? "bg-enkaji-orange" : ""}
                     >
                       {subscriptionData.subscription.status}
                     </Badge>
@@ -839,7 +839,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                       <ul className="space-y-1">
                         {subscriptionData.plans[subscriptionData.subscription.plan].features.map((feature, index) => (
                           <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <CheckCircle className="h-3 w-3 text-enkaji-green" />
+                            <CheckCircle className="h-3 w-3 text-enkaji-orange" />
                             {feature}
                           </li>
                         ))}
@@ -885,7 +885,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(subscriptionData.plans).map(([planKey, plan]) => (
                     <div key={planKey} className="p-4 border rounded-lg text-center">
-                      <Crown className="h-8 w-8 mx-auto mb-2 text-enkaji-gold" />
+                      <Crown className="h-8 w-8 mx-auto mb-2 text-enkaji-orange" />
                       <p className="font-medium">{plan.name}</p>
                       <p className="text-2xl font-bold my-2">
                         {plan.price === 0 ? "Free" : `KES ${plan.price.toLocaleString()}`}
@@ -915,10 +915,10 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
 
           {/* Payment Status Alert */}
           {subscriptionData.subscription?.status === "PENDING" && (
-            <Card className="border-enkaji-gold/20 bg-enkaji-gold/10">
+            <Card className="border-enkaji-orange/20 bg-enkaji-orange/10">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
-                  <Clock className="h-6 w-6 text-enkaji-gold mt-1" />
+                  <Clock className="h-6 w-6 text-enkaji-orange mt-1" />
                   <div className="flex-1">
                     <h3 className="font-semibold text-enkaji-ink">Payment Pending</h3>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -955,7 +955,7 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                   <div 
                     key={planKey}
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      selectedPlan === planKey ? "border-enkaji-gold bg-muted" : "hover:border-border"
+                      selectedPlan === planKey ? "border-enkaji-orange bg-muted" : "hover:border-border"
                     }`}
                     onClick={() => setSelectedPlan(planKey)}
                   >
@@ -967,13 +967,13 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
                         </p>
                       </div>
                       {selectedPlan === planKey && (
-                        <CheckCircle className="h-5 w-5 text-enkaji-gold" />
+                        <CheckCircle className="h-5 w-5 text-enkaji-orange" />
                       )}
                     </div>
                     <ul className="mt-2 space-y-1">
                       {plan.features.map((feature, index) => (
                         <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <CheckCircle className="h-3 w-3 text-enkaji-green" />
+                          <CheckCircle className="h-3 w-3 text-enkaji-orange" />
                           {feature}
                         </li>
                       ))}

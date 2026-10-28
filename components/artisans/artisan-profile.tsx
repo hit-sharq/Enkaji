@@ -16,7 +16,7 @@ export function ArtisanProfile({
     <section className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/3">
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <Image
@@ -33,7 +33,7 @@ export function ArtisanProfile({
                     <span>{artisan.sellerProfile?.location || "Kenya"}</span>
                   </div>
                   {artisan.sellerProfile?.isVerified && (
-                    <div className="flex items-center gap-1 text-enkaji-green mt-1">
+                    <div className="flex items-center gap-1 text-enkaji-orange mt-1">
                       <CheckCircle2 className="w-4 h-4" />
                       <span className="text-sm">Verified Seller</span>
                     </div>
@@ -56,7 +56,7 @@ export function ArtisanProfile({
                   <p>
                     <span className="font-medium">Website:</span>{" "}
                     <a
-                      className="text-enkaji-gold hover:underline"
+                      className="text-enkaji-orange hover:underline"
                       href={artisan.sellerProfile.website}
                       target="_blank"
                       rel="noreferrer"
@@ -82,7 +82,7 @@ export function ArtisanProfile({
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {artisan.products.map((p) => (
-                <Card key={p.id} className="overflow-hidden border border-border bg-card rounded-xl shadow-sm hover:shadow-md transition-all">
+                <Card key={p.id} className="overflow-hidden border border-border bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all">
                   <div className="aspect-square bg-muted">
                     <Image
                       src={p.images[0] || "/placeholder.svg?height=400&width=400&query=product-image"}
@@ -97,7 +97,7 @@ export function ArtisanProfile({
                     <p className="text-sm text-muted-foreground">{p.category.name}</p>
                     <div className="mt-2 flex items-center justify-between">
                       <span className="font-semibold text-foreground">${p.price.toFixed(2)}</span>
-                      <Badge variant="secondary" className="bg-enkaji-gold/10 text-enkaji-gold border border-enkaji-gold/20">{p._count.reviews} reviews</Badge>
+                      <Badge variant="secondary" className="bg-enkaji-orange/10 text-enkaji-orange border border-enkaji-orange/20">{p._count.reviews} reviews</Badge>
                     </div>
                   </CardContent>
                 </Card>

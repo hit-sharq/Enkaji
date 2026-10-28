@@ -41,7 +41,7 @@ export default async function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
           <Link href="/dashboard">
-            <Button variant="outline" className="mb-4 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+            <Button variant="outline" className="mb-4 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -49,24 +49,25 @@ export default async function AdminPage() {
         </div>
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold text-foreground mb-2">Admin Dashboard</h1>
+            <p className="enkaji-eyebrow mb-2 block">Admin</p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground mb-2">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage users, products, and monitor platform performance</p>
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             <Link href="/admin/lumyn">
-              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+              <Button variant="outline" className="gap-2 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                 <Truck className="w-4 h-4" />
                 Lumyn Flow
               </Button>
             </Link>
             <Link href="/admin/payouts">
-              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+              <Button variant="outline" className="gap-2 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                 <Wallet className="w-4 h-4" />
                 Payouts
               </Button>
             </Link>
             <Link href="/admin/coupons">
-              <Button variant="outline" className="gap-2 border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+              <Button variant="outline" className="gap-2 border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                 <Tag className="w-4 h-4" />
                 Coupons
               </Button>

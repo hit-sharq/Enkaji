@@ -19,7 +19,8 @@ export default async function PaymentSettingsPage() {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Payment Settings</h1>
+          <span className="enkaji-eyebrow mb-2 block">Seller</span>
+          <h1 className="font-display text-3xl font-bold tracking-tight mb-2">Payment Settings</h1>
           <p className="text-muted-foreground mb-8">
             Manage your payout methods. These details will be used when processing your payouts.
           </p>

@@ -44,7 +44,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
           <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-medium text-foreground mb-2">No sellers found</h3>
           <p className="text-muted-foreground mb-6">Try adjusting your filters or search terms to find more sellers.</p>
-          <Button variant="outline" onClick={() => window.location.reload()} className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+          <Button variant="outline" onClick={() => window.location.reload()} className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
             Reset Filters
           </Button>
         </div>
@@ -63,7 +63,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
         const featuredProducts = seller.products.slice(0, 3)
 
         return (
-          <Card key={seller.id} className="border border-enkaji-gold/20 bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <Card key={seller.id} className="border border-enkaji-orange/20 bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
@@ -76,7 +76,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                       className="rounded-full object-cover"
                     />
                     {seller.sellerProfile?.isVerified && (
-                      <div className="absolute -bottom-1 -right-1 bg-enkaji-gold rounded-full p-1">
+                      <div className="absolute -bottom-1 -right-1 bg-enkaji-orange rounded-full p-1">
                         <Shield className="w-3 h-3 text-enkaji-ink" />
                       </div>
                     )}
@@ -85,13 +85,13 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                     <h3 className="font-medium text-lg text-foreground truncate">{displayName}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       {seller.sellerProfile?.isVerified && (
-                        <Badge variant="secondary" className="text-xs bg-enkaji-gold/10 text-enkaji-gold border border-enkaji-gold/20">
+                        <Badge variant="secondary" className="text-xs bg-enkaji-orange/10 text-enkaji-orange border border-enkaji-orange/20">
                           <Shield className="w-3 h-3 mr-1" />
                           Verified
                         </Badge>
                       )}
                       {seller.sellerProfile?.businessType && (
-                        <Badge variant="outline" className="text-xs border-enkaji-gold/20">
+                        <Badge variant="outline" className="text-xs border-enkaji-orange/20">
                           <Building className="w-3 h-3 mr-1" />
                           {seller.sellerProfile.businessType}
                         </Badge>
@@ -127,7 +127,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                     href={seller.sellerProfile.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-enkaji-gold hover:text-enkaji-gold/80"
+                    className="flex items-center text-enkaji-orange hover:text-enkaji-orange/80"
                   >
                     <Globe className="w-4 h-4 mr-1" />
                     Website
@@ -136,7 +136,7 @@ export function SellerGrid({ sellers }: SellerGridProps) {
                 ) : (
                   <Link
                     href={`/sellers/${(seller.sellerProfile?.slug ?? seller.id)}`}
-                    className="flex items-center text-enkaji-gold hover:text-enkaji-gold/80"
+                    className="flex items-center text-enkaji-orange hover:text-enkaji-orange/80"
                   >
                     <Globe className="w-4 h-4 mr-1" />
                     View Profile
@@ -171,10 +171,10 @@ export function SellerGrid({ sellers }: SellerGridProps) {
 
               {/* Actions */}
               <div className="flex gap-2 pt-2">
-                <Button asChild className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                <Button asChild className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                   <Link href={`/sellers/${(seller.sellerProfile?.slug ?? seller.id)}`}>View Profile</Link>
                 </Button>
-                <Button variant="outline" asChild className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10">
+                <Button variant="outline" asChild className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
                   <Link href={`/sellers/${(seller.sellerProfile?.slug ?? seller.id)}#products`}>
                     <Package className="w-4 h-4" />
                   </Link>

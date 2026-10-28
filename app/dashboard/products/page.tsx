@@ -42,7 +42,8 @@ export default async function ProductsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">My Products</h1>
+          <span className="enkaji-eyebrow mb-2 block">Seller</span>
+          <h1 className="font-display text-3xl font-bold tracking-tight">My Products</h1>
           <p className="text-muted-foreground">Manage your product listings</p>
         </div>
         <Link href="/dashboard/products/new">
@@ -84,7 +85,7 @@ export default async function ProductsPage() {
                       <p className="text-sm text-muted-foreground">
                         Stock: {product.inventory} units • {product.category?.name || "Uncategorized"}
                       </p>
-                      <p className="text-sm font-medium text-enkaji-green">
+                      <p className="text-sm font-medium text-enkaji-orange">
                         KES {Number(product.price).toLocaleString()}
                       </p>
                     </div>

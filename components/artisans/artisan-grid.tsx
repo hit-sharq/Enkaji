@@ -43,7 +43,7 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {artisans.map((artisan) => (
-        <Card key={artisan.id} className="overflow-hidden border border-border bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+        <Card key={artisan.id} className="overflow-hidden border border-border bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
           <div className="aspect-square relative overflow-hidden">
             <Image
               src={artisan.imageUrl || "/placeholder.svg?height=600&width=600&query=profile%20photo"}
@@ -94,7 +94,7 @@ export function ArtisanGrid({ artisans }: ArtisanGridProps) {
             )}
 
             <Link href={`/artisans/${artisan.id}`}>
-              <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 View Profile
               </Button>
             </Link>

@@ -30,3 +30,6 @@ next-env.d.ts
 /.clerk/
 
 docs
+
+# local build reference (contains artifact URLs, not for repo)
+/APK_BUILD_REFERENCE.md

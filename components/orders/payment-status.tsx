@@ -42,16 +42,16 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
       case "CONFIRMED":
       case "COMPLETED":
       case "RELEASED":
-        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-orange" />
       case "PENDING":
       case "PROCESSING":
       case "HELD":
-        return <Clock className="h-4 w-4 text-enkaji-gold" />
+        return <Clock className="h-4 w-4 text-enkaji-orange" />
       case "FAILED":
       case "CANCELLED":
         return <XCircle className="h-4 w-4 text-enkaji-red" />
       case "DISPUTED":
-        return <AlertTriangle className="h-4 w-4 text-enkaji-ochre" />
+        return <AlertTriangle className="h-4 w-4 text-enkaji-orange" />
       default:
         return <Clock className="h-4 w-4 text-muted-foreground" />
     }
@@ -139,8 +139,8 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
             )}
 
             {order.escrowPayment.status === "RELEASE_REQUESTED" && userRole === "buyer" && (
-              <div className="bg-enkaji-gold p-4 rounded-lg">
-                <p className="text-sm text-enkaji-gold mb-3">
+              <div className="bg-enkaji-orange p-4 rounded-lg">
+                <p className="text-sm text-enkaji-orange mb-3">
                   <strong>Payment release requested</strong> - The seller has requested payment release. Please confirm
                   you've received your order before releasing payment.
                 </p>
@@ -148,7 +148,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
                   <Button
                     size="sm"
                     onClick={() => onEscrowAction?.("RELEASE")}
-                    className="bg-enkaji-green hover:bg-enkaji-green"
+                    className="bg-enkaji-orange hover:bg-enkaji-orange"
                   >
                     Release Payment
                   </Button>
@@ -175,7 +175,7 @@ export function PaymentStatus({ order, userRole, onEscrowAction }: PaymentStatus
                   <Button
                     size="sm"
                     onClick={() => onEscrowAction?.("RELEASE")}
-                    className="bg-enkaji-green hover:bg-enkaji-green"
+                    className="bg-enkaji-orange hover:bg-enkaji-orange"
                   >
                     Release Payment
                   </Button>

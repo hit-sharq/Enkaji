@@ -527,20 +527,20 @@ const fetchDashboardData = async () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
+        return <Badge className="bg-enkaji-orange"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>
       case "PROCESSING":
         return <Badge className="bg-chart-4"><Clock className="h-3 w-3 mr-1" /> Processing</Badge>
       case "PENDING":
-        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+        return <Badge className="bg-enkaji-orange"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
       case "REJECTED":
       case "FAILED":
         return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> {status}</Badge>
       case "ACTIVE":
-        return <Badge className="bg-enkaji-green"><CheckCircle className="h-3 w-3 mr-1" /> Active</Badge>
+        return <Badge className="bg-enkaji-orange"><CheckCircle className="h-3 w-3 mr-1" /> Active</Badge>
       case "CANCELLED":
         return <Badge className="bg-enkaji-red"><XCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>
       case "PAST_DUE":
-        return <Badge className="bg-enkaji-gold"><Clock className="h-3 w-3 mr-1" /> Past Due</Badge>
+        return <Badge className="bg-enkaji-orange"><Clock className="h-3 w-3 mr-1" /> Past Due</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -763,7 +763,7 @@ const fetchDashboardData = async () => {
                             </Button>
                           </div>
                           {hasRoleChange && (
-                            <div className="text-xs text-enkaji-gold mt-1">
+                            <div className="text-xs text-enkaji-orange mt-1">
                               {userItem.role} → {selectedRole}
                             </div>
                           )}
@@ -948,20 +948,20 @@ const fetchDashboardData = async () => {
 
           {/* Disputed Orders Alert */}
           {orders.filter((o) => o.status === "DISPUTED").length > 0 && (
-            <Card className="border-enkaji-ochre bg-enkaji-ochre/10">
+            <Card className="border-enkaji-orange bg-enkaji-orange/10">
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center gap-3">
-                  <AlertTriangle className="h-5 w-5 text-enkaji-ochre shrink-0" />
+                  <AlertTriangle className="h-5 w-5 text-enkaji-orange shrink-0" />
                   <div>
                     <p className="font-medium text-enkaji-brown">
                       {orders.filter((o) => o.status === "DISPUTED").length} Disputed Order(s) Require Attention
                     </p>
-                    <p className="text-sm text-enkaji-ochre">Use the filter above to view disputed orders and take action.</p>
+                    <p className="text-sm text-enkaji-orange">Use the filter above to view disputed orders and take action.</p>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="ml-auto border-enkaji-ochre text-enkaji-ochre"
+                    className="ml-auto border-enkaji-orange text-enkaji-orange"
                     onClick={() => setOrderStatusFilter("DISPUTED")}
                   >
                     View Disputes
@@ -1013,7 +1013,7 @@ const fetchDashboardData = async () => {
                         filteredOrders.map((order) => (
                           <TableRow
                             key={order.id}
-                            className={order.status === "DISPUTED" ? "bg-enkaji-ochre/10" : ""}
+                            className={order.status === "DISPUTED" ? "bg-enkaji-orange/10" : ""}
                           >
                             <TableCell>
                               <input
@@ -1053,7 +1053,7 @@ const fetchDashboardData = async () => {
                                         ? "secondary"
                                         : "secondary"
                                 }
-                                className={order.status === "DISPUTED" ? "bg-enkaji-ochre/10 text-enkaji-brown border-enkaji-ochre" : ""}
+                                className={order.status === "DISPUTED" ? "bg-enkaji-orange/10 text-enkaji-brown border-enkaji-orange" : ""}
                               >
                                 {order.status === "DISPUTED" && <AlertTriangle className="h-3 w-3 mr-1" />}
                                 {order.status}
@@ -1069,7 +1069,7 @@ const fetchDashboardData = async () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="text-enkaji-green border-enkaji-green"
+                                    className="text-enkaji-orange border-enkaji-orange"
                                     onClick={() => handleBulkOrderAction("CONFIRMED")}
                                   >
                                     Resolve
@@ -1177,7 +1177,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
-                <Clock className="h-4 w-4 text-enkaji-gold" />
+                <Clock className="h-4 w-4 text-enkaji-orange" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1207,7 +1207,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                <CheckCircle className="h-4 w-4 text-enkaji-green" />
+                <CheckCircle className="h-4 w-4 text-enkaji-orange" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1374,7 +1374,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Premium Plan</CardTitle>
-                <Badge className="bg-enkaji-gold">KES 1,500/mo</Badge>
+                <Badge className="bg-enkaji-orange">KES 1,500/mo</Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -1472,7 +1472,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardContent className="pt-4">
                 <p className="text-xs text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-enkaji-gold">KSh {stats.totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-enkaji-orange">KSh {stats.totalRevenue.toLocaleString()}</p>
               </CardContent>
             </Card>
             <Card>
@@ -1500,7 +1500,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader>
                 <CardTitle className="font-display flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-enkaji-gold" />
+                  <TrendingUp className="h-4 w-4 text-enkaji-orange" />
                   Revenue Trend (6 months)
                 </CardTitle>
                 <CardDescription>Monthly revenue in KSh</CardDescription>
@@ -1528,7 +1528,7 @@ const fetchDashboardData = async () => {
             <Card>
               <CardHeader>
                 <CardTitle className="font-display flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-enkaji-gold" />
+                  <BarChart3 className="h-4 w-4 text-enkaji-orange" />
                   Orders per Month
                 </CardTitle>
                 <CardDescription>Order volume over last 6 months</CardDescription>

@@ -15,7 +15,8 @@ export default async function OrdersPage() {
     <div className="min-h-screen">
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">My Orders</h1>
+          <span className="enkaji-eyebrow mb-2 block">Account</span>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-foreground mb-2">My Orders</h1>
           <p className="text-muted-foreground">Track your order history and status</p>
         </div>
         <OrdersList userId={user.id} />

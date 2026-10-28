@@ -39,15 +39,16 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   return (
     <div className="container mx-auto px-4 py-8">
       <article className="max-w-4xl mx-auto">
-        <h1 className="font-display font-semibold text-4xl text-foreground mb-4">{post.title}</h1>
+        <span className="enkaji-eyebrow mb-2 block">Journal</span>
+        <h1 className="font-display font-bold text-4xl tracking-tight text-foreground mb-4 md:text-5xl">{post.title}</h1>
         
         {post.featuredImage && (
-          <div className="relative w-full h-64 md:h-96 mb-8">
+          <div className="relative w-full h-64 md:h-96 mb-8 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
             <Image
               src={post.featuredImage}
               alt={post.title}
               fill
-              className="object-cover rounded-lg"
+              className="object-cover"
             />
           </div>
         )}

@@ -292,7 +292,7 @@ export function ReviewList({
 
       {loading && reviews.length > 0 && (
         <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-enkaji-ochre mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-enkaji-orange mx-auto"></div>
         </div>
       )}
     </div>

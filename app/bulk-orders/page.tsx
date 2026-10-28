@@ -13,7 +13,8 @@ export default function BulkOrdersPage() {
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="font-display text-4xl font-semibold text-foreground mb-4">Bulk Orders Made Simple</h1>
+          <p className="enkaji-eyebrow mb-3">Wholesale</p>
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground mb-4">Bulk Orders Made Simple</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Get competitive prices for large quantity orders. Connect directly with manufacturers and wholesalers across
             Kenya.
@@ -22,27 +23,27 @@ export default function BulkOrdersPage() {
 
         {/* Benefits Section */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <TrendingUp className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <TrendingUp className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <CardTitle>Better Prices</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-center">Get wholesale prices and volume discounts for bulk purchases</p>
             </CardContent>
           </Card>
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <Users className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <Users className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <CardTitle>Direct Connection</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-center">Connect directly with verified manufacturers and sellers</p>
             </CardContent>
           </Card>
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader className="text-center">
-              <Clock className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <Clock className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <CardTitle>Fast Response</CardTitle>
             </CardHeader>
             <CardContent>
@@ -53,7 +54,7 @@ export default function BulkOrdersPage() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Bulk Order Form */}
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="w-5 h-5" />
@@ -137,20 +138,20 @@ export default function BulkOrdersPage() {
                   rows={3}
                 />
               </div>
-              <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Submit Bulk Order Request</Button>
+              <Button className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Submit Bulk Order Request</Button>
             </CardContent>
           </Card>
 
           {/* How It Works */}
           <div className="space-y-6">
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle>How Bulk Orders Work</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-enkaji-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-enkaji-gold font-semibold">1</span>
+                  <div className="w-8 h-8 bg-enkaji-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-enkaji-orange font-semibold">1</span>
                   </div>
                   <div>
                     <h4 className="font-semibold">Submit Your Request</h4>
@@ -158,8 +159,8 @@ export default function BulkOrdersPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-enkaji-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-enkaji-gold font-semibold">2</span>
+                  <div className="w-8 h-8 bg-enkaji-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-enkaji-orange font-semibold">2</span>
                   </div>
                   <div>
                     <h4 className="font-semibold">Get Multiple Quotes</h4>
@@ -167,8 +168,8 @@ export default function BulkOrdersPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-enkaji-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-enkaji-gold font-semibold">3</span>
+                  <div className="w-8 h-8 bg-enkaji-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-enkaji-orange font-semibold">3</span>
                   </div>
                   <div>
                     <h4 className="font-semibold">Compare & Choose</h4>
@@ -176,8 +177,8 @@ export default function BulkOrdersPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-enkaji-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-enkaji-gold font-semibold">4</span>
+                  <div className="w-8 h-8 bg-enkaji-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-enkaji-orange font-semibold">4</span>
                   </div>
                   <div>
                     <h4 className="font-semibold">Secure Transaction</h4>
@@ -187,7 +188,7 @@ export default function BulkOrdersPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle>Popular Bulk Categories</CardTitle>
               </CardHeader>
@@ -205,32 +206,32 @@ export default function BulkOrdersPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card rounded-xl shadow-sm">
+            <Card className="border border-border bg-card rounded-2xl shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-enkaji-gold" />
+                  <CheckCircle className="w-5 h-5 text-enkaji-orange" />
                   Why Choose Our Platform
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                  <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                   <span className="text-sm">Verified sellers only</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                  <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                   <span className="text-sm">Trade assurance protection</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                  <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                   <span className="text-sm">Quality inspection services</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                  <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                   <span className="text-sm">Secure payment options</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                  <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                   <span className="text-sm">Logistics support</span>
                 </div>
               </CardContent>

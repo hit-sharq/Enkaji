@@ -6,13 +6,13 @@
 
 // Enkaji Brand Colors from web app
 const ENKAJI_COLORS = {
-  // Primary brand colors matching web app
-  primary: '#8B2635',      // Enkaji Maroon
-  primaryLight: '#A53E4D',
-  primaryDark: '#6B1D29',
+  // Primary brand colors matching web app (orange)
+  primary: '#F36A1B',      // Enkaji Orange
+  primaryLight: '#F7894A',
+  primaryDark: '#D4551A',
   secondary: '#F1F5F9',
-  accent: '#EAB308',      // Gold for ratings/features
-  gold: '#EAB308',
+  accent: '#F36A1B',      // Orange
+  gold: '#FBBF24',       // Amber for ratings/features
   success: '#10B981',
   error: '#EF4444',
   warning: '#F59E0B',
@@ -39,13 +39,13 @@ const ENKAJI_COLORS = {
 
 // Gradient definitions matching web app style
 export const Gradients = {
-  primary: ['#8B2635', '#A53E4D'],
+  primary: ['#F36A1B', '#F7894A'],
   surface: ['#FFFFFF', '#F8FAFC'],
-  hero: ['#8B2635', '#6B1D29'],
+  hero: ['#F36A1B', '#D4551A'],
 }
 
 // Placeholder image
-export const PLACEHOLDER_IMAGE = 'https://placehold.co/400x400/F5F5DC/8B2635?text=Enkaji'
+export const PLACEHOLDER_IMAGE = 'https://placehold.co/400x400/F5F5DC/F36A1B?text=Enkaji'
 
 export const Colors = ENKAJI_COLORS
 
@@ -96,7 +96,7 @@ export const Shadows = {
     elevation: 4,
   },
   large: {
-    shadowColor: '#8B2635',
+    shadowColor: '#F36A1B',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 12,

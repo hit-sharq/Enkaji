@@ -103,7 +103,7 @@ export function ReviewCard({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`${starSize} ${star <= rating ? "text-enkaji-gold fill-current" : "text-muted-foreground"}`}
+            className={`${starSize} ${star <= rating ? "text-enkaji-orange fill-current" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -112,10 +112,10 @@ export function ReviewCard({
 
   if (variant === "compact") {
     return (
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-card-hover transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-enkaji-ochre flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-enkaji-orange flex items-center justify-center text-white text-sm font-bold">
               {review.user.imageUrl ? (
                 <Image
                   src={review.user.imageUrl || "/placeholder.svg"}
@@ -153,12 +153,12 @@ export function ReviewCard({
 
   if (variant === "detailed") {
     return (
-      <Card className="hover:shadow-lg transition-shadow">
+      <Card className="hover:shadow-elevated transition-shadow">
         <CardContent className="p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-ochre flex items-center justify-center text-white font-bold">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-orange flex items-center justify-center text-white font-bold">
                 {review.user.imageUrl ? (
                   <Image
                     src={review.user.imageUrl || "/placeholder.svg"}
@@ -224,7 +224,7 @@ export function ReviewCard({
                     variant="link"
                     size="sm"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="p-0 h-auto text-enkaji-ochre"
+                    className="p-0 h-auto text-enkaji-orange"
                   >
                     {isExpanded ? "Show less" : "Read more"}
                   </Button>
@@ -264,7 +264,7 @@ export function ReviewCard({
                   size="sm"
                   onClick={handleHelpful}
                   disabled={helpfulLoading}
-                  className={`${review.isHelpful ? "text-enkaji-ochre" : ""}`}
+                  className={`${review.isHelpful ? "text-enkaji-orange" : ""}`}
                 >
                   <ThumbsUp className="w-4 h-4 mr-1" />
                   Helpful {review.helpfulCount ? `(${review.helpfulCount})` : ""}
@@ -283,10 +283,10 @@ export function ReviewCard({
 
   // Default variant
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-card-hover transition-shadow">
       <CardContent className="p-5">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-ochre flex items-center justify-center text-white font-bold">
+          <div className="w-12 h-12 rounded-full overflow-hidden bg-enkaji-orange flex items-center justify-center text-white font-bold">
             {review.user.imageUrl ? (
               <Image
                 src={review.user.imageUrl || "/placeholder.svg"}

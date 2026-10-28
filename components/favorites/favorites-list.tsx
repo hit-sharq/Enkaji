@@ -1,5 +1,8 @@
 import { db } from "@/lib/db"
 import { ProductCard } from "@/components/products/product-card"
+import { Heart } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 interface FavoritesListProps {
   userId: string
@@ -24,7 +27,22 @@ export default async function FavoritesList({ userId }: FavoritesListProps) {
   })
 
   if (favorites.length === 0) {
-    return <p className="text-muted-foreground">You have no favorites yet.</p>
+    return (
+      <div className="rounded-2xl border border-border bg-card py-16 text-center shadow-card">
+        <div className="mx-auto max-w-md">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-enkaji-orange/10">
+            <Heart className="h-8 w-8 text-enkaji-orange" />
+          </div>
+          <h2 className="font-display text-lg font-semibold mb-2">No favorites yet</h2>
+          <p className="text-muted-foreground mb-6">
+            Tap the heart on any product to save it here for later.
+          </p>
+          <Button asChild>
+            <Link href="/shop">Browse Products</Link>
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (

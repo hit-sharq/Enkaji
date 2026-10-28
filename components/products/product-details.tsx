@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Heart, ShoppingCart, Star, Minus, Plus, User, ArrowLeft } from "lucide-react"
+import { Heart, ShoppingCart, Star, Minus, Plus, User, ArrowLeft, MessageSquare } from "lucide-react"
+import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@clerk/nextjs"
@@ -16,6 +17,7 @@ import { ReviewCard } from "@/components/reviews/review-card"
 import { ProductReviewFormBanner } from "@/components/reviews/product-review-banner"
 import { SimilarProducts } from "./similar-products"
 import { csrfFetch } from "@/lib/csrf-client"
+import { formatDualCurrency } from "@/lib/currency"
 
 interface ProductDetailsProps {
   product: {
@@ -169,7 +171,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
            variant="ghost"
            size="sm"
            onClick={() => window.history.back()}
-           className="flex items-center gap-2"
+           className="flex items-center gap-2 rounded-xl text-muted-foreground hover:text-foreground"
          >
            <ArrowLeft className="w-4 h-4" />
            Back
@@ -179,7 +181,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
          {/* Product Images */}
          <div className="space-y-4">
-           <div className="aspect-square overflow-hidden rounded-xl border border-border bg-card">
+           <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-card shadow-card">
              <Image
                src={product.images[selectedImage] || "/placeholder.png"}
                alt={product.name}
@@ -192,13 +194,15 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
              />
            </div>
            {product.images.length > 1 && (
-             <div className="flex space-x-2 overflow-x-auto">
+             <div className="flex space-x-3 overflow-x-auto pb-1">
                {product.images.map((image, index) => (
                  <button
                    key={index}
                    onClick={() => setSelectedImage(index)}
-                   className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${
-                     selectedImage === index ? "border-enkaji-gold" : "border-border"
+                   className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 bg-card transition-all duration-200 ${
+                     selectedImage === index
+                       ? "border-enkaji-orange ring-2 ring-enkaji-orange/20"
+                       : "border-border hover:border-enkaji-orange/40"
                    }`}
                  >
                    <Image
@@ -220,7 +224,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
          {/* Product Info */}
          <div className="space-y-6">
            <div>
-             <Badge className="mb-2 bg-enkaji-gold/10 text-enkaji-gold border-enkaji-gold/20">{product.category.name}</Badge>
+             <Badge className="mb-2 bg-enkaji-orange/10 text-enkaji-orange border-enkaji-orange/20">{product.category.name}</Badge>
              <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">{product.name}</h1>
              <div className="flex items-center gap-4 mb-4">
                <div className="flex items-center">
@@ -228,7 +232,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
                    <Star
                      key={i}
                      className={`w-5 h-5 ${
-                       i < Math.floor(product.avgRating) ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground/40"
+                       i < Math.floor(product.avgRating) ? "text-enkaji-orange fill-enkaji-orange" : "text-muted-foreground/40"
                      }`}
                    />
                  ))}
@@ -237,64 +241,103 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
                  {product.avgRating.toFixed(1)} ({product._count.reviews} reviews)
                </span>
              </div>
-             <p className="text-3xl font-bold text-enkaji-gold">KES {product.price.toLocaleString()}</p>
-             <p className="text-muted-foreground leading-relaxed mt-4">{product.description}</p>
+              <p className="font-display text-3xl font-bold text-enkaji-orange">{formatDualCurrency(product.price)}</p>
+              <div className="mt-3 flex items-center gap-2">
+                {product.inventory > 0 ? (
+                  <Badge className="rounded-full border border-enkaji-orange/20 bg-enkaji-orange/10 text-enkaji-orange">
+                    In stock
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="rounded-full">
+                    Out of stock
+                  </Badge>
+                )}
+                <span className="text-sm text-muted-foreground">
+                  {product.inventory} unit{product.inventory === 1 ? "" : "s"} available
+                </span>
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                <div className="rounded-lg border border-border bg-muted/40 p-2 text-center">
+                  <div className="font-semibold text-foreground">10+ units</div>
+                  <div className="text-enkaji-orange font-bold">{formatDualCurrency(Math.round(product.price * 0.95))}</div>
+                </div>
+                <div className="rounded-lg border border-border bg-muted/40 p-2 text-center">
+                  <div className="font-semibold text-foreground">50+ units</div>
+                  <div className="text-enkaji-orange font-bold">{formatDualCurrency(Math.round(product.price * 0.9))}</div>
+                </div>
+                <div className="rounded-lg border border-border bg-muted/40 p-2 text-center">
+                  <div className="font-semibold text-foreground">100+ units</div>
+                  <div className="text-enkaji-orange font-bold">{formatDualCurrency(Math.round(product.price * 0.85))}</div>
+                </div>
+              </div>
+              <div className="mt-3 flex gap-4 text-xs text-muted-foreground">
+                <span>MOQ: <span className="font-semibold text-foreground">{(product as any).moq ?? 1}</span></span>
+                <span>Lead time: <span className="font-semibold text-foreground">{(product as any).leadTime ?? "3-5 days"}</span></span>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mt-4">{product.description}</p>
            </div>
 
            <Separator />
 
            {/* Quantity and Add to Cart */}
            <div className="space-y-4">
-             <div className="flex items-center space-x-4">
-               <span className="font-medium text-foreground">Quantity:</span>
-               <div className="flex items-center border border-border rounded-md bg-card">
-                 <Button
-                   variant="ghost"
-                   size="sm"
-                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                   disabled={quantity <= 1}
-                 >
-                   <Minus className="w-4 h-4" />
-                 </Button>
-                 <span className="px-4 py-2 min-w-[3rem] text-center text-foreground">{quantity}</span>
-                 <Button
-                   variant="ghost"
-                   size="sm"
-                   onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
-                   disabled={quantity >= product.inventory}
-                 >
-                   <Plus className="w-4 h-4" />
-                 </Button>
-               </div>
-               <span className="text-sm text-muted-foreground">{product.inventory} in stock</span>
-             </div>
+              <div className="flex items-center space-x-4">
+                <span className="font-medium text-foreground">Quantity:</span>
+                <div className="flex items-center rounded-xl border border-border bg-card">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                    className="rounded-l-xl"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </Button>
+                  <span className="px-4 py-2 min-w-[3rem] text-center text-foreground">{quantity}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
+                    disabled={quantity >= product.inventory}
+                    className="rounded-r-xl"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
 
-             <div className="flex space-x-4">
-               <Button
-                 onClick={handleAddToCart}
-                 disabled={isLoading || product.inventory === 0}
-                 className="flex-1 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold shadow-lg"
-                 size="lg"
-               >
-                 <ShoppingCart className="w-5 h-5 mr-2" />
-                 {isLoading ? "Adding..." : "Add to Cart"}
-               </Button>
-               <FavoriteButton
-                 productId={product.id}
-                 initialIsFavorite={isFavorite}
-                 size="lg"
-                 variant="outline"
-               />
-             </div>
+              <div className="flex space-x-4">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isLoading || product.inventory === 0}
+                  className="flex-1"
+                  size="lg"
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  {isLoading ? "Adding..." : "Add to Order"}
+                </Button>
+                <Button asChild size="lg" variant="outline" className="border-enkaji-orange/30 text-enkaji-orange hover:bg-enkaji-orange/5 bg-transparent">
+                  <Link href={`/rfq?product=${product.id}`}>
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    Request Quote
+                  </Link>
+                </Button>
+                <FavoriteButton
+                  productId={product.id}
+                  initialIsFavorite={isFavorite}
+                  size="lg"
+                  variant="outline"
+                />
+              </div>
            </div>
 
            <Separator />
 
-           {/* Seller Info */}
-           <Card>
-             <CardHeader>
-               <CardTitle className="flex items-center gap-3">
-                 <div className="w-12 h-12 rounded-full overflow-hidden bg-muted">
+            {/* Seller Info */}
+            <Card className="rounded-2xl border-border bg-card transition-all duration-300 hover:shadow-card-hover">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-muted ring-2 ring-enkaji-orange/20">
                    {product.seller.imageUrl ? (
                      <Image
                        src={product.seller.imageUrl || "/placeholder.png"}

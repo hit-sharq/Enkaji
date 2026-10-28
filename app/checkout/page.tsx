@@ -44,9 +44,9 @@ export default function CheckoutPage() {
                 <Card key={i}>
                   <CardContent className="p-6">
                     <div className="space-y-3">
-                      <div className="h-4 bg-muted rounded w-1/3 animate-pulse"></div>
-                      <div className="h-10 bg-muted rounded-md animate-pulse"></div>
-                      <div className="h-10 bg-muted rounded-md animate-pulse"></div>
+                      <div className="h-4 bg-muted rounded-xl w-1/3 animate-pulse"></div>
+                      <div className="h-10 bg-muted rounded-xl animate-pulse"></div>
+                      <div className="h-10 bg-muted rounded-xl animate-pulse"></div>
                     </div>
                   </CardContent>
                 </Card>

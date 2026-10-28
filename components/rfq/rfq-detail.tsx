@@ -30,7 +30,7 @@ export function RFQDetail({ rfq, session }: Props) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <Badge variant={rfq.status === 'open' ? 'default' : 'secondary'} className="bg-enkaji-green text-enkaji-green">
+            <Badge variant={rfq.status === 'open' ? 'default' : 'secondary'} className="bg-enkaji-orange text-enkaji-orange">
               {rfq.status.toUpperCase()}
             </Badge>
             <span className="text-sm text-muted-foreground">Created 2 days ago</span>
@@ -49,7 +49,7 @@ export function RFQDetail({ rfq, session }: Props) {
                 <span>Category: <strong>{rfq.category}</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-enkaji-gold rounded-full" />
+                <div className="w-3 h-3 bg-enkaji-orange rounded-full" />
                 <span>Budget: <strong>{rfq.budget}</strong></span>
               </div>
               <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export function RFQDetail({ rfq, session }: Props) {
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <div className="w-12 h-12 bg-gradient-to-r from-enkaji-gold to-enkaji-ochre rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-r from-enkaji-orange to-enkaji-orange rounded-xl flex items-center justify-center">
                           <Award className="w-6 h-6 text-white" />
                         </div>
                       </div>
@@ -108,7 +108,7 @@ export function RFQDetail({ rfq, session }: Props) {
                             <MessageSquare className="w-4 h-4 mr-1" />
                             Message
                           </Button>
-                          <Button size="sm" className="bg-enkaji-ochre hover:bg-enkaji-ochre/90">
+                          <Button size="sm" className="bg-enkaji-orange hover:bg-enkaji-orange/90">
                             Accept Quote
                           </Button>
                         </div>
@@ -126,7 +126,7 @@ export function RFQDetail({ rfq, session }: Props) {
             <Award className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2 text-foreground">No quotes yet</h3>
             <p className="text-muted-foreground mb-6">Artisans will start responding soon. Check back in 24-48 hours.</p>
-            <Button className="bg-enkaji-ochre hover:bg-enkaji-ochre/90">
+            <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90">
               Refresh Quotes
             </Button>
           </CardContent>
@@ -138,7 +138,7 @@ export function RFQDetail({ rfq, session }: Props) {
         <Button variant="outline" className="flex-1">
           Edit RFQ
         </Button>
-        <Button className="flex-1 bg-enkaji-ochre hover:bg-enkaji-ochre/90">
+        <Button className="flex-1 bg-enkaji-orange hover:bg-enkaji-orange/90">
           Close RFQ
         </Button>
       </div>

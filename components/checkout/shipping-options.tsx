@@ -155,10 +155,10 @@ export function ShippingOptions({
 
   if (!destination.country || !destination.city) {
     return (
-      <Card className="rounded-xl border border-border shadow-sm">
+      <Card className="rounded-2xl border border-border shadow-card">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
-            <Truck className="h-5 w-5 text-enkaji-gold" />
+            <Truck className="h-5 w-5 text-enkaji-orange" />
             Shipping Method
           </CardTitle>
         </CardHeader>
@@ -174,10 +174,10 @@ export function ShippingOptions({
 
   if (loading) {
     return (
-      <Card className="rounded-xl border border-border shadow-sm">
+      <Card className="rounded-2xl border border-border shadow-card">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
-            <Truck className="h-5 w-5 text-enkaji-gold" />
+            <Truck className="h-5 w-5 text-enkaji-orange" />
             Shipping Method
           </CardTitle>
         </CardHeader>
@@ -196,10 +196,10 @@ export function ShippingOptions({
 
   if (error) {
     return (
-      <Card className="rounded-xl border border-border shadow-sm">
+      <Card className="rounded-2xl border border-border shadow-card">
         <CardHeader>
           <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
-            <Truck className="h-5 w-5 text-enkaji-gold" />
+            <Truck className="h-5 w-5 text-enkaji-orange" />
             Shipping Method
           </CardTitle>
         </CardHeader>
@@ -220,10 +220,10 @@ export function ShippingOptions({
   }
 
   return (
-    <Card className="rounded-xl border border-border shadow-sm">
+    <Card className="rounded-2xl border border-border shadow-card">
       <CardHeader>
         <CardTitle className="font-display font-semibold text-foreground flex items-center gap-2">
-          <Truck className="h-5 w-5 text-enkaji-gold" />
+          <Truck className="h-5 w-5 text-enkaji-orange" />
           Shipping Method
         </CardTitle>
       </CardHeader>
@@ -231,8 +231,8 @@ export function ShippingOptions({
         {/* COD Toggle */}
         <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-enkaji-gold/10 flex items-center justify-center">
-              <span className="text-enkaji-gold text-sm font-bold">K</span>
+            <div className="w-9 h-9 rounded-full bg-enkaji-orange/10 flex items-center justify-center">
+              <span className="text-enkaji-orange text-sm font-bold">K</span>
             </div>
             <div>
               <p className="font-display font-semibold text-foreground">Cash on Delivery</p>
@@ -246,7 +246,7 @@ export function ShippingOptions({
               checked={showCod}
               onChange={handleCodToggle}
             />
-            <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-enkaji-gold/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-card after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-enkaji-gold"></div>
+            <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-enkaji-orange/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-card after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-enkaji-orange"></div>
           </label>
         </div>
 
@@ -260,8 +260,8 @@ export function ShippingOptions({
                 key={option.id}
                 className={`relative flex items-start p-4 border rounded-xl cursor-pointer transition-all ${
                   selectedOption === option.id
-                    ? "border-enkaji-gold bg-enkaji-gold/10"
-                    : "border-border hover:border-enkaji-gold/50"
+                    ? "border-enkaji-orange bg-enkaji-orange/10"
+                    : "border-border hover:border-enkaji-orange/50"
                 }`}
               >
                 <RadioGroupItem
@@ -275,7 +275,7 @@ export function ShippingOptions({
                       <div className="flex items-center gap-2">
                         <span className="font-display font-semibold">{option.service.name}</span>
                         {option.isRecommended && (
-                         <span className="px-2 py-0.5 bg-enkaji-gold/10 text-enkaji-gold text-xs rounded-full">
+                         <span className="px-2 py-0.5 bg-enkaji-orange/10 text-enkaji-orange text-xs rounded-full">
                              Recommended
                            </span>
                          )}
@@ -284,7 +284,7 @@ export function ShippingOptions({
                        <p className="text-xs text-muted-foreground mt-1">{option.service.description}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-display font-bold text-xl text-enkaji-gold">{option.formattedPrice}</p>
+                      <p className="font-display font-bold text-xl text-enkaji-orange">{option.formattedPrice}</p>
                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                          <Clock className="h-3 w-3" />
                          {option.formattedDelivery}
@@ -298,7 +298,7 @@ export function ShippingOptions({
                   </div>
                   
                   {option.codSupported && showCod && (
-                    <div className="flex items-center gap-2 mt-2 text-sm text-enkaji-gold">
+                    <div className="flex items-center gap-2 mt-2 text-sm text-enkaji-orange">
                        <Shield className="h-3 w-3" />
                       <span>Cash on Delivery available</span>
                     </div>

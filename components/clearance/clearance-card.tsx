@@ -68,7 +68,7 @@ export function ClearanceCard({ product }: { product: ClearanceProduct }) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -6 }}
-      className="min-w-[320px] max-w-[320px] overflow-hidden rounded-[32px] border border-card/10 bg-card/10 shadow-2xl shadow-enkaji-ink/10 backdrop-blur-xl"
+      className="min-w-[320px] max-w-[320px] overflow-hidden rounded-2xl border border-card/10 bg-card/10 shadow-2xl shadow-enkaji-ink/10 backdrop-blur-xl"
     >
       <div className="relative h-64 overflow-hidden">
         <Image
@@ -79,10 +79,10 @@ export function ClearanceCard({ product }: { product: ClearanceProduct }) {
           sizes="(max-width: 768px) 100vw, 320px"
         />
         <div className="absolute inset-x-0 top-4 flex items-center justify-between px-4">
-          <Badge className="bg-enkaji-ochre text-white">{reason}</Badge>
-          <Badge className="bg-enkaji-forest text-white">{discount}% OFF</Badge>
+          <Badge className="bg-enkaji-orange text-white">{reason}</Badge>
+          <Badge className="bg-enkaji-charcoal text-white">{discount}% OFF</Badge>
         </div>
-        <div className="absolute bottom-4 left-4 bg-black/50 px-3 py-1 rounded-full text-xs uppercase tracking-[0.15em] text-white shadow-lg shadow-black/20">
+        <div className="absolute bottom-4 left-4 bg-black/50 px-3 py-1 rounded-full text-xs uppercase tracking-[0.15em] text-white shadow-elevated shadow-black/20">
           {stockLabel}
         </div>
       </div>
@@ -90,10 +90,10 @@ export function ClearanceCard({ product }: { product: ClearanceProduct }) {
       <div className="p-5 space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-enkaji-ochre">{categoryName || "Buy Now"}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-enkaji-orange">{categoryName || "Buy Now"}</p>
             <h3 className="text-xl font-semibold text-enkaji-ink mt-1">{product.name}</h3>
           </div>
-          <div className="rounded-3xl bg-enkaji-ink/95 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-enkaji-ink/20">
+          <div className="rounded-xl bg-enkaji-ink/95 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-elevated shadow-enkaji-ink/20">
             {product.inventory} left
           </div>
         </div>
@@ -106,7 +106,7 @@ export function ClearanceCard({ product }: { product: ClearanceProduct }) {
           <p className="text-sm text-muted-foreground">Save KES {(product.comparePrice ? product.comparePrice - product.price : 0).toLocaleString()}</p>
         </div>
 
-        <div className="grid gap-2 rounded-3xl bg-card/70 p-4 text-enkaji-ink shadow-inner shadow-enkaji-ink/5">
+        <div className="grid gap-2 rounded-xl bg-card/70 p-4 text-enkaji-ink shadow-inner shadow-enkaji-ink/5">
           <div className="flex items-center gap-2 text-sm font-medium text-enkaji-ink">
             <Clock className="h-4 w-4" />
             <span>Ends in {countdown}</span>
@@ -118,7 +118,7 @@ export function ClearanceCard({ product }: { product: ClearanceProduct }) {
         </div>
 
         <Link href={`/products/${product.id}`} className="block">
-          <Button className="w-full bg-enkaji-ink text-white hover:bg-enkaji-forest">
+          <Button className="w-full bg-enkaji-ink text-white hover:bg-enkaji-charcoal">
             View Deal
           </Button>
         </Link>

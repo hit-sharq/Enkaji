@@ -114,13 +114,13 @@ export function PaymentAnalytics() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-orange" />
       case "PROCESSING":
         return <Clock className="h-4 w-4 text-chart-4" />
       case "REJECTED":
         return <XCircle className="h-4 w-4 text-enkaji-red" />
       default:
-        return <Clock className="h-4 w-4 text-enkaji-gold" />
+        return <Clock className="h-4 w-4 text-enkaji-orange" />
     }
   }
 
@@ -246,7 +246,7 @@ export function PaymentAnalytics() {
                             <Button
                               size="sm"
                               onClick={() => handlePayoutAction(request.id, "COMPLETED")}
-                              className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold"
+                              className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold"
                             >
                               Approve
                             </Button>

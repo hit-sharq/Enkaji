@@ -12,7 +12,7 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <p className="enkaji-eyebrow mb-3">Community</p>
-            <h1 className="font-playfair font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
               What Our Community Says
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -39,30 +39,30 @@ export default function TestimonialsPage() {
       <section className="py-12 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <Card className="text-center border border-border bg-card rounded-xl shadow-sm">
+            <Card className="text-center border border-border bg-card rounded-2xl shadow-card">
               <CardContent className="p-6">
-                <MessageSquare className="w-8 h-8 text-enkaji-gold mx-auto mb-4" />
+                <MessageSquare className="w-8 h-8 text-enkaji-orange mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">500+</div>
                 <p className="text-muted-foreground">Happy Customers</p>
               </CardContent>
             </Card>
-            <Card className="text-center border border-border bg-card rounded-xl shadow-sm">
+            <Card className="text-center border border-border bg-card rounded-2xl shadow-card">
               <CardContent className="p-6">
-                <Star className="w-8 h-8 text-enkaji-gold mx-auto mb-4" />
+                <Star className="w-8 h-8 text-enkaji-orange mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">4.8</div>
                 <p className="text-muted-foreground">Average Rating</p>
               </CardContent>
             </Card>
-            <Card className="text-center border border-border bg-card rounded-xl shadow-sm">
+            <Card className="text-center border border-border bg-card rounded-2xl shadow-card">
               <CardContent className="p-6">
-                <Users className="w-8 h-8 text-enkaji-gold mx-auto mb-4" />
+                <Users className="w-8 h-8 text-enkaji-orange mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">50+</div>
                 <p className="text-muted-foreground">Verified Reviews</p>
               </CardContent>
             </Card>
-            <Card className="text-center border border-border bg-card rounded-xl shadow-sm">
+            <Card className="text-center border border-border bg-card rounded-2xl shadow-card">
               <CardContent className="p-6">
-                <Award className="w-8 h-8 text-enkaji-gold mx-auto mb-4" />
+                <Award className="w-8 h-8 text-enkaji-orange mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">15+</div>
                 <p className="text-muted-foreground">Industry Awards</p>
               </CardContent>
@@ -100,11 +100,11 @@ export default function TestimonialsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/testimonials/submit">
-              <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 Submit Your Testimonial
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10" asChild>
+            <Button variant="outline" size="lg" className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10" asChild>
               <a href="/contact">Get in Touch</a>
             </Button>
           </div>
@@ -116,7 +116,7 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="border border-border bg-card rounded-xl shadow-sm">
+              <Card className="border border-border bg-card rounded-2xl shadow-card">
                 <CardContent className="p-6">
                   <h3 className="font-display font-semibold text-xl text-foreground mb-4">How We Collect Testimonials</h3>
                   <p className="text-muted-foreground mb-4">
@@ -132,7 +132,7 @@ export default function TestimonialsPage() {
                   </ul>
                 </CardContent>
               </Card>
-              <Card className="border border-border bg-card rounded-xl shadow-sm">
+              <Card className="border border-border bg-card rounded-2xl shadow-card">
                 <CardContent className="p-6">
                   <h3 className="font-display font-semibold text-xl text-foreground mb-4">Submit Your Experience</h3>
                   <p className="text-muted-foreground mb-4">

@@ -8,7 +8,8 @@ export default function RFQPage() {
       <main className="container mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h1 className="font-display text-4xl font-semibold text-foreground mb-4">Request for Quotation (RFQ)</h1>
+          <p className="enkaji-eyebrow mb-3">Sourcing</p>
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground mb-4">Request for Quotation (RFQ)</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Can't find what you're looking for? Submit an RFQ and let Kenyan artisans compete to fulfill your
             requirements with the best prices and quality.
@@ -17,33 +18,33 @@ export default function RFQPage() {
 
         {/* Benefits Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-6 text-center">
-              <Users className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <Users className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Multiple Quotes</h3>
               <p className="text-sm text-muted-foreground">Get competitive quotes from multiple artisans</p>
             </CardContent>
           </Card>
 
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-6 text-center">
-              <Clock className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <Clock className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Quick Response</h3>
               <p className="text-sm text-muted-foreground">Receive quotes within 24-48 hours</p>
             </CardContent>
           </Card>
 
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-6 text-center">
-              <CheckCircle className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <CheckCircle className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Custom Solutions</h3>
               <p className="text-sm text-muted-foreground">Get exactly what you need, made to order</p>
             </CardContent>
           </Card>
 
-          <Card className="border border-border bg-card rounded-xl shadow-sm">
+          <Card className="border border-border bg-card rounded-2xl shadow-card">
             <CardContent className="p-6 text-center">
-              <Shield className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+              <Shield className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Verified Artisans</h3>
               <p className="text-sm text-muted-foreground">All quotes from verified, trusted artisans</p>
             </CardContent>
@@ -58,8 +59,8 @@ export default function RFQPage() {
           <h2 className="font-display text-3xl font-semibold text-center mb-8">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-enkaji-gold">1</span>
+              <div className="w-16 h-16 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-enkaji-orange">1</span>
               </div>
               <h3 className="font-semibold mb-2">Submit Your RFQ</h3>
               <p className="text-muted-foreground">
@@ -68,8 +69,8 @@ export default function RFQPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-enkaji-gold">2</span>
+              <div className="w-16 h-16 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-enkaji-orange">2</span>
               </div>
               <h3 className="font-semibold mb-2">Receive Quotes</h3>
               <p className="text-muted-foreground">
@@ -78,8 +79,8 @@ export default function RFQPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-enkaji-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-enkaji-gold">3</span>
+              <div className="w-16 h-16 bg-enkaji-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-enkaji-orange">3</span>
               </div>
               <h3 className="font-semibold mb-2">Choose & Order</h3>
               <p className="text-muted-foreground">

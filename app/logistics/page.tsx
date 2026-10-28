@@ -12,13 +12,13 @@ export default function LogisticsPage() {
         <section className="bg-enkaji-ink text-enkaji-ivory py-20">
           <div className="container mx-auto px-4 text-center">
             <p className="enkaji-eyebrow mb-4">Logistics</p>
-            <Truck className="w-20 h-20 mx-auto mb-6 text-enkaji-gold/70" />
+            <Truck className="w-20 h-20 mx-auto mb-6 text-enkaji-orange/70" />
             <h1 className="font-display font-semibold text-5xl mb-6">Logistics Solutions</h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto text-enkaji-ivory/80">
               Comprehensive logistics and supply chain solutions to get your products where they need to be, when they
               need to be there.
             </p>
-            <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+            <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
               Get Shipping Quote
             </Button>
           </div>
@@ -36,177 +36,177 @@ export default function LogisticsPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <Truck className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <Truck className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Local Delivery</CardTitle>
                   <CardDescription>Fast and reliable delivery within Kenya</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Same-day delivery in major cities
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Next-day delivery nationwide
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Real-time tracking
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Proof of delivery
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Book Delivery</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Book Delivery</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <Package className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <Package className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Warehousing</CardTitle>
                   <CardDescription>Secure storage and inventory management</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Climate-controlled facilities
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       24/7 security monitoring
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Inventory management system
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Pick and pack services
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">View Facilities</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">View Facilities</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <Plane className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <Plane className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Air Freight</CardTitle>
                   <CardDescription>Fast international shipping solutions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Express delivery worldwide
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Customs clearance support
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Temperature-controlled options
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Door-to-door service
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Get Air Quote</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Get Air Quote</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <Ship className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <Ship className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Sea Freight</CardTitle>
                   <CardDescription>Cost-effective ocean shipping</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Full container loads (FCL)
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Less than container loads (LCL)
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Port-to-port service
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Cargo insurance
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Get Sea Quote</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Get Sea Quote</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <MapPin className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <MapPin className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Last Mile Delivery</CardTitle>
                   <CardDescription>Final delivery to your customers</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Flexible delivery windows
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       SMS/email notifications
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Cash on delivery (COD)
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Return handling
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Setup Delivery</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Setup Delivery</Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-md transition-shadow border border-border bg-card rounded-xl shadow-sm">
+              <Card className="hover:shadow-card-hover transition-shadow border border-border bg-card rounded-2xl shadow-card">
                 <CardHeader className="text-center">
-                  <BarChart3 className="w-12 h-12 text-enkaji-gold mx-auto mb-4" />
+                  <BarChart3 className="w-12 h-12 text-enkaji-orange mx-auto mb-4" />
                   <CardTitle>Supply Chain Analytics</CardTitle>
                   <CardDescription>Data-driven logistics optimization</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Performance dashboards
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Cost optimization reports
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Delivery performance metrics
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-enkaji-gold" />
+                      <CheckCircle className="w-4 h-4 text-enkaji-orange" />
                       Predictive analytics
                     </li>
                   </ul>
-                  <Button className="w-full mt-4 bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">View Analytics</Button>
+                  <Button className="w-full mt-4 bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">View Analytics</Button>
                 </CardContent>
               </Card>
             </div>
@@ -285,7 +285,7 @@ export default function LogisticsPage() {
                           </div>
                         </div>
                       </div>
-                      <Button className="w-full bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">Book Shipment</Button>
+                      <Button className="w-full bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Book Shipment</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -310,7 +310,7 @@ export default function LogisticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-enkaji-gold">47</div>
+                    <div className="text-3xl font-bold text-enkaji-orange">47</div>
                     <p className="text-muted-foreground">Counties Covered</p>
                   </div>
                   <ul className="text-sm space-y-1">
@@ -328,7 +328,7 @@ export default function LogisticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-enkaji-gold">15</div>
+                    <div className="text-3xl font-bold text-enkaji-orange">15</div>
                     <p className="text-muted-foreground">East African Countries</p>
                   </div>
                   <ul className="text-sm space-y-1">
@@ -346,7 +346,7 @@ export default function LogisticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-enkaji-gold">200+</div>
+                    <div className="text-3xl font-bold text-enkaji-orange">200+</div>
                     <p className="text-muted-foreground">Countries Worldwide</p>
                   </div>
                   <ul className="text-sm space-y-1">
@@ -369,13 +369,13 @@ export default function LogisticsPage() {
               Let us handle your logistics so you can focus on growing your business
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+              <Button size="lg" className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                 Get Started
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-enkaji-gold/50 text-enkaji-gold hover:bg-enkaji-gold/10 bg-transparent"
+                className="border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10 bg-transparent"
               >
                 Contact Sales
               </Button>

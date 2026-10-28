@@ -297,7 +297,7 @@ export function TestimonialsManagement() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 ${star <= rating ? "text-enkaji-gold fill-enkaji-gold" : "text-muted-foreground"}`}
+            className={`w-4 h-4 ${star <= rating ? "text-enkaji-orange fill-enkaji-orange" : "text-muted-foreground"}`}
           />
         ))}
       </div>
@@ -513,7 +513,7 @@ export function TestimonialsManagement() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-enkaji-gold text-enkaji-ink font-bold">
+                              <div className="w-full h-full flex items-center justify-center bg-enkaji-orange text-enkaji-ink font-bold">
                                 {testimonial.name.charAt(0)}
                               </div>
                             )}
@@ -566,7 +566,7 @@ export function TestimonialsManagement() {
                             size="sm"
                             onClick={() => handleToggleFeatured(testimonial.id, !testimonial.isFeatured)}
                           >
-                            <Award className={`w-4 h-4 ${testimonial.isFeatured ? "text-enkaji-gold" : ""}`} />
+                            <Award className={`w-4 h-4 ${testimonial.isFeatured ? "text-enkaji-orange" : ""}`} />
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -609,7 +609,7 @@ export function TestimonialsManagement() {
             <CardContent>
               <div className="space-y-4">
                 {reviews.map((review) => (
-                  <Card key={review.id} className="border-l-4 border-l-enkaji-green">
+                  <Card key={review.id} className="border-l-4 border-l-enkaji-orange">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 space-y-2">

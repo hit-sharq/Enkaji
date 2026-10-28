@@ -170,7 +170,8 @@ const handlePayment = async () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Subscription Management</h1>
+        <span className="enkaji-eyebrow mb-2 block">Billing</span>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Subscription Management</h1>
         <p className="text-muted-foreground mt-2">
           Manage your seller subscription and billing
         </p>
@@ -216,13 +217,13 @@ const handlePayment = async () => {
 
       {/* Subscription Warning */}
       {(!subscription || !isActive) && (
-        <Card className="mb-8 border-enkaji-gold bg-enkaji-gold">
+        <Card className="mb-8 border-enkaji-orange bg-enkaji-orange">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-enkaji-gold" />
+              <AlertCircle className="h-5 w-5 text-enkaji-orange" />
               <div>
-                <p className="font-semibold text-enkaji-gold">No Active Subscription</p>
-                <p className="text-sm text-enkaji-gold">
+                <p className="font-semibold text-enkaji-orange">No Active Subscription</p>
+                <p className="text-sm text-enkaji-orange">
                   You need an active subscription to create products. Please subscribe to a plan below.
                 </p>
               </div>
@@ -240,19 +241,19 @@ const handlePayment = async () => {
             <Card 
               key={planType} 
               className={`relative min-w-[280px] md:min-w-0 snap-center ${
-                currentPlan === planType && isActive ? 'border-primary shadow-md shadow-primary/20' : ''
+                currentPlan === planType && isActive ? 'border-primary shadow-card-hover shadow-primary/20' : ''
               }`}
             >
               {currentPlan === planType && isActive && (
-                <Badge className="absolute -top-2 right-4 bg-enkaji-green">Current Plan</Badge>
+                <Badge className="absolute -top-2 right-4 bg-enkaji-orange">Current Plan</Badge>
               )}
               {planType === 'PREMIUM' && (
-                <Badge className="absolute -top-2 left-4 bg-enkaji-gold">Popular</Badge>
+                <Badge className="absolute -top-2 left-4 bg-enkaji-orange">Popular</Badge>
               )}
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   {planType === 'BASIC' && <Package className="h-5 w-5" />}
-                  {planType === 'PREMIUM' && <CreditCard className="h-5 w-5 text-enkaji-gold" />}
+                  {planType === 'PREMIUM' && <CreditCard className="h-5 w-5 text-enkaji-orange" />}
                   {planType === 'ENTERPRISE' && <AlertCircle className="h-5 w-5" />}
                   {plan.name}
                 </CardTitle>
@@ -267,7 +268,7 @@ const handlePayment = async () => {
                 <ul className="space-y-2 mb-4">
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <Check className="h-4 w-4 text-enkaji-green mt-0.5 flex-shrink-0" />
+                      <Check className="h-4 w-4 text-enkaji-orange mt-0.5 flex-shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}

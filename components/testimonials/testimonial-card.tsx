@@ -35,29 +35,29 @@ export function TestimonialCard({ testimonial, className = "" }: TestimonialCard
   const isVerified = true
 
   return (
-    <Card className={`bg-card shadow-lg hover:shadow-xl transition-all duration-300 enkaji-card-hover ${className}`}>
+    <Card className={`bg-card shadow-elevated hover:shadow-xl transition-all duration-300 enkaji-card-hover ${className}`}>
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
-          <Quote className="w-8 h-8 text-enkaji-ochre mb-2" />
+          <Quote className="w-8 h-8 text-enkaji-orange mb-2" />
         </div>
 
         <p className="text-enkaji-ink mb-6 italic line-clamp-4">"{testimonial.message}"</p>
 
         <div className="flex items-center mb-4">
           {[...Array(rating)].map((_, i) => (
-            <Star key={i} className="w-4 h-4 text-enkaji-gold fill-current" />
+            <Star key={i} className="w-4 h-4 text-enkaji-orange fill-current" />
           ))}
         </div>
 
         <div className="flex items-center">
-          <div className="w-12 h-12 rounded-full mr-4 overflow-hidden bg-gradient-to-br from-enkaji-gold to-enkaji-ochre flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full mr-4 overflow-hidden bg-gradient-to-br from-enkaji-orange to-enkaji-orange flex items-center justify-center">
             <span className="text-white font-bold text-lg">{displayName.charAt(0)}</span>
           </div>
           <div className="flex-1">
             <h4 className="font-semibold text-enkaji-ink flex items-center gap-2">
               {displayName}
               {isVerified && (
-                <Verified className="w-4 h-4 text-enkaji-green" />
+                <Verified className="w-4 h-4 text-enkaji-orange" />
               )}
             </h4>
             <p className="text-sm text-muted-foreground">

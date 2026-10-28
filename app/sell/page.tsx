@@ -62,7 +62,8 @@ export default async function SellPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-4">Start Selling on Enkaji Trade Kenya</h1>
+            <span className="enkaji-eyebrow mb-2 block">Sell on Enkaji</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground mb-4 md:text-4xl">Start Selling on Enkaji Trade Kenya</h1>
             <p className="text-muted-foreground">
               Join thousands of successful sellers across Kenya. Choose a plan that works for you and start listing your
               products today.
@@ -74,9 +75,9 @@ export default async function SellPage() {
             <h2 className="text-xl font-semibold text-center mb-6">Choose Your Plan</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {subscriptionPlans.map((plan) => (
-                <Card key={plan.name} className={plan.popular ? "border-enkaji-gold border-2 relative" : ""}>
+                <Card key={plan.name} className={plan.popular ? "border-enkaji-orange border-2 relative" : ""}>
                   {plan.popular && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-enkaji-ochre">Most Popular</Badge>
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-enkaji-orange">Most Popular</Badge>
                   )}
                   <CardHeader className="text-center">
                     <CardTitle>{plan.name}</CardTitle>
@@ -90,7 +91,7 @@ export default async function SellPage() {
                     <ul className="space-y-2">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start text-sm">
-                          <Check className="h-4 w-4 text-enkaji-green mr-2 mt-0.5 flex-shrink-0" />
+                          <Check className="h-4 w-4 text-enkaji-orange mr-2 mt-0.5 flex-shrink-0" />
                           <span>{feature}</span>
                         </li>
                       ))}

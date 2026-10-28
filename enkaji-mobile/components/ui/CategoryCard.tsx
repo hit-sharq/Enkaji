@@ -16,7 +16,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           <Image 
             source={{ uri: category.imageUrl }} 
             style={styles.image} 
-defaultSource={{ uri: 'https://placehold.co/64x64/F1F5F9/8B2635?text=? ' }}
+defaultSource={{ uri: 'https://placehold.co/64x64/F1F5F9/F36A1B?text=? ' }}
           />
         </View>
         <View style={styles.content}>

@@ -24,11 +24,11 @@ interface RoleManagementProps {
 
 const ROLE_COLORS = {
   ADMIN: "bg-enkaji-red text-enkaji-red",
-  MODERATOR: "bg-enkaji-ochre/10 text-enkaji-brown",
+  MODERATOR: "bg-enkaji-orange/10 text-enkaji-brown",
   CONTENT_MANAGER: "bg-chart-5 text-chart-5",
-  FINANCE_MANAGER: "bg-enkaji-green text-enkaji-green",
+  FINANCE_MANAGER: "bg-enkaji-orange text-enkaji-orange",
   REGIONAL_MANAGER: "bg-chart-4 text-chart-4",
-  SUPPORT_AGENT: "bg-enkaji-gold/10 text-enkaji-ink",
+  SUPPORT_AGENT: "bg-enkaji-orange/10 text-enkaji-ink",
   SELLER: "bg-chart-4 text-chart-4",
   ARTISAN: "bg-chart-5 text-chart-5",
   BUYER: "bg-muted text-foreground",
@@ -114,7 +114,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Shield className="h-5 w-5 text-enkaji-gold" />
+        <Shield className="h-5 w-5 text-enkaji-orange" />
         <h2 className="font-display text-2xl font-semibold text-foreground">Role Management</h2>
         <div className="text-sm text-muted-foreground ml-auto">Manage user roles and permissions</div>
       </div>
@@ -128,7 +128,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
             console.log(`User ${user.id}: current=${user.role}, selected=${selectedRole}, hasChanges=${hasChanges}`)
 
             return (
-              <Card key={user.id} className="hover:shadow-md transition-shadow">
+              <Card key={user.id} className="hover:shadow-card-hover transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -188,7 +188,7 @@ export function RoleManagement({ users }: RoleManagementProps) {
                     </div>
 
                     {hasChanges && (
-                      <div className="text-xs text-enkaji-gold bg-enkaji-gold/10 p-2 rounded">
+                      <div className="text-xs text-enkaji-orange bg-enkaji-orange/10 p-2 rounded">
                         Role will change from <strong>{user.role}</strong> to <strong>{selectedRole}</strong>
                       </div>
                     )}

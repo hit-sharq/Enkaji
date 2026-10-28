@@ -77,7 +77,7 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
   if (loading) {
     return (
       <div className={`flex justify-center items-center py-16 ${className}`}>
-        <Loader2 className="w-8 h-8 animate-spin text-enkaji-ochre" />
+        <Loader2 className="w-8 h-8 animate-spin text-enkaji-orange" />
         <span className="ml-2 text-muted-foreground">Loading testimonials...</span>
       </div>
     )
@@ -99,7 +99,7 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
     return (
       <div className={`text-center py-16 ${className}`}>
         <div className="max-w-md mx-auto">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-enkaji-gold to-enkaji-ochre flex items-center justify-center">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-enkaji-orange to-enkaji-orange flex items-center justify-center">
             <svg
               className="w-12 h-12 text-white"
               fill="none"
@@ -120,7 +120,7 @@ export function TestimonialsGrid({ className = "", showAll = true, limit }: Test
           </p>
           <a
             href="/testimonials/submit"
-            className="inline-flex items-center px-6 py-3 bg-enkaji-gold text-enkaji-ink rounded-lg hover:bg-enkaji-gold/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-enkaji-orange text-enkaji-ink rounded-lg hover:bg-enkaji-orange/90 transition-colors"
           >
             Be the First to Share Your Story
           </a>

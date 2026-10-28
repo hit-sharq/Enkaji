@@ -95,7 +95,7 @@ export default function ShippingInfoPage() {
                         <Card>
                           <CardHeader>
                             <CardTitle className="text-base">Same Day</CardTitle>
-                            <Badge className="bg-enkaji-gold">Within 6 Hours</Badge>
+                            <Badge className="bg-enkaji-orange">Within 6 Hours</Badge>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-2 text-sm">
@@ -228,7 +228,7 @@ export default function ShippingInfoPage() {
                             <h4 className="font-semibold">Same Day Delivery</h4>
                             <p className="text-sm text-muted-foreground">Available in Nairobi, Mombasa, Kisumu</p>
                           </div>
-                          <Badge className="bg-enkaji-green">2-6 hours</Badge>
+                          <Badge className="bg-enkaji-orange">2-6 hours</Badge>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                           <div>
@@ -288,12 +288,12 @@ export default function ShippingInfoPage() {
                       </div>
                     </div>
 
-                    <div className="bg-enkaji-gold p-4 rounded-lg">
+                    <div className="bg-enkaji-orange p-4 rounded-lg">
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-enkaji-gold mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-enkaji-orange mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-enkaji-gold">Delivery Time Notes</h4>
-                          <ul className="text-sm text-enkaji-gold mt-2 space-y-1">
+                          <h4 className="font-semibold text-enkaji-orange">Delivery Time Notes</h4>
+                          <ul className="text-sm text-enkaji-orange mt-2 space-y-1">
                             <li>
                               • Delivery times are estimates and may vary due to weather, customs, or other factors
                             </li>
@@ -324,7 +324,7 @@ export default function ShippingInfoPage() {
                       <h3 className="text-lg font-semibold mb-4">Kenya Coverage</h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-enkaji-green mb-3">✓ Full Service Areas</h4>
+                          <h4 className="font-semibold text-enkaji-orange mb-3">✓ Full Service Areas</h4>
                           <div className="space-y-2 text-sm">
                             <p>
                               <strong>Major Cities:</strong> Nairobi, Mombasa, Kisumu, Nakuru, Eldoret, Thika, Malindi
@@ -338,7 +338,7 @@ export default function ShippingInfoPage() {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-enkaji-ochre mb-3">⚠ Limited Service Areas</h4>
+                          <h4 className="font-semibold text-enkaji-orange mb-3">⚠ Limited Service Areas</h4>
                           <div className="space-y-2 text-sm">
                             <p>
                               <strong>Remote Areas:</strong> Some rural and hard-to-reach locations
@@ -359,7 +359,7 @@ export default function ShippingInfoPage() {
                       <div className="grid md:grid-cols-3 gap-4">
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-base text-enkaji-green">East Africa</CardTitle>
+                            <CardTitle className="text-base text-enkaji-orange">East Africa</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="text-sm space-y-1">
@@ -430,26 +430,26 @@ export default function ShippingInfoPage() {
                       <h3 className="text-lg font-semibold mb-4">Packaging Requirements</h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-enkaji-green mb-3">✓ Recommended Practices</h4>
+                          <h4 className="font-semibold text-enkaji-orange mb-3">✓ Recommended Practices</h4>
                           <ul className="text-sm space-y-2">
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Use sturdy boxes or padded envelopes
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Wrap fragile items in bubble wrap
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Fill empty spaces with packing material
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Seal all edges with strong tape
                             </li>
                             <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-enkaji-green mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-enkaji-orange mt-0.5" />
                               Label clearly with permanent markers
                             </li>
                           </ul>
@@ -570,14 +570,14 @@ export default function ShippingInfoPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                          <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
+                          <div className="w-3 h-3 bg-enkaji-orange rounded-full"></div>
                           <div>
                             <p className="font-semibold">Package Collected</p>
                             <p className="text-sm text-muted-foreground">Package picked up from sender</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                          <div className="w-3 h-3 bg-enkaji-gold rounded-full"></div>
+                          <div className="w-3 h-3 bg-enkaji-orange rounded-full"></div>
                           <div>
                             <p className="font-semibold">In Transit</p>
                             <p className="text-sm text-muted-foreground">Package is on its way to destination</p>
@@ -591,7 +591,7 @@ export default function ShippingInfoPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                          <div className="w-3 h-3 bg-enkaji-green rounded-full"></div>
+                          <div className="w-3 h-3 bg-enkaji-orange rounded-full"></div>
                           <div>
                             <p className="font-semibold">Delivered</p>
                             <p className="text-sm text-muted-foreground">Package successfully delivered</p>
@@ -614,7 +614,7 @@ export default function ShippingInfoPage() {
                           <CardContent className="pt-6">
                             <div className="space-y-3">
                               <div className="flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-enkaji-green" />
+                                <CheckCircle className="w-5 h-5 text-enkaji-orange" />
                                 <span className="font-semibold">Proof of Delivery</span>
                               </div>
                               <ul className="text-sm text-muted-foreground space-y-1 ml-7">

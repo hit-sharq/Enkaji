@@ -1,6 +1,6 @@
 import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Inter, Sora } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -14,9 +14,17 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   preload: true,
+  variable: "--font-sans",
 })
 
-export const viewport = {
+const sora = Sora({
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  variable: "--font-display",
+})
+
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -24,38 +32,32 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Enkaji Trade Kenya - Kenya's Leading Marketplace",
-  description: "Connect with thousands of verified businesses across Kenya.",
+  title: "Enkaji Trade Kenya | Good stock. Better value.",
+  description:
+    "A Kenyan business marketplace for surplus stock, clear terms and verified trade. Connect with verified sellers, discover quality products, and grow your business.",
+  generator: "v0.app",
   icons: {
     icon: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <head>
-          <link rel="icon" href="/favicon.ico" sizes="any" />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
-          />
-        </head>
-        <body className={`${inter.className} antialiased`}>
+      <html lang="en" className={`${inter.variable} ${sora.variable}`}>
+        <body className="antialiased">
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
             <CartProvider>
               <Header />
               <main className="min-h-screen">{children}</main>
               <Footer />
-
               <Toaster />
               <ShadcnToaster />
-
             </CartProvider>
           </ThemeProvider>
         </body>

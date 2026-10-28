@@ -149,11 +149,11 @@ export function PayoutDashboard() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "PAID":
-        return <CheckCircle className="h-4 w-4 text-enkaji-green" />
+        return <CheckCircle className="h-4 w-4 text-enkaji-orange" />
       case "REQUESTED":
         return <Clock className="h-4 w-4 text-chart-4" />
       default:
-        return <Clock className="h-4 w-4 text-enkaji-gold" />
+        return <Clock className="h-4 w-4 text-enkaji-orange" />
     }
   }
 
@@ -187,7 +187,7 @@ export function PayoutDashboard() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">Total Earnings</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -198,7 +198,7 @@ export function PayoutDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">Platform Fees</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -211,7 +211,7 @@ export function PayoutDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">Net Earnings</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -222,7 +222,7 @@ export function PayoutDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card rounded-xl shadow-sm">
+        <Card className="border border-border bg-card rounded-2xl shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">Pending Payout</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -235,7 +235,7 @@ export function PayoutDashboard() {
       </div>
 
       {/* Payout Request */}
-      <Card className="border border-border bg-card rounded-xl shadow-sm">
+      <Card className="border border-border bg-card rounded-2xl shadow-card">
         <CardHeader>
           <CardTitle className="text-foreground">Request Payout</CardTitle>
           <CardDescription className="text-muted-foreground">
@@ -250,7 +250,7 @@ export function PayoutDashboard() {
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button disabled={(stats?.pendingAmount || 0) < 1000} className="bg-enkaji-gold hover:bg-enkaji-gold/90 text-enkaji-ink font-semibold">
+                <Button disabled={(stats?.pendingAmount || 0) < 1000} className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">
                   Request Payout
                 </Button>
               </DialogTrigger>
@@ -260,17 +260,17 @@ export function PayoutDashboard() {
                 </DialogHeader>
                 <div className="space-y-4">
                   {savedPaymentMethod ? (
-                    <div className="bg-enkaji-green p-4 rounded-lg border border-enkaji-green">
+                    <div className="bg-enkaji-orange p-4 rounded-xl border border-enkaji-orange">
                       <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle className="h-4 w-4 text-enkaji-green" />
-                        <span className="font-semibold text-enkaji-green">Using Saved Payment Method</span>
+                        <CheckCircle className="h-4 w-4 text-enkaji-orange" />
+                        <span className="font-semibold text-enkaji-orange">Using Saved Payment Method</span>
                       </div>
-                      <p className="text-sm text-enkaji-green">
+                      <p className="text-sm text-enkaji-orange">
                         {savedPaymentMethod.method === "MPESA" 
                           ? `M-Pesa: ${savedPaymentMethod.phoneNumber}`
                           : `Bank: ${savedPaymentMethod.bankName} - ${savedPaymentMethod.accountNumber}`}
                       </p>
-                      <p className="text-xs text-enkaji-green mt-1">
+                      <p className="text-xs text-enkaji-orange mt-1">
                         <a href="/dashboard/payment-settings" className="underline">Update in Payment Settings</a>
                       </p>
                     </div>
@@ -352,7 +352,7 @@ export function PayoutDashboard() {
                     </div>
                   )}
 
-                  <div className="bg-muted p-4 rounded-lg border border-border">
+                  <div className="bg-muted p-4 rounded-xl border border-border">
                     <p className="text-sm text-foreground">
                       <strong>Amount to be paid:</strong> KES {stats?.pendingAmount.toLocaleString() || 0}
                     </p>
@@ -370,7 +370,7 @@ export function PayoutDashboard() {
       </Card>
 
       {/* Payout History */}
-      <Card className="border border-border bg-card rounded-xl shadow-sm">
+      <Card className="border border-border bg-card rounded-2xl shadow-card">
         <CardHeader>
           <CardTitle className="text-foreground">Payout History</CardTitle>
           <CardDescription className="text-muted-foreground">Your earnings and payout records</CardDescription>
