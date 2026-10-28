@@ -233,8 +233,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               {product.category.name}
             </Badge>
             {product.originalPrice && product.originalPrice > product.price && (
-              <Badge className="rounded-md text-[10px] font-semibold uppercase tracking-wide bg-enkaji-orange/90 text-enkaji-ink">
+              <Badge className="rounded-md text-[10px] font-semibold uppercase tracking-wide bg-enkaji-orange/90 text-white">
                 -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+              </Badge>
+            )}
+            {inStock && inventory > 0 && inventory <= 5 && (
+              <Badge className="rounded-md text-[10px] font-semibold uppercase tracking-wide bg-enkaji-orange/80 text-white">
+                Low Stock
               </Badge>
             )}
             {!inStock && (
