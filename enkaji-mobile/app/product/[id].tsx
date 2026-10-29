@@ -257,7 +257,7 @@ export default function ProductDetailScreen() {
                     key={star}
                     name="star"
                     size={15}
-                    color={star <= Math.round(product.avgRating || 0) ? '#EAB308' : Colors.border}
+                    color={star <= Math.round(product.avgRating || 0) ? '#F36A1B' : Colors.border}
                   />
                 ))}
                 <Text style={styles.ratingText}>
@@ -355,7 +355,7 @@ export default function ProductDetailScreen() {
                             key={star}
                             name="star"
                             size={11}
-                            color={star <= review.rating ? '#EAB308' : Colors.border}
+                            color={star <= review.rating ? '#F36A1B' : Colors.border}
                           />
                         ))}
                       </View>
@@ -433,7 +433,7 @@ export default function ProductDetailScreen() {
                     <Feather
                       name="star"
                       size={36}
-                      color={star <= reviewRating ? '#EAB308' : Colors.border}
+                      color={star <= reviewRating ? '#F36A1B' : Colors.border}
                     />
                   </TouchableOpacity>
                 ))}
@@ -900,7 +900,7 @@ const styles = StyleSheet.create({
   },
   ratingLabel: {
     fontSize: 13,
-    color: '#EAB308',
+    color: '#F36A1B',
     fontWeight: '700',
     marginBottom: 4,
   },
