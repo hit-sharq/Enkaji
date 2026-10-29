@@ -4,6 +4,7 @@ import * as Updates from "expo-updates"
 import { useAppUpdates } from "@/hooks/use-app-updates"
 import { Colors } from "@/lib/theme"
 import { useState, useEffect } from "react"
+import { Linking } from "react-native"
 
 export function UpdateBanner() {
   const { updateInfo, checking, progress, checkForUpdates } = useAppUpdates()
@@ -49,7 +50,13 @@ export function UpdateBanner() {
       
       <TouchableOpacity
         style={[styles.button, { backgroundColor: isCritical ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.2)' }]}
-        onPress={() => Updates.reloadAsync()}
+        onPress={() => {
+          if (updateInfo?.hasOtaUpdate) {
+            Updates.reloadAsync().catch(() => {})
+          } else if (updateInfo?.downloadUrl) {
+            Linking.openURL(updateInfo.downloadUrl).catch(() => {})
+          }
+        }}
         disabled={checking}
       >
         {checking ? (
