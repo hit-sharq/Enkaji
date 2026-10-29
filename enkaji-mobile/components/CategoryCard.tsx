@@ -38,7 +38,7 @@ export function CategoryCard({ category, onPress }: CategoryCardProps) {
           <MaterialCommunityIcons
             name={iconName as any}
             size={40}
-            color="#3498db"
+            color="#F36A1B"
           />
         )}
       </View>

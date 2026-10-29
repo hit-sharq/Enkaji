@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8,
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#F36A1B',
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#e74c3c',
+    color: '#F36A1B',
   },
   originalPrice: {
     fontSize: 12,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   addButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#F36A1B',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

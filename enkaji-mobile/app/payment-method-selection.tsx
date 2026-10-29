@@ -13,7 +13,7 @@ import { Colors } from '@/lib/theme'
 
 export default function PaymentMethodSelectionScreen() {
   const router = useRouter()
-  const [selectedMethod, setSelectedMethod] = useState(null)
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
 
   const paymentMethods = [
     {
@@ -46,7 +46,7 @@ export default function PaymentMethodSelectionScreen() {
     }
   ]
 
-  const handleSelectMethod = (method) => {
+  const handleSelectMethod = (method: { id: string; name: string; icon: string; color: string; description: string }) => {
     setSelectedMethod(method.id)
     // Navigate to appropriate payment flow based on method
     switch (method.id) {
@@ -88,7 +88,7 @@ export default function PaymentMethodSelectionScreen() {
         <Text style={styles.headerTitle}>Select Payment Method</Text>
       </View>
 
-      <View style={methodsContainer}>
+      <View style={styles.methodsContainer}>
         {paymentMethods.map(method => (
           <TouchableOpacity
             key={method.id}
@@ -100,7 +100,7 @@ export default function PaymentMethodSelectionScreen() {
           >
             <View style={styles.methodIconContainer}>
               <MaterialCommunityIcons
-                name={method.icon}
+                name={method.icon as any}
                 size={28}
                 color={method.color}
               />
@@ -125,7 +125,7 @@ export default function PaymentMethodSelectionScreen() {
             <MaterialCommunityIcons name="check-circle" size={24} color={Colors.success} />
           </View>
           <Text style={styles.confirmationText}>
-            Selected: {paymentMethods.find(m => m.id === selectedMethod).name}
+            Selected: {paymentMethods.find(m => m.id === selectedMethod)?.name ?? ''}
           </Text>
           <TouchableOpacity
             style={styles.confirmButton}

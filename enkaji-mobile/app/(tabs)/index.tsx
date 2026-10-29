@@ -26,8 +26,8 @@ import { LoadingSkeletons } from '@/components/LoadingSkeletons'
 
 const PROMO_BANNERS = [
   { title: 'New Arrivals', subtitle: 'Discover fresh products', bg: Colors.primary },
-  { title: 'Top Sellers', subtitle: 'Trending this week', bg: '#D2691E' },
-  { title: 'B2B Deals', subtitle: 'Bulk order discounts', bg: '#228B22' },
+  { title: 'Top Sellers', subtitle: 'Trending this week', bg: '#F7894A' },
+  { title: 'B2B Deals', subtitle: 'Bulk order discounts', bg: '#D4551A' },
 ]
 
 export default function HomeScreen() {

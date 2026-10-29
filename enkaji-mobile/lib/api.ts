@@ -120,6 +120,11 @@ class ApiClient {
     return response.data
   }
 
+  async updateOrder(id: string, data: { status?: string; trackingNumber?: string }) {
+    const response = await this.client.patch(`/api/orders/${id}`, data)
+    return response.data
+  }
+
   async createOrder(data: {
     items: Array<{ productId: string; quantity: number; price: number }>
     shippingAddress: any
