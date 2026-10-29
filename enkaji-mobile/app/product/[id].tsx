@@ -159,7 +159,7 @@ export default function ProductDetailScreen() {
         title: reviewTitle.trim() || undefined,
         comment: reviewComment.trim(),
       })
-      if (response.success) {
+      if (response.review || response.message) {
         setShowReviewModal(false)
         setReviewRating(5)
         setReviewTitle('')
@@ -251,7 +251,7 @@ export default function ProductDetailScreen() {
 
             {/* Rating */}
             {product._count?.reviews ? (
-              <View style={styles.ratingRow}>
+              <TouchableOpacity style={styles.ratingRow} onPress={() => setShowReviewModal(true)}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Feather
                     key={star}
@@ -264,8 +264,20 @@ export default function ProductDetailScreen() {
                   {product.avgRating?.toFixed(1)} · {product._count.reviews} review
                   {product._count.reviews !== 1 ? 's' : ''}
                 </Text>
-              </View>
-            ) : null}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.ratingRow} onPress={() => setShowReviewModal(true)}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Feather
+                    key={star}
+                    name="star"
+                    size={15}
+                    color={Colors.border}
+                  />
+                ))}
+                <Text style={styles.ratingText}>No reviews yet · Tap to review</Text>
+              </TouchableOpacity>
+            )}
 
             {/* Seller */}
             <TouchableOpacity style={styles.sellerRow}>
