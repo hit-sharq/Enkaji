@@ -2,7 +2,7 @@
   "expo": {
     "name": "Enkaji",
     "slug": "enkaji-mobile",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/favicon.png",
     "scheme": "enkaji",
@@ -18,7 +18,9 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.enkaji.mobile",
-      "permissions": ["ACCESS_FINE_LOCATION"],
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ],
       "versionCode": 4,
       "intentFilters": [
         {
@@ -38,7 +40,10 @@
               "scheme": "enkaji"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

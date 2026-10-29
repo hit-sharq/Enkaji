@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react"
-import { Alert, AppState } from "react-native"
+import { Alert, AppState, Linking } from "react-native"
 import * as Updates from "expo-updates"
 import api from "@/lib/api"
 import pkg from '../package.json'
@@ -110,8 +110,10 @@ export function useAppUpdates() {
                      console.error("[v0] Failed to reload for update")
                    })
                  } else if (serverVersion.downloadUrl) {
-                   // Open app store link
-                   console.log("[v0] Opening store:", serverVersion.downloadUrl)
+                   // Open store/download link
+                   Linking.openURL(serverVersion.downloadUrl).catch(() => {
+                     console.error("[v0] Failed to open download URL")
+                   })
                  }
                },
              },
@@ -121,7 +123,7 @@ export function useAppUpdates() {
 
       setUpdateInfo({
         hasOtaUpdate: hasOta,
-        isForceUpdate: serverVersion.forceUpdate || false,
+        isForceUpdate: (serverVersion.forceUpdate && serverVersion.hasUpdate) || false,
         downloadUrl: serverVersion.downloadUrl || null,
         releaseNotes: serverVersion.releaseNotes || "Bug fixes and improvements",
         newVersion: serverVersion.newVersion,
