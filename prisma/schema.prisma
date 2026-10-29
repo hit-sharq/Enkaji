@@ -1397,3 +1397,15 @@ model BlockedIp {
   @@map("blocked_ips")
   @@index([ip])
 }
+
+// App version / update configuration (editable at runtime, no redeploy needed)
+model SystemConfig {
+  id            String   @id @default("singleton")
+  latestVersion String   @default("1.0.0")
+  forceUpdate   Boolean  @default(false)
+  releaseNotes  String   @default("Bug fixes and improvements")
+  downloadUrl   String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  @@map("system_config")
+}
