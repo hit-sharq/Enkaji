@@ -123,8 +123,8 @@ export default function CheckoutScreen() {
     fetchShipping()
   }, [shippingAddress.city, shippingAddress.country, shippingAddress.state, items, totalPrice])
 
-  // Tax is already included in the product price — do not add again
-  const tax = 0
+  // Tax is already included in the product price — extract VAT for display only
+  const tax = totalPrice - totalPrice / 1.16
   const orderTotal = totalPrice + shippingCost
 
   const handlePlaceOrder = async () => {
@@ -533,7 +533,7 @@ export default function CheckoutScreen() {
             )}
           </View>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Tax (16%)</Text>
+            <Text style={styles.summaryLabel}>VAT (16%, included in price)</Text>
             <Text style={styles.summaryValue}>KES {tax.toLocaleString()}</Text>
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>

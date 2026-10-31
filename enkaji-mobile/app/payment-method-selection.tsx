@@ -54,30 +54,30 @@ export default function PaymentMethodSelectionScreen() {
         // For now, redirect to webview with method parameter
         // In future, could implement native Stripe integration
         router.push({
-          pathname: '/(tabs)/checkout',
+          pathname: '/checkout',
           params: { paymentMethod: 'card' }
         })
         break
       case 'mpesa':
         router.push({
-          pathname: '/(tabs)/checkout',
+          pathname: '/checkout',
           params: { paymentMethod: 'mpesa' }
         })
         break
       case 'airtel':
         router.push({
-          pathname: '/(tabs)/checkout',
+          pathname: '/checkout',
           params: { paymentMethod: 'airtel' }
         })
         break
       case 'bank':
         router.push({
-          pathname: '/(tabs)/checkout',
+          pathname: '/checkout',
           params: { paymentMethod: 'bank' }
         })
         break
       default:
-        router.push('/(tabs)/checkout')
+        router.push('/checkout')
     }
   }
 
@@ -132,7 +132,7 @@ export default function PaymentMethodSelectionScreen() {
             onPress={() => {
               // Proceed to checkout with selected method
               router.push({
-                pathname: '/(tabs)/checkout',
+                pathname: '/checkout',
                 params: { paymentMethod: selectedMethod }
               })
             }}

@@ -26,7 +26,7 @@ export interface OrderTotals {
 
 const INSURANCE_RATE = 0.02 // 2% of order value
 const MIN_INSURANCE_FEE = 100
-const DEFAULT_TAX_RATE = 0 // Tax is already included in product prices
+const DEFAULT_TAX_RATE = 0.16 // 16% VAT included in product prices
 
 export function calculateOrderTotals({
   items,
@@ -41,12 +41,13 @@ export function calculateOrderTotals({
     0
   )
 
-  const tax = subtotal * taxRate
+  // Tax is already included in the product price — extract the VAT component for display only
+  const tax = taxRate > 0 ? subtotal - subtotal / (1 + taxRate) : 0
   const insurance = insuranceEnabled
     ? Math.max(MIN_INSURANCE_FEE, subtotal * INSURANCE_RATE)
     : 0
 
-  const grandTotal = Math.max(0, subtotal + tax + shippingCost + insurance - discountAmount)
+  const grandTotal = Math.max(0, subtotal + shippingCost + insurance - discountAmount)
 
   return {
     subtotal,
