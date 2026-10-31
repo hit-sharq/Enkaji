@@ -110,12 +110,12 @@ export default function CheckoutScreen() {
           const recommended = result.data.shipping.options.find((o: any) => o.isRecommended)
           setShippingCost(recommended?.price || result.data.shipping.options[0].price)
         } else {
-          // Fallback: free shipping over 5000, else 500
-          setShippingCost(totalPrice > 5000 ? 0 : 500)
+          // Fallback: flat rate shipping (no free shipping unless offer week)
+          setShippingCost(500)
         }
       } catch (error) {
         console.error('Shipping calculation error:', error)
-        setShippingCost(totalPrice > 5000 ? 0 : 500)
+        setShippingCost(500)
       } finally {
         setShippingLoading(false)
       }
@@ -123,9 +123,9 @@ export default function CheckoutScreen() {
     fetchShipping()
   }, [shippingAddress.city, shippingAddress.country, shippingAddress.state, items, totalPrice])
 
-  // Consistent tax calculation (no rounding — same as web)
-  const tax = totalPrice * 0.16
-  const orderTotal = totalPrice + shippingCost + tax
+  // Tax is already included in the product price — do not add again
+  const tax = 0
+  const orderTotal = totalPrice + shippingCost
 
   const handlePlaceOrder = async () => {
     if (
@@ -527,8 +527,8 @@ export default function CheckoutScreen() {
             {shippingLoading ? (
               <ActivityIndicator size="small" color={Colors.primary} />
             ) : (
-              <Text style={[styles.summaryValue, shippingCost === 0 && styles.freeShipping]}>
-                {shippingCost === 0 ? 'Free' : `KES ${shippingCost.toLocaleString()}`}
+              <Text style={styles.summaryValue}>
+                {`KES ${shippingCost.toLocaleString()}`}
               </Text>
             )}
           </View>

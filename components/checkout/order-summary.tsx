@@ -97,8 +97,8 @@ export function OrderSummary({ cartItems, total, shippingCost = 0, discountAmoun
           </div>
 
           <div className="flex justify-between">
-            <span>Tax (16%)</span>
-            <span>{formatDualCurrency(tax)}</span>
+            <span>Tax (included in price)</span>
+            <span>{formatDualCurrency(0)}</span>
           </div>
 
           {onInsuranceChange && (

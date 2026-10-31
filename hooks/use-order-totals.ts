@@ -26,7 +26,7 @@ export interface OrderTotals {
 
 const INSURANCE_RATE = 0.02 // 2% of order value
 const MIN_INSURANCE_FEE = 100
-const DEFAULT_TAX_RATE = 0.16 // 16% VAT for Kenya
+const DEFAULT_TAX_RATE = 0 // Tax is already included in product prices
 
 export function calculateOrderTotals({
   items,

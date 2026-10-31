@@ -14,6 +14,16 @@ function generateToken(): string {
 }
 
 export function getCsrfToken(): string {
+  // Client-side: read the token from the non-httpOnly cookie (double-submit pattern)
+  if (typeof document !== "undefined") {
+    const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/)
+    if (match) {
+      return decodeURIComponent(match[1])
+    }
+    // Fallback: generate (won't validate, but avoids crashes)
+    return ""
+  }
+  // Server-side (middleware/edge): generate/store in process global
   if (typeof globalThis.__csrfToken === "string") {
     return globalThis.__csrfToken
   }

@@ -340,7 +340,7 @@ export function CheckoutForm({ onDestinationChange, shippingCost = 0, discountAm
               <span>{formatDualCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Tax (16%)</span>
+              <span className="text-sm text-muted-foreground">Tax (included in price)</span>
               <span>{formatDualCurrency(tax)}</span>
             </div>
             <div className="flex justify-between items-center">

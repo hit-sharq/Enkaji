@@ -97,10 +97,8 @@ function RootLayoutContent() {
   const { isLoaded } = useAuth()
   const [fontsLoaded] = useFonts({})
   
-  // Initialize app update checking
-  useAppUpdates()
-
-  // Initialize deep linking
+  // TEMPORARILY DISABLED for crash diagnosis
+  // useAppUpdates()
   useDeepLinking()
 
   useEffect(() => {
@@ -121,7 +119,7 @@ function RootLayoutContent() {
     <>
       <StatusBar style="light" />
       <UserSyncComponent />
-      <UpdateBanner />
+      {/* <UpdateBanner /> */}
       <Stack
         screenOptions={{
           headerShown: false,

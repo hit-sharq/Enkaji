@@ -88,7 +88,18 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             weight: product.weight,
           },
         })
-        toast({ title: "Added to order", description: `${qty} × ${product.name} added.` })
+        toast({ 
+          title: "Added to order", 
+          description: `${qty} × ${product.name} added.`,
+          action: (
+            <button
+              onClick={() => (window.location.href = "/cart")}
+              className="text-sm font-semibold text-enkaji-orange underline"
+            >
+              View Cart
+            </button>
+          ),
+        })
       } else {
         const error = await response.json()
         throw new Error(error.error || "Failed to add to cart")

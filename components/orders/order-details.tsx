@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Package, User, CreditCard, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { csrfFetch } from "@/lib/csrf-client"
+import { useToast } from "@/hooks/use-toast"
 
 interface OrderItem {
   id: string
@@ -53,6 +55,8 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { toast } = useToast()
+  const [isCancelling, setIsCancelling] = useState(false)
 
   useEffect(() => {
     fetchOrderDetails()
@@ -135,18 +139,35 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
          {/* Order Information */}
          <div className="lg:col-span-2 space-y-6">
            {/* Cancel Order Button (for pending orders) */}
-           {order.status === "PENDING" && (
-             <div className="mb-6">
-               <Button 
-                 onClick={() => {
-                   if (window.confirm('Are you sure you want to cancel this order?')) {
-                     // TODO: Implement cancel order API call
-                     alert('Cancel order functionality would be implemented here');
-                   }
-                 }}
-                 variant="destructive"
-                 size="sm"
-               >
+            {order.status === "PENDING" && (
+              <div className="mb-6">
+                <Button
+                  onClick={async () => {
+                    if (!window.confirm('Are you sure you want to cancel this order?')) return
+                    setIsCancelling(true)
+                    try {
+                      const res = await csrfFetch(`/api/orders/${order.id}`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: "CANCELLED" }),
+                      })
+                      if (res.ok) {
+                        toast({ title: "Order cancelled", description: "Your order has been cancelled." })
+                        router.refresh()
+                      } else {
+                        const data = await res.json()
+                        toast({ title: "Failed", description: data.error || "Could not cancel order", variant: "destructive" })
+                      }
+                    } catch {
+                      toast({ title: "Error", description: "Network error", variant: "destructive" })
+                    } finally {
+                      setIsCancelling(false)
+                    }
+                  }}
+                  variant="destructive"
+                  size="sm"
+                  disabled={isCancelling}
+                >
                  Cancel Order
                </Button>
              </div>

@@ -100,7 +100,7 @@ export default clerkMiddleware(async (auth, req) => {
   if (isApiRoute && isStateChangingMethod(req)) {
     const csrfToken = getCsrfToken()
     response.cookies.set("csrf_token", csrfToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60 * 24,
