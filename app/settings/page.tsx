@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -6,9 +9,117 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { User, Bell, Shield, CreditCard, Globe, Trash2 } from "lucide-react"
+import { User, Bell, Shield, CreditCard, Globe, Trash2, Save, Loader2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { csrfFetch } from "@/lib/csrf-client"
+
+interface UserProfile {
+  firstName: string | null
+  lastName: string | null
+  email: string
+}
 
 export default function SettingsPage() {
+  const { toast } = useToast()
+  const [profile, setProfile] = useState<UserProfile>({ firstName: "", lastName: "", email: "" })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  // Notification prefs (persisted locally)
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [orderUpdates, setOrderUpdates] = useState(true)
+  const [marketingEmails, setMarketingEmails] = useState(false)
+  const [smsAlerts, setSmsAlerts] = useState(true)
+
+  // Privacy prefs
+  const [profileVisibility, setProfileVisibility] = useState("public")
+  const [showEmail, setShowEmail] = useState(false)
+  const [showPhone, setShowPhone] = useState(false)
+
+  // Billing
+  const [currency, setCurrency] = useState("KES")
+
+  useEffect(() => {
+    // Load profile
+    fetch("/api/user/me", { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && !d.error) {
+          setProfile({
+            firstName: d.firstName || "",
+            lastName: d.lastName || "",
+            email: d.email || "",
+          })
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+
+    // Load local prefs
+    try {
+      const n = JSON.parse(localStorage.getItem("enkaji_notif_prefs") || "{}")
+      if (n.emailNotifications !== undefined) setEmailNotifications(n.emailNotifications)
+      if (n.orderUpdates !== undefined) setOrderUpdates(n.orderUpdates)
+      if (n.marketingEmails !== undefined) setMarketingEmails(n.marketingEmails)
+      if (n.smsAlerts !== undefined) setSmsAlerts(n.smsAlerts)
+      const pr = JSON.parse(localStorage.getItem("enkaji_privacy_prefs") || "{}")
+      if (pr.profileVisibility) setProfileVisibility(pr.profileVisibility)
+      if (pr.showEmail !== undefined) setShowEmail(pr.showEmail)
+      if (pr.showPhone !== undefined) setShowPhone(pr.showPhone)
+      const c = localStorage.getItem("enkaji_currency")
+      if (c) setCurrency(c)
+    } catch {}
+  }, [])
+
+  const saveProfile = async () => {
+    setSaving(true)
+    try {
+      const res = await csrfFetch("/api/user/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName }),
+      })
+      const d = await res.json()
+      if (res.ok) {
+        toast({ title: "Profile saved", description: "Your profile has been updated." })
+      } else {
+        toast({ title: "Error", description: d.error || "Failed to save", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Error", description: "Network error", variant: "destructive" })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const saveNotifPrefs = () => {
+    localStorage.setItem("enkaji_notif_prefs", JSON.stringify({ emailNotifications, orderUpdates, marketingEmails, smsAlerts }))
+    toast({ title: "Saved", description: "Notification preferences updated." })
+  }
+
+  const savePrivacyPrefs = () => {
+    localStorage.setItem("enkaji_privacy_prefs", JSON.stringify({ profileVisibility, showEmail, showPhone }))
+    toast({ title: "Saved", description: "Privacy preferences updated." })
+  }
+
+  const saveCurrency = () => {
+    localStorage.setItem("enkaji_currency", currency)
+    toast({ title: "Saved", description: "Currency preference updated." })
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-4">
+            <div className="h-8 bg-muted rounded-xl w-1/3 animate-pulse" />
+            <div className="h-64 bg-muted rounded-xl animate-pulse" />
+          </div>
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
@@ -41,37 +152,22 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" placeholder="Enter your first name" />
+                      <Input id="firstName" value={profile.firstName || ""} onChange={(e) => setProfile({ ...profile, firstName: e.target.value })} placeholder="Enter your first name" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" placeholder="Enter your last name" />
+                      <Input id="lastName" value={profile.lastName || ""} onChange={(e) => setProfile({ ...profile, lastName: e.target.value })} placeholder="Enter your last name" />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="Enter your email" />
+                    <Input id="email" type="email" value={profile.email} disabled placeholder="Your email" />
+                    <p className="text-xs text-muted-foreground">Email is managed by your auth provider.</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" placeholder="Enter your phone number" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nairobi">Nairobi</SelectItem>
-                        <SelectItem value="mombasa">Mombasa</SelectItem>
-                        <SelectItem value="kisumu">Kisumu</SelectItem>
-                        <SelectItem value="nakuru">Nakuru</SelectItem>
-                        <SelectItem value="eldoret">Eldoret</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button className="bg-enkaji-orange hover:bg-enkaji-orange/90 text-enkaji-ink font-semibold">Save Changes</Button>
+                  <Button onClick={saveProfile} disabled={saving}>
+                    {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    Save Changes
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -83,40 +179,41 @@ export default function SettingsPage() {
                     <Bell className="w-5 h-5" />
                     Notification Preferences
                   </CardTitle>
-                  <CardDescription>Choose what notifications you want to receive</CardDescription>
+                  <CardDescription>Choose how you want to be notified</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div>
+                      <Label>Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">Receive notifications via email</p>
+                    </div>
+                    <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <div>
                       <Label>Order Updates</Label>
                       <p className="text-sm text-muted-foreground">Get notified about order status changes</p>
                     </div>
-                    <Switch />
+                    <Switch checked={orderUpdates} onCheckedChange={setOrderUpdates} />
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>New Messages</Label>
-                      <p className="text-sm text-muted-foreground">Receive notifications for new messages</p>
+                    <div>
+                      <Label>SMS Alerts</Label>
+                      <p className="text-sm text-muted-foreground">Receive SMS for important updates</p>
                     </div>
-                    <Switch />
+                    <Switch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div>
                       <Label>Marketing Emails</Label>
-                      <p className="text-sm text-muted-foreground">Receive promotional emails and offers</p>
+                      <p className="text-sm text-muted-foreground">Receive promotional emails</p>
                     </div>
-                    <Switch />
+                    <Switch checked={marketingEmails} onCheckedChange={setMarketingEmails} />
                   </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>SMS Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Get important updates via SMS</p>
-                    </div>
-                    <Switch />
-                  </div>
+                  <Button onClick={saveNotifPrefs} className="mt-4">Save Preferences</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -128,32 +225,39 @@ export default function SettingsPage() {
                     <Shield className="w-5 h-5" />
                     Privacy Settings
                   </CardTitle>
-                  <CardDescription>Control your privacy and data sharing preferences</CardDescription>
+                  <CardDescription>Control your privacy and data sharing</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Profile Visibility</Label>
-                      <p className="text-sm text-muted-foreground">Make your profile visible to other users</p>
-                    </div>
-                    <Switch />
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Profile Visibility</Label>
+                    <Select value={profileVisibility} onValueChange={setProfileVisibility}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="public">Public</SelectItem>
+                        <SelectItem value="private">Private</SelectItem>
+                        <SelectItem value="contacts">Contacts Only</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Show Online Status</Label>
-                      <p className="text-sm text-muted-foreground">Let others see when you're online</p>
+                    <div>
+                      <Label>Show Email</Label>
+                      <p className="text-sm text-muted-foreground">Display email on your public profile</p>
                     </div>
-                    <Switch />
+                    <Switch checked={showEmail} onCheckedChange={setShowEmail} />
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Data Analytics</Label>
-                      <p className="text-sm text-muted-foreground">Help improve our service with usage data</p>
+                    <div>
+                      <Label>Show Phone</Label>
+                      <p className="text-sm text-muted-foreground">Display phone on your public profile</p>
                     </div>
-                    <Switch />
+                    <Switch checked={showPhone} onCheckedChange={setShowPhone} />
                   </div>
+                  <Button onClick={savePrivacyPrefs} className="mt-4">Save Preferences</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -163,38 +267,24 @@ export default function SettingsPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-display font-semibold">
                     <CreditCard className="w-5 h-5" />
-                    Billing Information
+                    Billing & Currency
                   </CardTitle>
-                  <CardDescription>Manage your payment methods and billing details</CardDescription>
+                  <CardDescription>Manage your billing preferences</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Payment Methods</Label>
-                    <div className="border rounded-lg p-4">
-                      <p className="text-sm text-muted-foreground">No payment methods added yet</p>
-                        <Button variant="outline" className="mt-2 border border-enkaji-orange/50 text-enkaji-orange hover:bg-enkaji-orange/10">
-                          Add Payment Method
-                        </Button>
-                    </div>
+                    <Label>Preferred Currency</Label>
+                    <Select value={currency} onValueChange={setCurrency}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="KES">KES (Kenyan Shilling)</SelectItem>
+                        <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Billing Address</Label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input placeholder="Street Address" />
-                      <Input placeholder="City" />
-                      <Input placeholder="Postal Code" />
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="County" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="nairobi">Nairobi</SelectItem>
-                          <SelectItem value="mombasa">Mombasa</SelectItem>
-                          <SelectItem value="kiambu">Kiambu</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                  <Button onClick={saveCurrency} className="mt-4">Save Preference</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -203,46 +293,18 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-display font-semibold">
-                    <Globe className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                     Account Management
                   </CardTitle>
-                  <CardDescription>Manage your account settings and preferences</CardDescription>
+                  <CardDescription>Manage your account settings</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-2">
-                    <Label>Language</Label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="sw">Kiswahili</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Time Zone</Label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select timezone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Separator />
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-enkaji-orange">Danger Zone</Label>
-                      <p className="text-sm text-muted-foreground">These actions cannot be undone</p>
-                    </div>
-                    <Button variant="destructive" className="flex items-center gap-2">
-                      <Trash2 className="w-4 h-4" />
-                      Delete Account
-                    </Button>
-                  </div>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    To delete your account or change your email, please contact support.
+                  </p>
+                  <Button variant="destructive" onClick={() => window.confirm("Are you sure? Contact support to proceed.")}>
+                    Request Account Deletion
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
