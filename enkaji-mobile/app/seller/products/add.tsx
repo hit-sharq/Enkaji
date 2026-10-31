@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native'
 import { useRouter } from 'expo-router'
+import * as ImagePicker from 'expo-image-picker'
 import { Feather } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import api from '@/lib/api'
@@ -48,6 +49,48 @@ export default function AddProductScreen() {
       else if (Array.isArray(response)) setCategories(response)
     } catch (error) {
       console.error('Error loading categories:', error)
+    }
+  }
+
+  const handlePickImage = async () => {
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!perm.granted) {
+        Alert.alert('Permission needed', 'Allow photo library access to upload images.')
+        return
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
+        quality: 0.8,
+      })
+      if (result.canceled) return
+      const assets = result.assets || []
+      const urls: string[] = []
+      for (const asset of assets) {
+        try {
+          const url = await api.uploadImage(
+            asset.uri,
+            asset.fileName || `image-${Date.now()}.jpg`,
+            asset.mimeType || 'image/jpeg'
+          )
+          if (url) urls.push(url)
+        } catch (e) {
+          console.warn('Upload failed for', asset.uri, e)
+        }
+      }
+      if (urls.length > 0) {
+        setForm((f) => ({
+          ...f,
+          images: f.images ? f.images + '\n' + urls.join('\n') : urls.join('\n'),
+        }))
+        Alert.alert('Uploaded', `${urls.length} image(s) added.`)
+      } else {
+        Alert.alert('Upload failed', 'Could not upload images. Try pasting URLs instead.')
+      }
+    } catch (error) {
+      console.error('Image pick failed:', error)
+      Alert.alert('Error', 'Could not open image picker.')
     }
   }
 
@@ -249,6 +292,10 @@ export default function AddProductScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Product Images</Text>
             <Text style={styles.hint}>Enter image URLs, one per line</Text>
+            <TouchableOpacity style={styles.uploadBtn} onPress={handlePickImage}>
+              <Feather name="upload" size={16} color={Colors.text.white} />
+              <Text style={styles.uploadBtnText}>Upload from Gallery</Text>
+            </TouchableOpacity>
             <TextInput
               style={[styles.input, styles.textarea]}
               placeholder={'https://example.com/image1.jpg\nhttps://example.com/image2.jpg'}
@@ -338,6 +385,8 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 15, fontWeight: '700', color: Colors.text.primary, marginBottom: 12 },
   label: { fontSize: 13, fontWeight: '600', color: Colors.text.secondary, marginBottom: 6, marginTop: 4 },
   hint: { fontSize: 12, color: Colors.text.tertiary, marginBottom: 8 },
+  uploadBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.primary, paddingVertical: 10, borderRadius: 8, marginBottom: 12, gap: 8 },
+  uploadBtnText: { color: Colors.text.white, fontSize: 14, fontWeight: '600' },
   input: {
     borderWidth: 1,
     borderColor: Colors.border,

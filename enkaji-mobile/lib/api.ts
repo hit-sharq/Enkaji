@@ -47,6 +47,20 @@ class ApiClient {
     this.token = token
   }
 
+   async uploadImage(uri: string, fileName: string, mimeType: string): Promise<string | null> {
+    try {
+      const formData = new FormData()
+      formData.append('file', { uri, name: fileName, type: mimeType } as any)
+      const response = await this.client.post('/api/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data?.url || null
+    } catch (error) {
+      console.error('Upload failed:', error)
+      return null
+    }
+  }
+
    // Products
    async getProducts(params?: {
      category?: string
