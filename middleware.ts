@@ -90,6 +90,18 @@ export default clerkMiddleware(async (auth, req) => {
     response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
   }
 
+  // Ensure CSRF cookie is always present so the client can read it (double-submit pattern)
+  if (!req.cookies.get("csrf_token")) {
+    const csrfToken = getCsrfToken()
+    response.cookies.set("csrf_token", csrfToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    })
+  }
+
   if (isStateChangingMethod(req) && isApiRoute) {
     const csrfValid = validateCsrfToken(req)
     if (!csrfValid) {
@@ -97,7 +109,8 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  if (isApiRoute && isStateChangingMethod(req)) {
+  // Refresh the cookie on state-changing requests to keep it in sync
+  if (isStateChangingMethod(req) && isApiRoute) {
     const csrfToken = getCsrfToken()
     response.cookies.set("csrf_token", csrfToken, {
       httpOnly: false,
