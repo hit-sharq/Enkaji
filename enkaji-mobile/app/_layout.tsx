@@ -14,9 +14,16 @@ import { UpdateBanner } from '@/components/update-banner'
 import { NotificationProvider } from '@/hooks/use-notifications'
 import { useDeepLinking } from '@/hooks/use-deep-linking'
 import api from '@/lib/api'
+import * as Sentry from '@sentry/react-native'
 import type { UserRole } from '@/types'
 
 SplashScreen.preventAutoHideAsync()
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  debug: false,
+  enableAutoSessionTracking: true,
+})
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
 
@@ -99,7 +106,7 @@ function RootLayoutContent() {
   
   // Initialize app update checking
   useAppUpdates()
-  // useDeepLinking() (disabled for crash diagnosis)
+  useDeepLinking()
 
   useEffect(() => {
     if (isLoaded && fontsLoaded) {
