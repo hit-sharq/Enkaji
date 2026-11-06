@@ -306,7 +306,7 @@ export function ProductDetails({ product, ratingDistribution }: ProductDetailsPr
                 </div>
               </div>
 
-              <div className="flex space-x-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:space-x-4">
                 <Button
                   onClick={handleAddToCart}
                   disabled={isLoading || product.inventory === 0}
