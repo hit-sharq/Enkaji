@@ -102,7 +102,10 @@ export default clerkMiddleware(async (auth, req) => {
     })
   }
 
-  if (isStateChangingMethod(req) && isApiRoute) {
+  // Skip CSRF for Bearer-token (mobile app) requests — they're inherently CSRF-safe
+  const hasBearerToken = req.headers.get("authorization")?.startsWith("Bearer ")
+
+  if (isStateChangingMethod(req) && isApiRoute && !hasBearerToken) {
     const csrfValid = validateCsrfToken(req)
     if (!csrfValid) {
       return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 })
