@@ -271,21 +271,21 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
         </div>
 
         {/* Body */}
-        <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-4">
           {/* Name + SKU */}
           <div>
             <Link href={`/products/${product.id}`} className="block">
-              <h3 className="font-display text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-enkaji-orange transition-colors">
+              <h3 className="font-display text-xs font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-enkaji-orange transition-colors sm:text-sm">
                 {product.name}
               </h3>
             </Link>
             {product.sku && (
-              <p className="text-[11px] text-muted-foreground font-mono mt-0.5">SKU {product.sku}</p>
+              <p className="hidden text-[11px] text-muted-foreground font-mono mt-0.5 sm:block">SKU {product.sku}</p>
             )}
           </div>
 
           {/* Specs row */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+          <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground sm:flex">
             <span className="flex items-center gap-1">
               <Package className="h-3 w-3" />
               MOQ {moq}
@@ -347,29 +347,29 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           </div>
 
           {/* Quantity + actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="flex items-center rounded-lg border border-border bg-card">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(moq, q - 1))}
-                className="h-8 w-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                className="h-8 w-6 sm:w-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
               >
                 <Minus className="h-3.5 w-3.5" />
               </button>
-              <span className="w-7 text-center text-sm font-medium">{qty}</span>
+              <span className="w-6 sm:w-7 text-center text-sm font-medium">{qty}</span>
               <button
                 type="button"
                 onClick={() => setQty((q) => q + 1)}
-                className="h-8 w-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                className="h-8 w-6 sm:w-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
               >
                 <Plus className="h-3.5 w-3.5" />
               </button>
             </div>
             <Button size="sm" onClick={handleAddToCart} disabled={isAdding || !inStock} className="flex-1 h-8 text-xs">
-              {isAdding ? "Adding…" : "Add to Order"}
+              {isAdding ? "Adding…" : "Add"}
             </Button>
           </div>
-          <Button asChild size="sm" variant="outline" className="h-8 text-xs">
+          <Button asChild size="sm" variant="outline" className="hidden h-8 text-xs sm:flex">
             <Link href={`/products/${product.id}`}>
               <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
               Request Quote
