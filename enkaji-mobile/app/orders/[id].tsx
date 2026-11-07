@@ -266,8 +266,11 @@ export default function OrderDetailScreen() {
           { text: 'Cancel Order', style: 'destructive', onPress: async () => {
             try {
               await api.updateOrder(order.id, { status: 'CANCELLED' });
-              Alert.alert('Success', 'Order has been cancelled');
-              router.back();
+              Alert.alert(
+                'Order Cancelled',
+                'Your order has been cancelled. A refund will be processed within 3-5 business days. You will receive a confirmation email.',
+                [{ text: 'OK', onPress: () => router.back() }]
+              );
             } catch (error) {
               Alert.alert('Error', 'Failed to cancel order. Please try again.');
             }

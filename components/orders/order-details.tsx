@@ -260,6 +260,43 @@ export function OrderDetails({ orderId, userId }: OrderDetailsProps) {
             </CardContent>
           </Card>
 
+          {order.status === "CANCELLED" && (
+            <Card className="border-enkaji-red/30 bg-enkaji-red/5">
+              <CardHeader>
+                <CardTitle className="flex items-center text-enkaji-red">
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  Cancellation Receipt
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span>Order ID:</span>
+                  <span className="font-mono">{order.id.slice(-8)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Cancelled on:</span>
+                  <span>{new Date(order.updatedAt).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Original Total:</span>
+                  <span>KSh {order.total.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Refund Status:</span>
+                  <Badge variant="secondary" className="bg-enkaji-red/10 text-enkaji-red">
+                    Pending Refund
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground pt-2 border-t border-border">
+                  Your payment will be refunded within 3-5 business days. You will receive a confirmation email once the refund is processed.
+                </p>
+                <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => window.print()}>
+                  Print Receipt
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Customer Information */}
           <Card>
             <CardHeader>

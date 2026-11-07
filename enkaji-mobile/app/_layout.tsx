@@ -124,7 +124,7 @@ function RootLayoutContent() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
       <UserSyncComponent />
       <UpdateBanner />
       <Stack
