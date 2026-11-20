@@ -9,6 +9,7 @@ import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 import { CartProvider } from "@/components/providers/cart-provider"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { ErrorReporter } from "@/components/error-reporter"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -56,7 +57,8 @@ export default function RootLayout({
               <Header />
               <main className="min-h-screen">{children}</main>
               <Footer />
-              <Toaster />
+              <ErrorReporter />
+        <Toaster />
               <ShadcnToaster />
             </CartProvider>
           </ThemeProvider>
